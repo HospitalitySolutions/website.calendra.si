@@ -340,12 +340,18 @@ const PREMISES_PRICE = 19.9;
 const USER_SLIDER_MAX = 20;
 const SMS_SLIDER_MAX = 1000;
 const SMS_SLIDER_STEP = 50;
+const INCLUDED_USERS = 1;
+
+const scrollToElement = (element: HTMLElement | null) => {
+  if (!element) return;
+  element.scrollIntoView({ behavior: "smooth", block: "start" });
+};
 
 const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const { language } = useSiteLanguage();
   const content = useMemo(() => translations[language], [language]);
   const [selectedTierKey, setSelectedTierKey] = useState<PlanKey>("premium");
-  const [additionalUsers, setAdditionalUsers] = useState(0);
+  const [additionalUsers, setAdditionalUsers] = useState(INCLUDED_USERS);
   const [additionalSms, setAdditionalSms] = useState(0);
   const [fiscalCashRegister, setFiscalCashRegister] = useState(false);
   const [websiteCreation, setWebsiteCreation] = useState(false);
@@ -355,6 +361,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactMessage, setContactMessage] = useState("");
+  const [showStickySummary, setShowStickySummary] = useState(false);
   const configuratorRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLDivElement | null>(null);
 
@@ -369,12 +376,12 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     [language],
   );
 
-  const configurableTiers = useMemo(() => content.tiers.filter((tier) => tier.key !== "enterprise"), [content]);
   const selectedTier = useMemo(
     () => content.tiers.find((tier) => tier.key === selectedTierKey) ?? content.tiers[0],
     [content, selectedTierKey],
   );
   const supportsPremises = selectedTier.key === "professional" || selectedTier.key === "premium";
+  const billableUsers = Math.max(0, additionalUsers - INCLUDED_USERS);
 
   useEffect(() => {
     if (!supportsPremises) {
@@ -400,9 +407,27 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     }
   }, [standalone]);
 
+  useEffect(() => {
+    if (!standalone || typeof window === "undefined") return;
+
+    const onScroll = () => {
+      const configuratorTop = configuratorRef.current?.getBoundingClientRect().top ?? Number.POSITIVE_INFINITY;
+      const reachedConfigurator = configuratorTop <= 120;
+      setShowStickySummary(reachedConfigurator && selectedTier.key !== "enterprise");
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, [standalone, selectedTier.key]);
+
   const monthlyTotal =
     (selectedTier.baseMonthly ?? 0) +
-    additionalUsers * USERS_PRICE +
+    billableUsers * USERS_PRICE +
     additionalSms * SMS_PRICE +
     (fiscalCashRegister ? FISCAL_PRICE : 0) +
     (businessPremises && supportsPremises ? PREMISES_PRICE : 0);
@@ -410,17 +435,12 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const firstInvoiceEstimate = monthlyTotal + oneTimeTotal;
 
   const selectedItems = [
-    additionalUsers > 0 ? `${additionalUsers} ${content.usersCountLabel}` : null,
+    additionalUsers > INCLUDED_USERS ? `${additionalUsers} ${content.usersCountLabel}` : null,
     additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null,
     fiscalCashRegister ? `${content.optionFiscal} (${content.monthlyLabel.toLowerCase()})` : null,
     websiteCreation ? `${content.optionWebsite} (${content.oneTimeLabel.toLowerCase()})` : null,
     businessPremises && supportsPremises ? `${content.optionPremises} (${content.monthlyLabel.toLowerCase()})` : null,
   ].filter(Boolean) as string[];
-
-  const scrollToElement = (element: HTMLElement | null) => {
-    if (!element) return;
-    element.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
 
   const handleTierSelect = (tierKey: PlanKey) => {
     if (!standalone) {
@@ -460,7 +480,10 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   };
 
   return (
-    <section id={standalone ? undefined : "cenik"} className={`${standalone ? "pt-0" : "scroll-mt-20"} bg-card py-20 md:py-28`}>
+    <section
+      id={standalone ? undefined : "cenik"}
+      className={`${standalone ? "pt-0 pb-36 md:pb-40" : "scroll-mt-20"} bg-card py-20 md:py-28`}
+    >
       <div className="container mx-auto px-4 lg:px-8">
         <div className="mb-10 text-center md:text-left">
           <span className="text-sm font-semibold uppercase tracking-widest text-primary">{content.sectionEyebrow}</span>
@@ -560,233 +583,206 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
         </motion.div>
 
         {standalone && (
-        <>
-        <motion.div
-          id="pricing-configurator"
-          ref={configuratorRef}
-          className="mt-20 rounded-3xl border border-border/50 bg-background p-6 shadow-sm md:p-8"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <div className="max-w-3xl">
-            <h3 className="font-display text-2xl font-bold text-foreground">{content.calculatorTitle}</h3>
-            <p className="mt-3 text-muted-foreground">{content.calculatorDescription}</p>
-          </div>
-
-          <div className="mt-8">
-            <p className="text-sm font-semibold uppercase tracking-wide text-primary">{content.packageSelectorTitle}</p>
-            <div className="mt-4 grid gap-3 md:grid-cols-3">
-              {configurableTiers.map((tier) => {
-                const isActive = selectedTierKey === tier.key;
-                return (
-                  <button
-                    key={tier.key}
-                    type="button"
-                    onClick={() => setSelectedTierKey(tier.key)}
-                    className={`rounded-2xl border p-4 text-left transition ${
-                      isActive ? "border-primary bg-primary/5 shadow-sm" : "border-border/60 bg-card hover:border-primary/40"
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="font-display text-lg font-bold text-foreground">{tier.name}</p>
-                        <p className="mt-1 text-sm text-muted-foreground">{tier.description}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-display text-xl font-bold text-foreground">{tier.price}</p>
-                        {tier.priceSuffix && <p className="text-xs text-muted-foreground">{tier.priceSuffix}</p>}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-6 lg:grid-cols-[1.3fr_0.9fr]">
-            <div className="space-y-6">
-              <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xl font-semibold text-foreground">{content.usersLabel}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{content.usersHint}</p>
-                  </div>
-                  <div className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-                    {additionalUsers} {content.usersCountLabel}
-                  </div>
-                </div>
-                <div className="mt-6 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <Users className="h-6 w-6" />
-                  </div>
-                  <Slider value={[additionalUsers]} onValueChange={(value) => setAdditionalUsers(value[0] ?? 0)} max={USER_SLIDER_MAX} step={1} />
-                </div>
+          <>
+            <motion.div
+              id="pricing-configurator"
+              ref={configuratorRef}
+              className="mt-20 rounded-3xl border border-border/50 bg-background p-6 shadow-sm md:p-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <div className="max-w-3xl">
+                <h3 className="font-display text-2xl font-bold text-foreground">{content.calculatorTitle}</h3>
+                <p className="mt-3 text-muted-foreground">{content.calculatorDescription}</p>
               </div>
 
-              <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
-                <div className="flex flex-wrap items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xl font-semibold text-foreground">{content.smsLabel}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{content.smsHint}</p>
+              <div className="mt-8 space-y-6">
+                <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xl font-semibold text-foreground">{content.usersLabel}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{content.usersHint}</p>
+                    </div>
+                    <div className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
+                      {additionalUsers} {content.usersCountLabel}
+                    </div>
                   </div>
-                  <div className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-                    {additionalSms} {content.smsCountLabel}
+                  <div className="mt-6 flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <Users className="h-6 w-6" />
+                    </div>
+                    <Slider value={[additionalUsers]} onValueChange={(value) => setAdditionalUsers(value[0] ?? INCLUDED_USERS)} min={INCLUDED_USERS} max={USER_SLIDER_MAX} step={1} />
                   </div>
                 </div>
-                <div className="mt-6 flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                    <MessageSquareText className="h-6 w-6" />
+
+                <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-xl font-semibold text-foreground">{content.smsLabel}</p>
+                      <p className="mt-1 text-sm text-muted-foreground">{content.smsHint}</p>
+                    </div>
+                    <div className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
+                      {additionalSms} {content.smsCountLabel}
+                    </div>
                   </div>
-                  <Slider value={[additionalSms]} onValueChange={(value) => setAdditionalSms(value[0] ?? 0)} max={SMS_SLIDER_MAX} step={SMS_SLIDER_STEP} />
+                  <div className="mt-6 flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                      <MessageSquareText className="h-6 w-6" />
+                    </div>
+                    <Slider value={[additionalSms]} onValueChange={(value) => setAdditionalSms(value[0] ?? 0)} max={SMS_SLIDER_MAX} step={SMS_SLIDER_STEP} />
+                  </div>
                 </div>
-              </div>
 
-              <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
-                <p className="text-xl font-semibold text-foreground">{content.optionsLabel}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{content.addOnsTitle}</p>
+                <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
+                  <p className="text-xl font-semibold text-foreground">{content.optionsLabel}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{content.addOnsTitle}</p>
 
-                <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
-                    <Checkbox checked={fiscalCashRegister} onCheckedChange={(checked) => setFiscalCashRegister(Boolean(checked))} className="mt-1" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <Building2 className="h-4 w-4 text-primary" />
-                        <span className="font-semibold text-foreground">{content.optionFiscal}</span>
-                      </div>
-                      <p className="mt-1 text-sm text-muted-foreground">{formatter.format(FISCAL_PRICE)} / {language === "sl" ? "mesec" : "month"}</p>
-                    </div>
-                  </label>
-
-                  <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
-                    <Checkbox checked={websiteCreation} onCheckedChange={(checked) => setWebsiteCreation(Boolean(checked))} className="mt-1" />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <Globe2 className="h-4 w-4 text-primary" />
-                        <span className="font-semibold text-foreground">{content.optionWebsite}</span>
-                      </div>
-                      <p className="mt-1 text-sm text-muted-foreground">{formatter.format(WEBSITE_BUILD_PRICE)}</p>
-                    </div>
-                  </label>
-
-                  {supportsPremises && (
+                  <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
-                      <Checkbox checked={businessPremises} onCheckedChange={(checked) => setBusinessPremises(Boolean(checked))} className="mt-1" />
+                      <Checkbox checked={fiscalCashRegister} onCheckedChange={(checked) => setFiscalCashRegister(Boolean(checked))} className="mt-1" />
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <Building2 className="h-4 w-4 text-primary" />
-                          <span className="font-semibold text-foreground">{content.optionPremises}</span>
+                          <span className="font-semibold text-foreground">{content.optionFiscal}</span>
                         </div>
-                        <p className="mt-1 text-sm text-muted-foreground">{formatter.format(PREMISES_PRICE)} / {language === "sl" ? "mesec" : "month"}</p>
+                        <p className="mt-1 text-sm text-muted-foreground">{formatter.format(FISCAL_PRICE)} / {language === "sl" ? "mesec" : "month"}</p>
                       </div>
                     </label>
-                  )}
+
+                    <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
+                      <Checkbox checked={websiteCreation} onCheckedChange={(checked) => setWebsiteCreation(Boolean(checked))} className="mt-1" />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <Globe2 className="h-4 w-4 text-primary" />
+                          <span className="font-semibold text-foreground">{content.optionWebsite}</span>
+                        </div>
+                        <p className="mt-1 text-sm text-muted-foreground">{formatter.format(WEBSITE_BUILD_PRICE)}</p>
+                      </div>
+                    </label>
+
+                    {supportsPremises && (
+                      <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
+                        <Checkbox checked={businessPremises} onCheckedChange={(checked) => setBusinessPremises(Boolean(checked))} className="mt-1" />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <Building2 className="h-4 w-4 text-primary" />
+                            <span className="font-semibold text-foreground">{content.optionPremises}</span>
+                          </div>
+                          <p className="mt-1 text-sm text-muted-foreground">{formatter.format(PREMISES_PRICE)} / {language === "sl" ? "mesec" : "month"}</p>
+                        </div>
+                      </label>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="rounded-3xl border border-primary/20 bg-primary/[0.04] p-5 md:p-6">
-              <p className="text-sm font-semibold uppercase tracking-wide text-primary">{content.summaryTitle}</p>
-              <div className="mt-5 space-y-4">
+            <motion.div
+              id="contact-form"
+              ref={contactRef}
+              className="mt-20 rounded-3xl border border-border/50 bg-background p-6 shadow-sm md:p-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <div className="max-w-3xl">
+                <h3 className="font-display text-2xl font-bold text-foreground">{content.contactTitle}</h3>
+                <p className="mt-3 text-muted-foreground">{content.contactDescription}</p>
+                <p className="mt-3 text-sm text-muted-foreground">
+                  {content.directEmail}{" "}
+                  <a className="font-medium text-primary underline underline-offset-4" href={`mailto:${LEGAL.generalEmail}`}>
+                    {LEGAL.generalEmail}
+                  </a>
+                </p>
+              </div>
+
+              <form className="mt-8 grid gap-4 md:grid-cols-2" onSubmit={handleInquirySubmit}>
                 <div>
-                  <p className="text-sm text-muted-foreground">{content.selectedPackageLabel}</p>
-                  <p className="font-display text-2xl font-bold text-foreground">{selectedTier.name}</p>
+                  <label className="mb-2 block text-sm font-medium text-foreground">{content.contactCompany}</label>
+                  <Input value={contactCompany} onChange={(event) => setContactCompany(event.target.value)} placeholder={content.contactCompany} />
                 </div>
-
                 <div>
-                  <p className="text-sm text-muted-foreground">{content.selectedItemsLabel}</p>
-                  {selectedItems.length > 0 ? (
-                    <ul className="mt-2 space-y-2">
-                      {selectedItems.map((item) => (
-                        <li key={item} className="flex items-start gap-2 text-sm text-foreground">
-                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p className="mt-2 text-sm text-muted-foreground">{content.noExtras}</p>
-                  )}
+                  <label className="mb-2 block text-sm font-medium text-foreground">{content.contactName}</label>
+                  <Input value={contactName} onChange={(event) => setContactName(event.target.value)} placeholder={content.contactName} />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">{content.contactEmail}</label>
+                  <Input type="email" value={contactEmail} onChange={(event) => setContactEmail(event.target.value)} placeholder={content.contactEmail} />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-foreground">{content.contactPhone}</label>
+                  <Input value={contactPhone} onChange={(event) => setContactPhone(event.target.value)} placeholder={content.contactPhone} />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="mb-2 block text-sm font-medium text-foreground">{content.contactMessage}</label>
+                  <Textarea
+                    value={contactMessage}
+                    onChange={(event) => setContactMessage(event.target.value)}
+                    placeholder={content.contactMessagePlaceholder}
+                    className="min-h-[140px]"
+                  />
+                </div>
+                <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="rounded-2xl bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+                    {content.selectedPackageLabel}: <span className="font-semibold text-foreground">{selectedTier.name}</span>
+                  </div>
+                  <Button variant="hero" size="lg" className="rounded-xl" type="submit">
+                    <Send className="h-4 w-4" /> {content.sendInquiry}
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          </>
+        )}
+      </div>
+
+      {standalone && showStickySummary && selectedTier.key !== "enterprise" && (
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-primary/10 bg-background/95 shadow-[0_-12px_40px_rgba(15,23,42,0.12)] backdrop-blur supports-[backdrop-filter]:bg-background/88">
+          <div className="container mx-auto px-4 py-4 lg:px-8">
+            <div className="rounded-3xl border border-primary/20 bg-primary/[0.04] p-4 md:p-5">
+              <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr_auto] lg:items-center">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-primary">{content.summaryTitle}</p>
+                  <div className="mt-2">
+                    <p className="text-sm text-muted-foreground">{content.selectedItemsLabel}</p>
+                    {selectedItems.length > 0 ? (
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {selectedItems.map((item) => (
+                          <span key={item} className="rounded-full bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-sm">
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="mt-2 text-sm text-muted-foreground">{content.noExtras}</p>
+                    )}
+                  </div>
                 </div>
 
-                <div className="rounded-2xl border border-border/60 bg-background p-4">
-                  <div className="flex items-center justify-between gap-3 py-2">
-                    <span className="text-sm text-muted-foreground">{content.monthlyLabel}</span>
-                    <span className="text-lg font-semibold text-foreground">{formatter.format(monthlyTotal)}</span>
+                <div className="grid gap-2 rounded-2xl border border-border/60 bg-background p-4 sm:grid-cols-3 sm:items-center">
+                  <div>
+                    <p className="text-xs text-muted-foreground">{content.monthlyLabel}</p>
+                    <p className="text-lg font-semibold text-foreground">{formatter.format(monthlyTotal)}</p>
                   </div>
-                  <div className="flex items-center justify-between gap-3 py-2">
-                    <span className="text-sm text-muted-foreground">{content.oneTimeLabel}</span>
-                    <span className="text-lg font-semibold text-foreground">{formatter.format(oneTimeTotal)}</span>
+                  <div>
+                    <p className="text-xs text-muted-foreground">{content.oneTimeLabel}</p>
+                    <p className="text-lg font-semibold text-foreground">{formatter.format(oneTimeTotal)}</p>
                   </div>
-                  <div className="mt-2 flex items-center justify-between gap-3 border-t border-border/60 pt-4">
-                    <span className="font-semibold text-foreground">{content.firstInvoiceLabel}</span>
-                    <span className="font-display text-2xl font-bold text-primary">{formatter.format(firstInvoiceEstimate)}</span>
+                  <div>
+                    <p className="text-xs text-muted-foreground">{content.firstInvoiceLabel}</p>
+                    <p className="font-display text-2xl font-bold text-primary">{formatter.format(firstInvoiceEstimate)}</p>
                   </div>
                 </div>
 
-                <Button variant="hero" size="lg" className="w-full rounded-xl" asChild>
+                <Button variant="hero" size="lg" className="w-full rounded-xl lg:w-auto lg:min-w-[240px]" asChild>
                   <a href={REGISTER_ROUTE}>{content.continueToRegister}</a>
                 </Button>
               </div>
             </div>
           </div>
-        </motion.div>
-
-        <motion.div
-          id="contact-form"
-          ref={contactRef}
-          className="mt-20 rounded-3xl border border-border/50 bg-background p-6 shadow-sm md:p-8"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
-          <div className="max-w-3xl">
-            <h3 className="font-display text-2xl font-bold text-foreground">{content.contactTitle}</h3>
-            <p className="mt-3 text-muted-foreground">{content.contactDescription}</p>
-            <p className="mt-3 text-sm text-muted-foreground">
-              {content.directEmail} <a className="font-medium text-primary underline underline-offset-4" href={`mailto:${LEGAL.generalEmail}`}>{LEGAL.generalEmail}</a>
-            </p>
-          </div>
-
-          <form className="mt-8 grid gap-4 md:grid-cols-2" onSubmit={handleInquirySubmit}>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-foreground">{content.contactCompany}</label>
-              <Input value={contactCompany} onChange={(event) => setContactCompany(event.target.value)} placeholder={content.contactCompany} />
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-foreground">{content.contactName}</label>
-              <Input value={contactName} onChange={(event) => setContactName(event.target.value)} placeholder={content.contactName} />
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-foreground">{content.contactEmail}</label>
-              <Input type="email" value={contactEmail} onChange={(event) => setContactEmail(event.target.value)} placeholder={content.contactEmail} />
-            </div>
-            <div>
-              <label className="mb-2 block text-sm font-medium text-foreground">{content.contactPhone}</label>
-              <Input value={contactPhone} onChange={(event) => setContactPhone(event.target.value)} placeholder={content.contactPhone} />
-            </div>
-            <div className="md:col-span-2">
-              <label className="mb-2 block text-sm font-medium text-foreground">{content.contactMessage}</label>
-              <Textarea
-                value={contactMessage}
-                onChange={(event) => setContactMessage(event.target.value)}
-                placeholder={content.contactMessagePlaceholder}
-                className="min-h-[140px]"
-              />
-            </div>
-            <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="rounded-2xl bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
-                {content.selectedPackageLabel}: <span className="font-semibold text-foreground">{selectedTier.name}</span>
-              </div>
-              <Button variant="hero" size="lg" className="rounded-xl" type="submit">
-                <Send className="h-4 w-4" /> {content.sendInquiry}
-              </Button>
-            </div>
-          </form>
-        </motion.div>
-        </>
-        )}
-      </div>
+        </div>
+      )}
     </section>
   );
 };
