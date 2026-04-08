@@ -1,0 +1,6 @@
+calendra.si, www.calendra.si, http://18.198.130.87 {
+  root * /srv
+  encode gzip zstd
+  try_files {path} /index.html
+  file_server
+}

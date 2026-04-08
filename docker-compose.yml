@@ -1,0 +1,19 @@
+services:
+  website:
+    container_name: calendra-website
+    build:
+      context: .
+      args:
+        VITE_SITE_URL: https://calendra.si
+        VITE_APP_BASE_URL: https://staging.calendra.si
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  caddy_data:
+  caddy_config:
