@@ -9,9 +9,10 @@ const Footer = () => (
       <p className="text-sm text-muted-foreground">
         © {new Date().getFullYear()} Calendra. Vse pravice pridržane.
       </p>
-      <div className="flex gap-6 text-sm text-muted-foreground">
+      <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
         <a href="/privacy-policy" className="transition-colors hover:text-foreground">Politika zasebnosti</a>
         <a href="/privacy-policy#kontakt-in-pravice" className="transition-colors hover:text-foreground">Kontakt glede zasebnosti</a>
+        <a href="/terms-of-service" className="transition-colors hover:text-foreground">Pogoji uporabe</a>
       </div>
     </div>
   </footer>

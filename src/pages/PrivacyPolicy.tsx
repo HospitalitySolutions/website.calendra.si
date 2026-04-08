@@ -1,6 +1,7 @@
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { SITE_HOST, SITE_URL } from "@/lib/site";
+import { LEGAL, LEGAL_FULL_ADDRESS } from "@/lib/legal";
 import { Shield, Lock, Cookie, Database, Mail, Globe } from "lucide-react";
 
 const sections = [
@@ -8,8 +9,9 @@ const sections = [
     icon: Shield,
     title: "1. Kaj zajema ta politika",
     content: [
-      `Ta politika zasebnosti velja za javno spletno stran ${SITE_HOST}. Namenjena je pojasnilu, katere podatke lahko zbiramo ob obisku strani, zakaj jih obdelujemo in kakšne pravice imate kot obiskovalec.`,
+      `Ta politika zasebnosti velja za javno spletno stran ${SITE_HOST}, ki jo upravlja ${LEGAL.entityName}. Namenjena je pojasnilu, katere podatke lahko zbiramo ob obisku strani, zakaj jih obdelujemo in kakšne pravice imate kot obiskovalec.`,
       "Če se po kliku na prijavo, registracijo ali drugo funkcionalnost premaknete v aplikacijo Calendra ali v storitev tretje osebe, se lahko za takšno obdelavo uporabljajo dodatna pravila ali ločena politika zasebnosti.",
+      `Spletna stran je namenjena predvsem poslovnim uporabnikom in podjetjem (${LEGAL.audience}).`,
     ],
   },
   {
@@ -18,7 +20,7 @@ const sections = [
     content: [
       "Ob obisku spletne strani lahko obdelujemo tehnične podatke, kot so IP naslov, datum in čas zahteve, zahtevani URL, osnovni podatki o brskalniku in napravi ter varnostni dnevniki strežnika.",
       "Če nas kontaktirate, lahko obdelujemo tudi podatke, ki nam jih posredujete sami, na primer ime, e-poštni naslov, naziv podjetja in vsebino sporočila.",
-      "Če uporabljamo analitična ali marketinška orodja, se lahko obdelujejo tudi podatki o uporabi strani, vendar le v obsegu in pod pogoji, ki jih dovoljuje veljavna zakonodaja ter vaša izbira glede piškotkov, kadar je to potrebno.",
+      "Na spletni strani ne uporabljamo javno objavljenih marketinških orodij. Če bodo v prihodnje dodana dodatna analitična ali marketinška orodja, bo ta politika ustrezno posodobljena.",
     ],
   },
   {
@@ -26,8 +28,8 @@ const sections = [
     title: "3. Nameni in pravne podlage",
     content: [
       "Podatke obdelujemo za delovanje spletne strani, zagotavljanje varnosti, odpravljanje napak, odgovarjanje na povpraševanja ter zaščito pred zlorabami. Takšna obdelava temelji na našem zakonitem interesu za varno in stabilno delovanje spletne strani.",
-      "Kadar nam pošljete povpraševanje ali drugo sporočilo, podatke obdelujemo zato, da lahko z vami komuniciramo in odgovorimo na vašo zahtevo.",
-      "Če na strani uporabljamo neobvezne analitične ali marketinške piškotke, se takšna obdelava izvaja na podlagi vašega soglasja, kadar je to zahtevano.",
+      "Kadar nam pošljete povpraševanje ali drugo sporočilo, podatke obdelujemo zato, da lahko z vami komuniciramo in odgovorimo na vašo zahtevo oziroma izvedemo korake pred morebitnim poslovnim sodelovanjem.",
+      "Če bomo v prihodnje uporabljali neobvezne analitične ali marketinške piškotke, se bo takšna obdelava izvajala na podlagi vašega soglasja, kadar je to zahtevano.",
     ],
   },
   {
@@ -35,7 +37,7 @@ const sections = [
     title: "4. Piškotki in podobne tehnologije",
     content: [
       "Spletna stran lahko uporablja nujno potrebne piškotke za osnovno delovanje, varnost in shranjevanje tehničnih nastavitev. Ti piškotki običajno niso namenjeni profiliranju obiskovalcev.",
-      "Če bodo na strani dodani analitični, funkcionalni ali oglaševalski piškotki, priporočamo, da pred objavo vključite tudi ustrezen pas za soglasje in podrobno tabelo piškotkov z njihovim trajanjem ter ponudniki.",
+      "Če bodo na strani dodani dodatni analitični, funkcionalni ali oglaševalski piškotki, bomo pred njihovo uporabo zagotovili ustrezno obveščanje in mehanizem za soglasje, kadar je to potrebno.",
     ],
   },
   {
@@ -43,7 +45,7 @@ const sections = [
     title: "5. Hramba, obdelovalci in prenosi",
     content: [
       "Podatke hranimo le toliko časa, kolikor je potrebno za namen, zaradi katerega so bili zbrani, oziroma toliko časa, kot to zahtevajo zakonodaja, varnostne potrebe ali reševanje zahtevkov in sporov.",
-      "Pri gostovanju strani, dostavi vsebin, analitiki ali podpori lahko uporabljamo zunanje ponudnike storitev. Takšni ponudniki podatke obdelujejo po naših navodilih in le v obsegu, ki je potreben za izvedbo storitve.",
+      `Za gostovanje in povezano infrastrukturo uporabljamo zunanjega obdelovalca ${LEGAL.processors.join(', ')}. Takšni ponudniki podatke obdelujejo po naših navodilih in le v obsegu, ki je potreben za izvedbo storitve.`,
       "Če pride do prenosa podatkov izven Evropskega gospodarskega prostora, se ta izvede le ob uporabi ustreznih zaščitnih ukrepov, na primer standardnih pogodbenih klavzul ali druge veljavne pravne podlage.",
     ],
   },
@@ -53,7 +55,7 @@ const sections = [
     content: [
       "V skladu z veljavno zakonodajo lahko zahtevate dostop do svojih osebnih podatkov, popravek netočnih podatkov, izbris, omejitev obdelave, ugovor obdelavi ter prenosljivost podatkov, kadar so za to izpolnjeni pogoji.",
       "Če obdelava temelji na soglasju, ga lahko kadar koli prekličete za naprej. Preklic ne vpliva na zakonitost obdelave, izvedene pred preklicem.",
-      "Prav tako imate pravico vložiti pritožbo pri pristojnem nadzornem organu za varstvo osebnih podatkov.",
+      "Prav tako imate pravico vložiti pritožbo pri Informacijskem pooblaščencu Republike Slovenije ali drugem pristojnem nadzornem organu.",
     ],
   },
 ];
@@ -73,12 +75,8 @@ const PrivacyPolicy = () => (
               Zasebnost na spletni strani {SITE_HOST}
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-              Ta stran pojasnjuje, kako se na javni predstavitveni spletni strani Calendra obravnavajo osebni podatki obiskovalcev.
+              Ta stran pojasnjuje, kako {LEGAL.entityName} na javni predstavitveni spletni strani Calendra obravnava osebne podatke obiskovalcev.
             </p>
-            <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">
-              Pred objavo v produkcijo priporočamo, da dopolnite uradne podatke upravljavca, kontaktni naslov za zahteve glede zasebnosti in seznam dejansko uporabljenih piškotkov,
-              če se razlikujejo od splošnega opisa na tej strani.
-            </div>
             <div className="mt-6 flex flex-wrap gap-3 text-sm text-muted-foreground">
               <span className="rounded-full bg-muted px-3 py-1">Zadnja posodobitev: 8. april 2026</span>
               <a href={SITE_URL} className="rounded-full bg-muted px-3 py-1 transition-colors hover:text-foreground">
@@ -87,6 +85,17 @@ const PrivacyPolicy = () => (
             </div>
           </div>
         </div>
+
+        <section className="mt-8 rounded-3xl border border-border/60 bg-card p-8 shadow-soft md:p-10">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">Upravljavec osebnih podatkov</h2>
+          <div className="mt-5 space-y-3 text-base leading-7 text-muted-foreground">
+            <p><strong className="text-foreground">Naziv:</strong> {LEGAL.entityName}</p>
+            <p><strong className="text-foreground">Naslov:</strong> {LEGAL_FULL_ADDRESS}</p>
+            <p><strong className="text-foreground">Splošni kontakt:</strong> <a className="underline underline-offset-4" href={`mailto:${LEGAL.generalEmail}`}>{LEGAL.generalEmail}</a></p>
+            <p><strong className="text-foreground">Kontakt za zasebnost in GDPR:</strong> <a className="underline underline-offset-4" href={`mailto:${LEGAL.privacyEmail}`}>{LEGAL.privacyEmail}</a></p>
+            <p><strong className="text-foreground">Podjetje upravlja tudi aplikacijo Calendra:</strong> {LEGAL.websiteAndAppSameEntity ? 'Da' : 'Ne'}</p>
+          </div>
+        </section>
 
         <div className="mt-8 space-y-6">
           {sections.map((section) => (
@@ -109,10 +118,10 @@ const PrivacyPolicy = () => (
             <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">7. Kontakt glede zasebnosti</h2>
             <div className="mt-5 space-y-4 text-base leading-7 text-muted-foreground">
               <p>
-                Za vprašanja, zahteve ali uveljavljanje pravic glede zasebnosti uporabite uradni kontaktni naslov upravljavca, objavljen na spletni strani ali v aplikaciji Calendra.
+                Za vprašanja, zahteve ali uveljavljanje pravic glede zasebnosti nam pišite na <a className="underline underline-offset-4" href={`mailto:${LEGAL.privacyEmail}`}>{LEGAL.privacyEmail}</a>.
               </p>
               <p>
-                Če je blagovna znamka Calendra v upravljanju druge pravne osebe, pred objavo na tej strani dopolnite še polni naziv upravljavca, poslovni naslov in namenski kontakt za zasebnost.
+                Za splošna vprašanja glede spletne strani, storitve ali podpore nas lahko kontaktirate na <a className="underline underline-offset-4" href={`mailto:${LEGAL.supportEmail}`}>{LEGAL.supportEmail}</a>.
               </p>
             </div>
           </section>

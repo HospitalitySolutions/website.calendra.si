@@ -116,3 +116,9 @@ Na strani politike zasebnosti dopolnite:
 - uradni naziv upravljavca, če ni enak blagovni znamki Calendra
 - kontaktni naslov za vprašanja glede zasebnosti
 - dejansko uporabljene piškotke in zunanje ponudnike, če jih uporabljate
+
+
+## Legal details
+
+Business and legal details for the website are centralized in `src/lib/legal.ts`.
+Update that file if contact or entity information changes.
