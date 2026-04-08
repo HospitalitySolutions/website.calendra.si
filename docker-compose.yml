@@ -5,15 +5,7 @@ services:
       context: .
       args:
         VITE_SITE_URL: https://calendra.si
-        VITE_APP_BASE_URL: https://staging.calendra.si
+        VITE_APP_BASE_URL: ${VITE_APP_BASE_URL:-https://app.calendra.si}
     ports:
-      - "80:80"
-      - "443:443"
+      - "${WEBSITE_PORT:-8080}:80"
     restart: unless-stopped
-    volumes:
-      - caddy_data:/data
-      - caddy_config:/config
-
-volumes:
-  caddy_data:
-  caddy_config:
