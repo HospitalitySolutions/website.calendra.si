@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LOGIN_ROUTE, REGISTER_ROUTE, FEATURES_SECTION, PRICING_SECTION } from "@/lib/routes";
+import { LOGIN_ROUTE, REGISTER_ROUTE, FEATURES_SECTION, PRICING_SECTION, BOOKING_PAGE } from "@/lib/routes";
 import { Menu, X } from "lucide-react";
 import calendraLogo from "@/assets/calendra-logo.png";
 
 const navLinks = [
   { label: "Funkcionalnosti", href: FEATURES_SECTION },
   { label: "Cenik", href: PRICING_SECTION },
+  { label: "Booking / Naročanje", href: BOOKING_PAGE },
 ];
 
 const Navbar = () => {

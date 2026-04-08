@@ -13,5 +13,6 @@ import { APP_BASE_URL } from "@/lib/site";
 export const LOGIN_ROUTE = `${APP_BASE_URL}/login`;
 export const REGISTER_ROUTE = `${APP_BASE_URL}/signup`;
 
-export const FEATURES_SECTION = "#funkcionalnosti";
-export const PRICING_SECTION = "#cenik";
+export const FEATURES_SECTION = "/#funkcionalnosti";
+export const PRICING_SECTION = "/#cenik";
+export const BOOKING_PAGE = "/booking";

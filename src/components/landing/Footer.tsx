@@ -10,6 +10,7 @@ const Footer = () => (
         © {new Date().getFullYear()} Calendra. Vse pravice pridržane.
       </p>
       <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+        <a href="/booking" className="transition-colors hover:text-foreground">Booking / Naročanje</a>
         <a href="/privacy-policy" className="transition-colors hover:text-foreground">Politika zasebnosti</a>
         <a href="/privacy-policy#kontakt-in-pravice" className="transition-colors hover:text-foreground">Kontakt glede zasebnosti</a>
         <a href="/terms-of-service" className="transition-colors hover:text-foreground">Pogoji uporabe</a>

@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 import TermsOfService from "./pages/TermsOfService.tsx";
+import Booking from "./pages/Booking.tsx";
 import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,8 @@ const App = () => (
           <Route path="/zasebnost" element={<PrivacyPolicy />} />
           <Route path="/terms-of-service" element={<TermsOfService />} />
           <Route path="/pogoji-uporabe" element={<TermsOfService />} />
+          <Route path="/booking" element={<Booking />} />
+          <Route path="/narocanje" element={<Booking />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

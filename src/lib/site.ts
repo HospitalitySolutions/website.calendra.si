@@ -9,4 +9,4 @@ export const SITE_HOST = (() => {
   }
 })();
 
-export const APP_BASE_URL = trimUrl(import.meta.env.VITE_APP_BASE_URL || "https://staging.calendra.si");
+export const APP_BASE_URL = trimUrl(import.meta.env.VITE_APP_BASE_URL || "https://app.calendra.si");
