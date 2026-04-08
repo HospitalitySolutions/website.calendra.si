@@ -63,7 +63,7 @@ const Booking = () => {
 
         widgetHostRef.current.innerHTML = "";
         const widget = document.createElement("calendra-booking-widget");
-        widget.setAttribute("tenant", "2");
+        widget.setAttribute("tenant", "2TEN");
         widget.setAttribute("base-url", widgetUrl);
         widgetHostRef.current.appendChild(widget);
         setStatus("ready");
@@ -164,7 +164,7 @@ const Booking = () => {
                   <p className="mt-1 text-sm text-muted-foreground">Vgrajeni Calendra booking widget.</p>
                 </div>
                 <div className="inline-flex rounded-full bg-primary/[0.08] px-3 py-1 text-sm font-medium text-primary">
-                  Tenant 2
+                  Tenant 2TEN
                 </div>
               </div>
 
