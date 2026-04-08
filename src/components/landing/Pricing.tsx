@@ -1,10 +1,10 @@
-import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { REGISTER_ROUTE } from "@/lib/routes";
-import { Check, ChevronDown, Globe, Star, X as XIcon } from "lucide-react";
+import { Check, Star, X as XIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import { useMemo } from "react";
+import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 
-type Language = "sl" | "en";
 type CellValue = boolean | string;
 
 type Tier = {
@@ -23,22 +23,18 @@ type TranslationSet = {
   sectionEyebrow: string;
   sectionTitle: string;
   sectionDescription: string;
-  languageLabel: string;
-  languageNames: Record<Language, string>;
   comparisonTitle: string;
   comparisonHeader: string;
   tiers: Tier[];
   comparisonRows: Array<{ label: string; values: CellValue[] }>;
 };
 
-const translations: Record<Language, TranslationSet> = {
+const translations: Record<SiteLanguage, TranslationSet> = {
   sl: {
     badge: "Priljubljeno",
     sectionEyebrow: "Cenik",
     sectionTitle: "Enostavno & transparentno",
     sectionDescription: "Izberite paket, ki najbolj ustreza vašemu poslovanju.",
-    languageLabel: "Jezik",
-    languageNames: { sl: "Slovenščina", en: "English" },
     comparisonTitle: "Primerjava paketov",
     comparisonHeader: "Funkcionalnost",
     tiers: [
@@ -127,8 +123,6 @@ const translations: Record<Language, TranslationSet> = {
     sectionEyebrow: "Pricing",
     sectionTitle: "Simple & transparent",
     sectionDescription: "Choose the plan that best fits your business.",
-    languageLabel: "Language",
-    languageNames: { sl: "Slovenian", en: "English" },
     comparisonTitle: "Package comparison",
     comparisonHeader: "Feature",
     tiers: [
@@ -214,55 +208,32 @@ const translations: Record<Language, TranslationSet> = {
   },
 };
 
-const Pricing = () => {
-  const [language, setLanguage] = useState<Language>("sl");
+const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
+  const { language } = useSiteLanguage();
   const content = useMemo(() => translations[language], [language]);
 
   return (
-    <section id="cenik" className="scroll-mt-20 bg-card py-20 md:py-28">
+    <section id={standalone ? undefined : "cenik"} className={`${standalone ? "pt-0" : "scroll-mt-20"} bg-card py-20 md:py-28`}>
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
-          <div className="text-center md:text-left">
-            <span className="text-sm font-semibold uppercase tracking-widest text-primary">{content.sectionEyebrow}</span>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: "hsl(var(--text-heading))" }}>
-              {content.sectionTitle}
-            </h2>
-            <p className="mt-4 text-lg text-muted-foreground">{content.sectionDescription}</p>
-          </div>
-
-          <div className="mx-auto w-full max-w-[220px] md:mx-0">
-            <label className="mb-2 flex items-center gap-2 text-sm font-medium text-foreground">
-              <Globe className="h-4 w-4 text-primary" />
-              {content.languageLabel}
-            </label>
-            <div className="relative">
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value as Language)}
-                className="w-full appearance-none rounded-xl border border-border bg-background px-4 py-3 pr-10 text-sm font-medium text-foreground shadow-sm outline-none transition focus:border-primary"
-                aria-label={content.languageLabel}
-              >
-                <option value="sl">{content.languageNames.sl}</option>
-                <option value="en">{content.languageNames.en}</option>
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            </div>
-          </div>
+        <div className="mb-10 text-center md:text-left">
+          <span className="text-sm font-semibold uppercase tracking-widest text-primary">{content.sectionEyebrow}</span>
+          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: "hsl(var(--text-heading))" }}>
+            {content.sectionTitle}
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground">{content.sectionDescription}</p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {content.tiers.map((tier, i) => (
+          {content.tiers.map((tier, index) => (
             <motion.div
               key={tier.name}
               className={`relative flex flex-col overflow-hidden rounded-2xl border p-7 ${
-                tier.accent
-                  ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20"
-                  : "border-border/50 bg-background"
+                tier.accent ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border-border/50 bg-background"
               }`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.08 }}
+              transition={{ delay: index * 0.08 }}
             >
               {tier.popular && (
                 <span className="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground">
@@ -302,12 +273,7 @@ const Pricing = () => {
           ))}
         </div>
 
-        <motion.div
-          className="mt-20"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-        >
+        <motion.div className="mt-20" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h3 className="mb-8 text-center font-display text-2xl font-bold" style={{ color: "hsl(var(--text-heading))" }}>
             {content.comparisonTitle}
           </h3>
@@ -324,17 +290,13 @@ const Pricing = () => {
                 </tr>
               </thead>
               <tbody>
-                {content.comparisonRows.map((row, i) => (
-                  <tr key={row.label} className={`border-b border-border/30 ${i % 2 === 0 ? "bg-background" : "bg-muted/20"}`}>
+                {content.comparisonRows.map((row, rowIndex) => (
+                  <tr key={row.label} className={`border-b border-border/30 ${rowIndex % 2 === 0 ? "bg-background" : "bg-muted/20"}`}>
                     <td className="px-6 py-3 font-medium text-foreground">{row.label}</td>
-                    {row.values.map((value, j) => (
-                      <td key={`${row.label}-${j}`} className="px-4 py-3 text-center">
+                    {row.values.map((value, valueIndex) => (
+                      <td key={`${row.label}-${valueIndex}`} className="px-4 py-3 text-center">
                         {typeof value === "boolean" ? (
-                          value ? (
-                            <Check className="mx-auto h-4 w-4 text-primary" />
-                          ) : (
-                            <XIcon className="mx-auto h-4 w-4 text-muted-foreground/40" />
-                          )
+                          value ? <Check className="mx-auto h-4 w-4 text-primary" /> : <XIcon className="mx-auto h-4 w-4 text-muted-foreground/40" />
                         ) : (
                           <span className="font-medium text-foreground">{value}</span>
                         )}
