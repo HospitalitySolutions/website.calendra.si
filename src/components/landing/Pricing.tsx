@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { buildPackageSignupRoute } from "@/lib/routes";
+import { buildPackageSignupRoute, type PricingSignupSummary } from "@/lib/routes";
 import { LEGAL } from "@/lib/legal";
 import { Building2, Check, Globe2, MessageSquareText, Send, Star, Users, X as XIcon } from "lucide-react";
 import { motion } from "framer-motion";
@@ -442,6 +442,30 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     businessPremises && supportsPremises ? `${content.optionPremises} (${content.monthlyLabel.toLowerCase()})` : null,
   ].filter(Boolean) as string[];
 
+  const signupSummary = useMemo<PricingSignupSummary>(
+    () => ({
+      totalUsers: additionalUsers,
+      additionalSms,
+      fiscalCashRegister,
+      websiteCreation,
+      businessPremises: businessPremises && supportsPremises,
+      monthlyTotal,
+      oneTimeTotal,
+      firstInvoiceEstimate,
+    }),
+    [
+      additionalUsers,
+      additionalSms,
+      fiscalCashRegister,
+      websiteCreation,
+      businessPremises,
+      supportsPremises,
+      monthlyTotal,
+      oneTimeTotal,
+      firstInvoiceEstimate,
+    ],
+  );
+
   const handleTierSelect = (tierKey: PlanKey) => {
     if (!standalone) {
       const target = tierKey === "enterprise" ? `/cenik?plan=${tierKey}#contact-form` : `/cenik?plan=${tierKey}#pricing-configurator`;
@@ -776,7 +800,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 </div>
 
                 <Button variant="hero" size="lg" className="w-full rounded-xl lg:w-auto lg:min-w-[240px]" asChild>
-                  <a href={buildPackageSignupRoute(selectedTier.key)}>{content.continueToRegister}</a>
+                  <a href={buildPackageSignupRoute(selectedTier.key, signupSummary)}>{content.continueToRegister}</a>
                 </Button>
               </div>
             </div>
