@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { REGISTER_ROUTE, LOGIN_ROUTE } from "@/lib/routes";
+import { TRIAL_SIGNUP_ROUTE, LOGIN_ROUTE } from "@/lib/routes";
 import { ArrowRight, Mic } from "lucide-react";
 import { motion } from "framer-motion";
 import { getSiteCopy } from "@/lib/site-copy";
@@ -55,7 +55,7 @@ const Hero = () => {
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               <Button variant="hero" size="lg" className="h-13 rounded-xl px-7 text-base" asChild>
-                <a href={REGISTER_ROUTE}>
+                <a href={TRIAL_SIGNUP_ROUTE}>
                   {copy.primaryCta}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </a>

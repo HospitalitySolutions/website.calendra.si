@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LOGIN_ROUTE, REGISTER_ROUTE, FEATURES_SECTION, PRICING_SECTION, BOOKING_PAGE } from "@/lib/routes";
+import { LOGIN_ROUTE, TRIAL_SIGNUP_ROUTE, FEATURES_SECTION, PRICING_SECTION, BOOKING_PAGE } from "@/lib/routes";
 import { ChevronDown, Globe, Menu, X } from "lucide-react";
 import calendraLogo from "@/assets/calendra-logo.png";
 import { languageNames, getSiteCopy } from "@/lib/site-copy";
@@ -51,7 +51,7 @@ const Navbar = () => {
             <a href={LOGIN_ROUTE}>{copy.nav.login}</a>
           </Button>
           <Button variant="hero" size="default" className="rounded-xl px-5" asChild>
-            <a href={REGISTER_ROUTE}>{copy.nav.trial}</a>
+            <a href={TRIAL_SIGNUP_ROUTE}>{copy.nav.trial}</a>
           </Button>
         </div>
 
@@ -84,7 +84,7 @@ const Navbar = () => {
             ))}
 
             <Button variant="hero" size="lg" className="rounded-xl" asChild>
-              <a href={REGISTER_ROUTE}>{copy.nav.trial}</a>
+              <a href={TRIAL_SIGNUP_ROUTE}>{copy.nav.trial}</a>
             </Button>
             <Button variant="ghost" size="lg" asChild>
               <a href={LOGIN_ROUTE}>{copy.nav.login}</a>

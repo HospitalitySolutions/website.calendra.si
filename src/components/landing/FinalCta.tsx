@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { REGISTER_ROUTE } from "@/lib/routes";
+import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { getSiteCopy } from "@/lib/site-copy";
@@ -27,7 +27,7 @@ const FinalCta = () => {
           </h2>
           <p className="mx-auto mt-4 max-w-md text-lg text-muted-foreground">{copy.description}</p>
           <Button variant="hero" size="lg" className="mt-8 h-14 rounded-xl px-10 text-base" asChild>
-            <a href={REGISTER_ROUTE}>
+            <a href={TRIAL_SIGNUP_ROUTE}>
               {copy.button}
               <ArrowRight className="ml-2 h-5 w-5" />
             </a>

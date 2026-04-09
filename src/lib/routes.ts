@@ -12,6 +12,8 @@ import { APP_BASE_URL } from "@/lib/site";
 
 export const LOGIN_ROUTE = `${APP_BASE_URL}/login`;
 export const REGISTER_ROUTE = `${APP_BASE_URL}/signup`;
+export const TRIAL_SIGNUP_ROUTE = `${REGISTER_ROUTE}?flow=trial`;
+export const buildPackageSignupRoute = (packageType: string) => `${REGISTER_ROUTE}?flow=register&package=${encodeURIComponent(packageType.toUpperCase())}`;
 
 export const FEATURES_SECTION = "/#funkcionalnosti";
 export const PRICING_SECTION = "/cenik";

@@ -3,7 +3,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
-import { REGISTER_ROUTE } from "@/lib/routes";
+import { buildPackageSignupRoute } from "@/lib/routes";
 import { LEGAL } from "@/lib/legal";
 import { Building2, Check, Globe2, MessageSquareText, Send, Star, Users, X as XIcon } from "lucide-react";
 import { motion } from "framer-motion";
@@ -776,7 +776,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 </div>
 
                 <Button variant="hero" size="lg" className="w-full rounded-xl lg:w-auto lg:min-w-[240px]" asChild>
-                  <a href={REGISTER_ROUTE}>{content.continueToRegister}</a>
+                  <a href={buildPackageSignupRoute(selectedTier.key)}>{content.continueToRegister}</a>
                 </Button>
               </div>
             </div>
