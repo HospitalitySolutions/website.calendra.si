@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { TRIAL_SIGNUP_ROUTE, LOGIN_ROUTE } from "@/lib/routes";
+import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { ArrowRight, Mic } from "lucide-react";
 import { motion } from "framer-motion";
 import { getSiteCopy } from "@/lib/site-copy";
@@ -49,19 +49,21 @@ const Hero = () => {
             </motion.p>
 
             <motion.div
-              className="mt-8 flex flex-col gap-3 sm:flex-row"
+              className="mt-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <Button variant="hero" size="lg" className="h-13 rounded-xl px-7 text-base" asChild>
+              <Button
+                variant="hero"
+                size="lg"
+                className="h-auto min-h-14 w-full rounded-2xl px-10 py-5 text-lg font-semibold shadow-xl shadow-primary/30 sm:w-auto sm:px-12 sm:py-6 sm:text-xl [&_svg]:size-6"
+                asChild
+              >
                 <a href={TRIAL_SIGNUP_ROUTE}>
                   {copy.primaryCta}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 shrink-0" />
                 </a>
-              </Button>
-              <Button variant="hero-outline" size="lg" className="h-13 rounded-xl px-7 text-base" asChild>
-                <a href={LOGIN_ROUTE}>{copy.secondaryCta}</a>
               </Button>
             </motion.div>
 

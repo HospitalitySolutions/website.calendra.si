@@ -22,8 +22,7 @@ export const siteCopy = {
       description:
         "Calendra je booking platforma, ki združuje upravljanje terminov, izdajanje računov, analitiko, podatke o strankah in glasovne AI ukaze — vse na enem mestu.",
       primaryCta: "Preizkusi brezplačno",
-      secondaryCta: "Vstopi v aplikacijo",
-      freeTrial: "7 dni brezplačno",
+      freeTrial: "14 dni brezplačno",
       noCard: "Brez kreditne kartice",
       stats: [
         { label: "Rezervacije danes", value: "12" },
@@ -139,8 +138,7 @@ export const siteCopy = {
       description:
         "Calendra is a booking platform that brings together appointment management, invoicing, analytics, customer data, and voice AI commands — all in one place.",
       primaryCta: "Try it free",
-      secondaryCta: "Open the app",
-      freeTrial: "7-day free trial",
+      freeTrial: "14-day free trial",
       noCard: "No credit card required",
       stats: [
         { label: "Bookings today", value: "12" },
