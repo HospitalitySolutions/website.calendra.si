@@ -1,0 +1,11 @@
+services:
+  website:
+    container_name: calendra-website
+    build:
+      context: .
+      args:
+        VITE_SITE_URL: https://calendra.si
+        VITE_APP_BASE_URL: ${VITE_APP_BASE_URL:-https://app.calendra.si}
+    ports:
+      - "${WEBSITE_PORT:-8080}:80"
+    restart: unless-stopped
