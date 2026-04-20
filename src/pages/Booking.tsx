@@ -98,8 +98,8 @@ const Booking = () => {
 
       <main className="pb-16 pt-12 md:pb-20 md:pt-16">
         <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] xl:gap-12">
-            <section className="rounded-3xl border border-border/60 bg-card p-8 shadow-soft md:p-10 lg:sticky lg:top-28">
+          <div className="grid gap-8 xl:gap-12">
+            <section className="rounded-3xl border border-border/60 bg-card p-8 shadow-soft md:p-10">
               <a href="/" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                 <ArrowLeft className="h-4 w-4" />
                 {copy.back}
@@ -108,12 +108,6 @@ const Booking = () => {
               <div className="mt-6 inline-flex rounded-full border border-primary/20 bg-primary/[0.06] px-4 py-1.5 text-sm font-semibold text-primary">
                 {copy.badge}
               </div>
-
-              <h1 className="mt-5 font-display text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ color: "hsl(var(--text-heading))" }}>
-                {copy.title}
-              </h1>
-
-              <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{copy.description}</p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-2">
                 {copy.cards.map((item, index) => {
@@ -146,6 +140,13 @@ const Booking = () => {
             </section>
 
             <section id="widget" className="rounded-3xl border border-border/60 bg-card p-4 shadow-soft md:p-6 xl:p-8">
+              <div className="mb-8">
+                <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ color: "hsl(var(--text-heading))" }}>
+                  {copy.title}
+                </h1>
+                <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{copy.description}</p>
+              </div>
+
               <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">{copy.widgetTitle}</h2>
