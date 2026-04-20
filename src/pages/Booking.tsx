@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { APP_BASE_URL } from "@/lib/site";
-import { ArrowLeft, CalendarDays, CheckCircle2, Clock3, ShieldCheck } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 
@@ -89,8 +89,6 @@ const Booking = () => {
     };
   }, [language, widgetUrl]);
 
-  const cardIcons = [CalendarDays, CheckCircle2, Clock3, ShieldCheck] as const;
-
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -98,44 +96,8 @@ const Booking = () => {
       <main className="pb-16 pt-12 md:pb-20 md:pt-16">
         <div className="container mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid gap-8 xl:gap-12">
-            <section className="rounded-3xl border border-border/60 bg-card p-8 shadow-soft md:p-10">
-              <a href="/" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-                <ArrowLeft className="h-4 w-4" />
-                {copy.back}
-              </a>
-
-              <div className="mt-6 inline-flex rounded-full border border-primary/20 bg-primary/[0.06] px-4 py-1.5 text-sm font-semibold text-primary">
-                {copy.badge}
-              </div>
-
-              <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                {copy.cards.map((item, index) => {
-                  const Icon = cardIcons[index];
-                  return (
-                    <div key={item.title} className="rounded-2xl border border-border/60 bg-background/70 p-4">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/[0.08] text-primary">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <h2 className="mt-4 text-lg font-semibold text-foreground">{item.title}</h2>
-                      <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>
-                    </div>
-                  );
-                })}
-              </div>
-
-            </section>
-
-            <section id="widget" className="rounded-3xl border border-border/60 bg-card p-4 shadow-soft md:p-6 xl:p-8">
-              <div className="mb-8">
-                <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ color: "hsl(var(--text-heading))" }}>
-                  {copy.title}
-                </h1>
-                <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{copy.description}</p>
-              </div>
-
-              <div className="min-h-[820px] rounded-[28px] border border-border/60 bg-background/50 p-3 md:p-5">
-                <div ref={widgetHostRef} className="min-h-[780px]" />
-              </div>
+            <section id="widget" className="">
+              <div ref={widgetHostRef} className="min-h-[820px]" />
             </section>
           </div>
         </div>
