@@ -67,6 +67,8 @@ const Booking = () => {
         if (
           text.includes("Calendra booking") ||
           text.includes("Book your session") ||
+          text.includes("Rezervirajte termin") ||
+          text.includes("Vaša rezervacija je zasebna in varna") ||
           text.includes("A faster multi-step booking flow") ||
           text.includes("Tenant 2TEN")
         ) {
