@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { APP_BASE_URL } from "@/lib/site";
-import { Button } from "@/components/ui/button";
 import { ArrowLeft, CalendarDays, CheckCircle2, Clock3, ShieldCheck } from "lucide-react";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
@@ -133,24 +132,6 @@ const Booking = () => {
                 </h1>
                 <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{copy.description}</p>
               </div>
-
-              <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">{copy.widgetTitle}</h2>
-                  <p className="mt-1 text-sm text-muted-foreground">{copy.widgetSubtitle}</p>
-                </div>
-                <div className="inline-flex rounded-full bg-primary/[0.08] px-3 py-1 text-sm font-medium text-primary">{copy.tenantBadge}</div>
-              </div>
-
-              {status === "loading" && (
-                <div className="mb-4 rounded-2xl border border-border/60 bg-muted/40 px-4 py-3 text-sm text-muted-foreground">{copy.loadingWidget}</div>
-              )}
-
-              {status === "error" && (
-                <div className="mb-4 rounded-2xl border border-destructive/20 bg-destructive/5 px-4 py-3 text-sm text-destructive">
-                  {copy.widgetLoadError} {WIDGET_SCRIPT_SRC}.
-                </div>
-              )}
 
               <div className="min-h-[820px] rounded-[28px] border border-border/60 bg-background/50 p-3 md:p-5">
                 <div ref={widgetHostRef} className="min-h-[780px]" />
