@@ -124,19 +124,6 @@ const Booking = () => {
                 })}
               </div>
 
-              <div className="mt-8 rounded-2xl border border-border/60 bg-muted/40 p-4 text-sm text-muted-foreground">
-                {copy.tenantInfoPrefix} <span className="font-semibold text-foreground">2TEN</span> {copy.tenantInfoMiddle}{" "}
-                <span className="font-semibold text-foreground">{widgetUrl}</span>.
-              </div>
-
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <Button variant="hero" size="lg" className="rounded-xl px-6" asChild>
-                  <a href="#widget">{copy.openBooking}</a>
-                </Button>
-                <Button variant="hero-outline" size="lg" className="rounded-xl px-6" asChild>
-                  <a href="/">{copy.moreAbout}</a>
-                </Button>
-              </div>
             </section>
 
             <section id="widget" className="rounded-3xl border border-border/60 bg-card p-4 shadow-soft md:p-6 xl:p-8">
