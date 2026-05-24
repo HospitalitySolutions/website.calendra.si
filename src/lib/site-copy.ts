@@ -87,6 +87,7 @@ export const siteCopy = {
       privacyContact: "Kontakt glede zasebnosti",
       terms: "Pogoji uporabe",
       support: "Podpora",
+      accountDeletion: "Izbris računa",
       aiTransparency: "AI transparentnost",
     },
     aiTransparencySection: {
@@ -282,6 +283,7 @@ export const siteCopy = {
       privacyContact: "Privacy contact",
       terms: "Terms of service",
       support: "Support",
+      accountDeletion: "Account deletion",
       aiTransparency: "AI Transparency",
     },
     aiTransparencySection: {

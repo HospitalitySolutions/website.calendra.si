@@ -23,6 +23,7 @@ const Footer = () => {
           <a href="/privacy-policy" className="transition-colors hover:text-foreground">{copy.privacy}</a>
           <a href="/privacy-policy#kontakt-in-pravice" className="transition-colors hover:text-foreground">{copy.privacyContact}</a>
           <a href="/terms-of-service" className="transition-colors hover:text-foreground">{copy.terms}</a>
+          <a href={language === "sl" ? "/izbris-racuna" : "/account-deletion"} className="transition-colors hover:text-foreground">{copy.accountDeletion}</a>
           <a href={language === "sl" ? "/ai-transparentnost" : "/ai-transparency"} className="transition-colors hover:text-foreground">{copy.aiTransparency}</a>
         </div>
       </div>

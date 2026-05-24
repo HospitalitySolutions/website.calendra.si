@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Support from "./pages/Support.tsx";
 import ZoomIntegration from "./pages/ZoomIntegration.tsx";
 import AITransparency from "./pages/AITransparency.tsx";
+import AccountDeletion from "./pages/AccountDeletion.tsx";
 import { SiteLanguageProvider } from "@/lib/site-language";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,8 @@ const App = () => (
             <Route path="/zoom-integracija" element={<ZoomIntegration />} />
             <Route path="/ai-transparency" element={<AITransparency />} />
             <Route path="/ai-transparentnost" element={<AITransparency />} />
+            <Route path="/account-deletion" element={<AccountDeletion />} />
+            <Route path="/izbris-racuna" element={<AccountDeletion />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
