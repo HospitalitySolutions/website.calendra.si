@@ -108,7 +108,7 @@ const PrivacyPolicy = () => (
               Ta stran pojasnjuje, kako {LEGAL.entityName} obravnava osebne podatke obiskovalcev spletne strani in uporabnikov aplikacije Calendra, vključno z uporabo Google prijave ter Google Calendar oziroma Google Meet integracije.
             </p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm text-muted-foreground">
-              <span className="rounded-full bg-muted px-3 py-1">Zadnja posodobitev: 14. april 2026</span>
+              <span className="rounded-full bg-muted px-3 py-1">Zadnja posodobitev: 13. junij 2026</span>
               <a href={SITE_URL} className="rounded-full bg-muted px-3 py-1 transition-colors hover:text-foreground">
                 {SITE_HOST}
               </a>
@@ -124,6 +124,17 @@ const PrivacyPolicy = () => (
             <p><strong className="text-foreground">Splošni kontakt:</strong> <a className="underline underline-offset-4" href={`mailto:${LEGAL.generalEmail}`}>{LEGAL.generalEmail}</a></p>
             <p><strong className="text-foreground">Kontakt za zasebnost in GDPR:</strong> <a className="underline underline-offset-4" href={`mailto:${LEGAL.privacyEmail}`}>{LEGAL.privacyEmail}</a></p>
             <p><strong className="text-foreground">Podjetje upravlja tudi aplikacijo Calendra:</strong> {LEGAL.websiteAndAppSameEntity ? 'Da' : 'Ne'}</p>
+          </div>
+        </section>
+
+        <section id="google-limited-use" className="mt-8 rounded-3xl border border-primary/20 bg-primary/[0.04] p-8 shadow-soft md:p-10">
+          <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">Google API Services User Data Policy in Limited Use disclosure</h2>
+          <div className="mt-5 space-y-4 text-base leading-7 text-muted-foreground">
+            <p>
+              <strong className="text-foreground">Limited Use statement:</strong> The use and transfer of raw or derived user data received from Google Workspace APIs will adhere to the Google API Services User Data Policy, including the Limited Use requirements.
+            </p>
+            <p>Uporaba in prenos neobdelanih ali izpeljanih uporabniških podatkov, prejetih prek Google Workspace API-jev, sta skladna z Google API Services User Data Policy, vključno z zahtevami Limited Use.</p>
+            <p>Google uporabniških podatkov ne prodajamo, jih ne uporabljamo za oglaševanje ali profiliranje tretjih oseb in jih delimo le v obsegu, ki je potreben za zagotavljanje funkcionalnosti, ki jo uporabnik sam omogoči v aplikaciji Calendra.</p>
           </div>
         </section>
 
