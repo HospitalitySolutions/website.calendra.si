@@ -8,6 +8,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 import TermsOfService from "./pages/TermsOfService.tsx";
 import Booking from "./pages/Booking.tsx";
 import PricingPage from "./pages/PricingPage.tsx";
+import ClientsPage from "./pages/ClientsPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Support from "./pages/Support.tsx";
 import ZoomIntegration from "./pages/ZoomIntegration.tsx";
@@ -34,6 +35,8 @@ const App = () => (
             <Route path="/narocanje" element={<Booking />} />
             <Route path="/pricing" element={<PricingPage />} />
             <Route path="/cenik" element={<PricingPage />} />
+            <Route path="/clients" element={<ClientsPage />} />
+            <Route path="/stranke" element={<ClientsPage />} />
             <Route path="/support" element={<Support />} />
             <Route path="/podpora" element={<Support />} />
             <Route path="/zoom" element={<ZoomIntegration />} />

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LOGIN_ROUTE, TRIAL_SIGNUP_ROUTE, FEATURES_SECTION, PRICING_SECTION, BOOKING_PAGE } from "@/lib/routes";
+import { LOGIN_ROUTE, TRIAL_SIGNUP_ROUTE, FEATURES_SECTION, PRICING_SECTION, CLIENTS_PAGE, BOOKING_PAGE } from "@/lib/routes";
 import { ChevronDown, Globe, Menu, X } from "lucide-react";
+import { useLocation } from "react-router-dom";
 import calendraLogo from "@/assets/calendra-logo.png";
 import { languageNames, getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
@@ -9,12 +10,14 @@ import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const { language, setLanguage } = useSiteLanguage();
+  const { pathname } = useLocation();
   const copy = getSiteCopy(language);
 
   const navLinks = [
-    { label: copy.nav.features, href: FEATURES_SECTION },
-    { label: copy.nav.pricing, href: PRICING_SECTION },
-    { label: copy.nav.booking, href: BOOKING_PAGE },
+    { label: copy.nav.features, href: FEATURES_SECTION, activePaths: [] },
+    { label: copy.nav.pricing, href: PRICING_SECTION, activePaths: ["/cenik", "/pricing"] },
+    { label: copy.nav.clients, href: CLIENTS_PAGE, activePaths: ["/stranke", "/clients"] },
+    { label: copy.nav.booking, href: BOOKING_PAGE, activePaths: ["/narocanje", "/booking"] },
   ];
 
   return (
@@ -25,11 +28,22 @@ const Navbar = () => {
         </a>
 
         <div className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
-              {link.label}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = link.activePaths?.includes(pathname);
+
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                className={`relative text-sm font-medium transition-colors hover:text-foreground ${
+                  isActive ? "text-foreground" : "text-muted-foreground"
+                }`}
+              >
+                {link.label}
+                {isActive && <span className="absolute -bottom-7 left-0 h-0.5 w-full rounded-full bg-primary" aria-hidden="true" />}
+              </a>
+            );
+          })}
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -77,11 +91,22 @@ const Navbar = () => {
               <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             </div>
 
-            {navLinks.map((link) => (
-              <a key={link.href} href={link.href} className="text-base font-medium text-muted-foreground" onClick={() => setOpen(false)}>
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = link.activePaths?.includes(pathname);
+
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className={`rounded-xl px-3 py-2 text-base font-medium transition-colors ${
+                    isActive ? "bg-primary/[0.08] text-primary" : "text-muted-foreground hover:bg-secondary"
+                  }`}
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </a>
+              );
+            })}
 
             <Button variant="hero" size="lg" className="rounded-xl" asChild>
               <a href={TRIAL_SIGNUP_ROUTE}>{copy.nav.trial}</a>

@@ -16,6 +16,7 @@ const Footer = () => {
           © {new Date().getFullYear()} Calendra. {copy.rights}
         </p>
         <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+          <a href={language === "sl" ? "/stranke" : "/clients"} className="transition-colors hover:text-foreground">{copy.clients}</a>
           <a href="/narocanje" className="transition-colors hover:text-foreground">{copy.booking}</a>
           <a href={language === "sl" ? "/podpora" : "/support"} className="transition-colors hover:text-foreground">
             {copy.support}

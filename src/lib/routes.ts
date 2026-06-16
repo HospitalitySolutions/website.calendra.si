@@ -40,4 +40,5 @@ export const buildPackageSignupRoute = (packageType: string, summary?: PricingSi
 
 export const FEATURES_SECTION = "/#funkcionalnosti";
 export const PRICING_SECTION = "/cenik";
+export const CLIENTS_PAGE = "/stranke";
 export const BOOKING_PAGE = "/narocanje";

@@ -10,6 +10,7 @@ export const siteCopy = {
     nav: {
       features: "Funkcionalnosti",
       pricing: "Cenik",
+      clients: "Stranke",
       booking: "Naročanje",
       language: "Jezik",
       login: "Prijava",
@@ -82,6 +83,7 @@ export const siteCopy = {
     },
     footer: {
       rights: "Vse pravice pridržane.",
+      clients: "Stranke",
       booking: "Naročanje",
       privacy: "Politika zasebnosti",
       privacyContact: "Kontakt glede zasebnosti",
@@ -171,6 +173,29 @@ export const siteCopy = {
       widgetLoadError: "Widgeta ni bilo mogoče naložiti. Preverite, ali je script dosegljiv na",
       tenantBadge: "Tenant 2TEN",
     },
+
+    clientsPage: {
+      badge: "Za goste",
+      titlePrefix: "Naše",
+      titleHighlight: "stranke",
+      intro:
+        "Odkrijte podjetja, ki uporabljajo Calendro za enostavno rezervacijo terminov, in rezervirajte neposredno prek njihovega spletnega widgeta.",
+      searchPlaceholder: "Išči po imenu, storitvi ali lokaciji ...",
+      filters: ["Vse", "Salon", "Fitness", "Wellness", "Zdravje", "Svetovanje"],
+      featuredLabel: "Preverjeno v Calendri",
+      servicesLabel: "storitev",
+      servicesLabelSingular: "storitev",
+      primaryCta: "Rezerviraj termin",
+      secondaryCta: "Poglej profil",
+      emptyTitle: "Ni zadetkov",
+      emptyBody: "Poskusite z drugim iskalnim izrazom ali filtrom.",
+      ctaEyebrow: "Postanite vidni",
+      ctaTitle: "Želite biti prikazani tukaj?",
+      ctaDescription:
+        "Pridružite se podjetjem, ki s Calendro poenostavljajo rezervacije in pridobivajo nove stranke.",
+      ctaButton: "Preizkusite brezplačno",
+      ctaNote: "Brez kreditne kartice",
+    },
     supportPage: {
       badge: "Podpora",
       title: "Podpora za Calendra",
@@ -206,6 +231,7 @@ export const siteCopy = {
     nav: {
       features: "Features",
       pricing: "Pricing",
+      clients: "Clients",
       booking: "Booking",
       language: "Language",
       login: "Login",
@@ -278,6 +304,7 @@ export const siteCopy = {
     },
     footer: {
       rights: "All rights reserved.",
+      clients: "Clients",
       booking: "Booking",
       privacy: "Privacy policy",
       privacyContact: "Privacy contact",
@@ -366,6 +393,29 @@ export const siteCopy = {
       loadingWidget: "Loading booking widget ...",
       widgetLoadError: "The widget could not be loaded. Check whether the script is reachable at",
       tenantBadge: "Tenant 2TEN",
+    },
+
+    clientsPage: {
+      badge: "For guests",
+      titlePrefix: "Our",
+      titleHighlight: "clients",
+      intro:
+        "Discover businesses that use Calendra for simple appointment booking, and reserve directly through their online booking widget.",
+      searchPlaceholder: "Search by name, service, or location ...",
+      filters: ["All", "Salon", "Fitness", "Wellness", "Health", "Consulting"],
+      featuredLabel: "Verified in Calendra",
+      servicesLabel: "services",
+      servicesLabelSingular: "service",
+      primaryCta: "Book a slot",
+      secondaryCta: "View profile",
+      emptyTitle: "No results",
+      emptyBody: "Try a different search term or filter.",
+      ctaEyebrow: "Get discovered",
+      ctaTitle: "Want to be listed here?",
+      ctaDescription:
+        "Join businesses that simplify booking with Calendra and get discovered by new customers.",
+      ctaButton: "Try it free",
+      ctaNote: "No credit card required",
     },
     supportPage: {
       badge: "Support",
