@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type PropsWithChildren } from "react";
+import { getLanguageFromPathname, getLocalizedPathname } from "@/lib/localized-routes";
 
 export type SiteLanguage = "sl" | "en";
 
@@ -9,21 +10,44 @@ type SiteLanguageContextValue = {
 
 const STORAGE_KEY = "calendra-site-language";
 
+const getCurrentPathLanguage = (): SiteLanguage => {
+  if (typeof window === "undefined") return "sl";
+  return getLanguageFromPathname(window.location.pathname);
+};
+
 const SiteLanguageContext = createContext<SiteLanguageContextValue | undefined>(undefined);
 
 export const SiteLanguageProvider = ({ children }: PropsWithChildren) => {
-  const [language, setLanguage] = useState<SiteLanguage>(() => {
-    if (typeof window === "undefined") return "sl";
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    return stored === "en" ? "en" : "sl";
-  });
+  const [language, setLanguageState] = useState<SiteLanguage>(getCurrentPathLanguage);
+
+  const setLanguage = (nextLanguage: SiteLanguage) => {
+    if (typeof window === "undefined") {
+      setLanguageState(nextLanguage);
+      return;
+    }
+
+    window.localStorage.setItem(STORAGE_KEY, nextLanguage);
+
+    const nextPath = getLocalizedPathname(window.location.pathname, nextLanguage);
+    const nextUrl = `${nextPath}${window.location.search}${window.location.hash}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+
+    if (nextUrl !== currentUrl) {
+      window.location.assign(nextUrl);
+      return;
+    }
+
+    setLanguageState(nextLanguage);
+  };
 
   useEffect(() => {
+    const pathLanguage = getCurrentPathLanguage();
+    setLanguageState(pathLanguage);
+    document.documentElement.lang = pathLanguage;
     if (typeof window !== "undefined") {
-      window.localStorage.setItem(STORAGE_KEY, language);
+      window.localStorage.setItem(STORAGE_KEY, pathLanguage);
     }
-    document.documentElement.lang = language;
-  }, [language]);
+  }, []);
 
   const value = useMemo(() => ({ language, setLanguage }), [language]);
 

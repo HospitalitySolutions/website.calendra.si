@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LOGIN_ROUTE, TRIAL_SIGNUP_ROUTE, FEATURES_SECTION, PRICING_SECTION, CLIENTS_PAGE, BOOKING_PAGE } from "@/lib/routes";
+import { LOGIN_ROUTE, TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { getRoutePath } from "@/lib/localized-routes";
 import { ChevronDown, Globe, Menu, X } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import calendraLogo from "@/assets/calendra-logo.png";
@@ -13,17 +14,18 @@ const Navbar = () => {
   const { pathname } = useLocation();
   const copy = getSiteCopy(language);
 
+  const homePath = getRoutePath("home", language);
   const navLinks = [
-    { label: copy.nav.features, href: FEATURES_SECTION, activePaths: [] },
-    { label: copy.nav.pricing, href: PRICING_SECTION, activePaths: ["/cenik", "/pricing"] },
-    { label: copy.nav.clients, href: CLIENTS_PAGE, activePaths: ["/stranke", "/clients"] },
-    { label: copy.nav.booking, href: BOOKING_PAGE, activePaths: ["/narocanje", "/booking"] },
+    { label: copy.nav.features, href: `${homePath}#funkcionalnosti`, activePaths: [] },
+    { label: copy.nav.pricing, href: getRoutePath("pricing", language), activePaths: [getRoutePath("pricing", "sl"), getRoutePath("pricing", "en")] },
+    { label: copy.nav.clients, href: getRoutePath("clients", language), activePaths: [getRoutePath("clients", "sl"), getRoutePath("clients", "en")] },
+    { label: copy.nav.booking, href: getRoutePath("booking", language), activePaths: [getRoutePath("booking", "sl"), getRoutePath("booking", "en")] },
   ];
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/40 bg-card/70 backdrop-blur-xl">
       <div className="container mx-auto flex h-20 items-center justify-between gap-4 px-4 lg:px-8">
-        <a href="/" className="flex items-center">
+        <a href={homePath} className="flex items-center">
           <img src={calendraLogo} alt="Calendra" className="h-8 md:h-9 w-auto" />
         </a>
 

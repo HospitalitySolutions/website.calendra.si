@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://calendra.si/</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/" />
+  </url>
+  <url>
+    <loc>https://calendra.si/cenik</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/cenik" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/cenik" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/pricing</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/cenik" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/pricing" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/cenik" />
+  </url>
+  <url>
+    <loc>https://calendra.si/narocanje</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/narocanje" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/booking" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/narocanje" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/booking</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/narocanje" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/booking" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/narocanje" />
+  </url>
+  <url>
+    <loc>https://calendra.si/stranke</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/stranke" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/clients" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/stranke" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/clients</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/stranke" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/clients" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/stranke" />
+  </url>
+  <url>
+    <loc>https://calendra.si/podpora</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/podpora" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/support" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/podpora" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/support</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/podpora" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/support" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/podpora" />
+  </url>
+  <url>
+    <loc>https://calendra.si/ai-transparentnost</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/ai-transparentnost" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/ai-transparency" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/ai-transparentnost" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/ai-transparency</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/ai-transparentnost" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/ai-transparency" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/ai-transparentnost" />
+  </url>
+  <url>
+    <loc>https://calendra.si/zoom-integracija</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/zoom-integracija" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/zoom-integration" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/zoom-integracija" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/zoom-integration</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/zoom-integracija" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/zoom-integration" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/zoom-integracija" />
+  </url>
+  <url>
+    <loc>https://calendra.si/zasebnost</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/zasebnost" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/zasebnost" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/privacy-policy</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/zasebnost" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/privacy-policy" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/zasebnost" />
+  </url>
+  <url>
+    <loc>https://calendra.si/pogoji-uporabe</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/pogoji-uporabe" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/terms-of-service" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/pogoji-uporabe" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/terms-of-service</loc>
+    <lastmod>2026-06-22</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/pogoji-uporabe" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/terms-of-service" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/pogoji-uporabe" />
+  </url>
+</urlset>

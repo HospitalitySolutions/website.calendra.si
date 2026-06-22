@@ -1,6 +1,46 @@
 :80 {
   root * /srv
   encode gzip zstd
-  try_files {path} /index.html
-  file_server
+
+  # Canonical language-specific URLs. Old English aliases redirect to /en/*.
+  redir /pricing /en/pricing 308
+  redir /clients /en/clients 308
+  redir /booking /en/booking 308
+  redir /support /en/support 308
+  redir /privacy-policy /en/privacy-policy 308
+  redir /terms-of-service /en/terms-of-service 308
+  redir /zoom /en/zoom-integration 308
+  redir /zoom-integration /en/zoom-integration 308
+  redir /ai-transparency /en/ai-transparency 308
+  redir /account-deletion /en/account-deletion 308
+
+  handle /assets/* {
+    file_server
+  }
+
+  handle /favicon.ico {
+    file_server
+  }
+
+  handle /og-calendra.png {
+    file_server
+  }
+
+  handle /robots.txt {
+    file_server
+  }
+
+  handle /sitemap.xml {
+    file_server
+  }
+
+  @canonicalRoutes path / /en /cenik /en/pricing /stranke /en/clients /narocanje /en/booking /podpora /en/support /zasebnost /en/privacy-policy /pogoji-uporabe /en/terms-of-service /zoom-integracija /en/zoom-integration /ai-transparentnost /en/ai-transparency /izbris-racuna /en/account-deletion
+  handle @canonicalRoutes {
+    try_files {path} /index.html
+    file_server
+  }
+
+  handle {
+    respond "Not found" 404
+  }
 }

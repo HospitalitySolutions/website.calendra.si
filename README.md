@@ -122,3 +122,27 @@ Na strani politike zasebnosti dopolnite:
 
 Business and legal details for the website are centralized in `src/lib/legal.ts`.
 Update that file if contact or entity information changes.
+
+## SEO deployment notes
+
+This build includes the immediate SEO foundation:
+
+- Route-specific titles and meta descriptions are handled in `src/components/seo/SeoManager.tsx` and `src/lib/seo.ts`.
+- Canonical Slovenian URLs and `/en/*` English URLs are defined in `src/lib/localized-routes.ts`.
+- Legacy English aliases such as `/pricing`, `/booking`, `/clients`, `/privacy-policy`, and `/terms-of-service` redirect to their canonical `/en/*` versions in `Caddyfile`.
+- `public/sitemap.xml` contains canonical Slovenian and English URLs with hreflang alternates.
+- `public/robots.txt` references the sitemap and excludes noindex account-deletion URLs.
+- `public/og-calendra.png` replaces the old Lovable Open Graph image.
+- Unknown production routes now return HTTP 404 in Caddy instead of serving the SPA with a soft-404 response.
+
+### Google Search Console
+
+After deployment:
+
+1. Open Google Search Console.
+2. Add or select the `calendra.si` domain property.
+3. Verify the property, preferably with DNS verification.
+4. Submit this sitemap: `https://calendra.si/sitemap.xml`.
+5. Use URL Inspection for the most important pages: `/`, `/cenik`, `/narocanje`, `/stranke`, `/en`, `/en/pricing`.
+
+Search Console verification and sitemap submission require access to the Google account/property and cannot be completed from this repository alone.

@@ -1,6 +1,7 @@
 import { Bot, Sparkles, ShieldCheck } from "lucide-react";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
+import { getRoutePath } from "@/lib/localized-routes";
 
 const icons = [Bot, Sparkles, ShieldCheck] as const;
 
@@ -42,7 +43,7 @@ const AITransparencySection = () => {
               <p className="mt-1 text-sm text-muted-foreground">{copy.linkBody}</p>
             </div>
             <a
-              href={language === "sl" ? "/ai-transparentnost" : "/ai-transparency"}
+              href={getRoutePath("aiTransparency", language)}
               className="inline-flex items-center justify-center rounded-xl border border-border/60 bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
             >
               {copy.linkCta}

@@ -3,6 +3,7 @@ import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { LEGAL } from "@/lib/legal";
 import { LOGIN_ROUTE } from "@/lib/routes";
+import { getRoutePath } from "@/lib/localized-routes";
 import { Link2 } from "lucide-react";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
@@ -150,7 +151,7 @@ const Support = () => {
               </p>
               <div className="mt-6">
                 <Button asChild size="lg" variant="outline" className="font-semibold">
-                  <a href={language === "sl" ? "/zoom-integracija" : "/zoom-integration"}>
+                  <a href={getRoutePath("zoom", language)}>
                     {language === "sl" ? "Odpri Zoom dokumentacijo" : "Open Zoom documentation"}
                   </a>
                 </Button>

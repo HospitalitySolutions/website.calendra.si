@@ -67,7 +67,7 @@ const AccountDeletion = () => (
               </a>
             </Button>
             <Button asChild size="lg" variant="outline" className="font-semibold">
-              <a href="/privacy-policy#kontakt-in-pravice">View privacy contact details</a>
+              <a href="/en/privacy-policy#kontakt-in-pravice">View privacy contact details</a>
             </Button>
           </div>
         </section>

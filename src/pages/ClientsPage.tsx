@@ -3,7 +3,8 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BOOKING_PAGE, TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { getRoutePath } from "@/lib/localized-routes";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
@@ -294,7 +295,7 @@ const ClientsPage = () => {
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {filteredClients.map((client) => {
                 const serviceLabel = client.services === 1 ? copy.servicesLabelSingular : copy.servicesLabel;
-                const bookingHref = `${BOOKING_PAGE}?tenant=${encodeURIComponent(client.tenantSlug)}`;
+                const bookingHref = `${getRoutePath("booking", language)}?tenant=${encodeURIComponent(client.tenantSlug)}`;
 
                 return (
                   <article
@@ -342,7 +343,7 @@ const ClientsPage = () => {
                         </a>
                       </Button>
                       <a
-                        href={`/stranke#${client.slug}`}
+                        href={`${getRoutePath("clients", language)}#${client.slug}`}
                         className="text-center text-sm font-bold text-primary transition hover:text-primary/80"
                       >
                         {copy.secondaryCta}
