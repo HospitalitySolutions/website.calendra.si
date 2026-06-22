@@ -526,7 +526,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 className={`relative flex flex-col overflow-hidden rounded-2xl border p-7 transition-all ${
                   tier.accent ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border-border/50 bg-background"
                 } ${isSelected ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
-                initial={{ opacity: 0, y: 20 }}
+                initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.08 }}
@@ -570,7 +570,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           })}
         </div>
 
-        <motion.div className="mt-20" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+        <motion.div className="mt-20" initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h3 className="mb-8 text-center font-display text-2xl font-bold" style={{ color: "hsl(var(--text-heading))" }}>
             {content.comparisonTitle}
           </h3>
@@ -612,7 +612,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
               id="pricing-configurator"
               ref={configuratorRef}
               className="mt-20 rounded-3xl border border-border/50 bg-background p-6 shadow-sm md:p-8"
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >
@@ -706,7 +706,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
               id="contact-form"
               ref={contactRef}
               className="mt-20 rounded-3xl border border-border/50 bg-background p-6 shadow-sm md:p-8"
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
             >

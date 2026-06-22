@@ -17,8 +17,8 @@ const getCurrentPathLanguage = (): SiteLanguage => {
 
 const SiteLanguageContext = createContext<SiteLanguageContextValue | undefined>(undefined);
 
-export const SiteLanguageProvider = ({ children }: PropsWithChildren) => {
-  const [language, setLanguageState] = useState<SiteLanguage>(getCurrentPathLanguage);
+export const SiteLanguageProvider = ({ children, initialLanguage }: PropsWithChildren<{ initialLanguage?: SiteLanguage }>) => {
+  const [language, setLanguageState] = useState<SiteLanguage>(() => initialLanguage ?? getCurrentPathLanguage());
 
   const setLanguage = (nextLanguage: SiteLanguage) => {
     if (typeof window === "undefined") {

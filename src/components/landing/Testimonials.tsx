@@ -40,7 +40,7 @@ const Testimonials = () => (
           <motion.div
             key={t.name}
             className="relative flex flex-col rounded-2xl border border-border/50 bg-card p-8"
-            initial={{ opacity: 0, y: 20 }}
+            initial={false}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}

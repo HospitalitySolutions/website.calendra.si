@@ -36,7 +36,7 @@
 
   @canonicalRoutes path / /en /cenik /en/pricing /stranke /en/clients /narocanje /en/booking /podpora /en/support /zasebnost /en/privacy-policy /pogoji-uporabe /en/terms-of-service /zoom-integracija /en/zoom-integration /ai-transparentnost /en/ai-transparency /izbris-racuna /en/account-deletion
   handle @canonicalRoutes {
-    try_files {path} /index.html
+    try_files {path} {path}/index.html /index.html
     file_server
   }
 

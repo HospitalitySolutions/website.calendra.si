@@ -19,7 +19,7 @@ const Hero = () => {
       <div className="container relative mx-auto px-4 lg:px-8">
         <div className="grid items-center gap-16 lg:grid-cols-2">
           <div>
-            <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
+            <motion.div initial={false} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
               <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.06] px-4 py-1.5 text-sm font-semibold text-primary">
                 <Mic className="h-3.5 w-3.5" />
                 {copy.badge}
@@ -29,7 +29,7 @@ const Hero = () => {
             <motion.h1
               className="mt-4 font-display text-4xl font-extrabold leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl"
               style={{ color: "hsl(var(--text-heading))" }}
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
@@ -41,7 +41,7 @@ const Hero = () => {
             <motion.p
               className="mt-6 max-w-lg text-lg leading-relaxed md:text-xl"
               style={{ color: "hsl(var(--text-body))" }}
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
@@ -50,7 +50,7 @@ const Hero = () => {
 
             <motion.div
               className="mt-8"
-              initial={{ opacity: 0, y: 20 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
@@ -69,7 +69,7 @@ const Hero = () => {
 
             <motion.div
               className="mt-8 flex items-center gap-4 text-sm text-muted-foreground"
-              initial={{ opacity: 0 }}
+              initial={false}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.5 }}
             >
@@ -83,7 +83,7 @@ const Hero = () => {
 
           <motion.div
             className="relative hidden lg:block"
-            initial={{ opacity: 0, y: 30 }}
+            initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >

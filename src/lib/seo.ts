@@ -137,7 +137,7 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
   },
 };
 
-export const absoluteUrl = (path: string) => `${SITE_URL}${path === "/" ? "" : path}`;
+export const absoluteUrl = (path: string) => `${SITE_URL}${path === "/" ? "/" : path}`;
 
 const organizationSchema = {
   "@type": "Organization",

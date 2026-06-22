@@ -15,7 +15,7 @@ const Stats = () => (
           <motion.div
             key={s.label}
             className={`rounded-2xl border border-border/60 p-6 text-center ${s.accent ? "bg-primary text-primary-foreground" : "bg-card"}`}
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={false}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08 }}

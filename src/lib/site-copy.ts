@@ -18,10 +18,10 @@ export const siteCopy = {
     },
     hero: {
       badge: "Glasovni AI ukazi za hitrejše delo",
-      title1: "Rezervacije,",
-      title2: "brez komplikacij.",
+      title1: "Program za naročanje strank,",
+      title2: "termine in račune na enem mestu",
       description:
-        "Calendra je booking platforma, ki združuje upravljanje terminov, izdajanje računov, analitiko, podatke o strankah in glasovne AI ukaze — vse na enem mestu.",
+        "Calendra je slovenska platforma za storitvena podjetja, ki združuje spletno naročanje, koledar terminov, opomnike, račune, plačila, analitiko in podatke o strankah.",
       primaryCta: "Preizkusi brezplačno",
       freeTrial: "14 dni brezplačno",
       noCard: "Brez kreditne kartice",
@@ -239,10 +239,10 @@ export const siteCopy = {
     },
     hero: {
       badge: "Voice AI commands for faster work",
-      title1: "Reservations,",
-      title2: "without the hassle.",
+      title1: "Booking software for clients,",
+      title2: "appointments and invoices",
       description:
-        "Calendra is a booking platform that brings together appointment management, invoicing, analytics, customer data, and voice AI commands — all in one place.",
+        "Calendra is a platform for service businesses that brings together online booking, appointment calendars, reminders, invoices, payments, analytics and client data in one place.",
       primaryCta: "Try it free",
       freeTrial: "14-day free trial",
       noCard: "No credit card required",

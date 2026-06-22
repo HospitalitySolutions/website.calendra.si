@@ -125,11 +125,15 @@ Update that file if contact or entity information changes.
 
 ## SEO deployment notes
 
-This build includes the immediate SEO foundation:
+This build includes the immediate SEO foundation plus route prerendering:
 
-- Route-specific titles and meta descriptions are handled in `src/components/seo/SeoManager.tsx` and `src/lib/seo.ts`.
+- Route-specific titles and meta descriptions are defined in `src/lib/seo.ts`.
+- `npm run build` now builds the client, builds a temporary SSR bundle, then runs `scripts/prerender.mjs`.
+- `scripts/prerender.mjs` creates real static HTML files for each canonical route, including route-specific `<title>`, meta description, canonical, hreflang, Open Graph, Twitter tags, JSON-LD structured data, and rendered body content.
+- `src/components/seo/SeoManager.tsx` remains in place so metadata is still updated during client-side navigation after hydration.
 - Canonical Slovenian URLs and `/en/*` English URLs are defined in `src/lib/localized-routes.ts`.
 - Legacy English aliases such as `/pricing`, `/booking`, `/clients`, `/privacy-policy`, and `/terms-of-service` redirect to their canonical `/en/*` versions in `Caddyfile`.
+- Caddy now tries `{path}/index.html`, so `/cenik`, `/narocanje`, `/en/pricing`, etc. serve their own prerendered HTML instead of the generic SPA shell.
 - `public/sitemap.xml` contains canonical Slovenian and English URLs with hreflang alternates.
 - `public/robots.txt` references the sitemap and excludes noindex account-deletion URLs.
 - `public/og-calendra.png` replaces the old Lovable Open Graph image.

@@ -18,7 +18,7 @@ const FinalCta = () => {
       <div className="container relative mx-auto px-4 lg:px-8">
         <motion.div
           className="mx-auto max-w-2xl rounded-3xl border border-border/60 bg-card p-10 text-center shadow-soft md:p-16"
-          initial={{ opacity: 0, y: 20 }}
+          initial={false}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
         >
