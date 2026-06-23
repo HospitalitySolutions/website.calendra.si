@@ -77,24 +77,96 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     sl: {
       title: "Politika zasebnosti | Calendra",
       description:
-        "Politika zasebnosti za spletno stran in storitve Calendra, vključno z obdelavo osebnih podatkov, pravicami posameznikov in kontaktnimi podatki.",
+        "Politika zasebnosti Calendra za spletno stran, platformo, goste, najemnike, integracije, pravice posameznikov in razmerje upravljavec/obdelovalec.",
     },
     en: {
       title: "Privacy Policy | Calendra",
       description:
-        "Calendra privacy policy covering personal data processing, user rights, Google Limited Use and privacy contact details.",
+        "Calendra privacy policy for the website, platform, guests, tenants, integrations, user rights and controller/processor roles.",
     },
   },
   terms: {
     sl: {
       title: "Pogoji uporabe | Calendra",
       description:
-        "Pogoji uporabe javne spletne strani Calendra, namenjene predstavitvi platforme in poslovni komunikaciji z zainteresiranimi podjetji.",
+        "Pogoji uporabe Calendra za spletno stran, SaaS platformo, naročnine, mobilno aplikacijo za goste, integracije in poslovne uporabnike.",
     },
     en: {
       title: "Terms of Service | Calendra",
       description:
-        "Terms of service for the public Calendra website and information about permitted use, intellectual property, liability and contact details.",
+        "Calendra terms of service for the website, SaaS platform, subscriptions, guest mobile app, integrations and business users.",
+    },
+  },
+  legal: {
+    sl: {
+      title: "Pravno in zaupanje | Calendra",
+      description:
+        "Zbrani pravni dokumenti Calendra: zasebnost, pogoji uporabe, DPA, podobdelovalci, piškotki, varnost, pravice in izbris računa.",
+    },
+    en: {
+      title: "Legal & Trust | Calendra",
+      description:
+        "Calendra legal and trust documents: privacy, terms, DPA, subprocessors, cookies, security, data rights and account deletion.",
+    },
+  },
+  dpa: {
+    sl: {
+      title: "Pogodba o obdelavi podatkov | Calendra",
+      description:
+        "Pogodba o obdelavi osebnih podatkov za najemnike Calendra, kadar Calendra obdeluje osebne podatke kot obdelovalec.",
+    },
+    en: {
+      title: "Data Processing Agreement | Calendra",
+      description:
+        "Data Processing Agreement for Calendra tenants where Calendra processes personal data as processor on behalf of the tenant.",
+    },
+  },
+  subprocessors: {
+    sl: {
+      title: "Podobdelovalci | Calendra",
+      description:
+        "Seznam podobdelovalcev in integracijskih ponudnikov, ki lahko pomagajo pri zagotavljanju storitve Calendra.",
+    },
+    en: {
+      title: "Subprocessors | Calendra",
+      description:
+        "List of subprocessors and integration providers that may help Calendra deliver the service.",
+    },
+  },
+  cookies: {
+    sl: {
+      title: "Politika piškotkov | Calendra",
+      description:
+        "Politika piškotkov Calendra z informacijami o nujnih piškotkih, nastavitvah, analitiki in upravljanju piškotkov.",
+    },
+    en: {
+      title: "Cookie Policy | Calendra",
+      description:
+        "Calendra cookie policy covering necessary cookies, preferences, analytics and managing cookies.",
+    },
+  },
+  security: {
+    sl: {
+      title: "Varnost | Calendra",
+      description:
+        "Javni povzetek varnostnih ukrepov Calendra za zaščito platforme, najemnikov, gostov in osebnih podatkov.",
+    },
+    en: {
+      title: "Security | Calendra",
+      description:
+        "Public summary of Calendra security measures used to protect the platform, tenants, guests and personal data.",
+    },
+  },
+  dataRights: {
+    sl: {
+      title: "Pravice posameznikov | Calendra",
+      description:
+        "Kako lahko posamezniki uveljavljajo pravice glede osebnih podatkov pri Calendri ali pri najemniku, ki uporablja Calendro.",
+    },
+    en: {
+      title: "Data Rights | Calendra",
+      description:
+        "How individuals can exercise personal data rights with Calendra or with a tenant using Calendra.",
     },
   },
   zoom: {
@@ -113,25 +185,25 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     sl: {
       title: "AI transparentnost | Calendra",
       description:
-        "Javno razkritje uporabe OpenAI storitev v Calendri za izbrane AI funkcionalnosti, kot so glasovni ukazi in avtomatizacija delovnega toka.",
+        "Javno razkritje uporabe AI funkcionalnosti v Calendri, vključno s statusom produkcijskega zagona in ponudnikom OpenAI, če bodo AI funkcije omogočene.",
     },
     en: {
       title: "AI transparency | Calendra",
       description:
-        "Public disclosure of how Calendra uses OpenAI services for selected AI features, including voice commands and workflow support.",
+        "Public disclosure of Calendra AI features, including production launch status and OpenAI provider information if AI features are enabled.",
     },
   },
   accountDeletion: {
     sl: {
       title: "Izbris računa | Calendra Guest App",
       description:
-        "Navodila za zahtevo za izbris računa Calendra Guest App in povezanih osebnih podatkov.",
+        "Navodila za izbris računa Calendra Guest App v aplikaciji ali prek javne zahteve za izbris računa.",
       noindex: true,
     },
     en: {
       title: "Account deletion | Calendra Guest App",
       description:
-        "Instructions for requesting deletion of a Calendra Guest App account and associated personal data.",
+        "Instructions for deleting a Calendra Guest App account in the app or through a public account deletion request.",
       noindex: true,
     },
   },

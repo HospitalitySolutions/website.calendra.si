@@ -1,7 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /account-deletion
-Disallow: /en/account-deletion
-Disallow: /izbris-racuna
 
 Sitemap: https://calendra.si/sitemap.xml

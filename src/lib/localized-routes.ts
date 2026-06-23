@@ -8,6 +8,12 @@ export type CanonicalRouteKey =
   | "support"
   | "privacy"
   | "terms"
+  | "legal"
+  | "dpa"
+  | "subprocessors"
+  | "cookies"
+  | "security"
+  | "dataRights"
   | "zoom"
   | "aiTransparency"
   | "accountDeletion";
@@ -20,6 +26,12 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   support: { sl: "/podpora", en: "/en/support" },
   privacy: { sl: "/zasebnost", en: "/en/privacy-policy" },
   terms: { sl: "/pogoji-uporabe", en: "/en/terms-of-service" },
+  legal: { sl: "/pravno", en: "/en/legal" },
+  dpa: { sl: "/pogodba-o-obdelavi-podatkov", en: "/en/data-processing-agreement" },
+  subprocessors: { sl: "/podobdelovalci", en: "/en/subprocessors" },
+  cookies: { sl: "/piskotki", en: "/en/cookie-policy" },
+  security: { sl: "/varnost", en: "/en/security" },
+  dataRights: { sl: "/pravice-posameznikov", en: "/en/data-rights" },
   zoom: { sl: "/zoom-integracija", en: "/en/zoom-integration" },
   aiTransparency: { sl: "/ai-transparentnost", en: "/en/ai-transparency" },
   accountDeletion: { sl: "/izbris-racuna", en: "/en/account-deletion" },
@@ -34,6 +46,14 @@ const legacyAliases: Record<string, string> = {
   "/support": canonicalRoutes.support.en,
   "/privacy-policy": canonicalRoutes.privacy.en,
   "/terms-of-service": canonicalRoutes.terms.en,
+  "/legal": canonicalRoutes.legal.en,
+  "/data-processing-agreement": canonicalRoutes.dpa.en,
+  "/dpa": canonicalRoutes.dpa.en,
+  "/subprocessors": canonicalRoutes.subprocessors.en,
+  "/cookie-policy": canonicalRoutes.cookies.en,
+  "/cookies": canonicalRoutes.cookies.en,
+  "/security": canonicalRoutes.security.en,
+  "/data-rights": canonicalRoutes.dataRights.en,
   "/zoom": canonicalRoutes.zoom.en,
   "/zoom-integration": canonicalRoutes.zoom.en,
   "/ai-transparency": canonicalRoutes.aiTransparency.en,

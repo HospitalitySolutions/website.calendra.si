@@ -10,6 +10,12 @@ import Support from "./pages/Support.tsx";
 import ZoomIntegration from "./pages/ZoomIntegration.tsx";
 import AITransparency from "./pages/AITransparency.tsx";
 import AccountDeletion from "./pages/AccountDeletion.tsx";
+import LegalCenter from "./pages/LegalCenter.tsx";
+import DataProcessingAgreement from "./pages/DataProcessingAgreement.tsx";
+import Subprocessors from "./pages/Subprocessors.tsx";
+import CookiePolicy from "./pages/CookiePolicy.tsx";
+import Security from "./pages/Security.tsx";
+import DataRights from "./pages/DataRights.tsx";
 
 const AppRoutes = () => (
   <Routes>
@@ -23,6 +29,32 @@ const AppRoutes = () => (
     <Route path="/pogoji-uporabe" element={<TermsOfService />} />
     <Route path="/en/terms-of-service" element={<TermsOfService />} />
     <Route path="/terms-of-service" element={<Navigate to="/en/terms-of-service" replace />} />
+
+    <Route path="/pravno" element={<LegalCenter />} />
+    <Route path="/en/legal" element={<LegalCenter />} />
+    <Route path="/legal" element={<Navigate to="/en/legal" replace />} />
+
+    <Route path="/pogodba-o-obdelavi-podatkov" element={<DataProcessingAgreement />} />
+    <Route path="/en/data-processing-agreement" element={<DataProcessingAgreement />} />
+    <Route path="/data-processing-agreement" element={<Navigate to="/en/data-processing-agreement" replace />} />
+    <Route path="/dpa" element={<Navigate to="/en/data-processing-agreement" replace />} />
+
+    <Route path="/podobdelovalci" element={<Subprocessors />} />
+    <Route path="/en/subprocessors" element={<Subprocessors />} />
+    <Route path="/subprocessors" element={<Navigate to="/en/subprocessors" replace />} />
+
+    <Route path="/piskotki" element={<CookiePolicy />} />
+    <Route path="/en/cookie-policy" element={<CookiePolicy />} />
+    <Route path="/cookie-policy" element={<Navigate to="/en/cookie-policy" replace />} />
+    <Route path="/cookies" element={<Navigate to="/en/cookie-policy" replace />} />
+
+    <Route path="/varnost" element={<Security />} />
+    <Route path="/en/security" element={<Security />} />
+    <Route path="/security" element={<Navigate to="/en/security" replace />} />
+
+    <Route path="/pravice-posameznikov" element={<DataRights />} />
+    <Route path="/en/data-rights" element={<DataRights />} />
+    <Route path="/data-rights" element={<Navigate to="/en/data-rights" replace />} />
 
     <Route path="/narocanje" element={<Booking />} />
     <Route path="/en/booking" element={<Booking />} />

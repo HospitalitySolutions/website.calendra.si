@@ -1,51 +1,94 @@
 import calendraLogo from "@/assets/calendra-logo.png";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
-import { getRoutePath } from "@/lib/localized-routes";
+import { getRoutePath, type CanonicalRouteKey } from "@/lib/localized-routes";
+
+type FooterLink = {
+  key: CanonicalRouteKey;
+  label: string;
+};
+
+const footerLinks: Record<"sl" | "en", { product: FooterLink[]; support: FooterLink[]; legal: FooterLink[] }> = {
+  sl: {
+    product: [
+      { key: "clients", label: "Stranke" },
+      { key: "booking", label: "Naročanje" },
+      { key: "pricing", label: "Cenik" },
+    ],
+    support: [
+      { key: "support", label: "Podpora" },
+      { key: "zoom", label: "Zoom integracija" },
+    ],
+    legal: [
+      { key: "legal", label: "Pravno in zaupanje" },
+      { key: "privacy", label: "Politika zasebnosti" },
+      { key: "terms", label: "Pogoji uporabe" },
+      { key: "dpa", label: "Pogodba o obdelavi podatkov" },
+      { key: "subprocessors", label: "Podobdelovalci" },
+      { key: "cookies", label: "Piškotki" },
+      { key: "security", label: "Varnost" },
+      { key: "dataRights", label: "Pravice posameznikov" },
+      { key: "accountDeletion", label: "Izbris računa" },
+      { key: "aiTransparency", label: "AI transparentnost" },
+    ],
+  },
+  en: {
+    product: [
+      { key: "clients", label: "Clients" },
+      { key: "booking", label: "Booking" },
+      { key: "pricing", label: "Pricing" },
+    ],
+    support: [
+      { key: "support", label: "Support" },
+      { key: "zoom", label: "Zoom integration" },
+    ],
+    legal: [
+      { key: "legal", label: "Legal & Trust" },
+      { key: "privacy", label: "Privacy Policy" },
+      { key: "terms", label: "Terms of Service" },
+      { key: "dpa", label: "Data Processing Agreement" },
+      { key: "subprocessors", label: "Subprocessors" },
+      { key: "cookies", label: "Cookie Policy" },
+      { key: "security", label: "Security" },
+      { key: "dataRights", label: "Data Rights" },
+      { key: "accountDeletion", label: "Account Deletion" },
+      { key: "aiTransparency", label: "AI Transparency" },
+    ],
+  },
+};
+
+const FooterColumn = ({ title, links, language }: { title: string; links: FooterLink[]; language: "sl" | "en" }) => (
+  <div>
+    <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+    <div className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
+      {links.map((link) => (
+        <a key={link.key} href={getRoutePath(link.key, language)} className="transition-colors hover:text-foreground">
+          {link.label}
+        </a>
+      ))}
+    </div>
+  </div>
+);
 
 const Footer = () => {
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).footer;
   const homePath = getRoutePath("home", language);
-  const privacyPath = getRoutePath("privacy", language);
+  const links = footerLinks[language];
 
   return (
     <footer className="border-t border-border/60 bg-background py-12">
-      <div className="container mx-auto flex flex-col items-center justify-between gap-6 px-4 md:flex-row lg:px-8">
-        <a href={homePath} className="flex items-center">
-          <img src={calendraLogo} alt="Calendra" className="h-10 w-auto" />
-        </a>
-        <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Calendra. {copy.rights}
-        </p>
-        <div className="flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
-          <a href={getRoutePath("clients", language)} className="transition-colors hover:text-foreground">
-            {copy.clients}
-          </a>
-          <a href={getRoutePath("booking", language)} className="transition-colors hover:text-foreground">
-            {copy.booking}
-          </a>
-          <a href={getRoutePath("support", language)} className="transition-colors hover:text-foreground">
-            {copy.support}
-          </a>
-          <a href={privacyPath} className="transition-colors hover:text-foreground">
-            {copy.privacy}
-          </a>
-          <a href={`${privacyPath}#google-limited-use`} className="transition-colors hover:text-foreground">
-            Google Limited Use
-          </a>
-          <a href={`${privacyPath}#kontakt-in-pravice`} className="transition-colors hover:text-foreground">
-            {copy.privacyContact}
-          </a>
-          <a href={getRoutePath("terms", language)} className="transition-colors hover:text-foreground">
-            {copy.terms}
-          </a>
-          <a href={getRoutePath("accountDeletion", language)} className="transition-colors hover:text-foreground">
-            {copy.accountDeletion}
-          </a>
-          <a href={getRoutePath("aiTransparency", language)} className="transition-colors hover:text-foreground">
-            {copy.aiTransparency}
-          </a>
+      <div className="container mx-auto px-4 lg:px-8">
+        <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr_0.8fr_1.4fr]">
+          <div>
+            <a href={homePath} className="inline-flex items-center">
+              <img src={calendraLogo} alt="Calendra" className="h-10 w-auto" />
+            </a>
+            <p className="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">© {new Date().getFullYear()} Calendra. {copy.rights}</p>
+          </div>
+          <FooterColumn title={language === "sl" ? "Produkt" : "Product"} links={links.product} language={language} />
+          <FooterColumn title={language === "sl" ? "Podpora" : "Support"} links={links.support} language={language} />
+          <FooterColumn title={language === "sl" ? "Pravno in zaupanje" : "Legal & Trust"} links={links.legal} language={language} />
         </div>
       </div>
     </footer>
