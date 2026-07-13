@@ -8,7 +8,6 @@ import {
   ShieldCheck,
   Sparkles,
   Star,
-  Users,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getSiteCopy } from "@/lib/site-copy";
@@ -28,9 +27,9 @@ const Hero = () => {
         <div className="absolute -left-32 top-1/2 h-[340px] w-[340px] rounded-full bg-accent/[0.05] blur-3xl" />
       </div>
 
-      <div className="container relative mx-auto px-4 lg:px-8">
-        <div className="grid items-center gap-14 lg:grid-cols-[0.82fr_1.18fr] lg:gap-8 xl:gap-14">
-          <div className="relative z-20 max-w-xl">
+      <div className="container relative mx-auto max-w-[1680px] px-4 lg:px-8">
+        <div className="grid items-center gap-14 lg:grid-cols-[0.72fr_1.28fr] lg:gap-6 xl:grid-cols-[0.68fr_1.32fr] xl:gap-10">
+          <div className="relative z-20 max-w-[540px]">
             <motion.div initial={false} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.45 }}>
               <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/[0.06] px-4 py-2 text-sm font-semibold text-primary shadow-sm">
                 <Sparkles className="h-4 w-4" aria-hidden="true" />
@@ -124,7 +123,7 @@ const Hero = () => {
           </div>
 
           <motion.div
-            className="relative z-10 mx-auto w-full max-w-[980px] pb-16 pt-8 lg:pb-12 lg:pl-4 lg:pt-0"
+            className="relative z-10 mx-auto w-full max-w-[1160px] pb-16 pt-8 lg:-mr-4 lg:pb-12 lg:pl-2 lg:pt-0 xl:-mr-12"
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.18 }}
@@ -163,25 +162,7 @@ const Hero = () => {
             </motion.div>
 
             <motion.div
-              className="absolute right-[-1%] top-[35%] hidden w-[235px] rounded-2xl border border-border/60 bg-card/95 p-5 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur md:block lg:right-[-7%]"
-              initial={false}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.58 }}
-            >
-              <div className="flex items-start gap-4">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-violet-500/[0.09] text-violet-600">
-                  <Users className="h-6 w-6" aria-hidden="true" />
-                </span>
-                <div>
-                  <p className="font-display text-3xl font-extrabold text-foreground">{copy.satisfactionValue}</p>
-                  <p className="mt-1 font-semibold text-foreground">{copy.satisfactionLabel}</p>
-                  <p className="mt-1 text-xs leading-5 text-muted-foreground">{copy.satisfactionDetail}</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="absolute bottom-0 left-1/2 w-[265px] -translate-x-1/2 rounded-2xl border border-border/60 bg-card/95 p-5 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur sm:w-[285px] lg:bottom-[-2%]"
+              className="absolute bottom-0 left-1/2 w-[265px] -translate-x-1/2 rounded-2xl border border-border/60 bg-card/95 p-5 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur sm:w-[285px] lg:bottom-[-3%] lg:left-auto lg:right-[4%] lg:translate-x-0"
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.68 }}
