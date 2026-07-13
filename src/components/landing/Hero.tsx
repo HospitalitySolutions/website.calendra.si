@@ -20,16 +20,16 @@ const Hero = () => {
   const copy = getSiteCopy(language).hero;
 
   return (
-    <section className="relative overflow-hidden bg-background pb-20 pt-20 md:pb-28 md:pt-28 lg:min-h-[760px] lg:pb-32 lg:pt-32">
+    <section className="relative overflow-hidden bg-background pb-20 pt-20 md:pb-28 md:pt-28 lg:min-h-[780px] lg:pb-32 lg:pt-32">
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute -right-40 top-8 h-[620px] w-[620px] rounded-full bg-primary/[0.07] blur-3xl" />
-        <div className="absolute bottom-[-220px] right-[8%] h-[520px] w-[820px] rounded-[50%] bg-primary/[0.07] blur-3xl" />
+        <div className="absolute -right-48 top-4 h-[680px] w-[680px] rounded-full bg-primary/[0.08] blur-3xl" />
+        <div className="absolute bottom-[-220px] right-[5%] h-[540px] w-[900px] rounded-[50%] bg-primary/[0.08] blur-3xl" />
         <div className="absolute -left-32 top-1/2 h-[340px] w-[340px] rounded-full bg-accent/[0.05] blur-3xl" />
       </div>
 
-      <div className="container relative mx-auto max-w-[1680px] px-4 lg:px-8">
-        <div className="grid items-center gap-14 lg:grid-cols-[0.72fr_1.28fr] lg:gap-6 xl:grid-cols-[0.68fr_1.32fr] xl:gap-10">
-          <div className="relative z-20 max-w-[540px]">
+      <div className="container relative mx-auto max-w-[1720px] px-4 lg:px-8">
+        <div className="grid items-center gap-14 lg:grid-cols-[0.60fr_1.40fr] lg:gap-6 xl:grid-cols-[0.58fr_1.42fr]">
+          <div className="relative z-20 max-w-[530px]">
             <motion.div initial={false} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.45 }}>
               <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/[0.06] px-4 py-2 text-sm font-semibold text-primary shadow-sm">
                 <Sparkles className="h-4 w-4" aria-hidden="true" />
@@ -38,7 +38,7 @@ const Hero = () => {
             </motion.div>
 
             <motion.h1
-              className="mt-7 font-display text-[2.65rem] font-extrabold leading-[1.08] tracking-[-0.035em] sm:text-5xl lg:text-[3.4rem] xl:text-[3.75rem]"
+              className="mt-7 font-display text-[2.7rem] font-extrabold leading-[1.06] tracking-[-0.04em] sm:text-5xl lg:text-[4rem] xl:text-[4.45rem]"
               style={{ color: "hsl(var(--text-heading))" }}
               initial={false}
               animate={{ opacity: 1, y: 0 }}
@@ -123,28 +123,28 @@ const Hero = () => {
           </div>
 
           <motion.div
-            className="relative z-10 mx-auto w-full max-w-[1160px] pb-16 pt-8 lg:-mr-4 lg:pb-12 lg:pl-2 lg:pt-0 xl:-mr-12"
+            className="relative z-10 mx-auto w-full max-w-[1320px] pb-20 pt-8 lg:-mr-8 lg:pb-12 lg:pl-0 lg:pt-0 xl:-mr-16"
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.18 }}
           >
-            <div className="pointer-events-none absolute inset-x-[4%] bottom-[3%] top-[10%] rounded-[45%] bg-primary/[0.08] blur-2xl" aria-hidden="true" />
+            <div className="pointer-events-none absolute inset-x-[2%] bottom-[1%] top-[8%] rounded-[45%] bg-primary/[0.09] blur-2xl" aria-hidden="true" />
 
-            <div className="relative rounded-[1.7rem] border border-white/80 bg-white/75 p-2.5 shadow-[0_30px_80px_-30px_hsl(var(--primary)/0.35)] backdrop-blur-sm lg:-rotate-[1.2deg] lg:p-3">
-              <div className="overflow-hidden rounded-[1.25rem] border border-border/60 bg-white">
+            <div className="relative rounded-[1.8rem] border border-white/80 bg-white/75 p-2.5 shadow-[0_34px_90px_-32px_hsl(var(--primary)/0.35)] backdrop-blur-sm lg:-rotate-[0.7deg] lg:p-3.5">
+              <div className="overflow-hidden rounded-[1.35rem] border border-border/60 bg-white">
                 <img
                   src="/hero/calendra-calendar.webp"
                   alt={copy.screenshotAlt}
                   className="block h-auto w-full"
-                  width="1800"
-                  height="687"
+                  width="2000"
+                  height="767"
                   fetchPriority="high"
                 />
               </div>
             </div>
 
             <motion.div
-              className="absolute left-[-1%] top-[1%] hidden w-[245px] rounded-2xl border border-border/60 bg-card/95 p-5 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur md:block lg:left-[-8%] lg:top-[32%]"
+              className="absolute left-[20%] top-[44%] hidden w-[250px] -translate-x-1/2 rounded-2xl border border-border/60 bg-card/95 p-5 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur md:block xl:left-[17%]"
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.48 }}
@@ -162,7 +162,7 @@ const Hero = () => {
             </motion.div>
 
             <motion.div
-              className="absolute bottom-0 left-1/2 w-[265px] -translate-x-1/2 rounded-2xl border border-border/60 bg-card/95 p-5 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur sm:w-[285px] lg:bottom-[-3%] lg:left-auto lg:right-[4%] lg:translate-x-0"
+              className="absolute bottom-0 right-[8%] w-[275px] rounded-2xl border border-border/60 bg-card/95 p-5 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur sm:w-[300px] lg:bottom-[-4%] lg:right-[8%]"
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.68 }}
