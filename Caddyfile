@@ -14,13 +14,21 @@
   redir /ai-transparency /en/ai-transparency 308
   redir /account-deletion /en/account-deletion 308
 
-  handle /assets/* {
-    file_server
-  }
+ handle /assets/* {
+   file_server
+ }
 
-  handle /favicon.ico {
-    file_server
-  }
+ handle /hero/* {
+   file_server
+ }
+
+ handle /reviews/* {
+   file_server
+ }
+
+ handle /favicon.ico {
+   file_server
+ }
 
   handle /og-calendra.png {
     file_server
