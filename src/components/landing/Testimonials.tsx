@@ -53,7 +53,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         name: "Latanya Powell",
         quote:
           "Calendro uporabljam na Irskem in se mi zdi preprosta, zanesljiva ter enostavna za upravljanje terminov. Prihrani mi čas in poskrbi, da je vse dobro organizirano. Zelo priporočam.",
-        context: "Uporabnica Calendre na Irskem",
+        context: "Beauty Lounge",
         initials: "LP",
         avatar: "/reviews/latanya-powell.png",
         translated: true,
@@ -92,7 +92,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         name: "Latanya Powell",
         quote:
           "I’ve been using Calendra in Ireland and find it simple, reliable and easy to manage appointments with. It saves time and keeps everything organised. Highly recommended.",
-        context: "Calendra user in Ireland",
+        context: "Beauty Lounge",
         initials: "LP",
         avatar: "/reviews/latanya-powell.png",
       },
