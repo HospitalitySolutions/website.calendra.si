@@ -1,22 +1,21 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { APP_BASE_URL } from "@/lib/site";
 import { getRoutePath } from "@/lib/localized-routes";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
   ArrowRight,
-  BadgeCheck,
   Building2,
   CalendarDays,
   CheckCircle2,
   MapPin,
   Search,
   Sparkles,
-  Star,
   Users,
 } from "lucide-react";
 
@@ -26,166 +25,35 @@ type DirectoryClient = {
   slug: string;
   tenantSlug: string;
   name: string;
-  initials: string;
-  category: ClientCategory;
-  categoryLabel: Record<SiteLanguage, string>;
-  description: Record<SiteLanguage, string>;
+  description: string;
   city: string;
-  rating: string;
-  reviews: number;
-  services: number;
-  accentClassName: string;
-  logoClassName: string;
+  category: ClientCategory;
+  logoUrl?: string | null;
+  serviceCount: number;
 };
 
-// Temporary static preview data. Later this can be replaced with backend API data
-// while keeping the same page layout and card contract.
-const directoryClients: DirectoryClient[] = [
-  {
-    slug: "studio-lux",
-    tenantSlug: "studio-lux",
-    name: "Studio LUX",
-    initials: "LX",
-    category: "salon",
-    categoryLabel: { sl: "Salon", en: "Salon" },
-    description: {
-      sl: "Frizerski studio z vrhunskimi storitvami za popolno pričesko.",
-      en: "A hair studio with premium services for a polished look.",
-    },
-    city: "Ljubljana",
-    rating: "4,9",
-    reviews: 128,
-    services: 8,
-    accentClassName: "bg-primary/[0.08] text-primary",
-    logoClassName: "from-slate-950 to-slate-700 text-amber-300",
-  },
-  {
-    slug: "fiziofit-center",
-    tenantSlug: "fiziofit-center",
-    name: "FizioFit center",
-    initials: "FF",
-    category: "health",
-    categoryLabel: { sl: "Zdravje", en: "Health" },
-    description: {
-      sl: "Fizioterapija, manualne terapije in rehabilitacija za boljše počutje.",
-      en: "Physiotherapy, manual therapy, and rehabilitation services.",
-    },
-    city: "Maribor",
-    rating: "4,8",
-    reviews: 96,
-    services: 6,
-    accentClassName: "bg-emerald-500/[0.10] text-emerald-700",
-    logoClassName: "from-teal-500 to-cyan-700 text-white",
-  },
-  {
-    slug: "yoga-vita",
-    tenantSlug: "yoga-vita",
-    name: "Yoga Vita",
-    initials: "YV",
-    category: "wellness",
-    categoryLabel: { sl: "Wellness", en: "Wellness" },
-    description: {
-      sl: "Joga studio za ravnovesje telesa, uma in duha.",
-      en: "A yoga studio for balance of body, mind, and wellbeing.",
-    },
-    city: "Koper",
-    rating: "4,9",
-    reviews: 74,
-    services: 12,
-    accentClassName: "bg-violet-500/[0.10] text-violet-700",
-    logoClassName: "from-violet-500 to-fuchsia-700 text-white",
-  },
-  {
-    slug: "dentalia",
-    tenantSlug: "dentalia",
-    name: "Dentalia",
-    initials: "DE",
-    category: "health",
-    categoryLabel: { sl: "Zdravje", en: "Health" },
-    description: {
-      sl: "Zobozdravstvena ordinacija z osebnim pristopom in moderno opremo.",
-      en: "A dental clinic with a personal approach and modern equipment.",
-    },
-    city: "Ljubljana",
-    rating: "4,7",
-    reviews: 62,
-    services: 9,
-    accentClassName: "bg-emerald-500/[0.10] text-emerald-700",
-    logoClassName: "from-sky-300 to-sky-600 text-white",
-  },
-  {
-    slug: "mindcoach",
-    tenantSlug: "mindcoach",
-    name: "MindCoach",
-    initials: "MC",
-    category: "consulting",
-    categoryLabel: { sl: "Svetovanje", en: "Consulting" },
-    description: {
-      sl: "Osebno in poslovno svetovanje za vašo rast in uspeh.",
-      en: "Personal and business consulting for growth and progress.",
-    },
-    city: "Celje",
-    rating: "5,0",
-    reviews: 38,
-    services: 4,
-    accentClassName: "bg-accent/[0.12] text-orange-700",
-    logoClassName: "from-stone-100 to-amber-200 text-slate-900",
-  },
-  {
-    slug: "bella-beauty",
-    tenantSlug: "bella-beauty",
-    name: "Bella Beauty",
-    initials: "BB",
-    category: "salon",
-    categoryLabel: { sl: "Salon", en: "Salon" },
-    description: {
-      sl: "Kozmetične storitve za nego obraza in telesa.",
-      en: "Beauty services for face and body care.",
-    },
-    city: "Novo mesto",
-    rating: "4,8",
-    reviews: 55,
-    services: 10,
-    accentClassName: "bg-primary/[0.08] text-primary",
-    logoClassName: "from-rose-200 to-pink-400 text-rose-950",
-  },
-  {
-    slug: "forma-fit",
-    tenantSlug: "forma-fit",
-    name: "Forma Fit",
-    initials: "FT",
-    category: "fitness",
-    categoryLabel: { sl: "Fitness", en: "Fitness" },
-    description: {
-      sl: "Osebni treningi, vadbeni programi in meritve napredka.",
-      en: "Personal training, workout plans, and progress tracking.",
-    },
-    city: "Kranj",
-    rating: "4,9",
-    reviews: 83,
-    services: 7,
-    accentClassName: "bg-blue-500/[0.10] text-blue-700",
-    logoClassName: "from-blue-500 to-indigo-700 text-white",
-  },
-  {
-    slug: "wellness-aura",
-    tenantSlug: "wellness-aura",
-    name: "Wellness Aura",
-    initials: "WA",
-    category: "wellness",
-    categoryLabel: { sl: "Wellness", en: "Wellness" },
-    description: {
-      sl: "Masaže, sprostitveni rituali in individualne wellness storitve.",
-      en: "Massage, relaxation rituals, and individual wellness services.",
-    },
-    city: "Bled",
-    rating: "4,8",
-    reviews: 49,
-    services: 11,
-    accentClassName: "bg-violet-500/[0.10] text-violet-700",
-    logoClassName: "from-violet-300 to-indigo-500 text-white",
-  },
-];
+const categoryLabels: Record<ClientCategory, Record<SiteLanguage, string>> = {
+  salon: { sl: "Salon", en: "Salon" },
+  fitness: { sl: "Fitness", en: "Fitness" },
+  wellness: { sl: "Wellness", en: "Wellness" },
+  health: { sl: "Zdravje", en: "Health" },
+  consulting: { sl: "Svetovanje", en: "Consulting" },
+};
+
+const categoryClasses: Record<ClientCategory, string> = {
+  salon: "bg-primary/[0.08] text-primary",
+  fitness: "bg-blue-500/[0.10] text-blue-700",
+  wellness: "bg-violet-500/[0.10] text-violet-700",
+  health: "bg-emerald-500/[0.10] text-emerald-700",
+  consulting: "bg-accent/[0.12] text-orange-700",
+};
+
+const initialsFor = (name: string) => name
+  .split(/\s+/)
+  .filter(Boolean)
+  .slice(0, 2)
+  .map((part) => part[0]?.toUpperCase() || "")
+  .join("") || "C";
 
 const filterCategoryMap: Record<SiteLanguage, Record<string, ClientCategory | "all">> = {
   sl: {
@@ -211,6 +79,23 @@ const ClientsPage = () => {
   const copy = getSiteCopy(language).clientsPage;
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<ClientCategory | "all">("all");
+  const [directoryClients, setDirectoryClients] = useState<DirectoryClient[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    fetch(`${APP_BASE_URL}/api/public/company-directory`, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error(`Directory request failed: ${response.status}`);
+        return response.json();
+      })
+      .then((data) => setDirectoryClients(Array.isArray(data) ? data : []))
+      .catch((error) => {
+        if (error?.name !== "AbortError") setDirectoryClients([]);
+      })
+      .finally(() => setLoading(false));
+    return () => controller.abort();
+  }, []);
 
   const filteredClients = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -220,15 +105,15 @@ const ClientsPage = () => {
       const searchableText = [
         client.name,
         client.city,
-        client.categoryLabel[language],
-        client.description[language],
+        categoryLabels[client.category][language],
+        client.description,
       ]
         .join(" ")
         .toLowerCase();
 
       return matchesFilter && (!normalizedQuery || searchableText.includes(normalizedQuery));
     });
-  }, [activeCategory, language, query]);
+  }, [activeCategory, directoryClients, language, query]);
 
   return (
     <div className="min-h-screen overflow-hidden bg-background">
@@ -291,10 +176,14 @@ const ClientsPage = () => {
         </section>
 
         <section className="container mx-auto max-w-7xl px-4 py-14 lg:px-8 lg:py-18">
-          {filteredClients.length > 0 ? (
+          {loading ? (
+            <div className="rounded-3xl border border-border/70 bg-card p-10 text-center text-muted-foreground shadow-soft">
+              {language === "sl" ? "Nalaganje podjetij…" : "Loading businesses…"}
+            </div>
+          ) : filteredClients.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {filteredClients.map((client) => {
-                const serviceLabel = client.services === 1 ? copy.servicesLabelSingular : copy.servicesLabel;
+                const serviceLabel = client.serviceCount === 1 ? copy.servicesLabelSingular : copy.servicesLabel;
                 const bookingHref = `${getRoutePath("booking", language)}?tenant=${encodeURIComponent(client.tenantSlug)}`;
 
                 return (
@@ -304,19 +193,20 @@ const ClientsPage = () => {
                     className="group rounded-3xl border border-border/70 bg-card p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-glow"
                   >
                     <div className="flex items-start justify-between gap-4">
-                      <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br text-lg font-black shadow-soft ${client.logoClassName}`}>
-                        {client.initials}
+                      <div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-border/70 bg-background text-lg font-black text-primary shadow-soft">
+                        {client.logoUrl ? (
+                          <img src={client.logoUrl} alt={`${client.name} logo`} className="h-full w-full object-contain p-1.5" loading="lazy" />
+                        ) : initialsFor(client.name)}
                       </div>
-                      <div className={`rounded-full px-3 py-1 text-xs font-bold ${client.accentClassName}`}>
-                        {client.categoryLabel[language]}
+                      <div className={`rounded-full px-3 py-1 text-xs font-bold ${categoryClasses[client.category]}`}>
+                        {categoryLabels[client.category][language]}
                       </div>
                     </div>
 
                     <div className="mt-6 flex items-center gap-2">
                       <h2 className="font-display text-2xl font-extrabold tracking-tight text-foreground">{client.name}</h2>
-                      <BadgeCheck className="h-5 w-5 text-primary" aria-label={copy.featuredLabel} />
                     </div>
-                    <p className="mt-3 min-h-[3.5rem] text-sm leading-6 text-muted-foreground">{client.description[language]}</p>
+                    <p className="mt-3 min-h-[3.5rem] text-sm leading-6 text-muted-foreground">{client.description}</p>
 
                     <div className="mt-5 grid gap-3 rounded-2xl bg-background/70 p-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-2">
@@ -325,12 +215,8 @@ const ClientsPage = () => {
                       </div>
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
                         <span className="inline-flex items-center gap-2">
-                          <Star className="h-4 w-4 fill-accent text-accent" />
-                          {client.rating} ({client.reviews})
-                        </span>
-                        <span className="inline-flex items-center gap-2">
                           <Building2 className="h-4 w-4 text-primary" />
-                          {client.services} {serviceLabel}
+                          {client.serviceCount} {serviceLabel}
                         </span>
                       </div>
                     </div>
