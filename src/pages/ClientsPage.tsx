@@ -5,12 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { APP_BASE_URL } from "@/lib/site";
-import { getRoutePath } from "@/lib/localized-routes";
+import { normalizeDirectoryClients, type ClientCategory, type DirectoryClient } from "@/lib/company-directory";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
   ArrowRight,
-  Building2,
   CalendarDays,
   CheckCircle2,
   MapPin,
@@ -19,19 +18,6 @@ import {
   Star,
   Users,
 } from "lucide-react";
-
-type ClientCategory = "salon" | "fitness" | "wellness" | "health" | "consulting";
-
-type DirectoryClient = {
-  slug: string;
-  tenantSlug: string;
-  name: string;
-  description: string;
-  city: string;
-  category: ClientCategory;
-  logoUrl?: string | null;
-  serviceCount: number;
-};
 
 const categoryLabels: Record<ClientCategory, Record<SiteLanguage, string>> = {
   salon: { sl: "Salon", en: "Salon" },
@@ -90,7 +76,7 @@ const ClientsPage = () => {
         if (!response.ok) throw new Error(`Directory request failed: ${response.status}`);
         return response.json();
       })
-      .then((data) => setDirectoryClients(Array.isArray(data) ? data : []))
+      .then((data) => setDirectoryClients(normalizeDirectoryClients(data, APP_BASE_URL)))
       .catch((error) => {
         if (error?.name !== "AbortError") setDirectoryClients([]);
       })
@@ -105,8 +91,8 @@ const ClientsPage = () => {
       const matchesFilter = activeCategory === "all" || client.category === activeCategory;
       const searchableText = [
         client.name,
-        client.city,
-        categoryLabels[client.category][language],
+        client.address,
+        client.category ? categoryLabels[client.category][language] : "",
         client.description,
       ]
         .join(" ")
@@ -184,8 +170,9 @@ const ClientsPage = () => {
           ) : filteredClients.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {filteredClients.map((client) => {
-                const serviceLabel = client.serviceCount === 1 ? copy.servicesLabelSingular : copy.servicesLabel;
-                const bookingHref = `${getRoutePath("booking", language)}?tenant=${encodeURIComponent(client.tenantSlug)}`;
+                const formattedReviewCount = client.googleReviewCount === null || client.googleReviewCount === undefined
+                  ? null
+                  : new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-US").format(client.googleReviewCount);
 
                 return (
                   <article
@@ -199,9 +186,11 @@ const ClientsPage = () => {
                           <img src={client.logoUrl} alt={`${client.name} logo`} className="h-full w-full object-contain p-1.5" loading="lazy" />
                         ) : initialsFor(client.name)}
                       </div>
-                      <div className={`rounded-full px-3 py-1 text-xs font-bold ${categoryClasses[client.category]}`}>
-                        {categoryLabels[client.category][language]}
-                      </div>
+                      {client.category ? (
+                        <div className={`rounded-full px-3 py-1 text-xs font-bold ${categoryClasses[client.category]}`}>
+                          {categoryLabels[client.category][language]}
+                        </div>
+                      ) : null}
                     </div>
 
                     <div className="mt-6 flex items-center gap-2">
@@ -209,32 +198,59 @@ const ClientsPage = () => {
                     </div>
                     <p className="mt-3 min-h-[3.5rem] text-sm leading-6 text-muted-foreground">{client.description}</p>
 
-                    <div className="mt-5 grid gap-3 rounded-2xl bg-background/70 p-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-primary" />
-                        <span>{client.city}</span>
+                    {client.address || (client.googleRating !== null && client.googleRating !== undefined) ? (
+                      <div className="mt-5 grid gap-3 rounded-2xl bg-background/70 p-4 text-sm text-muted-foreground">
+                        {client.address ? (
+                          <a
+                            href={client.googleMapsUrl}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            className="flex items-start gap-2 rounded-lg transition hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+                            aria-label={`${client.address} — Google Maps`}
+                          >
+                            <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                            <span className="leading-5 underline decoration-transparent underline-offset-4 transition group-hover:decoration-current">
+                              {client.address}
+                            </span>
+                          </a>
+                        ) : null}
+
+                        {client.googleRating !== null && client.googleRating !== undefined ? (
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                            <span className="inline-flex items-center gap-1.5 font-semibold text-foreground">
+                              <Star className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />
+                              {client.googleRating.toLocaleString(language === "sl" ? "sl-SI" : "en-US", {
+                                minimumFractionDigits: 1,
+                                maximumFractionDigits: 1,
+                              })}
+                              {formattedReviewCount !== null ? (
+                                <span className="font-normal text-muted-foreground">({formattedReviewCount})</span>
+                              ) : null}
+                            </span>
+                            <span className="text-xs font-medium text-muted-foreground">Google Maps</span>
+                          </div>
+                        ) : null}
                       </div>
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                        <span className="inline-flex items-center gap-2">
-                          <Building2 className="h-4 w-4 text-primary" />
-                          {client.serviceCount} {serviceLabel}
-                        </span>
-                      </div>
-                    </div>
+                    ) : null}
 
                     <div className="mt-6 grid gap-3">
-                      <Button variant="hero" size="lg" className="rounded-2xl shadow-lg shadow-primary/20" asChild>
-                        <a href={bookingHref} aria-label={`${copy.primaryCta}: ${client.name}`}>
-                          {copy.primaryCta}
-                          <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-                        </a>
+                      <Button
+                        type="button"
+                        variant="hero"
+                        size="lg"
+                        className="rounded-2xl shadow-lg shadow-primary/20"
+                        aria-label={`${copy.primaryCta}: ${client.name}`}
+                      >
+                        {copy.primaryCta}
+                        <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                       </Button>
-                      <a
-                        href={`${getRoutePath("clients", language)}#${client.slug}`}
+                      <button
+                        type="button"
                         className="text-center text-sm font-bold text-primary transition hover:text-primary/80"
+                        aria-label={`${copy.secondaryCta}: ${client.name}`}
                       >
                         {copy.secondaryCta}
-                      </a>
+                      </button>
                     </div>
                   </article>
                 );
