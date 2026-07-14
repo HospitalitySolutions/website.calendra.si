@@ -16,6 +16,7 @@ import {
   MapPin,
   Search,
   Sparkles,
+  Star,
   Users,
 } from "lucide-react";
 
