@@ -171,7 +171,7 @@ export const siteCopy = {
       widgetSubtitle: "Vgrajeni Calendra booking widget.",
       loadingWidget: "Nalagam booking widget ...",
       widgetLoadError: "Widgeta ni bilo mogoče naložiti. Preverite, ali je script dosegljiv na",
-      tenantBadge: "Tenant 2TEN",
+      tenantBadge: "Tenant 3DAV",
     },
 
     clientsPage: {
@@ -392,7 +392,7 @@ export const siteCopy = {
       widgetSubtitle: "Embedded Calendra booking widget.",
       loadingWidget: "Loading booking widget ...",
       widgetLoadError: "The widget could not be loaded. Check whether the script is reachable at",
-      tenantBadge: "Tenant 2TEN",
+      tenantBadge: "Tenant 3DAV",
     },
 
     clientsPage: {

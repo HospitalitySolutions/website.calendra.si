@@ -70,7 +70,7 @@ const Booking = () => {
           text.includes("Rezervirajte termin") ||
           text.includes("Vaša rezervacija je zasebna in varna") ||
           text.includes("A faster multi-step booking flow") ||
-          text.includes("Tenant 2TEN")
+          text.includes("Tenant 3DAV")
         ) {
           el.style.display = "none";
         }
@@ -88,7 +88,7 @@ const Booking = () => {
 
         widgetHostRef.current.innerHTML = "";
         const widget = document.createElement("calendra-booking-widget");
-        widget.setAttribute("tenant", "2TEN");
+        widget.setAttribute("tenant", "3DAV");
         widget.setAttribute("base-url", widgetUrl);
         widget.setAttribute("locale", language);
         widgetHostRef.current.appendChild(widget);
