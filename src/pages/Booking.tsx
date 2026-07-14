@@ -5,45 +5,7 @@ import { APP_BASE_URL } from "@/lib/site";
 import { CalendarDays, CheckCircle2, Clock3, ShieldCheck } from "lucide-react";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
-
-const WIDGET_SCRIPT_ID = "calendra-booking-widget-script";
-const WIDGET_SCRIPT_SRC = `${APP_BASE_URL}/widget/calendra-booking-widget.js`;
-
-declare global {
-  interface Window {
-    __calendraWidgetScriptPromise?: Promise<void>;
-  }
-}
-
-const loadWidgetScript = () => {
-  if (window.customElements.get("calendra-booking-widget")) {
-    return Promise.resolve();
-  }
-
-  if (window.__calendraWidgetScriptPromise) {
-    return window.__calendraWidgetScriptPromise;
-  }
-
-  window.__calendraWidgetScriptPromise = new Promise<void>((resolve, reject) => {
-    const existing = document.getElementById(WIDGET_SCRIPT_ID) as HTMLScriptElement | null;
-
-    if (existing) {
-      existing.addEventListener("load", () => resolve(), { once: true });
-      existing.addEventListener("error", () => reject(new Error("Failed to load Calendra widget script.")), { once: true });
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.id = WIDGET_SCRIPT_ID;
-    script.src = WIDGET_SCRIPT_SRC;
-    script.async = true;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error("Failed to load Calendra widget script."));
-    document.body.appendChild(script);
-  });
-
-  return window.__calendraWidgetScriptPromise;
-};
+import { createCalendraBookingWidget, loadCalendraBookingWidgetScript } from "@/lib/calendra-booking-widget";
 
 const Booking = () => {
   const widgetHostRef = useRef<HTMLDivElement | null>(null);
@@ -55,6 +17,7 @@ const Booking = () => {
   useEffect(() => {
     let cancelled = false;
     let observer: MutationObserver | null = null;
+    const host = widgetHostRef.current;
 
     const hideWidgetBrandedText = () => {
       const host = widgetHostRef.current;
@@ -80,17 +43,18 @@ const Booking = () => {
     const mountWidget = async () => {
       try {
         setStatus("loading");
-        await loadWidgetScript();
+        await loadCalendraBookingWidgetScript(APP_BASE_URL);
 
         if (cancelled || !widgetHostRef.current) {
           return;
         }
 
         widgetHostRef.current.innerHTML = "";
-        const widget = document.createElement("calendra-booking-widget");
-        widget.setAttribute("tenant", "3DAV");
-        widget.setAttribute("base-url", widgetUrl);
-        widget.setAttribute("locale", language);
+        const widget = createCalendraBookingWidget({
+          tenant: "3DAV",
+          baseUrl: widgetUrl,
+          locale: language,
+        });
         widgetHostRef.current.appendChild(widget);
 
         observer = new MutationObserver(hideWidgetBrandedText);
@@ -114,8 +78,8 @@ const Booking = () => {
     return () => {
       cancelled = true;
       observer?.disconnect();
-      if (widgetHostRef.current) {
-        widgetHostRef.current.innerHTML = "";
+      if (host) {
+        host.innerHTML = "";
       }
     };
   }, [language, widgetUrl]);

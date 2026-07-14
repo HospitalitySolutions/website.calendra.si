@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/landing/Navbar";
+import ClientBookingDialog from "@/components/clients/ClientBookingDialog";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -68,6 +69,7 @@ const ClientsPage = () => {
   const [activeCategory, setActiveCategory] = useState<ClientCategory | "all">("all");
   const [directoryClients, setDirectoryClients] = useState<DirectoryClient[]>([]);
   const [loading, setLoading] = useState(true);
+  const [bookingClient, setBookingClient] = useState<DirectoryClient | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -240,6 +242,7 @@ const ClientsPage = () => {
                         size="lg"
                         className="rounded-2xl shadow-lg shadow-primary/20"
                         aria-label={`${copy.primaryCta}: ${client.name}`}
+                        onClick={() => setBookingClient(client)}
                       >
                         {copy.primaryCta}
                         <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
@@ -319,6 +322,15 @@ const ClientsPage = () => {
       </main>
 
       <Footer />
+
+      <ClientBookingDialog
+        client={bookingClient}
+        language={language}
+        open={bookingClient !== null}
+        onOpenChange={(nextOpen) => {
+          if (!nextOpen) setBookingClient(null);
+        }}
+      />
     </div>
   );
 };

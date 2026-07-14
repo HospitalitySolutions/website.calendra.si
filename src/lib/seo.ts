@@ -41,12 +41,12 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     sl: {
       title: "Stranke | Podjetja, ki uporabljajo Calendro",
       description:
-        "Odkrijte podjetja, ki uporabljajo Calendro za spletno naročanje terminov, in rezervirajte termin neposredno prek njihovega spletnega widgeta.",
+        "Odkrijte podjetja, ki uporabljajo Calendro za spletno naročanje terminov, in rezervirajte termin neposredno v Calendri.",
     },
     en: {
       title: "Clients | Businesses using Calendra",
       description:
-        "Explore businesses using Calendra for online appointment booking and book directly through their website booking widget.",
+        "Explore businesses using Calendra for online appointment booking and book directly through Calendra.",
     },
   },
   booking: {

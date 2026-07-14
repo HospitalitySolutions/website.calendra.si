@@ -179,7 +179,7 @@ export const siteCopy = {
       titlePrefix: "Naše",
       titleHighlight: "stranke",
       intro:
-        "Odkrijte podjetja, ki uporabljajo Calendro za enostavno rezervacijo terminov, in rezervirajte neposredno prek njihovega spletnega widgeta.",
+        "Odkrijte podjetja, ki uporabljajo Calendro za enostavno rezervacijo terminov, in rezervirajte neposredno v Calendri.",
       searchPlaceholder: "Išči po imenu ali lokaciji ...",
       filters: ["Vse", "Salon", "Fitness", "Wellness", "Zdravje", "Svetovanje"],
       featuredLabel: "Preverjeno v Calendri",
@@ -398,7 +398,7 @@ export const siteCopy = {
       titlePrefix: "Our",
       titleHighlight: "clients",
       intro:
-        "Discover businesses that use Calendra for simple appointment booking, and reserve directly through their online booking widget.",
+        "Discover businesses that use Calendra for simple appointment booking, and reserve directly through Calendra.",
       searchPlaceholder: "Search by name or location ...",
       filters: ["All", "Salon", "Fitness", "Wellness", "Health", "Consulting"],
       featuredLabel: "Verified in Calendra",
