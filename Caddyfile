@@ -4,6 +4,9 @@
 
   # Canonical language-specific URLs. Legacy English aliases redirect to /en/*.
   redir /pricing /en/pricing 308
+  redir /mobilna-aplikacija /calendra-connect 308
+  redir /mobile-app /en/calendra-connect 308
+  redir /en/mobile-app /en/calendra-connect 308
   redir /stranke /narocanje 308
   redir /en/clients /en/booking 308
   redir /clients /en/booking 308
@@ -29,7 +32,7 @@
   header @immutableAssets Cache-Control "public, max-age=31536000, immutable"
 
   # Public images and icons use stable names and a shorter browser cache.
-  @staticImages path /hero/* /reviews/* /favicon.ico /favicon-*.png /apple-touch-icon.png /icon-*.png /calendra-logo.png /og-calendra.png
+  @staticImages path /hero/* /reviews/* /favicon.ico /favicon-*.png /apple-touch-icon.png /icon-*.png /calendra-logo.png /og-calendra.png /connect/*
   header @staticImages Cache-Control "public, max-age=604800"
 
   # Serve any route that was actually prerendered by the build. Unknown paths

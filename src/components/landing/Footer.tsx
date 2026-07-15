@@ -18,6 +18,7 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
   sl: {
     product: [
       { key: "booking", label: "Naročanje" },
+      { key: "connect", label: "Calendra Connect" },
       { key: "pricing", label: "Cenik" },
     ],
     features: [
@@ -47,6 +48,7 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
   en: {
     product: [
       { key: "booking", label: "Booking" },
+      { key: "connect", label: "Calendra Connect" },
       { key: "pricing", label: "Pricing" },
     ],
     features: [

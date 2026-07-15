@@ -10,6 +10,7 @@ export type CanonicalRouteKey =
   | "clientManagement"
   | "reminders"
   | "integrations"
+  | "connect"
   | "support"
   | "privacy"
   | "terms"
@@ -32,6 +33,7 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   clientManagement: { sl: "/upravljanje-strank", en: "/en/client-management" },
   reminders: { sl: "/sms-opomniki", en: "/en/appointment-reminders" },
   integrations: { sl: "/integracije", en: "/en/integrations" },
+  connect: { sl: "/calendra-connect", en: "/en/calendra-connect" },
   support: { sl: "/podpora", en: "/en/support" },
   privacy: { sl: "/zasebnost", en: "/en/privacy-policy" },
   terms: { sl: "/pogoji-uporabe", en: "/en/terms-of-service" },
@@ -63,6 +65,7 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   clientManagement: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   reminders: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   integrations: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
+  connect: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   support: { changeFrequency: "monthly", priority: { sl: 0.6, en: 0.5 } },
   privacy: { changeFrequency: "yearly", priority: { sl: 0.4, en: 0.4 } },
   terms: { changeFrequency: "yearly", priority: { sl: 0.4, en: 0.4 } },
@@ -81,6 +84,9 @@ const routeEntries = Object.entries(canonicalRoutes) as Array<[CanonicalRouteKey
 
 const legacyAliases: Record<string, string> = {
   "/pricing": canonicalRoutes.pricing.en,
+  "/mobilna-aplikacija": canonicalRoutes.connect.sl,
+  "/mobile-app": canonicalRoutes.connect.en,
+  "/en/mobile-app": canonicalRoutes.connect.en,
   "/stranke": canonicalRoutes.booking.sl,
   "/clients": canonicalRoutes.booking.en,
   "/en/clients": canonicalRoutes.booking.en,

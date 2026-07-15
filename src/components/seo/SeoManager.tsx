@@ -42,13 +42,13 @@ const SeoManager = () => {
     upsertMeta('meta[property="og:description"]', "property", "og:description", seo.ogDescription || seo.description);
     upsertMeta('meta[property="og:type"]', "property", "og:type", "website");
     upsertMeta('meta[property="og:url"]', "property", "og:url", seo.canonicalUrl);
-    upsertMeta('meta[property="og:image"]', "property", "og:image", DEFAULT_OG_IMAGE);
+    upsertMeta('meta[property="og:image"]', "property", "og:image", seo.ogImage || DEFAULT_OG_IMAGE);
     upsertMeta('meta[property="og:site_name"]', "property", "og:site_name", "Calendra");
     upsertMeta('meta[property="og:locale"]', "property", "og:locale", seo.language === "sl" ? "sl_SI" : "en_US");
     upsertMeta('meta[name="twitter:card"]', "name", "twitter:card", "summary_large_image");
     upsertMeta('meta[name="twitter:title"]', "name", "twitter:title", seo.ogTitle || seo.title);
     upsertMeta('meta[name="twitter:description"]', "name", "twitter:description", seo.ogDescription || seo.description);
-    upsertMeta('meta[name="twitter:image"]', "name", "twitter:image", DEFAULT_OG_IMAGE);
+    upsertMeta('meta[name="twitter:image"]', "name", "twitter:image", seo.ogImage || DEFAULT_OG_IMAGE);
 
     upsertLink('link[rel="canonical"]', "canonical", seo.canonicalUrl);
 

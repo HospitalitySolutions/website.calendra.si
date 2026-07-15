@@ -8,6 +8,7 @@ import {
   type CanonicalRouteKey,
 } from "@/lib/localized-routes";
 import type { SiteLanguage } from "@/lib/site-language";
+import { APP_STORE_APP_URL, CALENDRA_CONNECT_STORE_URLS, GOOGLE_PLAY_APP_URL } from "@/lib/calendra-connect-config";
 import { LEGAL } from "@/lib/legal";
 import { OFFICIAL_PROFILE_URLS } from "@/lib/external-profiles";
 import {
@@ -21,6 +22,7 @@ type PageSeo = {
   description: string;
   ogTitle?: string;
   ogDescription?: string;
+  ogImage?: string;
   noindex?: boolean;
 };
 
@@ -58,6 +60,10 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
   integrations: {
     sl: { title: "Integracije za naročanje: Google Koledar, Zoom in plačila | Calendra", description: "Povežite Calendro z Google Koledarjem, Zoomom, spletnimi plačili, e-pošto, SMS sporočili in spletnim vtičnikom." },
     en: { title: "Booking integrations: Google Calendar, Zoom and payments | Calendra", description: "Connect Calendra with Google Calendar, Zoom, online payments, email, SMS and a website booking widget." },
+  },
+  connect: {
+    sl: { title: "Calendra Connect | Aplikacija za rezervacijo terminov", description: "Calendra Connect je brezplačna mobilna aplikacija za rezervacijo, prestavljanje in odpoved terminov, obvestila, plačila, ugodnosti in vstopnice.", ogImage: `${SITE_URL}/connect/og-calendra-connect.png` },
+    en: { title: "Calendra Connect | Appointment booking app", description: "Calendra Connect is a free mobile app for booking, rescheduling and cancelling appointments, notifications, payments, benefits and tickets.", ogImage: `${SITE_URL}/connect/og-calendra-connect.png` },
   },
   support: {
     sl: { title: "Podpora | Calendra pomoč uporabnikom", description: "Podpora za uporabnike Calendra: dostop do aplikacije, kontakt, e-pošta, telefon, delovni čas in pričakovani prvi odziv ekipe za podporo." },
@@ -149,6 +155,26 @@ const softwareSchema = (language: SiteLanguage) => ({
   publisher: { "@id": `${SITE_URL}/#organization` },
 });
 
+const mobileApplicationSchema = (language: SiteLanguage) => ({
+  "@type": "MobileApplication",
+  "@id": `${SITE_URL}/calendra-connect#mobile-app`,
+  name: "Calendra Connect",
+  alternateName: "Calendra Book",
+  applicationCategory: "LifestyleApplication",
+  operatingSystem: "iOS, Android",
+  url: absoluteUrl(canonicalRoutes.connect[language]),
+  inLanguage: language === "sl" ? "sl-SI" : "en",
+  description: language === "sl"
+    ? "Mobilna aplikacija za rezervacijo, prestavljanje in odpoved terminov, obvestila, plačila, ugodnosti in vstopnice pri ponudnikih, ki uporabljajo Calendro."
+    : "A mobile app for booking, rescheduling and cancelling appointments, notifications, payments, benefits and tickets with providers using Calendra.",
+  image: `${SITE_URL}/connect/calendra-connect-icon.png`,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
+  downloadUrl: CALENDRA_CONNECT_STORE_URLS.length > 0 ? CALENDRA_CONNECT_STORE_URLS : undefined,
+  installUrl: GOOGLE_PLAY_APP_URL || APP_STORE_APP_URL || undefined,
+  sameAs: CALENDRA_CONNECT_STORE_URLS.length > 0 ? CALENDRA_CONNECT_STORE_URLS : undefined,
+  publisher: { "@id": `${SITE_URL}/#organization` },
+});
+
 const breadcrumbSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage, canonicalPath: string) => ({
   "@type": "BreadcrumbList",
   itemListElement: [
@@ -214,6 +240,7 @@ const getProfileSeo = (pathname: string, language: SiteLanguage) => {
     description,
     ogTitle: title,
     ogDescription: description,
+    ogImage: DEFAULT_OG_IMAGE,
     canonicalUrl: absoluteUrl(canonicalPath),
     alternateUrls: { sl: absoluteUrl(slPath), en: absoluteUrl(enPath), xDefault: absoluteUrl(slPath) },
     noindex,
@@ -234,6 +261,7 @@ export const getSeoForPathname = (pathname: string) => {
       language,
       title: language === "sl" ? "Stran ni najdena | Calendra" : "Page not found | Calendra",
       description: language === "sl" ? "Zahtevana stran ne obstaja ali je bila premaknjena." : "The requested page does not exist or has been moved.",
+      ogImage: DEFAULT_OG_IMAGE,
       canonicalUrl: absoluteUrl(canonicalPath),
       alternateUrls: undefined,
       noindex: true,
@@ -252,9 +280,18 @@ export const getSeoForPathname = (pathname: string) => {
     description: seo.description,
     ogTitle: seo.ogTitle || seo.title,
     ogDescription: seo.ogDescription || seo.description,
+    ogImage: seo.ogImage || DEFAULT_OG_IMAGE,
     canonicalUrl: absoluteUrl(canonicalPath),
     alternateUrls: { sl: absoluteUrl(slPath), en: absoluteUrl(enPath), xDefault: absoluteUrl(slPath) },
     noindex: seo.noindex,
-    structuredData: { "@context": "https://schema.org", "@graph": [organizationSchema, websiteSchema(language), softwareSchema(language), breadcrumbSchema(routeKey, language, canonicalPath)] },
+    structuredData: {
+      "@context": "https://schema.org",
+      "@graph": [
+        organizationSchema,
+        websiteSchema(language),
+        routeKey === "connect" ? mobileApplicationSchema(language) : softwareSchema(language),
+        breadcrumbSchema(routeKey, language, canonicalPath),
+      ],
+    },
   };
 };

@@ -49,11 +49,11 @@ const buildSeoHead = (seo, defaultOgImage) => {
     <meta property="og:site_name" content="Calendra" />
     <meta property="og:locale" content="${locale}" />
     <meta property="og:locale:alternate" content="${alternateLocale}" />
-    <meta property="og:image" content="${escapeHtml(defaultOgImage)}" />
+    <meta property="og:image" content="${escapeHtml(seo.ogImage ?? defaultOgImage)}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${escapeHtml(seo.ogTitle ?? seo.title)}" />
     <meta name="twitter:description" content="${escapeHtml(seo.ogDescription ?? seo.description)}" />
-    <meta name="twitter:image" content="${escapeHtml(defaultOgImage)}" />
+    <meta name="twitter:image" content="${escapeHtml(seo.ogImage ?? defaultOgImage)}" />
     <script type="application/ld+json" data-seo="calendra">${escapeJsonForHtml(seo.structuredData ?? {})}</script>
     <!-- CALENDRA_SEO_END -->`.replace('<!--HTML_LANGUAGE-->', htmlLanguage);
 };

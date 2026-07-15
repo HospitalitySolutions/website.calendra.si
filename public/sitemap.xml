@@ -145,6 +145,24 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/integracije" />
   </url>
   <url>
+    <loc>https://calendra.si/calendra-connect</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/calendra-connect" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/calendra-connect" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/calendra-connect" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/calendra-connect</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/calendra-connect" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/calendra-connect" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/calendra-connect" />
+  </url>
+  <url>
     <loc>https://calendra.si/podpora</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

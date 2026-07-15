@@ -7,6 +7,7 @@ import PricingPageSsr from "./pages/PricingPage.tsx";
 import ClientsPageSsr from "./pages/ClientsPage.tsx";
 import PublicCompanyProfilePageSsr from "./pages/PublicCompanyProfilePage.tsx";
 import FeatureDetailPageSsr from "./pages/FeatureDetailPage.tsx";
+import CalendraConnectPageSsr from "./pages/CalendraConnectPage.tsx";
 import NotFoundSsr from "./pages/NotFound.tsx";
 import SupportSsr from "./pages/Support.tsx";
 import ZoomIntegrationSsr from "./pages/ZoomIntegration.tsx";
@@ -30,6 +31,9 @@ const PublicCompanyProfilePage = import.meta.env.SSR
 const FeatureDetailPage = import.meta.env.SSR
   ? FeatureDetailPageSsr
   : lazy(() => import("./pages/FeatureDetailPage.tsx"));
+const CalendraConnectPage = import.meta.env.SSR
+  ? CalendraConnectPageSsr
+  : lazy(() => import("./pages/CalendraConnectPage.tsx"));
 const NotFound = import.meta.env.SSR ? NotFoundSsr : lazy(() => import("./pages/NotFound.tsx"));
 const Support = import.meta.env.SSR ? SupportSsr : lazy(() => import("./pages/Support.tsx"));
 const ZoomIntegration = import.meta.env.SSR ? ZoomIntegrationSsr : lazy(() => import("./pages/ZoomIntegration.tsx"));
@@ -105,6 +109,12 @@ const AppRoutes = () => (
       <Route path="/en/appointment-reminders" element={<FeatureDetailPage />} />
       <Route path="/integracije" element={<FeatureDetailPage />} />
       <Route path="/en/integrations" element={<FeatureDetailPage />} />
+
+      <Route path="/calendra-connect" element={<CalendraConnectPage />} />
+      <Route path="/en/calendra-connect" element={<CalendraConnectPage />} />
+      <Route path="/mobilna-aplikacija" element={<Navigate to="/calendra-connect" replace />} />
+      <Route path="/mobile-app" element={<Navigate to="/en/calendra-connect" replace />} />
+      <Route path="/en/mobile-app" element={<Navigate to="/en/calendra-connect" replace />} />
 
       <Route path="/cenik" element={<PricingPage />} />
       <Route path="/en/pricing" element={<PricingPage />} />

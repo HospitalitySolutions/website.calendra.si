@@ -18,6 +18,7 @@ const Navbar = () => {
   const navLinks = [
     { label: copy.nav.features, href: `${homePath}#funkcionalnosti`, activePaths: [] },
     { label: copy.nav.booking, href: getRoutePath("booking", language), activePaths: [getRoutePath("booking", "sl"), getRoutePath("booking", "en")] },
+    { label: copy.nav.connect, href: getRoutePath("connect", language), activePaths: [getRoutePath("connect", "sl"), getRoutePath("connect", "en")] },
     { label: copy.nav.pricing, href: getRoutePath("pricing", language), activePaths: [getRoutePath("pricing", "sl"), getRoutePath("pricing", "en")] },
   ];
 
