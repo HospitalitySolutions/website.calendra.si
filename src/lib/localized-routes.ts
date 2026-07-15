@@ -10,6 +10,10 @@ export type CanonicalRouteKey =
   | "clientManagement"
   | "reminders"
   | "integrations"
+  | "beautyHair"
+  | "consultantsEducators"
+  | "healthWellbeing"
+  | "fitnessGroups"
   | "connect"
   | "itServices"
   | "itSupport"
@@ -41,6 +45,10 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   clientManagement: { sl: "/upravljanje-strank", en: "/en/client-management" },
   reminders: { sl: "/sms-opomniki", en: "/en/appointment-reminders" },
   integrations: { sl: "/integracije", en: "/en/integrations" },
+  beautyHair: { sl: "/za-lepotne-in-frizerske-salone", en: "/en/for-beauty-and-hair-salons" },
+  consultantsEducators: { sl: "/za-svetovalce-in-izobrazevalce", en: "/en/for-consultants-and-educators" },
+  healthWellbeing: { sl: "/za-zdravje-in-dobro-pocutje", en: "/en/for-health-and-wellbeing" },
+  fitnessGroups: { sl: "/za-fitnes-in-skupinske-storitve", en: "/en/for-fitness-and-group-services" },
   connect: { sl: "/calendra-connect", en: "/en/calendra-connect" },
   itServices: { sl: "/it-storitve", en: "/en/it-services" },
   itSupport: { sl: "/it-podpora-malim-podjetjem", en: "/en/small-business-it-support" },
@@ -81,6 +89,10 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   clientManagement: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   reminders: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   integrations: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
+  beautyHair: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, lastModified: "2026-07-15" },
+  consultantsEducators: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, lastModified: "2026-07-15" },
+  healthWellbeing: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, lastModified: "2026-07-15" },
+  fitnessGroups: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, lastModified: "2026-07-15" },
   connect: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   itServices: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   itSupport: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, lastModified: "2026-07-15" },

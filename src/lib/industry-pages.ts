@@ -1,0 +1,450 @@
+import type { CanonicalRouteKey } from "@/lib/localized-routes";
+import type { SiteLanguage } from "@/lib/site-language";
+
+export type IndustryRouteKey = Extract<
+  CanonicalRouteKey,
+  "beautyHair" | "consultantsEducators" | "healthWellbeing" | "fitnessGroups"
+>;
+
+export const INDUSTRY_ROUTE_KEYS: IndustryRouteKey[] = [
+  "beautyHair",
+  "consultantsEducators",
+  "healthWellbeing",
+  "fitnessGroups",
+];
+
+type IndustryFeature = {
+  title: string;
+  description: string;
+};
+
+type IndustryContent = {
+  navLabel: string;
+  cardCta: string;
+  eyebrow: string;
+  title: string;
+  intro: string;
+  heroPoints: string[];
+  problemsEyebrow: string;
+  problemsTitle: string;
+  problemsIntro: string;
+  problems: IndustryFeature[];
+  featuresEyebrow: string;
+  featuresTitle: string;
+  featuresIntro: string;
+  features: IndustryFeature[];
+  workflowEyebrow: string;
+  workflowTitle: string;
+  workflow: string[];
+  screenshotEyebrow: string;
+  screenshotTitle: string;
+  screenshotDescription: string;
+  audienceEyebrow: string;
+  audienceTitle: string;
+  audiences: string[];
+  faqEyebrow: string;
+  faqTitle: string;
+  faq: Array<{ question: string; answer: string }>;
+  finalTitle: string;
+  finalDescription: string;
+};
+
+const content: Record<IndustryRouteKey, Record<SiteLanguage, IndustryContent>> = {
+  beautyHair: {
+    sl: {
+      navLabel: "Lepotni in frizerski saloni",
+      cardCta: "Calendra za salone",
+      eyebrow: "Calendra za salone",
+      title: "Program za naročanje za lepotne in frizerske salone",
+      intro: "Upravljajte termine, zaposlene, storitve, prostore, opomnike in plačila v enem preglednem sistemu. Manj telefonskega usklajevanja pomeni več časa za vaše stranke.",
+      heroPoints: ["Koledar po zaposlenih, storitvah in prostorih", "Spletno naročanje ter samostojne spremembe terminov", "Samodejne potrditve in opomniki"],
+      problemsEyebrow: "Vsakdan v salonu",
+      problemsTitle: "Manj usklajevanja, več časa za stranke",
+      problemsIntro: "Calendra poveže rezervacije, urnike in podatke o strankah, da se vaša ekipa lahko osredotoči na izvedbo storitev.",
+      problems: [
+        { title: "Telefonsko naročanje", description: "Stranke lahko prost termin izberejo tudi takrat, ko se ne morete oglasiti na telefon." },
+        { title: "Prekrivanje zaposlenih in prostorov", description: "Razpoložljivost zaposlenih, kabin, stolov in opreme je vidna v enem koledarju." },
+        { title: "Odpovedi v zadnjem trenutku", description: "Potrditve, opomniki ter povezave za spremembo ali odpoved zmanjšajo nesporazume." },
+        { title: "Razpršene evidence", description: "Storitve, obiski, opombe, plačila in računi ostanejo povezani s profilom stranke." },
+      ],
+      featuresEyebrow: "Funkcionalnosti za salone",
+      featuresTitle: "Vse, kar potrebujete za urejen urnik salona",
+      featuresIntro: "Izpostavite samo funkcionalnosti, ki jih vaša ekipa res uporablja, in jih prilagodite svojemu načinu dela.",
+      features: [
+        { title: "Koledar po zaposlenih", description: "Preglejte dnevni, tedenski ali delovni teden za posameznika ali celotno ekipo." },
+        { title: "Storitve z različnim trajanjem", description: "Nastavite trajanje, ceno, pripravljalni čas in zaposlene, ki storitev izvajajo." },
+        { title: "Prostori in oprema", description: "Pri rezervaciji upoštevajte kabine, stole, naprave ali druge omejene vire." },
+        { title: "Spletno naročanje", description: "Dodajte javno povezavo ali rezervacijski vtičnik na svojo spletno stran." },
+        { title: "Opomniki in spremembe", description: "Pošljite e-poštna ali SMS obvestila ter omogočite varno prestavljanje in odpoved." },
+        { title: "Plačila, paketi in ugodnosti", description: "Povežite termin s plačilom, računom, paketom obiskov ali drugo ugodnostjo." },
+      ],
+      workflowEyebrow: "Od izbire do obiska",
+      workflowTitle: "Kako poteka naročanje v salonu",
+      workflow: ["Stranka izbere storitev.", "Izbere zaposlenega ali prvi prost termin.", "Calendra preveri razpoložljivost prostora in ekipe.", "Stranka prejme potrditev in opomnik.", "Po obisku ostanejo termin, plačilo in zgodovina povezani."],
+      screenshotEyebrow: "Pregled za celotno ekipo",
+      screenshotTitle: "Vsi termini salona v enem koledarju",
+      screenshotDescription: "Zaposleni hitro vidijo, kdo prihaja, katera storitev je rezervirana in kateri prostor ali oprema sta potrebna. Barve storitev in različni pogledi pomagajo ohraniti pregled tudi v najbolj zasedenih dneh.",
+      audienceEyebrow: "Primerno za",
+      audienceTitle: "Za samostojne izvajalce in salone z več zaposlenimi",
+      audiences: ["Frizerski saloni", "Kozmetični saloni", "Nohtni studii", "Barber shopi", "Masažni saloni", "Lepotni centri", "Samostojni izvajalci", "Saloni z več lokacijami"],
+      faqEyebrow: "Pogosta vprašanja",
+      faqTitle: "Calendra v lepotnem in frizerskem salonu",
+      faq: [
+        { question: "Ali lahko stranka sama izbere zaposlenega?", answer: "Da. Pri posamezni storitvi določite, kateri zaposleni jo izvajajo, stranki pa lahko omogočite izbiro zaposlenega ali prvega prostega termina." },
+        { question: "Ali lahko nastavim različno trajanje in ceno storitev?", answer: "Da. Vsaka storitev ima lahko svoje trajanje, ceno, pripravljalni čas, barvo in pravila rezervacije." },
+        { question: "Ali lahko isti prostor uporablja več zaposlenih?", answer: "Da. Calendra pri rezervaciji preveri razpoložljivost prostora ali opreme in s tem prepreči prekrivanje." },
+        { question: "Ali lahko stranke termin prestavijo ali odpovejo same?", answer: "Da. V potrditvena sporočila lahko vključite varne povezave za prestavljanje in odpoved, pri čemer sami določite časovne omejitve." },
+        { question: "Ali Calendra podpira več lokacij?", answer: "Da. Storitve, zaposlene, prostore in termine lahko organizirate glede na posamezne lokacije podjetja." },
+      ],
+      finalTitle: "Začnite z bolj preglednim upravljanjem terminov v salonu",
+      finalDescription: "Preizkusite Calendro 14 dni brez kreditne kartice in nastavite urnik glede na svoje zaposlene, storitve in prostore.",
+    },
+    en: {
+      navLabel: "Beauty and hair salons",
+      cardCta: "Calendra for salons",
+      eyebrow: "Calendra for salons",
+      title: "Appointment booking software for beauty and hair salons",
+      intro: "Manage appointments, employees, services, rooms, reminders and payments in one clear system. Less telephone coordination leaves more time for your customers.",
+      heroPoints: ["Calendar by employee, service and room", "Online booking and self-service appointment changes", "Automatic confirmations and reminders"],
+      problemsEyebrow: "Everyday salon work",
+      problemsTitle: "Less coordination, more time for customers",
+      problemsIntro: "Calendra connects bookings, schedules and customer information so your team can focus on delivering services.",
+      problems: [
+        { title: "Telephone booking", description: "Customers can choose an available appointment even when you cannot answer the phone." },
+        { title: "Employee and room overlaps", description: "Availability of employees, treatment rooms, chairs and equipment is visible in one calendar." },
+        { title: "Last-minute cancellations", description: "Confirmations, reminders and change or cancellation links reduce misunderstandings." },
+        { title: "Scattered records", description: "Services, visits, notes, payments and invoices remain connected to the customer profile." },
+      ],
+      featuresEyebrow: "Features for salons",
+      featuresTitle: "Everything you need for a well-organised salon schedule",
+      featuresIntro: "Enable the features your team actually uses and adapt them to the way your salon works.",
+      features: [
+        { title: "Calendar by employee", description: "View daily, weekly or work-week schedules for one employee or the whole team." },
+        { title: "Flexible service duration", description: "Set duration, price, preparation time and the employees who can deliver each service." },
+        { title: "Rooms and equipment", description: "Include treatment rooms, chairs, devices or other limited resources in availability checks." },
+        { title: "Online booking", description: "Add a public booking link or place the booking widget on your website." },
+        { title: "Reminders and changes", description: "Send email or SMS notifications and allow secure rescheduling and cancellation." },
+        { title: "Payments, packages and benefits", description: "Connect appointments with payments, invoices, visit packages or other customer benefits." },
+      ],
+      workflowEyebrow: "From selection to visit",
+      workflowTitle: "How salon booking works",
+      workflow: ["The customer chooses a service.", "They select an employee or the first available time.", "Calendra checks team and room availability.", "The customer receives a confirmation and reminder.", "After the visit, appointment, payment and history stay connected."],
+      screenshotEyebrow: "A clear team overview",
+      screenshotTitle: "Every salon appointment in one calendar",
+      screenshotDescription: "Employees can quickly see who is arriving, which service is booked and which room or equipment is required. Service colours and multiple calendar views keep busy days easy to understand.",
+      audienceEyebrow: "Suitable for",
+      audienceTitle: "For independent professionals and multi-employee salons",
+      audiences: ["Hair salons", "Beauty salons", "Nail studios", "Barber shops", "Massage salons", "Beauty centres", "Independent professionals", "Multi-location salons"],
+      faqEyebrow: "Frequently asked questions",
+      faqTitle: "Using Calendra in a beauty or hair salon",
+      faq: [
+        { question: "Can customers choose an employee?", answer: "Yes. Choose which employees can deliver each service and let customers select an employee or the first available appointment." },
+        { question: "Can I set different service durations and prices?", answer: "Yes. Each service can have its own duration, price, preparation time, colour and booking rules." },
+        { question: "Can several employees share the same room?", answer: "Yes. Calendra checks the availability of rooms or equipment and prevents overlapping reservations." },
+        { question: "Can customers reschedule or cancel by themselves?", answer: "Yes. Confirmation messages can contain secure rescheduling and cancellation links, with time limits controlled by you." },
+        { question: "Does Calendra support multiple locations?", answer: "Yes. Services, employees, resources and appointments can be organised by business location." },
+      ],
+      finalTitle: "Start managing salon appointments more clearly",
+      finalDescription: "Try Calendra free for 14 days without a credit card and configure the schedule around your employees, services and rooms.",
+    },
+  },
+  consultantsEducators: {
+    sl: {
+      navLabel: "Svetovalci in izobraževalci",
+      cardCta: "Calendra za svetovalce",
+      eyebrow: "Calendra za svetovalce in izobraževalce",
+      title: "Naročanje in upravljanje terminov za svetovalce ter izobraževalce",
+      intro: "Osebne in spletne termine, ponavljajoča se srečanja, komunikacijo, dokumente in plačila upravljajte na enem mestu.",
+      heroPoints: ["Osebni, spletni in ponavljajoči se termini", "Povezava z Zoomom in Google Koledarjem", "Paketi srečanj, dokumenti in komunikacija"],
+      problemsEyebrow: "Urejen potek sodelovanja",
+      problemsTitle: "Manj usklajevanja terminov in manj razpršenih informacij",
+      problemsIntro: "Od prve rezervacije do zadnjega srečanja ostanejo termini, sporočila in pomembni podatki povezani.",
+      problems: [
+        { title: "Dolgo iskanje prostega termina", description: "Stranka sama izbere termin znotraj razpoložljivosti, ki jo določite vi." },
+        { title: "Osebni in spletni termini v različnih orodjih", description: "Lokacijo ali spletno povezavo vključite neposredno v rezervacijo in obvestila." },
+        { title: "Ponavljajoča se srečanja", description: "Ustvarite serijo terminov in po potrebi uredite en termin ali vse naslednje." },
+        { title: "Dokumenti in komunikacija po e-pošti", description: "Pomembne informacije, opombe in dokumenti ostanejo vezani na stranko in termin." },
+      ],
+      featuresEyebrow: "Funkcionalnosti za strokovno delo",
+      featuresTitle: "Jasen sistem za individualna srečanja, skupine in izobraževanja",
+      featuresIntro: "Calendra podpira preprost rezervacijski tok za posameznike ter bolj kompleksne urnike ekip in programov.",
+      features: [
+        { title: "Osebni in spletni termini", description: "Pri storitvi določite lokacijo, način izvedbe ali spletno povezavo." },
+        { title: "Zoom integracija", description: "Za spletno srečanje ustvarite povezavo in jo samodejno vključite v obvestila." },
+        { title: "Ponavljajoče se rezervacije", description: "Načrtujte redna srečanja brez ročnega ustvarjanja vsakega termina posebej." },
+        { title: "Dokumenti in opombe", description: "Ohranite pomembne datoteke in interne informacije ob profilu stranke." },
+        { title: "Paketi več srečanj", description: "Spremljajte porabo kupljenih obiskov, programov ali drugih ugodnosti." },
+        { title: "Računi in plačila", description: "Povežite izvedeno srečanje z načinom plačila in izdajo računa." },
+      ],
+      workflowEyebrow: "Preprost proces",
+      workflowTitle: "Od rezervacije do izvedenega srečanja",
+      workflow: ["Stranka izbere vrsto srečanja.", "Izbere prost osebni ali spletni termin.", "Calendra pošlje potrditev in podatke za udeležbo.", "Pred srečanjem pošlje opomnik.", "Po izvedbi ostanejo dokumenti, plačilo in naslednji termin povezani."],
+      screenshotEyebrow: "Pregled individualnega in skupinskega dela",
+      screenshotTitle: "En koledar za osebna srečanja, spletne termine in programe",
+      screenshotDescription: "V koledarju hitro ločite vrste srečanj, zaposlene, lokacije in ponavljajoče se termine. Tako je urnik razumljiv tudi takrat, ko izvajate več različnih programov hkrati.",
+      audienceEyebrow: "Primerno za",
+      audienceTitle: "Za samostojne strokovnjake, ekipe in izvajalce programov",
+      audiences: ["Poslovni svetovalci", "Coachi in mentorji", "Predavatelji", "Izvajalci delavnic", "Jezikovne šole", "Inštruktorji", "Izobraževalni centri", "Izvajalci individualnih programov"],
+      faqEyebrow: "Pogosta vprašanja",
+      faqTitle: "Calendra za svetovanje in izobraževanje",
+      faq: [
+        { question: "Ali lahko vodim osebne in spletne termine?", answer: "Da. Pri posamezni storitvi ali terminu določite lokacijo, način izvedbe in spletno povezavo." },
+        { question: "Ali se Calendra poveže z Zoomom?", answer: "Da. Zoom integracija lahko pripravi povezavo za spletno srečanje, ki jo nato vključite v sporočila udeležencem." },
+        { question: "Ali lahko nastavim ponavljajoča se srečanja?", answer: "Da. Ustvarite serijo terminov ter pozneje spremenite en termin, celotno serijo ali vse prihodnje termine." },
+        { question: "Ali lahko vodim skupinske delavnice?", answer: "Da. Nastavite skupinski termin, največje število udeležencev in pravila prijave oziroma odjave." },
+        { question: "Ali lahko spremljam paket več srečanj?", answer: "Da. Paketi, vstopnice in druge ugodnosti omogočajo spremljanje preostalih obiskov ali pravic stranke." },
+      ],
+      finalTitle: "Uredite termine, komunikacijo in programe v enem sistemu",
+      finalDescription: "Začnite s 14-dnevnim brezplačnim preizkusom in prilagodite Calendro svojemu načinu svetovanja ali izobraževanja.",
+    },
+    en: {
+      navLabel: "Consultants and educators",
+      cardCta: "Calendra for consultants",
+      eyebrow: "Calendra for consultants and educators",
+      title: "Booking and appointment management for consultants and educators",
+      intro: "Manage in-person and online appointments, recurring meetings, communication, documents and payments in one place.",
+      heroPoints: ["In-person, online and recurring appointments", "Zoom and Google Calendar integrations", "Meeting packages, documents and communication"],
+      problemsEyebrow: "An organised client journey",
+      problemsTitle: "Less appointment coordination and fewer scattered records",
+      problemsIntro: "From the first booking to the final meeting, appointments, messages and important information remain connected.",
+      problems: [
+        { title: "Time-consuming scheduling", description: "Customers choose an available appointment within the availability rules you define." },
+        { title: "In-person and online meetings in separate tools", description: "Include a location or online meeting link directly in the booking and notifications." },
+        { title: "Recurring meetings", description: "Create an appointment series and edit one occurrence or all following appointments when needed." },
+        { title: "Documents and communication in email threads", description: "Important information, notes and files remain connected to the customer and appointment." },
+      ],
+      featuresEyebrow: "Features for professional services",
+      featuresTitle: "A clear system for individual meetings, groups and education",
+      featuresIntro: "Calendra supports a simple booking journey for independent professionals and more complex schedules for teams and programmes.",
+      features: [
+        { title: "In-person and online appointments", description: "Set a location, delivery method or online meeting link for each service." },
+        { title: "Zoom integration", description: "Create an online meeting link and include it automatically in notifications." },
+        { title: "Recurring bookings", description: "Plan regular meetings without creating every appointment manually." },
+        { title: "Documents and notes", description: "Keep important files and internal information on the customer profile." },
+        { title: "Multi-session packages", description: "Track the use of purchased visits, programmes or other entitlements." },
+        { title: "Invoices and payments", description: "Connect the completed meeting with a payment method and invoice." },
+      ],
+      workflowEyebrow: "A simple process",
+      workflowTitle: "From booking to completed meeting",
+      workflow: ["The customer chooses a meeting type.", "They select an available in-person or online appointment.", "Calendra sends confirmation and participation details.", "A reminder is sent before the meeting.", "Documents, payment and the next appointment remain connected afterwards."],
+      screenshotEyebrow: "Individual and group work in one view",
+      screenshotTitle: "One calendar for in-person meetings, online appointments and programmes",
+      screenshotDescription: "Quickly distinguish meeting types, employees, locations and recurring appointments. The schedule remains understandable even when several programmes are running at the same time.",
+      audienceEyebrow: "Suitable for",
+      audienceTitle: "For independent experts, teams and programme providers",
+      audiences: ["Business consultants", "Coaches and mentors", "Lecturers", "Workshop providers", "Language schools", "Tutors", "Education centres", "Individual programme providers"],
+      faqEyebrow: "Frequently asked questions",
+      faqTitle: "Calendra for consulting and education",
+      faq: [
+        { question: "Can I manage in-person and online appointments?", answer: "Yes. Set the location, delivery method and online meeting link for each service or appointment." },
+        { question: "Does Calendra connect with Zoom?", answer: "Yes. The Zoom integration can create a meeting link that you include in participant messages." },
+        { question: "Can I create recurring meetings?", answer: "Yes. Create a series and later change one appointment, the whole series or all future appointments." },
+        { question: "Can I organise group workshops?", answer: "Yes. Set a group appointment, maximum capacity and registration or cancellation rules." },
+        { question: "Can I track a multi-session package?", answer: "Yes. Packages, tickets and other benefits can track the customer’s remaining visits or entitlements." },
+      ],
+      finalTitle: "Manage appointments, communication and programmes in one system",
+      finalDescription: "Start a 14-day free trial and adapt Calendra to your consulting or education workflow.",
+    },
+  },
+  healthWellbeing: {
+    sl: {
+      navLabel: "Zdravje in dobro počutje",
+      cardCta: "Calendra za dobro počutje",
+      eyebrow: "Calendra za zdravje in dobro počutje",
+      title: "Sistem za naročanje za izvajalce zdravja in dobrega počutja",
+      intro: "Zanesljivo naročanje, pravočasni opomniki in urejena evidenca obiskov za izvajalce individualnih obravnav in storitev dobrega počutja.",
+      heroPoints: ["Naročanje pri izbranem izvajalcu", "Urejena zgodovina obiskov in interne opombe", "Vloge uporabnikov in nadzor dostopa"],
+      problemsEyebrow: "Zanesljiv vsakodnevni proces",
+      problemsTitle: "Manj administracije okoli obiska in več jasnosti za stranko",
+      problemsIntro: "Calendra je namenjena upravljanju terminov in poslovnega procesa. Ne nadomešča namenskih sistemov za zdravstveno dokumentacijo.",
+      problems: [
+        { title: "Ročno potrjevanje terminov", description: "Stranka prejme jasno potrditev, lokacijo, navodila in opomnik brez dodatnega ročnega pošiljanja." },
+        { title: "Neusklajeni izvajalci in prostori", description: "Delovni čas, odsotnosti, zaposleni in prostori se preverijo pred potrditvijo termina." },
+        { title: "Pozabljeni ali napačno razumljeni termini", description: "Samodejna obvestila zmanjšajo nesporazume in pomagajo stranki pravočasno ukrepati." },
+        { title: "Nepregledna zgodovina obiskov", description: "Pretekli in prihodnji termini, opombe ter dokumenti so dostopni v urejenem profilu stranke." },
+      ],
+      featuresEyebrow: "Funkcionalnosti za urejeno naročanje",
+      featuresTitle: "Pregledni termini, obvestila in podatki o strankah",
+      featuresIntro: "Določite, katere podatke potrebujete, kdo jih lahko vidi in kako lahko stranka upravlja svoj termin.",
+      features: [
+        { title: "Izbira izvajalca", description: "Stranka lahko izbere izvajalca ali prvi prost termin glede na vaše nastavitve." },
+        { title: "Delovni čas in odsotnosti", description: "Razpoložljivost upošteva urnike zaposlenih, dopuste, osebne dogodke in obstoječe termine." },
+        { title: "Ponavljajoči se termini", description: "Uredite redne obiske ter po potrebi spremenite posamezno izvedbo ali prihodnjo serijo." },
+        { title: "Opomniki in odpovedi", description: "Pošljite e-pošto ali SMS ter omogočite spremembe znotraj pravil, ki jih določite sami." },
+        { title: "Profil stranke", description: "Kontaktni podatki, zgodovina terminov, dokumenti, opombe in polja po meri ostanejo skupaj." },
+        { title: "Vloge in dovoljenja", description: "Omejite dostop do posameznih funkcij in podatkov glede na vlogo zaposlenega." },
+      ],
+      workflowEyebrow: "Od naročila do naslednjega obiska",
+      workflowTitle: "Jasen potek za izvajalca in stranko",
+      workflow: ["Stranka izbere storitev in izvajalca.", "Calendra ponudi samo razpoložljive termine.", "Stranka prejme potrditev in morebitna navodila.", "Pred obiskom prejme opomnik.", "Po obisku lahko zaposleni pripravi naslednji termin, plačilo ali račun."],
+      screenshotEyebrow: "Pregledna organizacija dela",
+      screenshotTitle: "Koledar, ki upošteva izvajalce, prostore in ponovitve",
+      screenshotDescription: "Vsak termin vsebuje ključne poslovne informacije za izvedbo, koledar pa pomaga preprečiti prekrivanja. Dostop zaposlenih do funkcij in podatkov lahko prilagodite z vlogami ter dovoljenji.",
+      audienceEyebrow: "Primerno za",
+      audienceTitle: "Za izvajalce individualnih obravnav in storitev dobrega počutja",
+      audiences: ["Fizioterapevti", "Masažni terapevti", "Nutricionisti", "Psihološko svetovanje", "Logopedi", "Delovni terapevti", "Centri dobrega počutja", "Drugi izvajalci individualnih storitev"],
+      faqEyebrow: "Pogosta vprašanja",
+      faqTitle: "Calendra za zdravje in dobro počutje",
+      faq: [
+        { question: "Ali je Calendra zdravstveni informacijski sistem?", answer: "Ne. Calendra je platforma za naročanje, upravljanje terminov, strank, komunikacije, plačil in računov. Za zakonsko zahtevano zdravstveno dokumentacijo uporabite temu namenjen sistem." },
+        { question: "Ali lahko omejim dostop zaposlenih do podatkov?", answer: "Da. Z vlogami in dovoljenji določite, katere funkcije ter podatke lahko posamezni zaposleni vidi ali ureja." },
+        { question: "Ali lahko stranka izbere izvajalca?", answer: "Da. Pri storitvi določite razpoložljive izvajalce in izberete, ali stranka vidi izbiro zaposlenega ali samo proste termine." },
+        { question: "Ali lahko nastavim redne obiske?", answer: "Da. Ponavljajoči se termini omogočajo ustvarjanje serij, ki jih lahko pozneje urejate po posameznem obisku ali za prihodnje termine." },
+        { question: "Ali Calendra pošilja SMS-opomnike?", answer: "Da, če so SMS obvestila vključena v izbranem paketu in konfigurirana za vaše podjetje. Podprta so tudi e-poštna obvestila." },
+      ],
+      finalTitle: "Vzpostavite zanesljiv in pregleden proces naročanja",
+      finalDescription: "Preizkusite Calendro 14 dni in prilagodite termine, obvestila ter pravice zaposlenih svojemu načinu dela.",
+    },
+    en: {
+      navLabel: "Health and wellbeing",
+      cardCta: "Calendra for wellbeing",
+      eyebrow: "Calendra for health and wellbeing",
+      title: "Appointment booking for health and wellbeing providers",
+      intro: "Reliable booking, timely reminders and organised visit records for providers of individual treatments and wellbeing services.",
+      heroPoints: ["Booking with a selected provider", "Organised appointment history and internal notes", "User roles and access control"],
+      problemsEyebrow: "A reliable everyday process",
+      problemsTitle: "Less administration around each visit and greater clarity for customers",
+      problemsIntro: "Calendra manages appointments and business workflows. It does not replace specialist medical-record systems.",
+      problems: [
+        { title: "Manual appointment confirmations", description: "Customers receive a clear confirmation, location, instructions and reminder without additional manual messages." },
+        { title: "Uncoordinated providers and rooms", description: "Working hours, absences, employees and rooms are checked before an appointment is confirmed." },
+        { title: "Forgotten or misunderstood appointments", description: "Automatic notifications reduce misunderstandings and help customers act in time." },
+        { title: "Unclear visit history", description: "Past and future appointments, notes and documents are available in an organised customer profile." },
+      ],
+      featuresEyebrow: "Features for organised booking",
+      featuresTitle: "Clear appointments, notifications and customer information",
+      featuresIntro: "Choose what information you need, who may access it and how customers can manage their appointments.",
+      features: [
+        { title: "Provider selection", description: "Customers can choose a provider or the first available time according to your settings." },
+        { title: "Working hours and absences", description: "Availability considers employee schedules, leave, personal events and existing appointments." },
+        { title: "Recurring appointments", description: "Manage regular visits and change one occurrence or a future series when needed." },
+        { title: "Reminders and cancellation", description: "Send email or SMS and allow changes within the rules you define." },
+        { title: "Customer profile", description: "Contact information, appointment history, documents, notes and custom fields stay together." },
+        { title: "Roles and permissions", description: "Limit access to features and information according to each employee’s role." },
+      ],
+      workflowEyebrow: "From booking to the next visit",
+      workflowTitle: "A clear journey for provider and customer",
+      workflow: ["The customer chooses a service and provider.", "Calendra offers only available appointments.", "The customer receives confirmation and any instructions.", "A reminder is sent before the visit.", "Afterwards, the employee can prepare the next appointment, payment or invoice."],
+      screenshotEyebrow: "Organised service delivery",
+      screenshotTitle: "A calendar that considers providers, rooms and recurring visits",
+      screenshotDescription: "Each appointment contains the key business information needed for delivery while the calendar helps prevent overlaps. Employee access can be adapted with roles and permissions.",
+      audienceEyebrow: "Suitable for",
+      audienceTitle: "For individual treatment and wellbeing service providers",
+      audiences: ["Physiotherapists", "Massage therapists", "Nutritionists", "Psychological counselling", "Speech therapists", "Occupational therapists", "Wellbeing centres", "Other individual service providers"],
+      faqEyebrow: "Frequently asked questions",
+      faqTitle: "Calendra for health and wellbeing",
+      faq: [
+        { question: "Is Calendra a medical information system?", answer: "No. Calendra is a platform for booking, appointments, customers, communication, payments and invoices. Use a dedicated system for legally required medical records." },
+        { question: "Can I restrict employee access to information?", answer: "Yes. Roles and permissions control which features and information each employee can view or edit." },
+        { question: "Can customers choose a provider?", answer: "Yes. Select the providers available for each service and decide whether customers see employee selection or only available times." },
+        { question: "Can I create regular visits?", answer: "Yes. Recurring appointments create a series that can later be edited for one visit or for future appointments." },
+        { question: "Does Calendra send SMS reminders?", answer: "Yes, when SMS notifications are included in your plan and configured for your business. Email notifications are also supported." },
+      ],
+      finalTitle: "Create a reliable and clear booking process",
+      finalDescription: "Try Calendra for 14 days and adapt appointments, notifications and employee access to your way of working.",
+    },
+  },
+  fitnessGroups: {
+    sl: {
+      navLabel: "Fitnes in skupinske storitve",
+      cardCta: "Calendra za skupine",
+      eyebrow: "Calendra za fitnes in skupinske storitve",
+      title: "Rezervacije in upravljanje skupinskih vadb na enem mestu",
+      intro: "Upravljajte individualne vadbe, skupine, kapacitete, ponavljajoče se urnike, prijave, pakete obiskov in obvestila.",
+      heroPoints: ["Individualni in skupinski termini", "Omejitve kapacitete ter prijave udeležencev", "Paketi obiskov, vstopnice in QR-kode"],
+      problemsEyebrow: "Urejene prijave",
+      problemsTitle: "Jasen pregled nad skupinami, kapaciteto in udeleženci",
+      problemsIntro: "Calendra združi urnik, prijave in pravice udeležencev, da vam ni treba voditi ločenih seznamov.",
+      problems: [
+        { title: "Ročni seznami prijav", description: "Udeleženci se prijavijo sami, seznam pa se samodejno posodablja ob spremembah." },
+        { title: "Prevelike skupine", description: "Največje število mest je določeno pri terminu, zato novih prijav po zapolnitvi ni več." },
+        { title: "Ponavljajoč urnik", description: "Redne vadbe ustvarite kot serijo in spremembo izvedete samo enkrat." },
+        { title: "Nepregledna poraba paketov", description: "Paketi, vstopnice in ugodnosti pomagajo spremljati preostale obiske udeleženca." },
+      ],
+      featuresEyebrow: "Funkcionalnosti za individualne in skupinske storitve",
+      featuresTitle: "Od osebnega treninga do rednega urnika skupin",
+      featuresIntro: "Z isto platformo upravljajte individualne termine, vadbe z omejeno kapaciteto in programe z več srečanji.",
+      features: [
+        { title: "Skupinski termini", description: "Določite največje število udeležencev in spremljajte prijave na posamezni izvedbi." },
+        { title: "Ponavljajoči se urniki", description: "Ustvarite tedenske ali druge ponovitve ter upravljajte spremembe v seriji." },
+        { title: "Trenerji in prostori", description: "Dodelite izvajalca, dvorano, studio ali drugo lokacijo ter preverite razpoložljivost." },
+        { title: "Paketi obiskov", description: "Prodajte ali dodelite več obiskov in spremljajte porabo pri rezervacijah." },
+        { title: "Vstopnice in QR-kode", description: "Udeležencu omogočite digitalno vstopnico za hitrejše preverjanje ob prihodu." },
+        { title: "Obvestila o spremembah", description: "Samodejno obvestite prijavljene udeležence o prestavitvi, odpovedi ali drugih spremembah." },
+      ],
+      workflowEyebrow: "Od urnika do prijave",
+      workflowTitle: "Kako poteka rezervacija skupinske storitve",
+      workflow: ["Ustvarite termin ali ponavljajočo se skupino.", "Določite izvajalca, lokacijo in največjo kapaciteto.", "Udeleženci se prijavijo prek spleta ali aplikacije.", "Calendra spremlja prosta mesta in pošlje opomnik.", "Ob prihodu uporabite seznam udeležencev, vstopnico ali QR-kodo."],
+      screenshotEyebrow: "Urnik pod nadzorom",
+      screenshotTitle: "Individualne in skupinske vadbe v istem koledarju",
+      screenshotDescription: "Koledar pokaže izvajalca, prostor, trajanje in zasedenost termina. Ponavljajoče se vadbe so organizirane v serije, zato je upravljanje sprememb hitrejše in bolj dosledno.",
+      audienceEyebrow: "Primerno za",
+      audienceTitle: "Za vadbene centre, studije, trenerje in organizatorje skupin",
+      audiences: ["Fitnes studii", "Osebni trenerji", "Joga studii", "Pilates studii", "Plesne šole", "Športni klubi", "Vadbeni centri", "Skupinske delavnice in tečaji"],
+      faqEyebrow: "Pogosta vprašanja",
+      faqTitle: "Calendra za fitnes in skupinske storitve",
+      faq: [
+        { question: "Ali lahko nastavim največje število udeležencev?", answer: "Da. Pri skupinskem terminu določite kapaciteto, Calendra pa prepreči nove prijave, ko so vsa mesta zapolnjena." },
+        { question: "Ali lahko vodim individualne in skupinske termine?", answer: "Da. V istem koledarju lahko uporabljate individualne storitve, skupinske rezervacije in termine z več strankami." },
+        { question: "Ali lahko ustvarim tedenski urnik vadb?", answer: "Da. Ponavljajoči se termini omogočajo redne urnike, pri katerih lahko spremenite eno izvedbo ali vse prihodnje termine." },
+        { question: "Ali lahko udeleženci uporabljajo pakete obiskov?", answer: "Da. Paketi, ugodnosti in vstopnice omogočajo spremljanje pravic ter preostalega števila obiskov." },
+        { question: "Ali Calendra podpira čakalno listo?", answer: "Čakalna lista je načrtovana funkcionalnost. Trenutno lahko uporabljate omejitev kapacitete, obvestila in ročno upravljanje dodatnih interesentov." },
+      ],
+      finalTitle: "Poenostavite prijave in ohranite popoln pregled nad skupinami",
+      finalDescription: "Začnite s 14-dnevnim brezplačnim preizkusom ter nastavite kapacitete, ponovitve, pakete in obvestila.",
+    },
+    en: {
+      navLabel: "Fitness and group services",
+      cardCta: "Calendra for groups",
+      eyebrow: "Calendra for fitness and group services",
+      title: "Bookings and group class management in one place",
+      intro: "Manage individual sessions, groups, capacity, recurring schedules, registrations, visit packages and notifications.",
+      heroPoints: ["Individual and group appointments", "Capacity limits and participant registration", "Visit packages, tickets and QR codes"],
+      problemsEyebrow: "Organised registration",
+      problemsTitle: "A clear view of groups, capacity and participants",
+      problemsIntro: "Calendra combines schedules, registration and participant entitlements so you do not need separate lists.",
+      problems: [
+        { title: "Manual registration lists", description: "Participants register themselves and the list updates automatically when changes occur." },
+        { title: "Overbooked groups", description: "Maximum places are set for each appointment and further registration stops when it is full." },
+        { title: "Recurring schedules", description: "Create regular classes as a series and apply schedule changes only once." },
+        { title: "Unclear package usage", description: "Packages, tickets and benefits track the participant’s remaining visits." },
+      ],
+      featuresEyebrow: "Features for individual and group services",
+      featuresTitle: "From personal training to a recurring group schedule",
+      featuresIntro: "Use one platform for individual appointments, capacity-limited classes and multi-session programmes.",
+      features: [
+        { title: "Group appointments", description: "Set the maximum number of participants and track registrations for each occurrence." },
+        { title: "Recurring schedules", description: "Create weekly or other recurrence patterns and manage changes across the series." },
+        { title: "Trainers and rooms", description: "Assign an instructor, hall, studio or other location and check availability." },
+        { title: "Visit packages", description: "Sell or assign multiple visits and track their use during booking." },
+        { title: "Tickets and QR codes", description: "Give participants a digital ticket for faster arrival checks." },
+        { title: "Change notifications", description: "Automatically notify registered participants about rescheduling, cancellation or other changes." },
+      ],
+      workflowEyebrow: "From schedule to registration",
+      workflowTitle: "How group service booking works",
+      workflow: ["Create an appointment or recurring group.", "Set the instructor, location and maximum capacity.", "Participants register online or in the app.", "Calendra tracks available places and sends a reminder.", "At arrival, use the participant list, ticket or QR code."],
+      screenshotEyebrow: "The schedule under control",
+      screenshotTitle: "Individual and group sessions in the same calendar",
+      screenshotDescription: "The calendar shows the instructor, room, duration and occupancy of each appointment. Recurring classes are organised as series, making changes faster and more consistent.",
+      audienceEyebrow: "Suitable for",
+      audienceTitle: "For training centres, studios, instructors and group organisers",
+      audiences: ["Fitness studios", "Personal trainers", "Yoga studios", "Pilates studios", "Dance schools", "Sports clubs", "Training centres", "Group workshops and courses"],
+      faqEyebrow: "Frequently asked questions",
+      faqTitle: "Calendra for fitness and group services",
+      faq: [
+        { question: "Can I set a maximum number of participants?", answer: "Yes. Set capacity for a group appointment and Calendra prevents further registration when all places are filled." },
+        { question: "Can I manage individual and group appointments?", answer: "Yes. The same calendar supports individual services, group bookings and appointments with multiple customers." },
+        { question: "Can I create a weekly class schedule?", answer: "Yes. Recurring appointments support regular schedules where one occurrence or all future appointments can be changed." },
+        { question: "Can participants use visit packages?", answer: "Yes. Packages, benefits and tickets track entitlements and the remaining number of visits." },
+        { question: "Does Calendra support a waiting list?", answer: "A waiting-list feature is planned. At present you can use capacity limits, notifications and manual management of additional interest." },
+      ],
+      finalTitle: "Simplify registration and keep complete control of your groups",
+      finalDescription: "Start a 14-day free trial and configure capacity, recurrence, packages and notifications.",
+    },
+  },
+};
+
+export const getIndustryContent = (routeKey: IndustryRouteKey, language: SiteLanguage) => content[routeKey][language];
+
+export const isIndustryRouteKey = (routeKey: CanonicalRouteKey | undefined): routeKey is IndustryRouteKey =>
+  Boolean(routeKey && INDUSTRY_ROUTE_KEYS.includes(routeKey as IndustryRouteKey));

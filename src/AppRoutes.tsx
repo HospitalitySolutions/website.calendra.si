@@ -7,6 +7,7 @@ import PricingPageSsr from "./pages/PricingPage.tsx";
 import ClientsPageSsr from "./pages/ClientsPage.tsx";
 import PublicCompanyProfilePageSsr from "./pages/PublicCompanyProfilePage.tsx";
 import FeatureDetailPageSsr from "./pages/FeatureDetailPage.tsx";
+import IndustryDetailPageSsr from "./pages/IndustryDetailPage.tsx";
 import CalendraConnectPageSsr from "./pages/CalendraConnectPage.tsx";
 import ItServicesPageSsr from "./pages/ItServicesPage.tsx";
 import ItServiceDetailPageSsr from "./pages/ItServiceDetailPage.tsx";
@@ -34,6 +35,9 @@ const PublicCompanyProfilePage = import.meta.env.SSR
 const FeatureDetailPage = import.meta.env.SSR
   ? FeatureDetailPageSsr
   : lazy(() => import("./pages/FeatureDetailPage.tsx"));
+const IndustryDetailPage = import.meta.env.SSR
+  ? IndustryDetailPageSsr
+  : lazy(() => import("./pages/IndustryDetailPage.tsx"));
 const CalendraConnectPage = import.meta.env.SSR
   ? CalendraConnectPageSsr
   : lazy(() => import("./pages/CalendraConnectPage.tsx"));
@@ -121,6 +125,15 @@ const AppRoutes = () => (
       <Route path="/en/appointment-reminders" element={<FeatureDetailPage />} />
       <Route path="/integracije" element={<FeatureDetailPage />} />
       <Route path="/en/integrations" element={<FeatureDetailPage />} />
+
+      <Route path="/za-lepotne-in-frizerske-salone" element={<IndustryDetailPage />} />
+      <Route path="/en/for-beauty-and-hair-salons" element={<IndustryDetailPage />} />
+      <Route path="/za-svetovalce-in-izobrazevalce" element={<IndustryDetailPage />} />
+      <Route path="/en/for-consultants-and-educators" element={<IndustryDetailPage />} />
+      <Route path="/za-zdravje-in-dobro-pocutje" element={<IndustryDetailPage />} />
+      <Route path="/en/for-health-and-wellbeing" element={<IndustryDetailPage />} />
+      <Route path="/za-fitnes-in-skupinske-storitve" element={<IndustryDetailPage />} />
+      <Route path="/en/for-fitness-and-group-services" element={<IndustryDetailPage />} />
 
       <Route path="/calendra-connect" element={<CalendraConnectPage />} />
       <Route path="/en/calendra-connect" element={<CalendraConnectPage />} />

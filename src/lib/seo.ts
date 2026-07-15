@@ -12,6 +12,7 @@ import { APP_STORE_APP_URL, CALENDRA_CONNECT_STORE_URLS, GOOGLE_PLAY_APP_URL } f
 import { LEGAL } from "@/lib/legal";
 import { OFFICIAL_PROFILE_URLS } from "@/lib/external-profiles";
 import { getItServiceContent, isItServiceRouteKey, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
+import { getIndustryContent, isIndustryRouteKey, type IndustryRouteKey } from "@/lib/industry-pages";
 import {
   getPublicCompanyProfileFromPathname,
   getPublicCompanyProfilePath,
@@ -61,6 +62,22 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
   integrations: {
     sl: { title: "Integracije za naročanje: Google Koledar, Zoom in plačila | Calendra", description: "Povežite Calendro z Google Koledarjem, Zoomom, spletnimi plačili, e-pošto, SMS sporočili in spletnim vtičnikom." },
     en: { title: "Booking integrations: Google Calendar, Zoom and payments | Calendra", description: "Connect Calendra with Google Calendar, Zoom, online payments, email, SMS and a website booking widget." },
+  },
+  beautyHair: {
+    sl: { title: "Program za naročanje za lepotne in frizerske salone | Calendra", description: "Upravljajte termine, zaposlene, storitve, prostore, opomnike, plačila in spletno naročanje za lepotni ali frizerski salon." },
+    en: { title: "Booking software for beauty and hair salons | Calendra", description: "Manage appointments, employees, services, rooms, reminders, payments and online booking for your beauty or hair salon." },
+  },
+  consultantsEducators: {
+    sl: { title: "Naročanje za svetovalce in izobraževalce | Calendra", description: "Osebni in spletni termini, ponavljajoča se srečanja, Zoom, dokumenti, paketi obiskov, komunikacija, plačila in računi na enem mestu." },
+    en: { title: "Booking for consultants and educators | Calendra", description: "Manage in-person and online appointments, recurring meetings, Zoom, documents, packages, communication, payments and invoices." },
+  },
+  healthWellbeing: {
+    sl: { title: "Sistem za naročanje za zdravje in dobro počutje | Calendra", description: "Zanesljivo naročanje, opomniki, izvajalci, prostori, ponavljajoči se obiski, profil stranke ter nadzor dostopa za storitve dobrega počutja." },
+    en: { title: "Booking for health and wellbeing providers | Calendra", description: "Reliable booking, reminders, providers, rooms, recurring visits, customer profiles and access control for wellbeing services." },
+  },
+  fitnessGroups: {
+    sl: { title: "Rezervacije za fitnes in skupinske storitve | Calendra", description: "Upravljajte individualne vadbe, skupinske termine, kapacitete, ponovitve, prijave, pakete obiskov, vstopnice in obvestila." },
+    en: { title: "Booking for fitness and group services | Calendra", description: "Manage individual sessions, group appointments, capacity, recurrence, registrations, visit packages, tickets and notifications." },
   },
   connect: {
     sl: { title: "Calendra Connect | Aplikacija za rezervacijo terminov", description: "Calendra Connect je brezplačna mobilna aplikacija za rezervacijo, prestavljanje in odpoved terminov, obvestila, plačila, ugodnosti in vstopnice.", ogImage: `${SITE_URL}/connect/og-calendra-connect.png` },
@@ -250,6 +267,33 @@ const itServiceSchema = (routeKey: Parameters<typeof getItServiceContent>[0], la
   };
 };
 
+const industryServiceSchema = (routeKey: IndustryRouteKey, language: SiteLanguage) => {
+  const industry = getIndustryContent(routeKey, language);
+  return {
+    "@type": "Service",
+    "@id": `${absoluteUrl(canonicalRoutes[routeKey][language])}#service`,
+    name: industry.title,
+    serviceType: language === "sl" ? "Program za naročanje in upravljanje terminov" : "Booking and appointment management software",
+    description: industry.intro,
+    url: absoluteUrl(canonicalRoutes[routeKey][language]),
+    areaServed: { "@type": "Country", name: "Slovenia" },
+    audience: industry.audiences.map((audience) => ({ "@type": "Audience", audienceType: audience })),
+    provider: { "@id": `${SITE_URL}/#organization` },
+  };
+};
+
+const industryFaqSchema = (routeKey: IndustryRouteKey, language: SiteLanguage) => {
+  const industry = getIndustryContent(routeKey, language);
+  return {
+    "@type": "FAQPage",
+    mainEntity: industry.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
+  };
+};
+
 const breadcrumbSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage, canonicalPath: string) => ({
   "@type": "BreadcrumbList",
   itemListElement: [
@@ -370,9 +414,11 @@ export const getSeoForPathname = (pathname: string) => {
             ? [itServicesOverviewSchema(language)]
             : isItServiceRouteKey(routeKey)
               ? [itServiceSchema(routeKey, language)]
-              : routeKey === "contact"
-                ? []
-                : [softwareSchema(language)]),
+              : isIndustryRouteKey(routeKey)
+                ? [softwareSchema(language), industryServiceSchema(routeKey, language), industryFaqSchema(routeKey, language)]
+                : routeKey === "contact"
+                  ? []
+                  : [softwareSchema(language)]),
         breadcrumbSchema(routeKey, language, canonicalPath),
       ],
     },

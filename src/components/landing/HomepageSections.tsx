@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { getRoutePath } from "@/lib/localized-routes";
+import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
@@ -214,7 +215,26 @@ export const AudienceSection = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="max-w-3xl"><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><p className="mt-4 text-lg leading-8 text-muted-foreground">{section.intro}</p></div>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {section.items.map((item, index) => { const Icon = audienceIcons[index]; return <article key={item.title} className="rounded-3xl border border-border/60 bg-background p-6"><Icon className="h-7 w-7 text-primary" aria-hidden="true" /><p className="mt-5 text-lg font-bold text-foreground">{item.title}</p><p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p></article>; })}
+          {section.items.map((item, index) => {
+            const Icon = audienceIcons[index];
+            const routeKey = INDUSTRY_ROUTE_KEYS[index];
+            const industry = getIndustryContent(routeKey, language);
+            return (
+              <a
+                key={item.title}
+                href={getRoutePath(routeKey, language)}
+                className="group flex min-h-[220px] flex-col rounded-3xl border border-border/60 bg-background p-6 transition duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                <Icon className="h-7 w-7 text-primary" aria-hidden="true" />
+                <p className="mt-5 text-lg font-bold text-foreground">{item.title}</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
+                <span className="mt-auto flex items-center gap-2 pt-5 text-sm font-semibold text-primary">
+                  {industry.cardCta}
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                </span>
+              </a>
+            );
+          })}
         </div>
       </div>
     </section>
