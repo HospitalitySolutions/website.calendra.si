@@ -21,7 +21,6 @@ const Navbar = () => {
     { label: copy.nav.booking, href: getRoutePath("booking", language), activePaths: [getRoutePath("booking", "sl"), getRoutePath("booking", "en")] },
     { label: copy.nav.connect, href: getRoutePath("connect", language), activePaths: [getRoutePath("connect", "sl"), getRoutePath("connect", "en")] },
     { label: copy.nav.pricing, href: getRoutePath("pricing", language), activePaths: [getRoutePath("pricing", "sl"), getRoutePath("pricing", "en")] },
-    { label: copy.nav.contact, href: getRoutePath("contact", language), activePaths: [getRoutePath("contact", "sl"), getRoutePath("contact", "en")] },
   ];
   const servicePaths = [
     getRoutePath("itServices", "sl"),
@@ -67,6 +66,12 @@ const Navbar = () => {
                   );
                 })}
               </div>
+              <a
+                href={`${getRoutePath("contact", language)}?type=it`}
+                className="mt-2 block rounded-xl border border-primary/15 bg-primary/[0.05] px-4 py-3 text-sm font-semibold text-primary transition hover:bg-primary/[0.1]"
+              >
+                {language === "sl" ? "Pošljite povpraševanje za IT storitve" : "Send an IT services enquiry"}
+              </a>
             </div>
           </div>
 
@@ -131,6 +136,9 @@ const Navbar = () => {
               <a href={getRoutePath("itServices", language)} className={`block rounded-xl px-3 py-2.5 font-semibold ${itServicesActive ? "bg-primary/[0.08] text-primary" : "text-foreground"}`} onClick={() => setOpen(false)}>{copy.nav.itServices}</a>
               <div className="mt-1 grid gap-1 border-l border-border pl-3">
                 {IT_SERVICE_ROUTE_KEYS.map((routeKey) => <a key={routeKey} href={getRoutePath(routeKey, language)} className="rounded-lg px-3 py-2 text-sm leading-5 text-muted-foreground hover:bg-secondary hover:text-foreground" onClick={() => setOpen(false)}>{getItServiceContent(routeKey, language).navLabel}</a>)}
+                <a href={`${getRoutePath("contact", language)}?type=it`} className="rounded-lg bg-primary/[0.06] px-3 py-2 text-sm font-semibold leading-5 text-primary hover:bg-primary/[0.1]" onClick={() => setOpen(false)}>
+                  {language === "sl" ? "Povpraševanje za IT storitve" : "IT services enquiry"}
+                </a>
               </div>
             </div>
 

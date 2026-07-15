@@ -95,8 +95,8 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     en: { title: "Business automation and system integration | Calendra", description: "Connect forms, email, calendars, CRM, accounting and other business systems through APIs and automation workflows." },
   },
   contact: {
-    sl: { title: "Kontakt za IT storitve | Calendra", description: "Pošljite povpraševanje za IT-podporo, spletno stran, vzdrževanje, poslovno e-pošto, varnostne kopije ali avtomatizacijo poslovnih sistemov." },
-    en: { title: "Contact for IT services | Calendra", description: "Send an enquiry for IT support, website work, maintenance, business email, backups or business-system automation." },
+    sl: { title: "Kontakt | Calendra in IT storitve", description: "Stopite v stik glede aplikacije Calendra, paketov, funkcionalnosti in podpore ali pošljite ločeno povpraševanje za IT storitve." },
+    en: { title: "Contact | Calendra and IT services", description: "Contact us about the Calendra application, plans, features and support, or send a separate enquiry for IT services." },
   },
   support: {
     sl: { title: "Podpora | Calendra pomoč uporabnikom", description: "Podpora za uporabnike Calendra: dostop do aplikacije, kontakt, e-pošta, telefon, delovni čas in pričakovani prvi odziv ekipe za podporo." },
