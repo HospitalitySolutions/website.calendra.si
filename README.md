@@ -132,9 +132,11 @@ This build includes the immediate SEO foundation plus route prerendering:
 - `scripts/prerender.mjs` creates real static HTML files for each canonical route, including route-specific `<title>`, meta description, canonical, hreflang, Open Graph, Twitter tags, JSON-LD structured data, and rendered body content.
 - `src/components/seo/SeoManager.tsx` remains in place so metadata is still updated during client-side navigation after hydration.
 - Canonical Slovenian URLs and `/en/*` English URLs are defined in `src/lib/localized-routes.ts`.
-- Legacy English aliases such as `/pricing`, `/booking`, `/clients`, `/privacy-policy`, and `/terms-of-service` redirect to their canonical `/en/*` versions in `Caddyfile`.
-- Caddy now tries `{path}/index.html`, so `/cenik`, `/narocanje`, `/en/pricing`, etc. serve their own prerendered HTML instead of the generic SPA shell.
-- `public/sitemap.xml` contains canonical Slovenian and English URLs with hreflang alternates.
+- Legacy English aliases redirect to their canonical `/en/*` versions in `Caddyfile`.
+- Caddy serves any file-backed prerendered route with `{path}/index.html`; there is no separate canonical-route whitelist that can drift out of sync. Unknown routes still return HTTP 404.
+- `scripts/prerender.mjs` generates `dist/sitemap.xml` from the same canonical route registry used for prerendering, excludes `noindex` pages, and adds reciprocal Slovenian/English hreflang alternates.
+- Sitemap `lastmod` values are controlled in `src/lib/localized-routes.ts` and should be set only after meaningful page changes.
+- Run `npm run test:seo` to build the website, request every generated sitemap URL, verify HTTP 200, and confirm an unknown route returns HTTP 404.
 - `public/robots.txt` references the sitemap and excludes noindex account-deletion URLs.
 - `public/og-calendra.png` replaces the old Lovable Open Graph image.
 - Unknown production routes now return HTTP 404 in Caddy instead of serving the SPA with a soft-404 response.
@@ -150,3 +152,18 @@ After deployment:
 5. Use URL Inspection for the most important pages: `/`, `/cenik`, `/narocanje`, `/stranke`, `/en`, `/en/pricing`.
 
 Search Console verification and sitemap submission require access to the Google account/property and cannot be completed from this repository alone.
+
+
+### Official profiles in structured data
+
+The verified Google Business profile is included automatically. Add the final official social and app-store URLs as Docker build environment variables so `Organization.sameAs` contains only real public profiles:
+
+```bash
+VITE_LINKEDIN_URL=https://www.linkedin.com/company/... \
+VITE_YOUTUBE_URL=https://www.youtube.com/@... \
+VITE_GOOGLE_PLAY_URL=https://play.google.com/store/apps/details?id=... \
+VITE_APP_STORE_URL=https://apps.apple.com/app/id... \
+docker compose up -d --build
+```
+
+Empty or invalid values are omitted from structured data.

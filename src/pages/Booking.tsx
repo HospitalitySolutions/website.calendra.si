@@ -93,7 +93,20 @@ const Booking = () => {
       <main className="pb-16 pt-12 md:pb-20 md:pt-16">
         <div className="container mx-auto max-w-7xl px-4 lg:px-8">
           <div className="grid gap-8 xl:gap-12">
-            <section className="rounded-3xl border border-border/60 bg-card p-8 shadow-soft md:p-10">
+            <header className="mx-auto max-w-4xl text-center">
+              <span className="inline-flex rounded-full border border-primary/15 bg-primary/[0.06] px-4 py-2 text-sm font-semibold text-primary">
+                {copy.badge}
+              </span>
+              <h1 className="mt-5 font-display text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">
+                {copy.title}
+              </h1>
+              <p className="mx-auto mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">{copy.description}</p>
+            </header>
+
+            <section className="rounded-3xl border border-border/60 bg-card p-8 shadow-soft md:p-10" aria-labelledby="booking-benefits-title">
+              <h2 id="booking-benefits-title" className="sr-only">
+                {language === "sl" ? "Kako deluje spletno naročanje" : "How online booking works"}
+              </h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 {copy.cards.map((item, index) => {
                   const Icon = cardIcons[index];
@@ -102,7 +115,7 @@ const Booking = () => {
                       <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/[0.08] text-primary">
                         <Icon className="h-5 w-5" />
                       </div>
-                      <h2 className="mt-4 text-lg font-semibold text-foreground">{item.title}</h2>
+                      <h3 className="mt-4 text-lg font-semibold text-foreground">{item.title}</h3>
                       <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p>
                     </div>
                   );

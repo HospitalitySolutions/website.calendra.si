@@ -18,8 +18,9 @@ export const siteCopy = {
     },
     hero: {
       badge: "Pametno. Enostavno. Učinkovito.",
-      title1: "Enostavnejše upravljanje terminov.",
-      title2: "Popolna organizacija.",
+      title1: "Program za naročanje strank,",
+      title2: "termine in račune na enem mestu",
+      supportingTitle: "Enostavnejše upravljanje terminov. Popolna organizacija.",
       description:
         "Calendra vam pomaga prihraniti čas, zmanjšati podvajanja in poskrbeti za brezhibno izkušnjo za vas in vaše stranke.",
       primaryCta: "Preizkusi brezplačno",
@@ -142,25 +143,25 @@ export const siteCopy = {
     bookingPage: {
       back: "Nazaj na predstavitveno stran",
       badge: "Naročanje",
-      title: "Rezervirajte termin neposredno na spletni strani.",
+      title: "Spletno naročanje strank neposredno na vaši spletni strani",
       description:
-        "Gost izbere storitev, svetovalca, datum in uro, nato pa vnese ime, priimek, e-pošto in telefonsko številko. Če je za tenant aktivirana razpoložljivost, so prikazani samo prosti termini.",
+        "Stranka izbere storitev, po potrebi zaposlenega, datum in prost termin ter nato varno odda rezervacijo. Termin se takoj zapiše v vaš koledar Calendra.",
       cards: [
         {
           title: "Izbira storitve",
           description: "Obiskovalec najprej izbere storitev, ki jo želi rezervirati.",
         },
         {
-          title: "Izbira svetovalca",
-          description: "Če je v tenant-u več svetovalcev, gost najprej izbere želeno osebo.",
+          title: "Izbira zaposlenega",
+          description: "Če storitev izvaja več zaposlenih, lahko stranka izbere želeno osebo.",
         },
         {
-          title: "Prosti termini",
-          description: "Ko je availability vklopljen, se prikažejo le razpoložljivi sloti.",
+          title: "Samo dejansko prosti termini",
+          description: "Prikažejo se samo termini, ki so glede na delovni čas, odsotnosti in obstoječe rezervacije prosti.",
         },
         {
-          title: "Povezano z app.calendra.si",
-          description: "Rezervacija se odda neposredno v vaš Calendra sistem.",
+          title: "Neposredno povezano s Calendro",
+          description: "Rezervacija se takoj zapiše v vaš koledar, brez prepisovanja podatkov ali dodatnih korakov.",
         },
       ],
       tenantInfoPrefix: "Ta stran uporablja tenant",
@@ -237,8 +238,9 @@ export const siteCopy = {
     },
     hero: {
       badge: "Smart. Simple. Effective.",
-      title1: "Easier appointment management.",
-      title2: "Complete organisation.",
+      title1: "Appointment booking, scheduling",
+      title2: "and invoicing in one place",
+      supportingTitle: "Easier appointment management. Complete organisation.",
       description:
         "Calendra helps you save time, reduce duplicate work and deliver a seamless experience for you and your clients.",
       primaryCta: "Try it free",
@@ -361,25 +363,25 @@ export const siteCopy = {
     bookingPage: {
       back: "Back to the landing page",
       badge: "Booking",
-      title: "Let customers book directly on your website.",
+      title: "Online appointment booking directly on your website",
       description:
-        "Guests choose a service, consultant, date, and time, then enter their name, email, and phone number. When tenant availability is enabled, only free slots are shown.",
+        "Customers choose a service, an employee when needed, a date, and an available appointment. The booking is then added directly to your Calendra calendar.",
       cards: [
         {
           title: "Choose a service",
           description: "Visitors first select the service they want to book.",
         },
         {
-          title: "Choose a consultant",
-          description: "If the tenancy has multiple consultants, the guest first selects the preferred person.",
+          title: "Choose an employee",
+          description: "When several employees provide the service, customers can choose their preferred person.",
         },
         {
-          title: "See open slots",
-          description: "When availability is enabled, only bookable slots are shown.",
+          title: "Only genuinely available times",
+          description: "Customers see only appointments that are free based on working hours, absences, and existing bookings.",
         },
         {
-          title: "Connected to app.calendra.si",
-          description: "The booking is submitted directly into your Calendra system.",
+          title: "Directly connected to Calendra",
+          description: "The appointment is added to your calendar immediately, without re-entering data or extra steps.",
         },
       ],
       tenantInfoPrefix: "This page uses tenant",

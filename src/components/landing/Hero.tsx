@@ -38,7 +38,7 @@ const Hero = () => {
             </motion.div>
 
             <motion.h1
-              className="mt-7 font-display text-[2.7rem] font-extrabold leading-[1.06] tracking-[-0.04em] sm:text-5xl lg:text-[4rem] xl:text-[4.45rem]"
+              className="mt-7 font-display text-[2.5rem] font-extrabold leading-[1.07] tracking-[-0.04em] sm:text-[3.15rem] lg:text-[3.55rem] xl:text-[3.95rem]"
               style={{ color: "hsl(var(--text-heading))" }}
               initial={false}
               animate={{ opacity: 1, y: 0 }}
@@ -51,11 +51,20 @@ const Hero = () => {
             </motion.h1>
 
             <motion.p
-              className="mt-7 max-w-lg text-lg leading-8 md:text-xl"
+              className="mt-7 max-w-lg font-display text-xl font-bold leading-8 text-foreground md:text-2xl"
+              initial={false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.14 }}
+            >
+              {copy.supportingTitle}
+            </motion.p>
+
+            <motion.p
+              className="mt-3 max-w-lg text-lg leading-8 md:text-xl"
               style={{ color: "hsl(var(--text-body))" }}
               initial={false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.16 }}
+              transition={{ duration: 0.55, delay: 0.18 }}
             >
               {copy.description}
             </motion.p>
@@ -138,7 +147,6 @@ const Hero = () => {
                   className="block h-auto w-full"
                   width="2000"
                   height="767"
-                  fetchPriority="high"
                 />
               </div>
             </div>

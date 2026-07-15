@@ -8,9 +8,7 @@ import {
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import { ExternalLink, Star } from "lucide-react";
 import { motion } from "framer-motion";
-
-const GOOGLE_REVIEWS_URL =
-  "https://www.google.com/maps/search/?api=1&query=Calendra&query_place_id=ChIJm6_tDR93b0cRZhhgh_KBCd0";
+import { GOOGLE_BUSINESS_PROFILE_URL } from "@/lib/external-profiles";
 
 type Review = {
   name: string;
@@ -146,7 +144,7 @@ const Testimonials = () => {
           </div>
 
           <a
-            href={GOOGLE_REVIEWS_URL}
+            href={GOOGLE_BUSINESS_PROFILE_URL}
             target="_blank"
             rel="noreferrer"
             className="group inline-flex w-fit items-center gap-4 rounded-2xl border border-border/70 bg-card px-5 py-4 shadow-soft transition hover:-translate-y-0.5 hover:border-primary/30"
@@ -181,7 +179,7 @@ const Testimonials = () => {
                   <div className="flex items-center justify-between gap-4">
                     <RatingStars />
                     <a
-                      href={GOOGLE_REVIEWS_URL}
+                      href={GOOGLE_BUSINESS_PROFILE_URL}
                       target="_blank"
                       rel="noreferrer"
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground transition hover:text-primary"

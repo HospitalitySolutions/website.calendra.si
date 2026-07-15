@@ -1,6 +1,8 @@
 import { SITE_URL } from "@/lib/site";
 import { canonicalRoutes, getCanonicalPathname, getLanguageFromPathname, getLocalizedPathname, getRouteKeyFromPathname, type CanonicalRouteKey } from "@/lib/localized-routes";
 import type { SiteLanguage } from "@/lib/site-language";
+import { LEGAL } from "@/lib/legal";
+import { OFFICIAL_PROFILE_URLS } from "@/lib/external-profiles";
 
 type PageSeo = {
   title: string;
@@ -215,9 +217,31 @@ const organizationSchema = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#organization`,
   name: "Calendra",
+  legalName: LEGAL.entityName,
   url: SITE_URL,
-  logo: `${SITE_URL}/favicon.ico`,
-  sameAs: [] as string[],
+  email: LEGAL.generalEmail,
+  telephone: LEGAL.supportPhoneTel,
+  logo: {
+    "@type": "ImageObject",
+    url: `${SITE_URL}/calendra-logo.png`,
+    width: 512,
+    height: 512,
+  },
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: LEGAL.businessAddress,
+    postalCode: LEGAL.postalCode,
+    addressLocality: LEGAL.city,
+    addressCountry: "SI",
+  },
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer support",
+    email: LEGAL.supportEmail,
+    telephone: LEGAL.supportPhoneTel,
+    availableLanguage: ["Slovenian", "English"],
+  },
+  sameAs: OFFICIAL_PROFILE_URLS,
 };
 
 const websiteSchema = (language: SiteLanguage) => ({
@@ -243,6 +267,7 @@ const softwareSchema = (language: SiteLanguage) => ({
       : "A booking and appointment management platform for service businesses, including reminders, invoicing, payments, analytics and client management.",
   offers: {
     "@type": "Offer",
+    price: "14.90",
     priceCurrency: "EUR",
     availability: "https://schema.org/InStock",
     url: absoluteUrl(canonicalRoutes.pricing[language]),

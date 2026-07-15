@@ -2,53 +2,39 @@
   root * /srv
   encode gzip zstd
 
-  # Canonical language-specific URLs. Old English aliases redirect to /en/*.
+  # Canonical language-specific URLs. Legacy English aliases redirect to /en/*.
   redir /pricing /en/pricing 308
   redir /clients /en/clients 308
   redir /booking /en/booking 308
   redir /support /en/support 308
   redir /privacy-policy /en/privacy-policy 308
   redir /terms-of-service /en/terms-of-service 308
+  redir /legal /en/legal 308
+  redir /data-processing-agreement /en/data-processing-agreement 308
+  redir /dpa /en/data-processing-agreement 308
+  redir /subprocessors /en/subprocessors 308
+  redir /cookie-policy /en/cookie-policy 308
+  redir /cookies /en/cookie-policy 308
+  redir /security /en/security 308
+  redir /data-rights /en/data-rights 308
   redir /zoom /en/zoom-integration 308
   redir /zoom-integration /en/zoom-integration 308
   redir /ai-transparency /en/ai-transparency 308
   redir /account-deletion /en/account-deletion 308
 
- handle /assets/* {
-   file_server
- }
+  # Vite fingerprints files in /assets, so they can be cached indefinitely.
+  @immutableAssets path /assets/*
+  header @immutableAssets Cache-Control "public, max-age=31536000, immutable"
 
- handle /hero/* {
-   file_server
- }
+  # Public images and icons use stable names and a shorter browser cache.
+  @staticImages path /hero/* /reviews/* /favicon.ico /favicon-*.png /apple-touch-icon.png /icon-*.png /calendra-logo.png /og-calendra.png
+  header @staticImages Cache-Control "public, max-age=604800"
 
- handle /reviews/* {
-   file_server
- }
-
- handle /favicon.ico {
-   file_server
- }
-
-  handle /og-calendra.png {
-    file_server
-  }
-
-  handle /robots.txt {
-    file_server
-  }
-
-  handle /sitemap.xml {
-    file_server
-  }
-
-  @canonicalRoutes path / /en /cenik /en/pricing /stranke /en/clients /narocanje /en/booking /podpora /en/support /zasebnost /en/privacy-policy /pogoji-uporabe /en/terms-of-service /zoom-integracija /en/zoom-integration /ai-transparentnost /en/ai-transparency /izbris-racuna /en/account-deletion
-  handle @canonicalRoutes {
-    try_files {path} {path}/index.html /index.html
-    file_server
-  }
-
+  # Serve any route that was actually prerendered by the build. Unknown paths
+  # remain unknown and are returned as 404 by file_server—there is no second
+  # manually maintained route whitelist to drift out of sync.
   handle {
-    respond "Not found" 404
+    try_files {path}/index.html {path}
+    file_server
   }
 }

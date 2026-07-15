@@ -30,6 +30,7 @@ type TranslationSet = {
   badge: string;
   sectionEyebrow: string;
   sectionTitle: string;
+  standaloneTitle: string;
   sectionDescription: string;
   comparisonTitle: string;
   comparisonHeader: string;
@@ -76,6 +77,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     badge: "Priljubljeno",
     sectionEyebrow: "Cenik",
     sectionTitle: "Enostavno & transparentno",
+    standaloneTitle: "Cenik programa za naročanje strank Calendra",
     sectionDescription: "Izberite paket, ki najbolj ustreza vašemu poslovanju.",
     comparisonTitle: "Primerjava paketov",
     comparisonHeader: "Funkcionalnost",
@@ -205,6 +207,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     badge: "Popular",
     sectionEyebrow: "Pricing",
     sectionTitle: "Simple & transparent",
+    standaloneTitle: "Pricing for Calendra appointment booking software",
     sectionDescription: "Choose the plan that best fits your business.",
     comparisonTitle: "Package comparison",
     comparisonHeader: "Feature",
@@ -503,6 +506,8 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     window.location.href = mailto;
   };
 
+  const HeadingTag = standalone ? "h1" : "h2";
+
   return (
     <section
       id={standalone ? undefined : "cenik"}
@@ -511,9 +516,9 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="mb-10 text-center md:text-left">
           <span className="text-sm font-semibold uppercase tracking-widest text-primary">{content.sectionEyebrow}</span>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: "hsl(var(--text-heading))" }}>
-            {content.sectionTitle}
-          </h2>
+          <HeadingTag className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: "hsl(var(--text-heading))" }}>
+            {standalone ? content.standaloneTitle : content.sectionTitle}
+          </HeadingTag>
           <p className="mt-4 text-lg text-muted-foreground">{content.sectionDescription}</p>
         </div>
 

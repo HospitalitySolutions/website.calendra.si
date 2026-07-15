@@ -85,9 +85,48 @@ if (!serverEntryPath) {
   throw new Error(`Could not find SSR entry. Checked: ${serverEntryCandidates.join(', ')}`);
 }
 
-const { DEFAULT_OG_IMAGE, renderPage, routesToPrerender } = await import(pathToFileURL(serverEntryPath));
+const { DEFAULT_OG_IMAGE, getSitemapEntries, renderPage, routesToPrerender } = await import(pathToFileURL(serverEntryPath));
 
 const seoBlockPattern = /<!-- CALENDRA_SEO_START -->[\s\S]*?<!-- CALENDRA_SEO_END -->/;
+const routePreloadsPattern = /<!-- CALENDRA_ROUTE_PRELOADS_START -->[\s\S]*?<!-- CALENDRA_ROUTE_PRELOADS_END -->/;
+
+const buildRoutePreloads = (routePath) => {
+  if (routePath !== '/' && routePath !== '/en') return '';
+
+  return `<!-- CALENDRA_ROUTE_PRELOADS_START -->
+    <link rel="preload" as="image" href="/hero/calendra-calendar.webp" type="image/webp" fetchpriority="high" />
+    <!-- CALENDRA_ROUTE_PRELOADS_END -->`;
+};
+
+const escapeXml = (value) =>
+  String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+
+const buildSitemapXml = (entries) => {
+  const urls = entries
+    .map((entry) => {
+      const lastModified = entry.lastModified ? `\n    <lastmod>${escapeXml(entry.lastModified)}</lastmod>` : '';
+      return `  <url>
+    <loc>${escapeXml(entry.location)}</loc>${lastModified}
+    <changefreq>${escapeXml(entry.changeFrequency)}</changefreq>
+    <priority>${Number(entry.priority).toFixed(1)}</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="${escapeXml(entry.alternateUrls.sl)}" />
+    <xhtml:link rel="alternate" hreflang="en" href="${escapeXml(entry.alternateUrls.en)}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(entry.alternateUrls.xDefault)}" />
+  </url>`;
+    })
+    .join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${urls}
+</urlset>
+`;
+};
 
 if (!seoBlockPattern.test(template)) {
   throw new Error('SEO marker block was not found in dist/index.html.');
@@ -99,12 +138,17 @@ for (const routePath of routesToPrerender) {
   const htmlLanguage = seo.language === 'sl' ? 'sl' : 'en';
   const output = template
     .replace('<html lang="sl">', `<html lang="${htmlLanguage}">`)
+    .replace(routePreloadsPattern, buildRoutePreloads(routePath))
     .replace(seoBlockPattern, head)
     .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
 
   await writeRouteHtml(routePath, output);
   console.log(`Prerendered ${routePath}`);
 }
+
+const sitemapEntries = getSitemapEntries();
+await fs.writeFile(path.join(distDir, 'sitemap.xml'), buildSitemapXml(sitemapEntries));
+console.log(`Generated sitemap.xml with ${sitemapEntries.length} indexable URLs`);
 
 await fs.rm(path.join(distDir, 'server'), { recursive: true, force: true });
 console.log('Removed temporary SSR bundle from dist/server');
