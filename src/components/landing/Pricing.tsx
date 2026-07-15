@@ -5,7 +5,9 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { buildPackageSignupRoute, type PricingSignupSummary } from "@/lib/routes";
 import { LEGAL } from "@/lib/legal";
-import { Building2, Check, Globe2, MessageSquareText, Send, Star, Users, X as XIcon } from "lucide-react";
+import { trackMarketingEvent } from "@/lib/marketing-events";
+import { getRoutePath } from "@/lib/localized-routes";
+import { BellRing, Building2, CalendarDays, Check, Globe2, Link2, MessageSquareText, Receipt, Send, Star, Users, X as XIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
@@ -335,6 +337,71 @@ const translations: Record<SiteLanguage, TranslationSet> = {
   },
 };
 
+const standaloneExtras = {
+  sl: {
+    guideTitle: "Kateri paket je pravi za vaše podjetje?",
+    guide: [
+      { title: "Osnovno", body: "Za samostojne izvajalce, ki potrebujejo koledar, pregled strank in osnovno komunikacijo." },
+      { title: "Profesionalno", body: "Za rastoča podjetja, ki poleg terminov potrebujejo račune, datoteke, SMS sporočila in telefonsko podporo." },
+      { title: "Premium", body: "Za ekipe z zahtevnejšimi procesi, prostori, napravami, naprednimi sporočili in prioritetno podporo." },
+      { title: "Enterprise", body: "Za več lokacij, večje ekipe, razvoj po meri in posebne integracije." },
+    ],
+    chargesTitle: "Kaj je vključeno in kaj se obračuna dodatno?",
+    includedTitle: "Vključeno v mesečni paket",
+    included: ["Funkcionalnosti izbranega paketa", "1 uporabnik", "14-dnevni brezplačni preizkus", "Posodobitve in varnostne izboljšave"],
+    extraTitle: "Dodatni stroški po izbiri ali porabi",
+    extra: ["Dodatni uporabniki: 9,90 € / mesec", "Dodatna SMS sporočila: 0,06 € / sporočilo", "Izbrani dodatni moduli", "Enkratne storitve, kot je izdelava spletne strani"],
+    trialTitle: "Pogoji brezplačnega preizkusa",
+    trialBody: "Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice. Pred potrditvijo plačljivega paketa vidite izbrani paket, dodatke ter ocenjeni mesečni in prvi račun.",
+    relatedTitle: "Preverite povezane funkcionalnosti",
+    related: [
+      { key: "booking", label: "Spletno naročanje" },
+      { key: "calendar", label: "Koledar terminov" },
+      { key: "reminders", label: "SMS in e-poštni opomniki" },
+      { key: "invoicing", label: "Računi in plačila" },
+      { key: "integrations", label: "Integracije" },
+    ],
+    faqTitle: "Pogosta vprašanja o ceniku",
+    faq: [
+      { q: "Ali je v ceni vključen uporabnik?", a: "Da. Vsak paket vključuje enega uporabnika. Dodatne uporabnike lahko dodate po objavljeni mesečni ceni." },
+      { q: "Kako se obračunajo SMS sporočila?", a: "SMS sporočila se obračunajo glede na izbrano količino oziroma porabo po ceni, prikazani v konfiguratorju." },
+      { q: "Ali lahko paket pozneje spremenim?", a: "Da. Paket, število uporabnikov in dodatke lahko prilagodite glede na razvoj poslovanja." },
+      { q: "Ali potrebujem kreditno kartico za preizkus?", a: "Ne. Za 14-dnevni brezplačni preizkus kreditna kartica ni potrebna." },
+    ],
+  },
+  en: {
+    guideTitle: "Which plan fits your business?",
+    guide: [
+      { title: "Basic", body: "For independent professionals who need a calendar, client overview and essential communication." },
+      { title: "Professional", body: "For growing businesses that also need invoicing, files, SMS messaging and phone support." },
+      { title: "Premium", body: "For teams with advanced workflows, rooms, equipment, richer messaging and priority support." },
+      { title: "Enterprise", body: "For multiple locations, larger teams, custom development and specialised integrations." },
+    ],
+    chargesTitle: "What is included and what costs extra?",
+    includedTitle: "Included in the monthly plan",
+    included: ["Features in the selected plan", "1 user", "14-day free trial", "Product updates and security improvements"],
+    extraTitle: "Optional or usage-based costs",
+    extra: ["Additional users: €9.90 / month", "Additional SMS messages: €0.06 / message", "Selected add-on modules", "One-time services such as website creation"],
+    trialTitle: "Free-trial terms",
+    trialBody: "The free trial lasts 14 days and does not require a credit card. Before confirming a paid plan, you can review the selected package, add-ons and estimated monthly and first invoice.",
+    relatedTitle: "Explore related features",
+    related: [
+      { key: "booking", label: "Online booking" },
+      { key: "calendar", label: "Appointment calendar" },
+      { key: "reminders", label: "SMS and email reminders" },
+      { key: "invoicing", label: "Invoicing and payments" },
+      { key: "integrations", label: "Integrations" },
+    ],
+    faqTitle: "Pricing questions",
+    faq: [
+      { q: "Is one user included?", a: "Yes. Every plan includes one user. Additional users can be added at the published monthly price." },
+      { q: "How are SMS messages charged?", a: "SMS messages are charged based on the selected quantity or usage at the price shown in the configurator." },
+      { q: "Can I change plans later?", a: "Yes. You can adjust the plan, user count and add-ons as your business develops." },
+      { q: "Do I need a credit card for the trial?", a: "No. A credit card is not required for the 14-day free trial." },
+    ],
+  },
+} as const;
+
 const USERS_PRICE = 9.9;
 const SMS_PRICE = 0.06;
 const FISCAL_PRICE = 9.9;
@@ -470,6 +537,16 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   );
 
   const handleTierSelect = (tierKey: PlanKey) => {
+    const tier = content.tiers.find((item) => item.key === tierKey);
+    trackMarketingEvent("pricing_package_selected", {
+      package_key: tierKey,
+      package_name: tier?.name,
+      package_price: tier?.baseMonthly ?? null,
+      currency: "EUR",
+      language,
+      source: standalone ? "pricing_page" : "homepage",
+    });
+
     if (!standalone) {
       const target = tierKey === "enterprise" ? `/cenik?plan=${tierKey}#contact-form` : `/cenik?plan=${tierKey}#pricing-configurator`;
       window.location.assign(target);
@@ -521,6 +598,20 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           </HeadingTag>
           <p className="mt-4 text-lg text-muted-foreground">{content.sectionDescription}</p>
         </div>
+
+        {standalone && (
+          <section className="mb-12 rounded-3xl border border-border/60 bg-background p-6 shadow-sm md:p-8" aria-labelledby="package-guide-title">
+            <h2 id="package-guide-title" className="font-display text-2xl font-bold text-foreground">{standaloneExtras[language].guideTitle}</h2>
+            <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {standaloneExtras[language].guide.map((item) => (
+                <article key={item.title} className="rounded-2xl bg-card p-5">
+                  <h3 className="font-semibold text-foreground">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {content.tiers.map((tier, index) => {
@@ -610,6 +701,24 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             </table>
           </div>
         </motion.div>
+
+        {standalone && (
+          <section className="mt-16" aria-labelledby="charges-title">
+            <h2 id="charges-title" className="text-center font-display text-2xl font-bold text-foreground">{standaloneExtras[language].chargesTitle}</h2>
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              <article className="rounded-3xl border border-primary/15 bg-primary/[0.05] p-7">
+                <Check className="h-7 w-7 text-primary" />
+                <h3 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].includedTitle}</h3>
+                <ul className="mt-5 grid gap-3">{standaloneExtras[language].included.map((item) => <li key={item} className="flex gap-3 text-sm text-muted-foreground"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul>
+              </article>
+              <article className="rounded-3xl border border-border/60 bg-background p-7">
+                <Receipt className="h-7 w-7 text-primary" />
+                <h3 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].extraTitle}</h3>
+                <ul className="mt-5 grid gap-3">{standaloneExtras[language].extra.map((item) => <li key={item} className="flex gap-3 text-sm text-muted-foreground"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />{item}</li>)}</ul>
+              </article>
+            </div>
+          </section>
+        )}
 
         {standalone && (
           <>
@@ -762,6 +871,35 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 </div>
               </form>
             </motion.div>
+
+            <section className="mt-16 grid gap-5 lg:grid-cols-2">
+              <article className="rounded-3xl border border-primary/15 bg-primary/[0.05] p-7">
+                <CalendarDays className="h-7 w-7 text-primary" />
+                <h2 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].trialTitle}</h2>
+                <p className="mt-3 leading-7 text-muted-foreground">{standaloneExtras[language].trialBody}</p>
+              </article>
+              <article className="rounded-3xl border border-border/60 bg-background p-7">
+                <Link2 className="h-7 w-7 text-primary" />
+                <h2 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].relatedTitle}</h2>
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {standaloneExtras[language].related.map((item) => (
+                    <a key={item.key} href={getRoutePath(item.key, language)} className="rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition hover:border-primary/30 hover:text-primary">{item.label}</a>
+                  ))}
+                </div>
+              </article>
+            </section>
+
+            <section className="mt-16" aria-labelledby="pricing-faq-title">
+              <div className="flex items-center gap-3"><BellRing className="h-7 w-7 text-primary" /><h2 id="pricing-faq-title" className="font-display text-2xl font-bold text-foreground">{standaloneExtras[language].faqTitle}</h2></div>
+              <div className="mt-6 grid gap-3">
+                {standaloneExtras[language].faq.map((item) => (
+                  <details key={item.q} className="rounded-2xl border border-border/60 bg-background p-5">
+                    <summary className="cursor-pointer list-none font-semibold text-foreground">{item.q}</summary>
+                    <p className="mt-3 leading-7 text-muted-foreground">{item.a}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
           </>
         )}
       </div>

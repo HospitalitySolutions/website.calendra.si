@@ -1,8 +1,20 @@
 import { SITE_URL } from "@/lib/site";
-import { canonicalRoutes, getCanonicalPathname, getLanguageFromPathname, getLocalizedPathname, getRouteKeyFromPathname, type CanonicalRouteKey } from "@/lib/localized-routes";
+import {
+  canonicalRoutes,
+  getCanonicalPathname,
+  getLanguageFromPathname,
+  getLocalizedPathname,
+  getRouteKeyFromPathname,
+  type CanonicalRouteKey,
+} from "@/lib/localized-routes";
 import type { SiteLanguage } from "@/lib/site-language";
 import { LEGAL } from "@/lib/legal";
 import { OFFICIAL_PROFILE_URLS } from "@/lib/external-profiles";
+import {
+  getPublicCompanyProfileFromPathname,
+  getPublicCompanyProfilePath,
+  isIndexablePublicProfile,
+} from "@/lib/public-company-profiles";
 
 type PageSeo = {
   title: string;
@@ -16,198 +28,84 @@ export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-calendra.png`;
 
 export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> = {
   home: {
-    sl: {
-      title: "Calendra | Program za naročanje strank, termine in račune",
-      description:
-        "Calendra je slovenska platforma za storitvena podjetja: spletno naročanje, koledar terminov, računi, opomniki, plačila, analitika in AI pomočnik.",
-    },
-    en: {
-      title: "Calendra | Booking, appointments, invoicing and reminders",
-      description:
-        "Calendra helps service businesses manage online booking, appointment calendars, invoices, reminders, payments, analytics and client data in one platform.",
-    },
+    sl: { title: "Calendra | Program za naročanje strank, termine in račune", description: "Calendra je slovenska platforma za storitvena podjetja: spletno naročanje, koledar terminov, računi, opomniki, plačila, analitika in upravljanje strank." },
+    en: { title: "Calendra | Booking, appointments, invoicing and reminders", description: "Calendra helps service businesses manage online booking, appointment calendars, invoices, reminders, payments, analytics and client data in one platform." },
   },
   pricing: {
-    sl: {
-      title: "Cenik | Calendra program za naročanje strank",
-      description:
-        "Preverite cenik platforme Calendra za spletno naročanje, koledar terminov, opomnike, račune, plačila, analitiko in dodatne uporabnike.",
-    },
-    en: {
-      title: "Pricing | Calendra booking and appointment software",
-      description:
-        "See Calendra pricing for online booking, appointment calendars, reminders, invoicing, payments, analytics and additional users.",
-    },
-  },
-  clients: {
-    sl: {
-      title: "Stranke | Podjetja, ki uporabljajo Calendro",
-      description:
-        "Odkrijte podjetja, ki uporabljajo Calendro za spletno naročanje terminov, in rezervirajte termin neposredno v Calendri.",
-    },
-    en: {
-      title: "Clients | Businesses using Calendra",
-      description:
-        "Explore businesses using Calendra for online appointment booking and book directly through Calendra.",
-    },
+    sl: { title: "Cenik programa za naročanje strank | Calendra", description: "Primerjajte pakete Calendra, vključene funkcionalnosti, dodatne uporabnike, SMS porabo in module. Začnite s 14-dnevnim brezplačnim preizkusom." },
+    en: { title: "Appointment booking software pricing | Calendra", description: "Compare Calendra plans, included features, additional users, SMS usage and optional modules. Start with a 14-day free trial." },
   },
   booking: {
-    sl: {
-      title: "Spletno naročanje strank | Calendra booking widget",
-      description:
-        "Calendra booking widget omogoča, da stranke izberejo storitev, izvajalca, datum in uro ter rezervirajo termin neposredno na vaši spletni strani.",
-    },
-    en: {
-      title: "Online appointment booking | Calendra booking widget",
-      description:
-        "The Calendra booking widget lets customers choose a service, provider, date and time, then book directly on your website.",
-    },
+    sl: { title: "Spletno naročanje terminov in imenik podjetij | Calendra", description: "Rezervirajte termin pri podjetjih, ki uporabljajo Calendro, ali omogočite spletno naročanje z izbiro storitve, zaposlenega, plačila in opomnikov." },
+    en: { title: "Online appointment booking and business directory | Calendra", description: "Book with businesses using Calendra or offer online booking with service and employee selection, payments, confirmations and reminders." },
+  },
+  calendar: {
+    sl: { title: "Koledar terminov za storitvena podjetja | Calendra", description: "Pregleden koledar terminov za zaposlene, delovni čas, odsotnosti, prostore in ponavljajoče se rezervacije brez dvojnega vnašanja." },
+    en: { title: "Appointment calendar for service businesses | Calendra", description: "Manage employees, working hours, absences, rooms and recurring appointments in one clear calendar without duplicate work." },
+  },
+  invoicing: {
+    sl: { title: "Program za račune, termine in plačila | Calendra", description: "Povežite izvedene termine, račune, načine plačila in finančni pregled v enem delovnem toku za storitveno podjetje." },
+    en: { title: "Appointments, invoicing and payments software | Calendra", description: "Connect completed appointments, invoices, payment methods and revenue tracking in one workflow for your service business." },
+  },
+  clientManagement: {
+    sl: { title: "Upravljanje strank in evidenca terminov | Calendra", description: "Ohranite kontaktne podatke, zgodovino terminov, opombe, dokumente in polja po meri v urejenem profilu stranke." },
+    en: { title: "Client management and appointment history | Calendra", description: "Keep contact details, appointment history, notes, documents and custom fields in one organised client profile." },
+  },
+  reminders: {
+    sl: { title: "SMS in e-poštni opomniki za termine | Calendra", description: "Zmanjšajte pozabljene termine z avtomatskimi potrditvami, SMS in e-poštnimi opomniki ter povezavami za spremembo ali odpoved." },
+    en: { title: "SMS and email appointment reminders | Calendra", description: "Reduce missed appointments with automatic confirmations, SMS and email reminders, rescheduling and cancellation links." },
+  },
+  integrations: {
+    sl: { title: "Integracije za naročanje: Google Koledar, Zoom in plačila | Calendra", description: "Povežite Calendro z Google Koledarjem, Zoomom, spletnimi plačili, e-pošto, SMS sporočili in spletnim vtičnikom." },
+    en: { title: "Booking integrations: Google Calendar, Zoom and payments | Calendra", description: "Connect Calendra with Google Calendar, Zoom, online payments, email, SMS and a website booking widget." },
   },
   support: {
-    sl: {
-      title: "Podpora | Calendra pomoč uporabnikom",
-      description:
-        "Podpora za uporabnike Calendra: dostop do aplikacije, kontakt, e-pošta, telefon, delovni čas in pričakovani prvi odziv ekipe za podporo.",
-    },
-    en: {
-      title: "Support | Calendra customer help",
-      description:
-        "Calendra support information: app access, contact email, phone, support hours and expected first response time.",
-    },
+    sl: { title: "Podpora | Calendra pomoč uporabnikom", description: "Podpora za uporabnike Calendra: dostop do aplikacije, kontakt, e-pošta, telefon, delovni čas in pričakovani prvi odziv ekipe za podporo." },
+    en: { title: "Support | Calendra customer help", description: "Calendra support information: app access, contact email, phone, support hours and expected first response time." },
   },
   privacy: {
-    sl: {
-      title: "Politika zasebnosti | Calendra",
-      description:
-        "Politika zasebnosti Calendra za spletno stran, platformo, goste, najemnike, integracije, pravice posameznikov in razmerje upravljavec/obdelovalec.",
-    },
-    en: {
-      title: "Privacy Policy | Calendra",
-      description:
-        "Calendra privacy policy for the website, platform, guests, tenants, integrations, user rights and controller/processor roles.",
-    },
+    sl: { title: "Politika zasebnosti | Calendra", description: "Politika zasebnosti Calendra za spletno stran, platformo, goste, najemnike, integracije, pravice posameznikov in razmerje upravljavec/obdelovalec." },
+    en: { title: "Privacy Policy | Calendra", description: "Calendra privacy policy for the website, platform, guests, tenants, integrations, user rights and controller/processor roles." },
   },
   terms: {
-    sl: {
-      title: "Pogoji uporabe | Calendra",
-      description:
-        "Pogoji uporabe Calendra za spletno stran, SaaS platformo, naročnine, mobilno aplikacijo za goste, integracije in poslovne uporabnike.",
-    },
-    en: {
-      title: "Terms of Service | Calendra",
-      description:
-        "Calendra terms of service for the website, SaaS platform, subscriptions, guest mobile app, integrations and business users.",
-    },
+    sl: { title: "Pogoji uporabe | Calendra", description: "Pogoji uporabe Calendra za spletno stran, SaaS platformo, naročnine, mobilno aplikacijo za goste, integracije in poslovne uporabnike." },
+    en: { title: "Terms of Service | Calendra", description: "Calendra terms of service for the website, SaaS platform, subscriptions, guest mobile app, integrations and business users." },
   },
   legal: {
-    sl: {
-      title: "Pravno in zaupanje | Calendra",
-      description:
-        "Zbrani pravni dokumenti Calendra: zasebnost, pogoji uporabe, DPA, podobdelovalci, piškotki, varnost, pravice in izbris računa.",
-    },
-    en: {
-      title: "Legal & Trust | Calendra",
-      description:
-        "Calendra legal and trust documents: privacy, terms, DPA, subprocessors, cookies, security, data rights and account deletion.",
-    },
+    sl: { title: "Pravno in zaupanje | Calendra", description: "Zbrani pravni dokumenti Calendra: zasebnost, pogoji uporabe, DPA, podobdelovalci, piškotki, varnost, pravice in izbris računa." },
+    en: { title: "Legal & Trust | Calendra", description: "Calendra legal and trust documents: privacy, terms, DPA, subprocessors, cookies, security, data rights and account deletion." },
   },
   dpa: {
-    sl: {
-      title: "Pogodba o obdelavi podatkov | Calendra",
-      description:
-        "Pogodba o obdelavi osebnih podatkov za najemnike Calendra, kadar Calendra obdeluje osebne podatke kot obdelovalec.",
-    },
-    en: {
-      title: "Data Processing Agreement | Calendra",
-      description:
-        "Data Processing Agreement for Calendra tenants where Calendra processes personal data as processor on behalf of the tenant.",
-    },
+    sl: { title: "Pogodba o obdelavi podatkov | Calendra", description: "Pogodba o obdelavi osebnih podatkov za najemnike Calendra, kadar Calendra obdeluje osebne podatke kot obdelovalec." },
+    en: { title: "Data Processing Agreement | Calendra", description: "Data Processing Agreement for Calendra tenants where Calendra processes personal data as processor on behalf of the tenant." },
   },
   subprocessors: {
-    sl: {
-      title: "Podobdelovalci | Calendra",
-      description:
-        "Seznam podobdelovalcev in integracijskih ponudnikov, ki lahko pomagajo pri zagotavljanju storitve Calendra.",
-    },
-    en: {
-      title: "Subprocessors | Calendra",
-      description:
-        "List of subprocessors and integration providers that may help Calendra deliver the service.",
-    },
+    sl: { title: "Podobdelovalci | Calendra", description: "Seznam podobdelovalcev in integracijskih ponudnikov, ki lahko pomagajo pri zagotavljanju storitve Calendra." },
+    en: { title: "Subprocessors | Calendra", description: "List of subprocessors and integration providers that may help Calendra deliver the service." },
   },
   cookies: {
-    sl: {
-      title: "Politika piškotkov | Calendra",
-      description:
-        "Politika piškotkov Calendra z informacijami o nujnih piškotkih, nastavitvah, analitiki in upravljanju piškotkov.",
-    },
-    en: {
-      title: "Cookie Policy | Calendra",
-      description:
-        "Calendra cookie policy covering necessary cookies, preferences, analytics and managing cookies.",
-    },
+    sl: { title: "Politika piškotkov | Calendra", description: "Politika piškotkov Calendra z informacijami o nujnih piškotkih, nastavitvah, analitiki in upravljanju piškotkov." },
+    en: { title: "Cookie Policy | Calendra", description: "Calendra cookie policy covering necessary cookies, preferences, analytics and managing cookies." },
   },
   security: {
-    sl: {
-      title: "Varnost | Calendra",
-      description:
-        "Javni povzetek varnostnih ukrepov Calendra za zaščito platforme, najemnikov, gostov in osebnih podatkov.",
-    },
-    en: {
-      title: "Security | Calendra",
-      description:
-        "Public summary of Calendra security measures used to protect the platform, tenants, guests and personal data.",
-    },
+    sl: { title: "Varnost | Calendra", description: "Javni povzetek varnostnih ukrepov Calendra za zaščito platforme, najemnikov, gostov in osebnih podatkov." },
+    en: { title: "Security | Calendra", description: "Public summary of Calendra security measures used to protect the platform, tenants, guests and personal data." },
   },
   dataRights: {
-    sl: {
-      title: "Pravice posameznikov | Calendra",
-      description:
-        "Kako lahko posamezniki uveljavljajo pravice glede osebnih podatkov pri Calendri ali pri najemniku, ki uporablja Calendro.",
-    },
-    en: {
-      title: "Data Rights | Calendra",
-      description:
-        "How individuals can exercise personal data rights with Calendra or with a tenant using Calendra.",
-    },
+    sl: { title: "Pravice posameznikov | Calendra", description: "Kako lahko posamezniki uveljavljajo pravice glede osebnih podatkov pri Calendri ali pri najemniku, ki uporablja Calendro." },
+    en: { title: "Data Rights | Calendra", description: "How individuals can exercise personal data rights with Calendra or with a tenant using Calendra." },
   },
   zoom: {
-    sl: {
-      title: "Zoom integracija | Calendra navodila",
-      description:
-        "Navodila za povezavo, uporabo in odstranitev Zoom integracije v Calendri za ustvarjanje spletnih terminov in Zoom povezav.",
-    },
-    en: {
-      title: "Zoom integration | Calendra setup guide",
-      description:
-        "How to connect, use and remove the Zoom integration in Calendra for online appointments and automatically generated Zoom links.",
-    },
+    sl: { title: "Zoom integracija | Calendra navodila", description: "Navodila za povezavo, uporabo in odstranitev Zoom integracije v Calendri za ustvarjanje spletnih terminov in Zoom povezav." },
+    en: { title: "Zoom integration | Calendra setup guide", description: "How to connect, use and remove the Zoom integration in Calendra for online appointments and automatically generated Zoom links." },
   },
   aiTransparency: {
-    sl: {
-      title: "AI transparentnost | Calendra",
-      description:
-        "Javno razkritje uporabe AI funkcionalnosti v Calendri, vključno s statusom produkcijskega zagona in ponudnikom OpenAI, če bodo AI funkcije omogočene.",
-    },
-    en: {
-      title: "AI transparency | Calendra",
-      description:
-        "Public disclosure of Calendra AI features, including production launch status and OpenAI provider information if AI features are enabled.",
-    },
+    sl: { title: "AI transparentnost | Calendra", description: "Javno razkritje uporabe AI funkcionalnosti v Calendri, vključno s statusom produkcijskega zagona in ponudnikom OpenAI, če bodo AI funkcije omogočene." },
+    en: { title: "AI transparency | Calendra", description: "Public disclosure of Calendra AI features, including production launch status and OpenAI provider information if AI features are enabled." },
   },
   accountDeletion: {
-    sl: {
-      title: "Izbris računa | Calendra Guest App",
-      description:
-        "Navodila za izbris računa Calendra Guest App v aplikaciji ali prek javne zahteve za izbris računa.",
-      noindex: true,
-    },
-    en: {
-      title: "Account deletion | Calendra Guest App",
-      description:
-        "Instructions for deleting a Calendra Guest App account in the app or through a public account deletion request.",
-      noindex: true,
-    },
+    sl: { title: "Izbris računa | Calendra Guest App", description: "Navodila za izbris računa Calendra Guest App v aplikaciji ali prek javne zahteve za izbris računa.", noindex: true },
+    en: { title: "Account deletion | Calendra Guest App", description: "Instructions for deleting a Calendra Guest App account in the app or through a public account deletion request.", noindex: true },
   },
 };
 
@@ -221,26 +119,9 @@ const organizationSchema = {
   url: SITE_URL,
   email: LEGAL.generalEmail,
   telephone: LEGAL.supportPhoneTel,
-  logo: {
-    "@type": "ImageObject",
-    url: `${SITE_URL}/calendra-logo.png`,
-    width: 512,
-    height: 512,
-  },
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: LEGAL.businessAddress,
-    postalCode: LEGAL.postalCode,
-    addressLocality: LEGAL.city,
-    addressCountry: "SI",
-  },
-  contactPoint: {
-    "@type": "ContactPoint",
-    contactType: "customer support",
-    email: LEGAL.supportEmail,
-    telephone: LEGAL.supportPhoneTel,
-    availableLanguage: ["Slovenian", "English"],
-  },
+  logo: { "@type": "ImageObject", url: `${SITE_URL}/calendra-logo.png`, width: 512, height: 512 },
+  address: { "@type": "PostalAddress", streetAddress: LEGAL.businessAddress, postalCode: LEGAL.postalCode, addressLocality: LEGAL.city, addressCountry: "SI" },
+  contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: LEGAL.supportEmail, telephone: LEGAL.supportPhoneTel, availableLanguage: ["Slovenian", "English"] },
   sameAs: OFFICIAL_PROFILE_URLS,
 };
 
@@ -261,60 +142,98 @@ const softwareSchema = (language: SiteLanguage) => ({
   operatingSystem: "Web, iOS, Android",
   url: SITE_URL,
   inLanguage: language === "sl" ? "sl-SI" : "en",
-  description:
-    language === "sl"
-      ? "Slovenska platforma za spletno naročanje, koledar terminov, opomnike, račune, plačila, analitiko in upravljanje strank."
-      : "A booking and appointment management platform for service businesses, including reminders, invoicing, payments, analytics and client management.",
-  offers: {
-    "@type": "Offer",
-    price: "14.90",
-    priceCurrency: "EUR",
-    availability: "https://schema.org/InStock",
-    url: absoluteUrl(canonicalRoutes.pricing[language]),
-  },
+  description: language === "sl"
+    ? "Slovenska platforma za spletno naročanje, koledar terminov, opomnike, račune, plačila, analitiko in upravljanje strank."
+    : "A booking and appointment management platform for service businesses, including reminders, invoicing, payments, analytics and client management.",
+  offers: { "@type": "Offer", price: "14.90", priceCurrency: "EUR", availability: "https://schema.org/InStock", url: absoluteUrl(canonicalRoutes.pricing[language]) },
   publisher: { "@id": `${SITE_URL}/#organization` },
 });
 
-const breadcrumbSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage, canonicalPath: string) => {
-  const isHome = routeKey === "home";
-  const pageName = pageSeo[routeKey][language].title.split("|")[0].trim();
+const breadcrumbSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage, canonicalPath: string) => ({
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
+    ...(routeKey === "home" ? [] : [{ "@type": "ListItem", position: 2, name: pageSeo[routeKey][language].title.split("|")[0].trim(), item: absoluteUrl(canonicalPath) }]),
+  ],
+});
 
-  return {
+const getProfileSeo = (pathname: string, language: SiteLanguage) => {
+  const profile = getPublicCompanyProfileFromPathname(pathname);
+  if (!profile) return undefined;
+
+  const canonicalPath = getPublicCompanyProfilePath(profile.slug, language);
+  const slPath = getPublicCompanyProfilePath(profile.slug, "sl");
+  const enPath = getPublicCompanyProfilePath(profile.slug, "en");
+  const description = profile.localizedDescription[language];
+  const title = language === "sl"
+    ? `${profile.name} | Naročanje termina s Calendro`
+    : `${profile.name} | Book an appointment with Calendra`;
+  const noindex = !isIndexablePublicProfile(profile);
+  const services = profile.serviceCategories[language];
+
+  const localBusinessSchema = {
+    "@type": "LocalBusiness",
+    "@id": `${absoluteUrl(canonicalPath)}#business`,
+    name: profile.name,
+    description,
+    url: absoluteUrl(canonicalPath),
+    image: profile.logoUrl || undefined,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: profile.city || undefined,
+      addressCountry: profile.countryCode,
+      streetAddress: profile.city && profile.address !== profile.city ? profile.address : undefined,
+    },
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: language === "sl" ? "Storitve" : "Services",
+      itemListElement: services.map((service) => ({ "@type": "Offer", itemOffered: { "@type": "Service", name: service } })),
+    },
+    aggregateRating: profile.review ? { "@type": "AggregateRating", ratingValue: profile.review.rating, reviewCount: 1, bestRating: 5 } : undefined,
+    review: profile.review ? {
+      "@type": "Review",
+      author: { "@type": "Person", name: profile.review.author },
+      reviewRating: { "@type": "Rating", ratingValue: profile.review.rating, bestRating: 5 },
+      reviewBody: profile.review.text[language],
+    } : undefined,
+  };
+
+  const breadcrumbs = {
     "@type": "BreadcrumbList",
     itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: language === "sl" ? "Domov" : "Home",
-        item: absoluteUrl(canonicalRoutes.home[language]),
-      },
-      ...(isHome
-        ? []
-        : [
-            {
-              "@type": "ListItem",
-              position: 2,
-              name: pageName,
-              item: absoluteUrl(canonicalPath),
-            },
-          ]),
+      { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
+      { "@type": "ListItem", position: 2, name: language === "sl" ? "Naročanje" : "Booking", item: absoluteUrl(canonicalRoutes.booking[language]) },
+      { "@type": "ListItem", position: 3, name: profile.name, item: absoluteUrl(canonicalPath) },
     ],
+  };
+
+  return {
+    profileSlug: profile.slug,
+    language,
+    title,
+    description,
+    ogTitle: title,
+    ogDescription: description,
+    canonicalUrl: absoluteUrl(canonicalPath),
+    alternateUrls: { sl: absoluteUrl(slPath), en: absoluteUrl(enPath), xDefault: absoluteUrl(slPath) },
+    noindex,
+    structuredData: { "@context": "https://schema.org", "@graph": [organizationSchema, websiteSchema(language), localBusinessSchema, breadcrumbs] },
   };
 };
 
 export const getSeoForPathname = (pathname: string) => {
-  const routeKey = getRouteKeyFromPathname(pathname);
   const language = getLanguageFromPathname(pathname);
+  const profileSeo = getProfileSeo(pathname, language);
+  if (profileSeo) return profileSeo;
+
+  const routeKey = getRouteKeyFromPathname(pathname);
   const canonicalPath = getCanonicalPathname(pathname);
 
   if (!routeKey || !pageSeo[routeKey]) {
     return {
       language,
       title: language === "sl" ? "Stran ni najdena | Calendra" : "Page not found | Calendra",
-      description:
-        language === "sl"
-          ? "Zahtevana stran ne obstaja ali je bila premaknjena."
-          : "The requested page does not exist or has been moved.",
+      description: language === "sl" ? "Zahtevana stran ne obstaja ali je bila premaknjena." : "The requested page does not exist or has been moved.",
       canonicalUrl: absoluteUrl(canonicalPath),
       alternateUrls: undefined,
       noindex: true,
@@ -334,15 +253,8 @@ export const getSeoForPathname = (pathname: string) => {
     ogTitle: seo.ogTitle || seo.title,
     ogDescription: seo.ogDescription || seo.description,
     canonicalUrl: absoluteUrl(canonicalPath),
-    alternateUrls: {
-      sl: absoluteUrl(slPath),
-      en: absoluteUrl(enPath),
-      xDefault: absoluteUrl(slPath),
-    },
+    alternateUrls: { sl: absoluteUrl(slPath), en: absoluteUrl(enPath), xDefault: absoluteUrl(slPath) },
     noindex: seo.noindex,
-    structuredData: {
-      "@context": "https://schema.org",
-      "@graph": [organizationSchema, websiteSchema(language), softwareSchema(language), breadcrumbSchema(routeKey, language, canonicalPath)],
-    },
+    structuredData: { "@context": "https://schema.org", "@graph": [organizationSchema, websiteSchema(language), softwareSchema(language), breadcrumbSchema(routeKey, language, canonicalPath)] },
   };
 };

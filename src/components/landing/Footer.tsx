@@ -8,12 +8,18 @@ type FooterLink = {
   label: string;
 };
 
-const footerLinks: Record<"sl" | "en", { product: FooterLink[]; support: FooterLink[]; legal: FooterLink[] }> = {
+const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: FooterLink[]; support: FooterLink[]; legal: FooterLink[] }> = {
   sl: {
     product: [
-      { key: "clients", label: "Stranke" },
       { key: "booking", label: "Naročanje" },
       { key: "pricing", label: "Cenik" },
+    ],
+    features: [
+      { key: "calendar", label: "Koledar terminov" },
+      { key: "clientManagement", label: "Upravljanje strank" },
+      { key: "reminders", label: "SMS in e-poštni opomniki" },
+      { key: "invoicing", label: "Računi in plačila" },
+      { key: "integrations", label: "Integracije" },
     ],
     support: [
       { key: "support", label: "Podpora" },
@@ -34,9 +40,15 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; support: FooterL
   },
   en: {
     product: [
-      { key: "clients", label: "Clients" },
       { key: "booking", label: "Booking" },
       { key: "pricing", label: "Pricing" },
+    ],
+    features: [
+      { key: "calendar", label: "Appointment calendar" },
+      { key: "clientManagement", label: "Client management" },
+      { key: "reminders", label: "SMS and email reminders" },
+      { key: "invoicing", label: "Invoicing and payments" },
+      { key: "integrations", label: "Integrations" },
     ],
     support: [
       { key: "support", label: "Support" },
@@ -79,7 +91,7 @@ const Footer = () => {
   return (
     <footer className="border-t border-border/60 bg-background py-12">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="grid gap-10 md:grid-cols-[1.2fr_0.8fr_0.8fr_1.4fr]">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.7fr_1fr_0.8fr_1.4fr]">
           <div>
             <a href={homePath} className="inline-flex items-center">
               <img src={calendraLogo} alt="Calendra" className="h-10 w-auto" />
@@ -87,6 +99,7 @@ const Footer = () => {
             <p className="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">© {new Date().getFullYear()} Calendra. {copy.rights}</p>
           </div>
           <FooterColumn title={language === "sl" ? "Produkt" : "Product"} links={links.product} language={language} />
+          <FooterColumn title={language === "sl" ? "Funkcionalnosti" : "Features"} links={links.features} language={language} />
           <FooterColumn title={language === "sl" ? "Podpora" : "Support"} links={links.support} language={language} />
           <FooterColumn title={language === "sl" ? "Pravno in zaupanje" : "Legal & Trust"} links={links.legal} language={language} />
         </div>

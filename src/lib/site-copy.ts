@@ -80,7 +80,7 @@ export const siteCopy = {
     finalCta: {
       title: "Pripravljeni na spremembo?",
       description: "Začnite brezplačno in odkrijte, zakaj nas izbirajo podjetniki po vsej Sloveniji.",
-      button: "Začni 7-dnevni preizkus",
+      button: "Začni 14-dnevni preizkus",
     },
     footer: {
       rights: "Vse pravice pridržane.",
@@ -242,7 +242,7 @@ export const siteCopy = {
       title2: "and invoicing in one place",
       supportingTitle: "Easier appointment management. Complete organisation.",
       description:
-        "Calendra helps you save time, reduce duplicate work and deliver a seamless experience for you and your clients.",
+        "Calendra is built for service businesses and teams that want online booking, appointment calendars, clients, reminders, payments and invoicing in one place.",
       primaryCta: "Try it free",
       secondaryCta: "Watch presentation",
       freeTrial: "14-day free trial",
@@ -300,7 +300,7 @@ export const siteCopy = {
     finalCta: {
       title: "Ready for a change?",
       description: "Start for free and discover why businesses across Slovenia choose us.",
-      button: "Start a 7-day trial",
+      button: "Start a 14-day trial",
     },
     footer: {
       rights: "All rights reserved.",

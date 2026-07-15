@@ -3,9 +3,10 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import IndexSsr from "./pages/Index.tsx";
 import PrivacyPolicySsr from "./pages/PrivacyPolicy.tsx";
 import TermsOfServiceSsr from "./pages/TermsOfService.tsx";
-import BookingSsr from "./pages/Booking.tsx";
 import PricingPageSsr from "./pages/PricingPage.tsx";
 import ClientsPageSsr from "./pages/ClientsPage.tsx";
+import PublicCompanyProfilePageSsr from "./pages/PublicCompanyProfilePage.tsx";
+import FeatureDetailPageSsr from "./pages/FeatureDetailPage.tsx";
 import NotFoundSsr from "./pages/NotFound.tsx";
 import SupportSsr from "./pages/Support.tsx";
 import ZoomIntegrationSsr from "./pages/ZoomIntegration.tsx";
@@ -18,15 +19,17 @@ import CookiePolicySsr from "./pages/CookiePolicy.tsx";
 import SecuritySsr from "./pages/Security.tsx";
 import DataRightsSsr from "./pages/DataRights.tsx";
 
-// The homepage is the primary entry route and stays in the initial bundle.
-// All secondary routes are lazy-loaded in the browser, while prerendering uses
-// synchronous components so every canonical URL still receives complete HTML.
 const Index = IndexSsr;
 const PrivacyPolicy = import.meta.env.SSR ? PrivacyPolicySsr : lazy(() => import("./pages/PrivacyPolicy.tsx"));
 const TermsOfService = import.meta.env.SSR ? TermsOfServiceSsr : lazy(() => import("./pages/TermsOfService.tsx"));
-const Booking = import.meta.env.SSR ? BookingSsr : lazy(() => import("./pages/Booking.tsx"));
 const PricingPage = import.meta.env.SSR ? PricingPageSsr : lazy(() => import("./pages/PricingPage.tsx"));
 const ClientsPage = import.meta.env.SSR ? ClientsPageSsr : lazy(() => import("./pages/ClientsPage.tsx"));
+const PublicCompanyProfilePage = import.meta.env.SSR
+  ? PublicCompanyProfilePageSsr
+  : lazy(() => import("./pages/PublicCompanyProfilePage.tsx"));
+const FeatureDetailPage = import.meta.env.SSR
+  ? FeatureDetailPageSsr
+  : lazy(() => import("./pages/FeatureDetailPage.tsx"));
 const NotFound = import.meta.env.SSR ? NotFoundSsr : lazy(() => import("./pages/NotFound.tsx"));
 const Support = import.meta.env.SSR ? SupportSsr : lazy(() => import("./pages/Support.tsx"));
 const ZoomIntegration = import.meta.env.SSR ? ZoomIntegrationSsr : lazy(() => import("./pages/ZoomIntegration.tsx"));
@@ -83,17 +86,29 @@ const AppRoutes = () => (
       <Route path="/en/data-rights" element={<DataRights />} />
       <Route path="/data-rights" element={<Navigate to="/en/data-rights" replace />} />
 
-      <Route path="/narocanje" element={<Booking />} />
-      <Route path="/en/booking" element={<Booking />} />
+      <Route path="/narocanje" element={<ClientsPage />} />
+      <Route path="/en/booking" element={<ClientsPage />} />
+      <Route path="/narocanje/:slug" element={<PublicCompanyProfilePage />} />
+      <Route path="/en/booking/:slug" element={<PublicCompanyProfilePage />} />
+      <Route path="/stranke" element={<Navigate to="/narocanje" replace />} />
+      <Route path="/en/clients" element={<Navigate to="/en/booking" replace />} />
+      <Route path="/clients" element={<Navigate to="/en/booking" replace />} />
       <Route path="/booking" element={<Navigate to="/en/booking" replace />} />
+
+      <Route path="/koledar-terminov" element={<FeatureDetailPage />} />
+      <Route path="/en/appointment-calendar" element={<FeatureDetailPage />} />
+      <Route path="/racuni-in-placila" element={<FeatureDetailPage />} />
+      <Route path="/en/invoicing-and-payments" element={<FeatureDetailPage />} />
+      <Route path="/upravljanje-strank" element={<FeatureDetailPage />} />
+      <Route path="/en/client-management" element={<FeatureDetailPage />} />
+      <Route path="/sms-opomniki" element={<FeatureDetailPage />} />
+      <Route path="/en/appointment-reminders" element={<FeatureDetailPage />} />
+      <Route path="/integracije" element={<FeatureDetailPage />} />
+      <Route path="/en/integrations" element={<FeatureDetailPage />} />
 
       <Route path="/cenik" element={<PricingPage />} />
       <Route path="/en/pricing" element={<PricingPage />} />
       <Route path="/pricing" element={<Navigate to="/en/pricing" replace />} />
-
-      <Route path="/stranke" element={<ClientsPage />} />
-      <Route path="/en/clients" element={<ClientsPage />} />
-      <Route path="/clients" element={<Navigate to="/en/clients" replace />} />
 
       <Route path="/podpora" element={<Support />} />
       <Route path="/en/support" element={<Support />} />

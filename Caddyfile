@@ -4,7 +4,9 @@
 
   # Canonical language-specific URLs. Legacy English aliases redirect to /en/*.
   redir /pricing /en/pricing 308
-  redir /clients /en/clients 308
+  redir /stranke /narocanje 308
+  redir /en/clients /en/booking 308
+  redir /clients /en/booking 308
   redir /booking /en/booking 308
   redir /support /en/support 308
   redir /privacy-policy /en/privacy-policy 308

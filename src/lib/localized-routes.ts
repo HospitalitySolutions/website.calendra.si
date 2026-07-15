@@ -1,10 +1,15 @@
 import type { SiteLanguage } from "@/lib/site-language";
+import { getPublicCompanyProfileFromPathname, getPublicCompanyProfilePath } from "@/lib/public-company-profiles";
 
 export type CanonicalRouteKey =
   | "home"
   | "pricing"
-  | "clients"
   | "booking"
+  | "calendar"
+  | "invoicing"
+  | "clientManagement"
+  | "reminders"
+  | "integrations"
   | "support"
   | "privacy"
   | "terms"
@@ -21,8 +26,12 @@ export type CanonicalRouteKey =
 export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, string>> = {
   home: { sl: "/", en: "/en" },
   pricing: { sl: "/cenik", en: "/en/pricing" },
-  clients: { sl: "/stranke", en: "/en/clients" },
   booking: { sl: "/narocanje", en: "/en/booking" },
+  calendar: { sl: "/koledar-terminov", en: "/en/appointment-calendar" },
+  invoicing: { sl: "/racuni-in-placila", en: "/en/invoicing-and-payments" },
+  clientManagement: { sl: "/upravljanje-strank", en: "/en/client-management" },
+  reminders: { sl: "/sms-opomniki", en: "/en/appointment-reminders" },
+  integrations: { sl: "/integracije", en: "/en/integrations" },
   support: { sl: "/podpora", en: "/en/support" },
   privacy: { sl: "/zasebnost", en: "/en/privacy-policy" },
   terms: { sl: "/pogoji-uporabe", en: "/en/terms-of-service" },
@@ -42,19 +51,18 @@ export type SitemapChangeFrequency = "weekly" | "monthly" | "yearly";
 export type SitemapRouteMetadata = {
   changeFrequency: SitemapChangeFrequency;
   priority: Record<SiteLanguage, number>;
-  /**
-   * Set this only when the visible page content or other search-relevant page
-   * information changes meaningfully. The sitemap generator omits lastmod
-   * when no accurate date is available.
-   */
   lastModified?: string;
 };
 
 export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadata> = {
   home: { changeFrequency: "weekly", priority: { sl: 1, en: 0.9 }, lastModified: "2026-07-15" },
   pricing: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, lastModified: "2026-07-15" },
-  clients: { changeFrequency: "weekly", priority: { sl: 0.8, en: 0.7 } },
-  booking: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
+  booking: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, lastModified: "2026-07-15" },
+  calendar: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
+  invoicing: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
+  clientManagement: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
+  reminders: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
+  integrations: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   support: { changeFrequency: "monthly", priority: { sl: 0.6, en: 0.5 } },
   privacy: { changeFrequency: "yearly", priority: { sl: 0.4, en: 0.4 } },
   terms: { changeFrequency: "yearly", priority: { sl: 0.4, en: 0.4 } },
@@ -73,7 +81,9 @@ const routeEntries = Object.entries(canonicalRoutes) as Array<[CanonicalRouteKey
 
 const legacyAliases: Record<string, string> = {
   "/pricing": canonicalRoutes.pricing.en,
-  "/clients": canonicalRoutes.clients.en,
+  "/stranke": canonicalRoutes.booking.sl,
+  "/clients": canonicalRoutes.booking.en,
+  "/en/clients": canonicalRoutes.booking.en,
   "/booking": canonicalRoutes.booking.en,
   "/support": canonicalRoutes.support.en,
   "/privacy-policy": canonicalRoutes.privacy.en,
@@ -116,6 +126,9 @@ export const getRouteKeyFromPathname = (pathname: string): CanonicalRouteKey | u
 
 export const getCanonicalPathname = (pathname: string) => {
   const normalized = normalizePathname(pathname);
+  const profile = getPublicCompanyProfileFromPathname(normalized);
+  if (profile) return getPublicCompanyProfilePath(profile.slug, getLanguageFromPathname(normalized));
+
   const legacyTarget = legacyAliases[normalized];
   if (legacyTarget) return legacyTarget;
 
@@ -127,6 +140,9 @@ export const getCanonicalPathname = (pathname: string) => {
 };
 
 export const getLocalizedPathname = (pathname: string, language: SiteLanguage) => {
+  const profile = getPublicCompanyProfileFromPathname(pathname);
+  if (profile) return getPublicCompanyProfilePath(profile.slug, language);
+
   const key = getRouteKeyFromPathname(pathname);
   if (!key) return language === "en" ? "/en" : "/";
   return canonicalRoutes[key][language];

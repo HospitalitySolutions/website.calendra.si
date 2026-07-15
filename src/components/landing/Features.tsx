@@ -1,7 +1,8 @@
-import { CalendarDays, Receipt, BarChart3, Users, Mic, Shield, Bell, Plug } from "lucide-react";
+import { CalendarDays, Receipt, BarChart3, Users, Mic, Shield, Bell, Plug, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
+import { getRoutePath, type CanonicalRouteKey } from "@/lib/localized-routes";
 
 const featureIcons = [CalendarDays, Receipt, BarChart3, Users, Mic, Bell, Shield, Plug] as const;
 const featureColors = [
@@ -15,9 +16,21 @@ const featureColors = [
   "bg-orange-50 text-orange-600",
 ] as const;
 
+const detailRouteKeys: Array<CanonicalRouteKey | undefined> = [
+  "calendar",
+  "invoicing",
+  undefined,
+  "clientManagement",
+  undefined,
+  "reminders",
+  undefined,
+  "integrations",
+];
+
 const Features = () => {
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).features;
+  const detailLabel = language === "sl" ? "Preberite več" : "Learn more";
 
   return (
     <section id="funkcionalnosti" className="scroll-mt-20 bg-card py-20 md:py-28">
@@ -39,10 +52,11 @@ const Features = () => {
           {copy.items.map((item, index) => {
             const Icon = featureIcons[index];
             const color = featureColors[index];
+            const routeKey = detailRouteKeys[index];
             return (
-              <motion.div
+              <motion.article
                 key={item.title}
-                className="group relative rounded-2xl border border-border/50 bg-background p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-soft"
+                className="group relative flex min-h-[260px] flex-col rounded-2xl border border-border/50 bg-background p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-soft"
                 initial={false}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -52,8 +66,17 @@ const Features = () => {
                   <Icon className="h-5 w-5" />
                 </div>
                 <h3 className="font-display text-base font-semibold text-foreground">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-              </motion.div>
+                <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
+                {routeKey ? (
+                  <a
+                    href={getRoutePath(routeKey, language)}
+                    className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:gap-3"
+                  >
+                    {detailLabel}
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                ) : null}
+              </motion.article>
             );
           })}
         </div>

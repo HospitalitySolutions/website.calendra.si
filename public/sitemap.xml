@@ -37,26 +37,10 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/cenik" />
   </url>
   <url>
-    <loc>https://calendra.si/stranke</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/stranke" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/clients" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/stranke" />
-  </url>
-  <url>
-    <loc>https://calendra.si/en/clients</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/stranke" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/clients" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/stranke" />
-  </url>
-  <url>
     <loc>https://calendra.si/narocanje</loc>
     <lastmod>2026-07-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
     <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/narocanje" />
     <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/booking" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/narocanje" />
@@ -64,11 +48,101 @@
   <url>
     <loc>https://calendra.si/en/booking</loc>
     <lastmod>2026-07-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
     <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/narocanje" />
     <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/booking" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/narocanje" />
+  </url>
+  <url>
+    <loc>https://calendra.si/koledar-terminov</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/koledar-terminov" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/appointment-calendar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/koledar-terminov" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/appointment-calendar</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/koledar-terminov" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/appointment-calendar" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/koledar-terminov" />
+  </url>
+  <url>
+    <loc>https://calendra.si/racuni-in-placila</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/racuni-in-placila" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/invoicing-and-payments" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/racuni-in-placila" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/invoicing-and-payments</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/racuni-in-placila" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/invoicing-and-payments" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/racuni-in-placila" />
+  </url>
+  <url>
+    <loc>https://calendra.si/upravljanje-strank</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/upravljanje-strank" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/client-management" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/upravljanje-strank" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/client-management</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/upravljanje-strank" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/client-management" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/upravljanje-strank" />
+  </url>
+  <url>
+    <loc>https://calendra.si/sms-opomniki</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/sms-opomniki" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/appointment-reminders" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/sms-opomniki" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/appointment-reminders</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/sms-opomniki" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/appointment-reminders" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/sms-opomniki" />
+  </url>
+  <url>
+    <loc>https://calendra.si/integracije</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/integracije" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/integrations" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/integracije" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/integrations</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/integracije" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/integrations" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/integracije" />
   </url>
   <url>
     <loc>https://calendra.si/podpora</loc>
@@ -245,5 +319,41 @@
     <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/ai-transparentnost" />
     <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/ai-transparency" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/ai-transparentnost" />
+  </url>
+  <url>
+    <loc>https://calendra.si/narocanje/beauty-lounge</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/narocanje/beauty-lounge" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/booking/beauty-lounge" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/narocanje/beauty-lounge" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/booking/beauty-lounge</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/narocanje/beauty-lounge" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/booking/beauty-lounge" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/narocanje/beauty-lounge" />
+  </url>
+  <url>
+    <loc>https://calendra.si/narocanje/institut-avisensa</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/narocanje/institut-avisensa" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/booking/institut-avisensa" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/narocanje/institut-avisensa" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/booking/institut-avisensa</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/narocanje/institut-avisensa" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/booking/institut-avisensa" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/narocanje/institut-avisensa" />
   </url>
 </urlset>

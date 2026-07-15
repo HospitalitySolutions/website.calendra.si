@@ -12,6 +12,7 @@ import {
 import { motion } from "framer-motion";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
+import { trackMarketingEvent } from "@/lib/marketing-events";
 
 const PRESENTATION_HREF = "#funkcionalnosti";
 
@@ -81,7 +82,7 @@ const Hero = () => {
                 className="h-14 rounded-xl px-7 text-base font-semibold shadow-xl shadow-primary/25 sm:px-8"
                 asChild
               >
-                <a href={TRIAL_SIGNUP_ROUTE}>
+                <a href={TRIAL_SIGNUP_ROUTE} onClick={() => trackMarketingEvent("trial_cta_click", { placement: "homepage_hero", language })}>
                   {copy.primaryCta}
                   <ArrowRight className="ml-1 h-5 w-5" aria-hidden="true" />
                 </a>
@@ -101,6 +102,16 @@ const Hero = () => {
                 </a>
               </Button>
             </motion.div>
+
+            <motion.p
+              className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-muted-foreground"
+              initial={false}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.45, delay: 0.3 }}
+            >
+              <span className="inline-flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" />{copy.freeTrial}</span>
+              <span>{copy.noCard}</span>
+            </motion.p>
 
             <motion.div
               className="mt-10 flex flex-col gap-5 text-sm sm:flex-row sm:items-center sm:gap-7"
