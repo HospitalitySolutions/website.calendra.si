@@ -2,6 +2,7 @@ import calendraLogo from "@/assets/calendra-logo.png";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { getRoutePath, type CanonicalRouteKey } from "@/lib/localized-routes";
+import { getItServiceContent, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import {
   FACEBOOK_PROFILE_URL,
   INSTAGRAM_PROFILE_URL,
@@ -29,7 +30,8 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
       { key: "integrations", label: "Integracije" },
     ],
     support: [
-      { key: "support", label: "Podpora" },
+      { key: "contact", label: "Kontakt" },
+      { key: "support", label: "Podpora za Calendro" },
       { key: "zoom", label: "Zoom integracija" },
     ],
     legal: [
@@ -59,7 +61,8 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
       { key: "integrations", label: "Integrations" },
     ],
     support: [
-      { key: "support", label: "Support" },
+      { key: "contact", label: "Contact" },
+      { key: "support", label: "Calendra support" },
       { key: "zoom", label: "Zoom integration" },
     ],
     legal: [
@@ -104,7 +107,7 @@ const Footer = () => {
   return (
     <footer className="border-t border-border/60 bg-background py-12">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.7fr_1fr_0.8fr_1.4fr]">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.7fr_1fr_1fr_0.8fr_1.35fr]">
           <div>
             <a href={homePath} className="inline-flex items-center">
               <img src={calendraLogo} alt="Calendra" width="628" height="205" className="h-10 w-auto" />
@@ -129,7 +132,18 @@ const Footer = () => {
           </div>
           <FooterColumn title={language === "sl" ? "Produkt" : "Product"} links={links.product} language={language} />
           <FooterColumn title={language === "sl" ? "Funkcionalnosti" : "Features"} links={links.features} language={language} />
-          <FooterColumn title={language === "sl" ? "Podpora" : "Support"} links={links.support} language={language} />
+          <div>
+            <p className="text-sm font-semibold text-foreground">{language === "sl" ? "IT storitve" : "IT services"}</p>
+            <div className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
+              <a href={getRoutePath("itServices", language)} className="font-medium text-foreground transition hover:text-primary">{language === "sl" ? "Pregled IT storitev" : "IT services overview"}</a>
+              {IT_SERVICE_ROUTE_KEYS.map((routeKey) => (
+                <a key={routeKey} href={getRoutePath(routeKey, language)} className="transition-colors hover:text-foreground">
+                  {getItServiceContent(routeKey, language).navLabel}
+                </a>
+              ))}
+            </div>
+          </div>
+          <FooterColumn title={language === "sl" ? "Kontakt in podpora" : "Contact & support"} links={links.support} language={language} />
           <FooterColumn title={language === "sl" ? "Pravno in zaupanje" : "Legal & Trust"} links={links.legal} language={language} />
         </div>
       </div>

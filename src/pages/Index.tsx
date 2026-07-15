@@ -6,6 +6,7 @@ import Testimonials from "@/components/landing/Testimonials";
 import FinalCta from "@/components/landing/FinalCta";
 import Footer from "@/components/landing/Footer";
 import CalendraConnectPromoSsr from "@/components/landing/CalendraConnectPromo";
+import ItServicesPromoSsr from "@/components/landing/ItServicesPromo";
 import {
   AudienceSection,
   HomeFaq,
@@ -18,6 +19,9 @@ import {
 const CalendraConnectPromo = import.meta.env.SSR
   ? CalendraConnectPromoSsr
   : lazy(() => import("@/components/landing/CalendraConnectPromo"));
+const ItServicesPromo = import.meta.env.SSR
+  ? ItServicesPromoSsr
+  : lazy(() => import("@/components/landing/ItServicesPromo"));
 
 const Index = () => (
   <div className="min-h-screen">
@@ -31,6 +35,9 @@ const Index = () => (
       <CalendraConnectPromo />
     </Suspense>
     <IntegrationsSection />
+    <Suspense fallback={<div className="min-h-[520px] bg-background" aria-hidden="true" />}>
+      <ItServicesPromo />
+    </Suspense>
     <Testimonials />
     <PricingOverview />
     <HomeFaq />

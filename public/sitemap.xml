@@ -163,6 +163,150 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/calendra-connect" />
   </url>
   <url>
+    <loc>https://calendra.si/it-storitve</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/it-storitve" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/it-services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/it-storitve" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/it-services</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/it-storitve" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/it-services" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/it-storitve" />
+  </url>
+  <url>
+    <loc>https://calendra.si/it-podpora-malim-podjetjem</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/it-podpora-malim-podjetjem" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/small-business-it-support" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/it-podpora-malim-podjetjem" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/small-business-it-support</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/it-podpora-malim-podjetjem" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/small-business-it-support" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/it-podpora-malim-podjetjem" />
+  </url>
+  <url>
+    <loc>https://calendra.si/izdelava-spletnih-strani</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/izdelava-spletnih-strani" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/website-design-and-redesign" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/izdelava-spletnih-strani" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/website-design-and-redesign</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/izdelava-spletnih-strani" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/website-design-and-redesign" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/izdelava-spletnih-strani" />
+  </url>
+  <url>
+    <loc>https://calendra.si/vzdrzevanje-spletnih-strani</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/vzdrzevanje-spletnih-strani" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/website-maintenance" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/vzdrzevanje-spletnih-strani" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/website-maintenance</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/vzdrzevanje-spletnih-strani" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/website-maintenance" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/vzdrzevanje-spletnih-strani" />
+  </url>
+  <url>
+    <loc>https://calendra.si/poslovna-e-posta</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/poslovna-e-posta" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/business-email" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/poslovna-e-posta" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/business-email</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/poslovna-e-posta" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/business-email" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/poslovna-e-posta" />
+  </url>
+  <url>
+    <loc>https://calendra.si/varnostne-kopije-in-it-varnost</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/varnostne-kopije-in-it-varnost" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/backups-and-it-security" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/varnostne-kopije-in-it-varnost" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/backups-and-it-security</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/varnostne-kopije-in-it-varnost" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/backups-and-it-security" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/varnostne-kopije-in-it-varnost" />
+  </url>
+  <url>
+    <loc>https://calendra.si/avtomatizacije-in-integracije</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/avtomatizacije-in-integracije" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/business-automation-and-integrations" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/avtomatizacije-in-integracije" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/business-automation-and-integrations</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/avtomatizacije-in-integracije" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/business-automation-and-integrations" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/avtomatizacije-in-integracije" />
+  </url>
+  <url>
+    <loc>https://calendra.si/kontakt</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/kontakt" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/kontakt" />
+  </url>
+  <url>
+    <loc>https://calendra.si/en/contact</loc>
+    <lastmod>2026-07-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="https://calendra.si/kontakt" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://calendra.si/en/contact" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://calendra.si/kontakt" />
+  </url>
+  <url>
     <loc>https://calendra.si/podpora</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>

@@ -11,6 +11,14 @@ export type CanonicalRouteKey =
   | "reminders"
   | "integrations"
   | "connect"
+  | "itServices"
+  | "itSupport"
+  | "websiteDesign"
+  | "websiteMaintenance"
+  | "businessEmail"
+  | "backupsSecurity"
+  | "automation"
+  | "contact"
   | "support"
   | "privacy"
   | "terms"
@@ -34,6 +42,14 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   reminders: { sl: "/sms-opomniki", en: "/en/appointment-reminders" },
   integrations: { sl: "/integracije", en: "/en/integrations" },
   connect: { sl: "/calendra-connect", en: "/en/calendra-connect" },
+  itServices: { sl: "/it-storitve", en: "/en/it-services" },
+  itSupport: { sl: "/it-podpora-malim-podjetjem", en: "/en/small-business-it-support" },
+  websiteDesign: { sl: "/izdelava-spletnih-strani", en: "/en/website-design-and-redesign" },
+  websiteMaintenance: { sl: "/vzdrzevanje-spletnih-strani", en: "/en/website-maintenance" },
+  businessEmail: { sl: "/poslovna-e-posta", en: "/en/business-email" },
+  backupsSecurity: { sl: "/varnostne-kopije-in-it-varnost", en: "/en/backups-and-it-security" },
+  automation: { sl: "/avtomatizacije-in-integracije", en: "/en/business-automation-and-integrations" },
+  contact: { sl: "/kontakt", en: "/en/contact" },
   support: { sl: "/podpora", en: "/en/support" },
   privacy: { sl: "/zasebnost", en: "/en/privacy-policy" },
   terms: { sl: "/pogoji-uporabe", en: "/en/terms-of-service" },
@@ -66,6 +82,14 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   reminders: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   integrations: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   connect: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
+  itServices: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
+  itSupport: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, lastModified: "2026-07-15" },
+  websiteDesign: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
+  websiteMaintenance: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, lastModified: "2026-07-15" },
+  businessEmail: { changeFrequency: "monthly", priority: { sl: 0.7, en: 0.6 }, lastModified: "2026-07-15" },
+  backupsSecurity: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, lastModified: "2026-07-15" },
+  automation: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, lastModified: "2026-07-15" },
+  contact: { changeFrequency: "monthly", priority: { sl: 0.6, en: 0.5 }, lastModified: "2026-07-15" },
   support: { changeFrequency: "monthly", priority: { sl: 0.6, en: 0.5 } },
   privacy: { changeFrequency: "yearly", priority: { sl: 0.4, en: 0.4 } },
   terms: { changeFrequency: "yearly", priority: { sl: 0.4, en: 0.4 } },

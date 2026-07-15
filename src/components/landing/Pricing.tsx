@@ -7,7 +7,7 @@ import { buildPackageSignupRoute, type PricingSignupSummary } from "@/lib/routes
 import { LEGAL } from "@/lib/legal";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { getRoutePath } from "@/lib/localized-routes";
-import { BellRing, Building2, CalendarDays, Check, Globe2, Link2, MessageSquareText, Receipt, Send, Star, Users, X as XIcon } from "lucide-react";
+import { BellRing, Building2, CalendarDays, Check, Link2, MessageSquareText, Receipt, Send, Star, Users, X as XIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
@@ -48,11 +48,8 @@ type TranslationSet = {
   smsCountLabel: string;
   optionsLabel: string;
   optionFiscal: string;
-  optionWebsite: string;
   optionPremises: string;
   monthlyLabel: string;
-  oneTimeLabel: string;
-  firstInvoiceLabel: string;
   summaryTitle: string;
   selectedPackageLabel: string;
   selectedItemsLabel: string;
@@ -95,11 +92,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     smsCountLabel: "SMS sporočil",
     optionsLabel: "4. Dodatni moduli",
     optionFiscal: "Davčna blagajna",
-    optionWebsite: "Izdelava spletne strani",
     optionPremises: "Poslovni prostor",
     monthlyLabel: "Mesečno skupaj",
-    oneTimeLabel: "Enkratni strošek",
-    firstInvoiceLabel: "Predviden prvi račun",
     summaryTitle: "Povzetek izbire",
     selectedPackageLabel: "Izbran paket",
     selectedItemsLabel: "Izbrane možnosti",
@@ -225,11 +219,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     smsCountLabel: "SMS messages",
     optionsLabel: "4. Add-on modules",
     optionFiscal: "Fiscal cash register",
-    optionWebsite: "Website creation",
     optionPremises: "Business premises",
     monthlyLabel: "Monthly total",
-    oneTimeLabel: "One-time cost",
-    firstInvoiceLabel: "Estimated first invoice",
     summaryTitle: "Selection summary",
     selectedPackageLabel: "Selected package",
     selectedItemsLabel: "Selected options",
@@ -350,7 +341,7 @@ const standaloneExtras = {
     includedTitle: "Vključeno v mesečni paket",
     included: ["Funkcionalnosti izbranega paketa", "1 uporabnik", "14-dnevni brezplačni preizkus", "Posodobitve in varnostne izboljšave"],
     extraTitle: "Dodatni stroški po izbiri ali porabi",
-    extra: ["Dodatni uporabniki: 9,90 € / mesec", "Dodatna SMS sporočila: 0,06 € / sporočilo", "Izbrani dodatni moduli", "Enkratne storitve, kot je izdelava spletne strani"],
+    extra: ["Dodatni uporabniki: 9,90 € / mesec", "Dodatna SMS sporočila: 0,06 € / sporočilo", "Izbrani dodatni moduli"],
     trialTitle: "Pogoji brezplačnega preizkusa",
     trialBody: "Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice. Pred potrditvijo plačljivega paketa vidite izbrani paket, dodatke ter ocenjeni mesečni in prvi račun.",
     relatedTitle: "Preverite povezane funkcionalnosti",
@@ -381,7 +372,7 @@ const standaloneExtras = {
     includedTitle: "Included in the monthly plan",
     included: ["Features in the selected plan", "1 user", "14-day free trial", "Product updates and security improvements"],
     extraTitle: "Optional or usage-based costs",
-    extra: ["Additional users: €9.90 / month", "Additional SMS messages: €0.06 / message", "Selected add-on modules", "One-time services such as website creation"],
+    extra: ["Additional users: €9.90 / month", "Additional SMS messages: €0.06 / message", "Selected add-on modules"],
     trialTitle: "Free-trial terms",
     trialBody: "The free trial lasts 14 days and does not require a credit card. Before confirming a paid plan, you can review the selected package, add-ons and estimated monthly and first invoice.",
     relatedTitle: "Explore related features",
@@ -405,7 +396,6 @@ const standaloneExtras = {
 const USERS_PRICE = 9.9;
 const SMS_PRICE = 0.06;
 const FISCAL_PRICE = 9.9;
-const WEBSITE_BUILD_PRICE = 49.9;
 const PREMISES_PRICE = 19.9;
 const USER_SLIDER_MAX = 20;
 const SMS_SLIDER_MAX = 1000;
@@ -424,7 +414,6 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const [additionalUsers, setAdditionalUsers] = useState(INCLUDED_USERS);
   const [additionalSms, setAdditionalSms] = useState(0);
   const [fiscalCashRegister, setFiscalCashRegister] = useState(false);
-  const [websiteCreation, setWebsiteCreation] = useState(false);
   const [businessPremises, setBusinessPremises] = useState(false);
   const [contactCompany, setContactCompany] = useState("");
   const [contactName, setContactName] = useState("");
@@ -501,14 +490,13 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     additionalSms * SMS_PRICE +
     (fiscalCashRegister ? FISCAL_PRICE : 0) +
     (businessPremises && supportsPremises ? PREMISES_PRICE : 0);
-  const oneTimeTotal = websiteCreation ? WEBSITE_BUILD_PRICE : 0;
-  const firstInvoiceEstimate = monthlyTotal + oneTimeTotal;
+  const oneTimeTotal = 0;
+  const firstInvoiceEstimate = monthlyTotal;
 
   const selectedItems = [
     additionalUsers > INCLUDED_USERS ? `${additionalUsers} ${content.usersCountLabel}` : null,
     additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null,
     fiscalCashRegister ? `${content.optionFiscal} (${content.monthlyLabel.toLowerCase()})` : null,
-    websiteCreation ? `${content.optionWebsite} (${content.oneTimeLabel.toLowerCase()})` : null,
     businessPremises && supportsPremises ? `${content.optionPremises} (${content.monthlyLabel.toLowerCase()})` : null,
   ].filter(Boolean) as string[];
 
@@ -517,7 +505,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       totalUsers: additionalUsers,
       additionalSms,
       fiscalCashRegister,
-      websiteCreation,
+      websiteCreation: false,
       businessPremises: businessPremises && supportsPremises,
       monthlyTotal,
       oneTimeTotal,
@@ -527,7 +515,6 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       additionalUsers,
       additionalSms,
       fiscalCashRegister,
-      websiteCreation,
       businessPremises,
       supportsPremises,
       monthlyTotal,
@@ -573,7 +560,6 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       `${content.contactPhone}: ${contactPhone || "-"}`,
       `${content.selectedItemsLabel}: ${selectedItems.length > 0 ? selectedItems.join(", ") : content.noExtras}`,
       `${content.monthlyLabel}: ${formatter.format(monthlyTotal)}`,
-      `${content.oneTimeLabel}: ${formatter.format(oneTimeTotal)}`,
       "",
       `${content.contactMessage}:`,
       contactMessage || "-",
@@ -788,17 +774,6 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                       </div>
                     </label>
 
-                    <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
-                      <Checkbox checked={websiteCreation} onCheckedChange={(checked) => setWebsiteCreation(Boolean(checked))} className="mt-1" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <Globe2 className="h-4 w-4 text-primary" />
-                          <span className="font-semibold text-foreground">{content.optionWebsite}</span>
-                        </div>
-                        <p className="mt-1 text-sm text-muted-foreground">{formatter.format(WEBSITE_BUILD_PRICE)}</p>
-                      </div>
-                    </label>
-
                     {supportsPremises && (
                       <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
                         <Checkbox checked={businessPremises} onCheckedChange={(checked) => setBusinessPremises(Boolean(checked))} className="mt-1" />
@@ -927,19 +902,9 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   </div>
                 </div>
 
-                <div className="grid gap-2 rounded-2xl border border-border/60 bg-background p-4 sm:grid-cols-3 sm:items-center">
-                  <div>
-                    <p className="text-xs text-muted-foreground">{content.monthlyLabel}</p>
-                    <p className="text-lg font-semibold text-foreground">{formatter.format(monthlyTotal)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">{content.oneTimeLabel}</p>
-                    <p className="text-lg font-semibold text-foreground">{formatter.format(oneTimeTotal)}</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">{content.firstInvoiceLabel}</p>
-                    <p className="font-display text-2xl font-bold text-primary">{formatter.format(firstInvoiceEstimate)}</p>
-                  </div>
+                <div className="rounded-2xl border border-border/60 bg-background p-4">
+                  <p className="text-xs text-muted-foreground">{content.monthlyLabel}</p>
+                  <p className="font-display text-2xl font-bold text-primary">{formatter.format(monthlyTotal)}</p>
                 </div>
 
                 <Button variant="hero" size="lg" className="w-full rounded-xl lg:w-auto lg:min-w-[240px]" asChild>
