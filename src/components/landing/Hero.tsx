@@ -156,8 +156,10 @@ const Hero = () => {
                   src="/hero/calendra-calendar.webp"
                   alt={copy.screenshotAlt}
                   className="block h-auto w-full"
-                  width="2000"
-                  height="767"
+                  width="2048"
+                  height="782"
+                  loading="eager"
+                  decoding="async"
                 />
               </div>
             </div>

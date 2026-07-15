@@ -1,37 +1,31 @@
-import { CalendarDays, Receipt, BarChart3, Users, Mic, Shield, Bell, Plug, ArrowRight } from "lucide-react";
+import { CalendarCheck2, CalendarDays, Receipt, Users, Bell, Plug, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { getRoutePath, type CanonicalRouteKey } from "@/lib/localized-routes";
 
-const featureIcons = [CalendarDays, Receipt, BarChart3, Users, Mic, Bell, Shield, Plug] as const;
+const featureIcons = [CalendarCheck2, CalendarDays, Receipt, Users, Bell, Plug] as const;
 const featureColors = [
   "bg-blue-50 text-blue-600",
   "bg-amber-50 text-amber-600",
   "bg-emerald-50 text-emerald-600",
   "bg-violet-50 text-violet-600",
-  "bg-rose-50 text-rose-600",
   "bg-cyan-50 text-cyan-600",
-  "bg-slate-100 text-slate-600",
   "bg-orange-50 text-orange-600",
 ] as const;
 
-const detailRouteKeys: Array<CanonicalRouteKey | undefined> = [
+const detailRouteKeys: CanonicalRouteKey[] = [
+  "booking",
   "calendar",
   "invoicing",
-  undefined,
   "clientManagement",
-  undefined,
   "reminders",
-  undefined,
   "integrations",
 ];
 
 const Features = () => {
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).features;
-  const detailLabel = language === "sl" ? "Preberite več" : "Learn more";
-
   return (
     <section id="funkcionalnosti" className="scroll-mt-20 bg-card py-20 md:py-28">
       <div className="container mx-auto px-4 lg:px-8">
@@ -48,7 +42,7 @@ const Features = () => {
           <p className="mt-4 text-lg text-muted-foreground">{copy.description}</p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {copy.items.map((item, index) => {
             const Icon = featureIcons[index];
             const color = featureColors[index];
@@ -65,17 +59,15 @@ const Features = () => {
                 <div className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl ${color}`}>
                   <Icon className="h-5 w-5" />
                 </div>
-                <h3 className="font-display text-base font-semibold text-foreground">{item.title}</h3>
+                <p className="font-display text-base font-semibold text-foreground">{item.title}</p>
                 <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-                {routeKey ? (
-                  <a
-                    href={getRoutePath(routeKey, language)}
-                    className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:gap-3"
-                  >
-                    {detailLabel}
-                    <ArrowRight className="h-4 w-4" />
-                  </a>
-                ) : null}
+                <a
+                  href={getRoutePath(routeKey, language)}
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:gap-3"
+                >
+                  {item.linkLabel}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </a>
               </motion.article>
             );
           })}

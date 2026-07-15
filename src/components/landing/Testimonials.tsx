@@ -37,7 +37,7 @@ type TestimonialsCopy = {
 const translations: Record<SiteLanguage, TestimonialsCopy> = {
   sl: {
     eyebrow: "Mnenja uporabnikov",
-    title: "Kaj o Calendri pravijo uporabniki",
+    title: "Izkušnje uporabnikov Calendre",
     description: "Izkušnje podjetij, ki Calendro uporabljajo pri vsakodnevnem naročanju strank.",
     rating: "5,0 na Googlu",
     reviewSource: "Google ocena",
@@ -76,7 +76,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
   },
   en: {
     eyebrow: "Customer reviews",
-    title: "What Calendra users say",
+    title: "Calendra customer experiences",
     description: "Experiences from businesses that use Calendra to manage appointments every day.",
     rating: "5.0 on Google",
     reviewSource: "Google review",
@@ -198,8 +198,12 @@ const Testimonials = () => {
                       <img
                         src={review.avatar}
                         alt=""
+                        aria-hidden="true"
+                        width="48"
+                        height="48"
                         className="h-12 w-12 rounded-full object-cover ring-2 ring-background"
                         loading="lazy"
+                        decoding="async"
                       />
                     ) : (
                       <span

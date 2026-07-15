@@ -18,6 +18,33 @@ type FeatureContent = {
   process: string[];
 };
 
+const relatedRoutes: Record<FeatureKey, CanonicalRouteKey[]> = {
+  calendar: ["booking", "reminders", "clientManagement"],
+  invoicing: ["booking", "clientManagement", "integrations"],
+  clientManagement: ["booking", "calendar", "invoicing"],
+  reminders: ["booking", "calendar", "clientManagement"],
+  integrations: ["booking", "calendar", "invoicing"],
+};
+
+const relatedLinkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>>> = {
+  sl: {
+    booking: "Oglejte si spletno naročanje",
+    calendar: "Spoznajte koledar terminov",
+    invoicing: "Preverite račune in plačila",
+    clientManagement: "Spoznajte upravljanje strank",
+    reminders: "Preberite, kako delujejo opomniki",
+    integrations: "Preglejte integracije",
+  },
+  en: {
+    booking: "Explore online booking",
+    calendar: "Explore the appointment calendar",
+    invoicing: "Explore invoicing and payments",
+    clientManagement: "Explore client management",
+    reminders: "Learn how appointment reminders work",
+    integrations: "Explore Calendra integrations",
+  },
+};
+
 const content: Record<FeatureKey, Record<SiteLanguage, FeatureContent>> = {
   calendar: {
     sl: {
@@ -157,7 +184,7 @@ const FeatureDetailPage = () => {
   const routeKey = getRouteKeyFromPathname(pathname) as FeatureKey | undefined;
   const page = routeKey ? content[routeKey]?.[language] : undefined;
 
-  if (!page) return null;
+  if (!routeKey || !page) return null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -173,7 +200,7 @@ const FeatureDetailPage = () => {
                 <a href={TRIAL_SIGNUP_ROUTE}>{language === "sl" ? "Preizkusite brezplačno" : "Try it free"}<ArrowRight className="h-4 w-4" /></a>
               </Button>
               <Button variant="outline" size="lg" className="rounded-xl" asChild>
-                <a href={getRoutePath("pricing", language)}>{language === "sl" ? "Poglejte cenik" : "See pricing"}</a>
+                <a href={getRoutePath("pricing", language)}>{language === "sl" ? "Oglejte si pakete Calendra" : "Explore Calendra plans"}</a>
               </Button>
             </div>
           </div>
@@ -205,6 +232,26 @@ const FeatureDetailPage = () => {
                 </li>
               ))}
             </ol>
+          </div>
+        </section>
+
+        <section className="border-b border-border/60 bg-background py-14 md:py-20">
+          <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+            <h2 className="font-display text-2xl font-bold text-foreground">
+              {language === "sl" ? "Povezane funkcionalnosti" : "Related features"}
+            </h2>
+            <div className="mt-6 flex flex-wrap gap-3">
+              {relatedRoutes[routeKey].map((relatedRoute) => (
+                <a
+                  key={relatedRoute}
+                  href={getRoutePath(relatedRoute, language)}
+                  className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground transition hover:border-primary/30 hover:text-primary"
+                >
+                  {relatedLinkLabels[language][relatedRoute]}
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
           </div>
         </section>
 

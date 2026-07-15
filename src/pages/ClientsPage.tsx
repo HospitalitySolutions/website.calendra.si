@@ -236,7 +236,7 @@ const ClientsPage = () => {
               </div>
             </div>
             <div className="relative rounded-[1.75rem] border border-white/80 bg-white/75 p-3 shadow-[0_30px_80px_-35px_hsl(var(--primary)/0.45)]">
-              <img src="/hero/calendra-calendar.webp" alt={text.screenshotAlt} width="2000" height="767" className="w-full rounded-[1.3rem] border border-border/60" />
+              <img src="/hero/calendra-calendar.webp" alt={text.screenshotAlt} width="2048" height="782" loading="eager" decoding="async" className="w-full rounded-[1.3rem] border border-border/60" />
               <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:flex sm:items-center sm:gap-3"><CheckCircle2 className="h-6 w-6 text-primary" /><span className="text-sm font-semibold text-foreground">{language === "sl" ? "Rezervacija se takoj zapiše v koledar" : "The booking is added to the calendar immediately"}</span></div>
             </div>
           </div>
@@ -268,7 +268,7 @@ const ClientsPage = () => {
               <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                 {filteredClients.map((client) => (
                   <article key={client.slug} className="group flex flex-col rounded-3xl border border-border/70 bg-card p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-glow">
-                    <div className="flex items-start justify-between gap-4"><div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-border/70 bg-background text-lg font-black text-primary shadow-soft">{client.logoUrl ? <img src={client.logoUrl} alt={`${client.name} logo`} className="h-full w-full object-contain p-1.5" loading="lazy" /> : initialsFor(client.name)}</div>{client.category ? <div className={`rounded-full px-3 py-1 text-xs font-bold ${categoryClasses[client.category]}`}>{categoryLabels[client.category][language]}</div> : null}</div>
+                    <div className="flex items-start justify-between gap-4"><div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-border/70 bg-background text-lg font-black text-primary shadow-soft">{client.logoUrl ? <img src={client.logoUrl} alt={language === "sl" ? `Logotip podjetja ${client.name}` : `${client.name} company logo`} width="64" height="64" className="h-full w-full object-contain p-1.5" loading="lazy" decoding="async" /> : initialsFor(client.name)}</div>{client.category ? <div className={`rounded-full px-3 py-1 text-xs font-bold ${categoryClasses[client.category]}`}>{categoryLabels[client.category][language]}</div> : null}</div>
                     <h3 className="mt-6 font-display text-2xl font-extrabold tracking-tight text-foreground"><a href={getPublicCompanyProfilePath(client.slug, language)} className="transition hover:text-primary">{client.name}</a></h3>
                     <p className="mt-3 flex-1 text-sm leading-6 text-muted-foreground">{client.description}</p>
                     {client.address ? <a href={client.googleMapsUrl} target="_blank" rel="noreferrer noopener" className="mt-5 flex items-start gap-2 rounded-2xl bg-background p-4 text-sm text-muted-foreground transition hover:text-primary"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" /><span>{client.address}</span><ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0" /></a> : null}

@@ -9,8 +9,6 @@ import {
   CalendarCheck2,
   CalendarX2,
   Check,
-  ChevronRight,
-  CircleDollarSign,
   Clock3,
   Dumbbell,
   FileText,
@@ -21,25 +19,32 @@ import {
   Scissors,
   Sparkles,
   Stethoscope,
-  UsersRound,
 } from "lucide-react";
 
 const copy = {
   sl: {
     problems: {
       eyebrow: "Manj administracije",
-      title: "Težave, ki jih Calendra spremeni v urejen proces",
+      title: "Težave, ki jih Calendra rešuje",
       intro: "Ko termini, sporočila, stranke in računi živijo v različnih sistemih, ekipa izgublja čas in informacije. Calendra poveže celoten potek dela.",
       items: [
-        { title: "Preveč telefonskih klicev", body: "Stranke lahko termin rezervirajo, spremenijo ali odpovejo prek spleta.", before: "Klici in ročno usklajevanje", after: "Samostojno spletno naročanje" },
-        { title: "Dvojne rezervacije", body: "Razpoložljivost zaposlenih, prostorov in obstoječih terminov se preverja na enem mestu.", before: "Ločeni koledarji", after: "Enoten koledar ekipe" },
-        { title: "Pozabljeni termini", body: "Samodejni SMS in e-poštni opomniki zmanjšajo nesporazume in neprihode.", before: "Ročno opominjanje", after: "Pravočasna obvestila" },
-        { title: "Preveč administracije", body: "Podatki o stranki, terminu, storitvi in računu ostanejo povezani.", before: "Prepisovanje podatkov", after: "Povezan delovni tok" },
+        { title: "Preveč telefonskih klicev", body: "Stranke lahko termin rezervirajo, spremenijo ali odpovejo prek spleta." },
+        { title: "Dvojne rezervacije", body: "Razpoložljivost zaposlenih, prostorov in obstoječih terminov se preverja na enem mestu." },
+        { title: "Pozabljeni termini", body: "Samodejni SMS in e-poštni opomniki zmanjšajo nesporazume in neprihode." },
+        { title: "Preveč administracije", body: "Podatki o stranki, terminu, storitvi in računu ostanejo povezani." },
+      ],
+      outcomesTitle: "Kaj pridobite",
+      outcomesIntro: "Manj ročnega usklajevanja pomeni več časa za stranke, jasnejši pregled nad delom in bolj dosledno izkušnjo od rezervacije do plačila.",
+      outcomes: [
+        { title: "Samostojno spletno naročanje", body: "Stranke rezervirajo tudi takrat, ko se ne morete oglasiti na telefon." },
+        { title: "Enoten koledar ekipe", body: "Zaposleni, prostori in termini so usklajeni v enem pregledu." },
+        { title: "Pravočasna obvestila", body: "Potrditve in opomniki zmanjšajo nesporazume ter pozabljene termine." },
+        { title: "Povezan delovni tok", body: "Rezervacije, podatki o strankah, plačila in računi ostanejo povezani." },
       ],
     },
     audience: {
-      eyebrow: "Za koga je Calendra?",
-      title: "Za storitvena podjetja, ki delajo po terminih",
+      eyebrow: "Storitvena podjetja",
+      title: "Za koga je Calendra?",
       intro: "Calendra je primerna za samostojne izvajalce in ekipe z več zaposlenimi, lokacijami, prostori ali načini plačila.",
       items: [
         { title: "Lepotni in frizerski saloni", body: "Pregleden urnik zaposlenih, storitev in prostorov." },
@@ -49,8 +54,8 @@ const copy = {
       ],
     },
     how: {
-      eyebrow: "Kako deluje",
-      title: "Od prve rezervacije do računa v treh korakih",
+      eyebrow: "Preprost začetek",
+      title: "Kako deluje Calendra v treh korakih",
       items: [
         { title: "Nastavite storitve in razpoložljivost", body: "Dodajte zaposlene, delovni čas, storitve, lokacije, prostore in pravila naročanja." },
         { title: "Stranke rezervirajo, vi imate pregled", body: "Termin nastane prek javne povezave, spletnega vtičnika, aplikacije ali neposredno v koledarju." },
@@ -65,16 +70,16 @@ const copy = {
       cta: "Več o integracijah",
     },
     pricing: {
-      eyebrow: "Cenik",
-      title: "Začnite z osnovami in razširite, ko jih potrebujete",
+      eyebrow: "Prilagodljivi paketi",
+      title: "Paketi in cenik Calendra",
       intro: "Paketi se začnejo pri 14,90 € na mesec. Izberite raven funkcionalnosti, nato dodajte uporabnike, SMS sporočila ali dodatne module.",
       from: "od 14,90 € / mesec",
       items: ["14-dnevni brezplačni preizkus", "Brez kreditne kartice", "Jasno prikazani dodatni stroški"],
       cta: "Primerjajte pakete",
     },
     faq: {
-      eyebrow: "Pogosta vprašanja",
-      title: "Preden začnete",
+      eyebrow: "Dobro je vedeti",
+      title: "Pogosta vprašanja o Calendri",
       items: [
         { q: "Komu je Calendra namenjena?", a: "Storitvenim podjetjem in posameznikom, ki upravljajo termine, stranke, zaposlene, opomnike, plačila ali račune." },
         { q: "Ali lahko stranke rezervirajo same?", a: "Da. Uporabite lahko javno povezavo, vtičnik na svoji spletni strani ali gostujočo aplikacijo. Pravila naročanja določite sami." },
@@ -87,18 +92,26 @@ const copy = {
   en: {
     problems: {
       eyebrow: "Less administration",
-      title: "Turn common appointment problems into an organised process",
+      title: "Problems Calendra helps you solve",
       intro: "When appointments, messages, clients and invoices live in separate systems, teams lose time and information. Calendra connects the workflow.",
       items: [
-        { title: "Too many phone calls", body: "Customers can book, change or cancel appointments online.", before: "Calls and manual coordination", after: "Self-service online booking" },
-        { title: "Double bookings", body: "Employee, resource and appointment availability is checked in one place.", before: "Separate calendars", after: "One team calendar" },
-        { title: "Missed appointments", body: "Automatic SMS and email reminders reduce misunderstandings and no-shows.", before: "Manual reminders", after: "Timely notifications" },
-        { title: "Too much administration", body: "Client, appointment, service and invoice information stays connected.", before: "Re-entering data", after: "Connected workflow" },
+        { title: "Too many phone calls", body: "Customers can book, change or cancel appointments online." },
+        { title: "Double bookings", body: "Employee, resource and appointment availability is checked in one place." },
+        { title: "Missed appointments", body: "Automatic SMS and email reminders reduce misunderstandings and no-shows." },
+        { title: "Too much administration", body: "Client, appointment, service and invoice information stays connected." },
+      ],
+      outcomesTitle: "What you gain",
+      outcomesIntro: "Less manual coordination gives you more time for customers, a clearer view of daily work and a more consistent experience from booking to payment.",
+      outcomes: [
+        { title: "Self-service online booking", body: "Customers can book even when you cannot answer the phone." },
+        { title: "One team calendar", body: "Employees, rooms and appointments stay coordinated in one view." },
+        { title: "Timely notifications", body: "Confirmations and reminders reduce misunderstandings and missed appointments." },
+        { title: "Connected workflow", body: "Bookings, client information, payments and invoices stay connected." },
       ],
     },
     audience: {
-      eyebrow: "Who is Calendra for?",
-      title: "For service businesses that work by appointment",
+      eyebrow: "Service businesses",
+      title: "Who is Calendra for?",
       intro: "Calendra works for independent professionals and teams with multiple employees, locations, rooms or payment methods.",
       items: [
         { title: "Beauty and hair salons", body: "A clear schedule for employees, services and rooms." },
@@ -108,8 +121,8 @@ const copy = {
       ],
     },
     how: {
-      eyebrow: "How it works",
-      title: "From first booking to invoice in three steps",
+      eyebrow: "A simple start",
+      title: "How Calendra works in three steps",
       items: [
         { title: "Set services and availability", body: "Add employees, working hours, services, locations, rooms and booking rules." },
         { title: "Customers book and you keep control", body: "Appointments are created through a public link, website widget, app or directly in the calendar." },
@@ -124,16 +137,16 @@ const copy = {
       cta: "Explore integrations",
     },
     pricing: {
-      eyebrow: "Pricing",
-      title: "Start with the essentials and expand when needed",
+      eyebrow: "Flexible plans",
+      title: "Calendra plans and pricing",
       intro: "Plans start at €14.90 per month. Choose the right feature level, then add users, SMS messages or optional modules.",
       from: "from €14.90 / month",
       items: ["14-day free trial", "No credit card required", "Clearly shown additional costs"],
       cta: "Compare plans",
     },
     faq: {
-      eyebrow: "Frequently asked questions",
-      title: "Before you start",
+      eyebrow: "Good to know",
+      title: "Frequently asked questions about Calendra",
       items: [
         { q: "Who is Calendra for?", a: "Service businesses and professionals managing appointments, clients, employees, reminders, payments or invoices." },
         { q: "Can customers book by themselves?", a: "Yes. Use a public link, a widget on your website or the guest app. You control the booking rules." },
@@ -166,17 +179,27 @@ export const ProblemsAndOutcomes = () => {
             return (
               <article key={item.title} className="rounded-3xl border border-border/60 bg-card p-7 shadow-soft">
                 <div className="flex items-start gap-4">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Icon className="h-6 w-6" /></span>
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Icon className="h-6 w-6" aria-hidden="true" /></span>
                   <div><h3 className="text-xl font-bold text-foreground">{item.title}</h3><p className="mt-2 leading-7 text-muted-foreground">{item.body}</p></div>
-                </div>
-                <div className="mt-6 grid gap-2 rounded-2xl bg-background p-4 text-sm sm:grid-cols-[1fr_auto_1fr] sm:items-center">
-                  <span className="text-muted-foreground line-through decoration-destructive/50">{item.before}</span>
-                  <ChevronRight className="hidden h-4 w-4 text-primary sm:block" />
-                  <span className="font-semibold text-foreground">{item.after}</span>
                 </div>
               </article>
             );
           })}
+        </div>
+        <div className="mt-16 rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.07] via-card to-accent/[0.06] p-8 shadow-soft md:p-10">
+          <div className="max-w-3xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.outcomesTitle}</h2>
+            <p className="mt-4 text-lg leading-8 text-muted-foreground">{section.outcomesIntro}</p>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {section.outcomes.map((outcome) => (
+              <div key={outcome.title} className="rounded-2xl border border-border/60 bg-background p-5">
+                <Check className="h-5 w-5 text-primary" aria-hidden="true" />
+                <p className="mt-4 font-semibold text-foreground">{outcome.title}</p>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{outcome.body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -191,7 +214,7 @@ export const AudienceSection = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="max-w-3xl"><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><p className="mt-4 text-lg leading-8 text-muted-foreground">{section.intro}</p></div>
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {section.items.map((item, index) => { const Icon = audienceIcons[index]; return <article key={item.title} className="rounded-3xl border border-border/60 bg-background p-6"><Icon className="h-7 w-7 text-primary" /><h3 className="mt-5 text-lg font-bold text-foreground">{item.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p></article>; })}
+          {section.items.map((item, index) => { const Icon = audienceIcons[index]; return <article key={item.title} className="rounded-3xl border border-border/60 bg-background p-6"><Icon className="h-7 w-7 text-primary" aria-hidden="true" /><p className="mt-5 text-lg font-bold text-foreground">{item.title}</p><p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p></article>; })}
         </div>
       </div>
     </section>
@@ -206,7 +229,7 @@ export const HowItWorksSection = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="mx-auto max-w-3xl text-center"><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2></div>
         <div className="mt-12 grid gap-6 lg:grid-cols-3">
-          {section.items.map((item, index) => { const Icon = howIcons[index]; return <article key={item.title} className="relative rounded-3xl border border-border/60 bg-card p-7 shadow-soft"><span className="absolute right-6 top-5 font-display text-5xl font-black text-primary/[0.08]">0{index + 1}</span><span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Icon className="h-6 w-6" /></span><h3 className="mt-6 text-xl font-bold text-foreground">{item.title}</h3><p className="mt-3 leading-7 text-muted-foreground">{item.body}</p></article>; })}
+          {section.items.map((item, index) => { const Icon = howIcons[index]; return <article key={item.title} className="relative rounded-3xl border border-border/60 bg-card p-7 shadow-soft"><span className="absolute right-6 top-5 font-display text-5xl font-black text-primary/[0.08]" aria-hidden="true">0{index + 1}</span><span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Icon className="h-6 w-6" aria-hidden="true" /></span><h3 className="mt-6 text-xl font-bold text-foreground">{item.title}</h3><p className="mt-3 leading-7 text-muted-foreground">{item.body}</p></article>; })}
         </div>
       </div>
     </section>

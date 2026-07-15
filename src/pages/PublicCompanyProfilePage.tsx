@@ -86,7 +86,7 @@ const PublicCompanyProfilePage = () => {
             <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start">
               <div className="flex items-start gap-5">
                 <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-border/70 bg-card text-2xl font-black text-primary shadow-soft">
-                  {client.logoUrl ? <img src={client.logoUrl} alt={`${client.name} logo`} className="h-full w-full object-contain p-2" /> : initialsFor(client.name)}
+                  {client.logoUrl ? <img src={client.logoUrl} alt={language === "sl" ? `Logotip podjetja ${client.name}` : `${client.name} company logo`} width="80" height="80" decoding="async" className="h-full w-full object-contain p-2" /> : initialsFor(client.name)}
                 </div>
                 <div>
                   <div className="inline-flex items-center gap-2 rounded-full bg-primary/[0.08] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.15em] text-primary"><CheckCircle2 className="h-4 w-4" />{text.verified}</div>

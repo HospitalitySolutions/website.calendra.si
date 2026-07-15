@@ -2,6 +2,12 @@ import calendraLogo from "@/assets/calendra-logo.png";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { getRoutePath, type CanonicalRouteKey } from "@/lib/localized-routes";
+import {
+  FACEBOOK_PROFILE_URL,
+  INSTAGRAM_PROFILE_URL,
+  LINKEDIN_PROFILE_URL,
+} from "@/lib/external-profiles";
+import { Facebook, Instagram, Linkedin } from "lucide-react";
 
 type FooterLink = {
   key: CanonicalRouteKey;
@@ -71,7 +77,7 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
 
 const FooterColumn = ({ title, links, language }: { title: string; links: FooterLink[]; language: "sl" | "en" }) => (
   <div>
-    <h2 className="text-sm font-semibold text-foreground">{title}</h2>
+    <p className="text-sm font-semibold text-foreground">{title}</p>
     <div className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
       {links.map((link) => (
         <a key={link.key} href={getRoutePath(link.key, language)} className="transition-colors hover:text-foreground">
@@ -87,6 +93,11 @@ const Footer = () => {
   const copy = getSiteCopy(language).footer;
   const homePath = getRoutePath("home", language);
   const links = footerLinks[language];
+  const socialLinks = [
+    { label: "Facebook", href: FACEBOOK_PROFILE_URL, Icon: Facebook },
+    { label: "Instagram", href: INSTAGRAM_PROFILE_URL, Icon: Instagram },
+    { label: "LinkedIn", href: LINKEDIN_PROFILE_URL, Icon: Linkedin },
+  ];
 
   return (
     <footer className="border-t border-border/60 bg-background py-12">
@@ -94,9 +105,25 @@ const Footer = () => {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.7fr_1fr_0.8fr_1.4fr]">
           <div>
             <a href={homePath} className="inline-flex items-center">
-              <img src={calendraLogo} alt="Calendra" className="h-10 w-auto" />
+              <img src={calendraLogo} alt="Calendra" width="628" height="205" className="h-10 w-auto" />
             </a>
             <p className="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">© {new Date().getFullYear()} Calendra. {copy.rights}</p>
+            <p className="mt-5 text-sm font-semibold text-foreground">{language === "sl" ? "Spremljajte Calendro" : "Follow Calendra"}</p>
+            <div className="mt-3 flex items-center gap-2">
+              {socialLinks.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={`${label} – Calendra`}
+                  title={`${label} – Calendra`}
+                  className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground transition hover:border-primary/30 hover:text-primary"
+                >
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
           </div>
           <FooterColumn title={language === "sl" ? "Produkt" : "Product"} links={links.product} language={language} />
           <FooterColumn title={language === "sl" ? "Funkcionalnosti" : "Features"} links={links.features} language={language} />

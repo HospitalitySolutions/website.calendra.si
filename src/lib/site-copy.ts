@@ -22,7 +22,7 @@ export const siteCopy = {
       title2: "termine in račune na enem mestu",
       supportingTitle: "Enostavnejše upravljanje terminov. Popolna organizacija.",
       description:
-        "Calendra vam pomaga prihraniti čas, zmanjšati podvajanja in poskrbeti za brezhibno izkušnjo za vas in vaše stranke.",
+        "Calendra je program za naročanje strank, upravljanje terminov in izdajanje računov na enem mestu. Namenjen je salonom, svetovalcem, terapevtom, trenerjem in drugim storitvenim podjetjem, ki želijo zmanjšati telefonske klice, dvojne rezervacije, pozabljene termine in administracijo.",
       primaryCta: "Preizkusi brezplačno",
       secondaryCta: "Oglej si predstavitev",
       freeTrial: "14 dni brezplačno",
@@ -40,40 +40,38 @@ export const siteCopy = {
     },
     features: {
       eyebrow: "Funkcionalnosti",
-      title: "Vse kar potrebujete,\nna enem mestu.",
+      title: "Ključne funkcionalnosti Calendre",
       description: "Od prve rezervacije do zadnjega računa — Calendra pokriva celoten proces.",
       items: [
         {
-          title: "Upravljanje rezervacij",
-          description: "Koledar z dnevnim, tedenskim in mesečnim pogledom. Avtomatska sinhronizacija z Google koledarjem.",
+          title: "Spletno naročanje",
+          description: "Stranke izberejo storitev, zaposlenega in prost termin prek javne povezave ali vtičnika na vaši spletni strani.",
+          linkLabel: "Oglejte si spletno naročanje",
         },
         {
-          title: "Izdajanje računov",
-          description: "Samodejno generiranje računov ob zaključku termina. Izvoz za računovodstvo v enem kliku.",
+          title: "Koledar terminov",
+          description: "Dnevni, tedenski in mesečni pogled omogoča jasen pregled zaposlenih, prostorov in razpoložljivosti.",
+          linkLabel: "Spoznajte koledar terminov",
         },
         {
-          title: "Analitika",
-          description: "Pregled prihodkov, zasedenosti, trendov in konverzij strank z vizualnimi poročili.",
+          title: "Računi in plačila",
+          description: "Pripravite račune ob zaključku termina, spremljajte plačila in izvozite podatke za računovodstvo.",
+          linkLabel: "Preverite račune in plačila",
         },
         {
-          title: "Podatki o strankah",
+          title: "Upravljanje strank",
           description: "Centraliziran pregled strank z zgodovino terminov, zapiski in kontaktnimi podatki.",
+          linkLabel: "Spoznajte upravljanje strank",
         },
         {
-          title: "AI glasovni ukazi",
-          description: "Ustvarjajte in upravljajte rezervacije z glasom. »Rezerviraj Ano za torek ob 10h« — in je narejeno.",
-        },
-        {
-          title: "Opomniki",
+          title: "SMS in e-poštni opomniki",
           description: "Avtomatski SMS in e-poštni opomniki za termine in neplačane račune.",
-        },
-        {
-          title: "Varnost in GDPR",
-          description: "Šifrirani podatki, varno gostovanje v EU in skladnost z uredbo GDPR.",
+          linkLabel: "Preberite, kako delujejo opomniki",
         },
         {
           title: "Integracije",
           description: "Google Calendar, Stripe plačila, Zoom video klici in še več — vse povezano.",
+          linkLabel: "Preglejte integracije",
         },
       ],
     },
@@ -242,7 +240,7 @@ export const siteCopy = {
       title2: "and invoicing in one place",
       supportingTitle: "Easier appointment management. Complete organisation.",
       description:
-        "Calendra is built for service businesses and teams that want online booking, appointment calendars, clients, reminders, payments and invoicing in one place.",
+        "Calendra brings appointment booking, scheduling and invoicing together in one place. It is built for salons, consultants, therapists, trainers and other service businesses that want to reduce phone calls, double bookings, missed appointments and administration.",
       primaryCta: "Try it free",
       secondaryCta: "Watch presentation",
       freeTrial: "14-day free trial",
@@ -260,40 +258,38 @@ export const siteCopy = {
     },
     features: {
       eyebrow: "Features",
-      title: "Everything you need,\nin one place.",
+      title: "Key Calendra features",
       description: "From the first booking to the final invoice — Calendra covers the whole flow.",
       items: [
         {
-          title: "Booking management",
-          description: "A calendar with daily, weekly, and monthly views. Automatic Google Calendar sync.",
+          title: "Online booking",
+          description: "Customers choose a service, employee and available time through a public link or a widget on your website.",
+          linkLabel: "Explore online booking",
         },
         {
-          title: "Invoicing",
-          description: "Automatically generate invoices when a session ends. Export for accounting in one click.",
+          title: "Appointment calendar",
+          description: "Daily, weekly and monthly views give you a clear overview of employees, rooms and availability.",
+          linkLabel: "Explore the appointment calendar",
         },
         {
-          title: "Analytics",
-          description: "Track revenue, utilization, trends, and customer conversions with visual reports.",
+          title: "Invoicing and payments",
+          description: "Prepare invoices when appointments end, track payments and export data for accounting.",
+          linkLabel: "Explore invoicing and payments",
         },
         {
-          title: "Customer data",
+          title: "Client management",
           description: "A central customer view with appointment history, notes, and contact details.",
+          linkLabel: "Explore client management",
         },
         {
-          title: "AI voice commands",
-          description: "Create and manage bookings with your voice. “Book Ana for Tuesday at 10 AM” — done.",
-        },
-        {
-          title: "Reminders",
+          title: "SMS and email reminders",
           description: "Automatic SMS and email reminders for appointments and unpaid invoices.",
-        },
-        {
-          title: "Security and GDPR",
-          description: "Encrypted data, secure EU hosting, and GDPR compliance.",
+          linkLabel: "Learn how appointment reminders work",
         },
         {
           title: "Integrations",
           description: "Google Calendar, Stripe payments, Zoom video calls, and more — all connected.",
+          linkLabel: "Explore Calendra integrations",
         },
       ],
     },

@@ -25,7 +25,7 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 border-b border-border/40 bg-card/70 backdrop-blur-xl">
       <div className="container mx-auto flex h-20 items-center justify-between gap-4 px-4 lg:px-8">
         <a href={homePath} className="flex items-center">
-          <img src={calendraLogo} alt="Calendra" className="h-8 md:h-9 w-auto" />
+          <img src={calendraLogo} alt="Calendra" width="628" height="205" className="h-8 w-auto md:h-9" />
         </a>
 
         <div className="hidden items-center gap-8 md:flex">
