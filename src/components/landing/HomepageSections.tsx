@@ -8,6 +8,7 @@ import {
   BadgeEuro,
   BellRing,
   CalendarCheck2,
+  Check,
   Clock3,
   Dumbbell,
   FileText,
@@ -25,35 +26,18 @@ const copy = {
     problems: {
       eyebrow: "Rešitve Calendra",
       title: "Manj klicev. Manj administracije. Več pregleda.",
-      intro:
-          "Calendra poenostavi naročanje, komunikacijo s strankami, opomnike in obračunavanje — da prihranite čas in lažje vodite svoje poslovanje.",
+      intro: "Calendra poenostavi naročanje, komunikacijo s strankami, opomnike in obračunavanje — da prihranite čas in lažje vodite svoje poslovanje.",
       items: [
-        {
-          title: "Manj telefonskih klicev",
-          body: "Stranke lahko termin rezervirajo, spremenijo ali odpovejo same prek spleta ali aplikacije.",
-        },
-        {
-          title: "Brez dvojnih rezervacij",
-          body: "Razpoložljivost zaposlenih, prostorov in terminov se preverja v enem sistemu.",
-        },
-        {
-          title: "Manj pozabljenih terminov",
-          body: "Samodejni SMS in e-poštni opomniki zmanjšajo izostanke in nesporazume.",
-        },
-        {
-          title: "Manj administracije",
-          body: "Podatki o strankah, terminih, storitvah in računih ostanejo povezani na enem mestu.",
-        },
+        { title: "Manj telefonskih klicev", body: "Stranke lahko termin rezervirajo, spremenijo ali odpovejo same prek spleta ali aplikacije." },
+        { title: "Brez dvojnih rezervacij", body: "Razpoložljivost zaposlenih, prostorov in terminov se preverja v enem sistemu." },
+        { title: "Manj pozabljenih terminov", body: "Samodejni SMS in e-poštni opomniki zmanjšajo izostanke in nesporazume." },
+        { title: "Manj administracije", body: "Podatki o strankah, terminih, storitvah in računih ostanejo povezani na enem mestu." },
       ],
-      outcomesTitle: "",
-      outcomesIntro: "",
-      outcomes: [],
     },
     audience: {
       eyebrow: "Storitvena podjetja",
       title: "Za koga je Calendra?",
-      intro:
-          "Calendra je primerna za samostojne izvajalce in ekipe z več zaposlenimi, lokacijami, prostori ali načini plačila.",
+      intro: "Calendra je primerna za samostojne izvajalce in ekipe z več zaposlenimi, lokacijami, prostori ali načini plačila.",
       items: [
         { title: "Lepotni in frizerski saloni", body: "Pregleden urnik zaposlenih, storitev in prostorov." },
         { title: "Svetovalci in izobraževalci", body: "Osebni in spletni termini, dokumenti ter komunikacija." },
@@ -65,18 +49,9 @@ const copy = {
       eyebrow: "Preprost začetek",
       title: "Kako deluje Calendra v treh korakih",
       items: [
-        {
-          title: "Nastavite storitve in razpoložljivost",
-          body: "Dodajte zaposlene, delovni čas, storitve, lokacije, prostore in pravila naročanja.",
-        },
-        {
-          title: "Stranke rezervirajo, vi imate pregled",
-          body: "Termin nastane prek javne povezave, spletnega vtičnika, aplikacije ali neposredno v koledarju.",
-        },
-        {
-          title: "Calendra poskrbi za nadaljnje korake",
-          body: "Pošlje potrditve in opomnike, poveže plačilo ter pripravi podatke za račun in analitiko.",
-        },
+        { title: "Nastavite storitve in razpoložljivost", body: "Dodajte zaposlene, delovni čas, storitve, lokacije, prostore in pravila naročanja." },
+        { title: "Stranke rezervirajo, vi imate pregled", body: "Termin nastane prek javne povezave, spletnega vtičnika, aplikacije ali neposredno v koledarju." },
+        { title: "Calendra poskrbi za nadaljnje korake", body: "Pošlje potrditve in opomnike, poveže plačilo ter pripravi podatke za račun in analitiko." },
       ],
     },
     integrations: {
@@ -89,8 +64,7 @@ const copy = {
     pricing: {
       eyebrow: "Prilagodljivi paketi",
       title: "Paketi in cenik Calendra",
-      intro:
-          "Paketi se začnejo pri 14,90 € na mesec. Izberite raven funkcionalnosti, nato dodajte uporabnike, SMS sporočila ali dodatne module.",
+      intro: "Paketi se začnejo pri 14,90 € na mesec. Izberite raven funkcionalnosti, nato dodajte uporabnike, SMS sporočila ali dodatne module.",
       from: "od 14,90 € / mesec",
       items: ["14-dnevni brezplačni preizkus", "Brez kreditne kartice", "Jasno prikazani dodatni stroški"],
       cta: "Primerjajte pakete",
@@ -99,26 +73,11 @@ const copy = {
       eyebrow: "Dobro je vedeti",
       title: "Pogosta vprašanja o Calendri",
       items: [
-        {
-          q: "Komu je Calendra namenjena?",
-          a: "Storitvenim podjetjem in posameznikom, ki upravljajo termine, stranke, zaposlene, opomnike, plačila ali račune.",
-        },
-        {
-          q: "Ali lahko stranke rezervirajo same?",
-          a: "Da. Uporabite lahko javno povezavo, vtičnik na svoji spletni strani ali gostujočo aplikacijo. Pravila naročanja določite sami.",
-        },
-        {
-          q: "Ali Calendra preprečuje dvojne rezervacije?",
-          a: "Calendra pri razpoložljivosti upošteva delovni čas, odsotnosti, obstoječe termine, zaposlene in po potrebi prostore ali naprave.",
-        },
-        {
-          q: "Ali so opomniki vključeni?",
-          a: "E-poštna in SMS obvestila so odvisna od izbranega paketa in nastavitev. SMS poraba je jasno prikazana v ceniku.",
-        },
-        {
-          q: "Kako dolgo traja brezplačni preizkus?",
-          a: "Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice.",
-        },
+        { q: "Komu je Calendra namenjena?", a: "Storitvenim podjetjem in posameznikom, ki upravljajo termine, stranke, zaposlene, opomnike, plačila ali račune." },
+        { q: "Ali lahko stranke rezervirajo same?", a: "Da. Uporabite lahko javno povezavo, vtičnik na svoji spletni strani ali gostujočo aplikacijo. Pravila naročanja določite sami." },
+        { q: "Ali Calendra preprečuje dvojne rezervacije?", a: "Calendra pri razpoložljivosti upošteva delovni čas, odsotnosti, obstoječe termine, zaposlene in po potrebi prostore ali naprave." },
+        { q: "Ali so opomniki vključeni?", a: "E-poštna in SMS obvestila so odvisna od izbranega paketa in nastavitev. SMS poraba je jasno prikazana v ceniku." },
+        { q: "Kako dolgo traja brezplačni preizkus?", a: "Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice." },
       ],
     },
   },
@@ -126,35 +85,18 @@ const copy = {
     problems: {
       eyebrow: "Calendra solutions",
       title: "Fewer calls. Less administration. More control.",
-      intro:
-          "Calendra simplifies booking, customer communication, reminders and invoicing — so you save time and run your business with more clarity.",
+      intro: "Calendra simplifies booking, customer communication, reminders and invoicing — so you save time and run your business with more clarity.",
       items: [
-        {
-          title: "Fewer phone calls",
-          body: "Customers can book, change or cancel appointments themselves online or in the app.",
-        },
-        {
-          title: "No double bookings",
-          body: "Employee, room and appointment availability is checked in one connected system.",
-        },
-        {
-          title: "Fewer missed appointments",
-          body: "Automatic SMS and email reminders reduce no-shows and misunderstandings.",
-        },
-        {
-          title: "Less administration",
-          body: "Client, appointment, service and invoice information stays connected in one place.",
-        },
+        { title: "Fewer phone calls", body: "Customers can book, change or cancel appointments themselves online or in the app." },
+        { title: "No double bookings", body: "Employee, room and appointment availability is checked in one connected system." },
+        { title: "Fewer missed appointments", body: "Automatic SMS and email reminders reduce no-shows and misunderstandings." },
+        { title: "Less administration", body: "Client, appointment, service and invoice information stays connected in one place." },
       ],
-      outcomesTitle: "",
-      outcomesIntro: "",
-      outcomes: [],
     },
     audience: {
       eyebrow: "Service businesses",
       title: "Who is Calendra for?",
-      intro:
-          "Calendra works for independent professionals and teams with multiple employees, locations, rooms or payment methods.",
+      intro: "Calendra works for independent professionals and teams with multiple employees, locations, rooms or payment methods.",
       items: [
         { title: "Beauty and hair salons", body: "A clear schedule for employees, services and rooms." },
         { title: "Consultants and educators", body: "In-person and online appointments, documents and communication." },
@@ -166,33 +108,22 @@ const copy = {
       eyebrow: "A simple start",
       title: "How Calendra works in three steps",
       items: [
-        {
-          title: "Set services and availability",
-          body: "Add employees, working hours, services, locations, rooms and booking rules.",
-        },
-        {
-          title: "Customers book and you keep control",
-          body: "Appointments are created through a public link, website widget, app or directly in the calendar.",
-        },
-        {
-          title: "Calendra handles the next steps",
-          body: "It sends confirmations and reminders, connects payments and prepares invoice and analytics data.",
-        },
+        { title: "Set services and availability", body: "Add employees, working hours, services, locations, rooms and booking rules." },
+        { title: "Customers book and you keep control", body: "Appointments are created through a public link, website widget, app or directly in the calendar." },
+        { title: "Calendra handles the next steps", body: "It sends confirmations and reminders, connects payments and prepares invoice and analytics data." },
       ],
     },
     integrations: {
       eyebrow: "Integrations",
       title: "Connect calendars, online meetings and payments",
-      intro:
-          "Calendra fits into your existing workflow so information does not need to be copied between tools.",
+      intro: "Calendra fits into your existing workflow so information does not need to be copied between tools.",
       items: ["Google Calendar", "Zoom", "Stripe", "PayPal", "Email and SMS", "Website widget"],
       cta: "Explore integrations",
     },
     pricing: {
       eyebrow: "Flexible plans",
       title: "Calendra plans and pricing",
-      intro:
-          "Plans start at €14.90 per month. Choose the right feature level, then add users, SMS messages or optional modules.",
+      intro: "Plans start at €14.90 per month. Choose the right feature level, then add users, SMS messages or optional modules.",
       from: "from €14.90 / month",
       items: ["14-day free trial", "No credit card required", "Clearly shown additional costs"],
       cta: "Compare plans",
@@ -201,26 +132,11 @@ const copy = {
       eyebrow: "Good to know",
       title: "Frequently asked questions about Calendra",
       items: [
-        {
-          q: "Who is Calendra for?",
-          a: "Service businesses and professionals managing appointments, clients, employees, reminders, payments or invoices.",
-        },
-        {
-          q: "Can customers book by themselves?",
-          a: "Yes. Use a public link, a widget on your website or the guest app. You control the booking rules.",
-        },
-        {
-          q: "Does Calendra prevent double bookings?",
-          a: "Availability considers working hours, absences, existing appointments, employees and, when needed, rooms or equipment.",
-        },
-        {
-          q: "Are reminders included?",
-          a: "Email and SMS notifications depend on the selected plan and configuration. SMS usage is shown clearly in pricing.",
-        },
-        {
-          q: "How long is the free trial?",
-          a: "The free trial lasts 14 days and does not require a credit card.",
-        },
+        { q: "Who is Calendra for?", a: "Service businesses and professionals managing appointments, clients, employees, reminders, payments or invoices." },
+        { q: "Can customers book by themselves?", a: "Yes. Use a public link, a widget on your website or the guest app. You control the booking rules." },
+        { q: "Does Calendra prevent double bookings?", a: "Availability considers working hours, absences, existing appointments, employees and, when needed, rooms or equipment." },
+        { q: "Are reminders included?", a: "Email and SMS notifications depend on the selected plan and configuration. SMS usage is shown clearly in pricing." },
+        { q: "How long is the free trial?", a: "The free trial lasts 14 days and does not require a credit card." },
       ],
     },
   },
@@ -233,14 +149,11 @@ const howIcons = [Clock3, CalendarCheck2, MailCheck] as const;
 export const ProblemsAndOutcomes = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].problems;
-
   return (
       <section className="bg-[#f8f7f5] py-20 md:py-28">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="mx-auto max-w-4xl text-center">
-          <span className="text-sm font-bold uppercase tracking-[0.22em] text-primary">
-            {section.eyebrow}
-          </span>
+            <span className="text-sm font-bold uppercase tracking-[0.22em] text-primary">{section.eyebrow}</span>
             <h2 className="mt-4 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
               {section.title}
             </h2>
@@ -262,12 +175,8 @@ export const ProblemsAndOutcomes = () => {
                     <Icon className="h-10 w-10" aria-hidden="true" />
                   </span>
                       <div>
-                        <h3 className="text-2xl font-bold tracking-tight text-foreground">
-                          {item.title}
-                        </h3>
-                        <p className="mt-3 text-base leading-8 text-muted-foreground sm:text-lg">
-                          {item.body}
-                        </p>
+                        <h3 className="text-2xl font-bold tracking-tight text-foreground">{item.title}</h3>
+                        <p className="mt-3 text-base leading-8 text-muted-foreground sm:text-lg">{item.body}</p>
                       </div>
                     </div>
                   </article>
@@ -282,26 +191,15 @@ export const ProblemsAndOutcomes = () => {
 export const AudienceSection = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].audience;
-
   return (
       <section id="za-koga" className="bg-card py-20 md:py-28">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-3xl">
-          <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">
-            {section.eyebrow}
-          </span>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              {section.title}
-            </h2>
-            <p className="mt-4 text-lg leading-8 text-muted-foreground">{section.intro}</p>
-          </div>
-
+          <div className="max-w-3xl"><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><p className="mt-4 text-lg leading-8 text-muted-foreground">{section.intro}</p></div>
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {section.items.map((item, index) => {
               const Icon = audienceIcons[index];
               const routeKey = INDUSTRY_ROUTE_KEYS[index];
               const industry = getIndustryContent(routeKey, language);
-
               return (
                   <a
                       key={item.title}
@@ -313,10 +211,7 @@ export const AudienceSection = () => {
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
                     <span className="mt-auto flex items-center gap-2 pt-5 text-sm font-semibold text-primary">
                   {industry.cardCta}
-                      <ArrowRight
-                          className="h-4 w-4 transition-transform group-hover:translate-x-1"
-                          aria-hidden="true"
-                      />
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                 </span>
                   </a>
               );
@@ -330,42 +225,12 @@ export const AudienceSection = () => {
 export const HowItWorksSection = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].how;
-
   return (
       <section id="kako-deluje" className="bg-background py-20 md:py-28">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="mx-auto max-w-3xl text-center">
-          <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">
-            {section.eyebrow}
-          </span>
-            <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              {section.title}
-            </h2>
-          </div>
-
+          <div className="mx-auto max-w-3xl text-center"><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2></div>
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            {section.items.map((item, index) => {
-              const Icon = howIcons[index];
-
-              return (
-                  <article
-                      key={item.title}
-                      className="relative rounded-3xl border border-border/60 bg-card p-7 shadow-soft"
-                  >
-                <span
-                    className="absolute right-6 top-5 font-display text-5xl font-black text-primary/[0.08]"
-                    aria-hidden="true"
-                >
-                  0{index + 1}
-                </span>
-                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary">
-                  <Icon className="h-6 w-6" aria-hidden="true" />
-                </span>
-                    <h3 className="mt-6 text-xl font-bold text-foreground">{item.title}</h3>
-                    <p className="mt-3 leading-7 text-muted-foreground">{item.body}</p>
-                  </article>
-              );
-            })}
+            {section.items.map((item, index) => { const Icon = howIcons[index]; return <article key={item.title} className="relative rounded-3xl border border-border/60 bg-card p-7 shadow-soft"><span className="absolute right-6 top-5 font-display text-5xl font-black text-primary/[0.08]" aria-hidden="true">0{index + 1}</span><span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Icon className="h-6 w-6" aria-hidden="true" /></span><h3 className="mt-6 text-xl font-bold text-foreground">{item.title}</h3><p className="mt-3 leading-7 text-muted-foreground">{item.body}</p></article>; })}
           </div>
         </div>
       </section>
@@ -375,90 +240,26 @@ export const HowItWorksSection = () => {
 export const IntegrationsSection = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].integrations;
-
   return (
       <section className="bg-card py-20 md:py-28">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-            <div className="max-w-3xl">
-            <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">
-              {section.eyebrow}
-            </span>
-              <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                {section.title}
-              </h2>
-              <p className="mt-4 text-lg leading-8 text-muted-foreground">{section.intro}</p>
-            </div>
-            <Button asChild variant="secondary" className="w-fit rounded-full px-6">
-              <a href={getRoutePath("integrations", language)}>{section.cta}</a>
-            </Button>
-          </div>
-
-          <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {section.items.map((item) => (
-                <div
-                    key={item}
-                    className="flex items-center gap-3 rounded-2xl border border-border/60 bg-background px-5 py-4 shadow-soft"
-                >
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/[0.08] text-primary">
-                <PlugZap className="h-5 w-5" aria-hidden="true" />
-              </span>
-                  <span className="font-medium text-foreground">{item}</span>
-                </div>
-            ))}
-          </div>
+        <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:px-8">
+          <div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><p className="mt-4 text-lg leading-8 text-muted-foreground">{section.intro}</p><Button variant="outline" size="lg" className="mt-7 rounded-xl" asChild><a href={getRoutePath("integrations", language)}>{section.cta}<ArrowRight className="h-4 w-4" /></a></Button></div>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">{section.items.map((item, index) => <div key={item} className="flex min-h-28 flex-col justify-between rounded-2xl border border-border/60 bg-background p-5 shadow-sm"><PlugZap className={`h-6 w-6 ${index % 2 === 0 ? "text-primary" : "text-accent"}`} /><span className="mt-4 font-semibold text-foreground">{item}</span></div>)}</div>
         </div>
       </section>
   );
 };
 
-export const PricingHighlightSection = () => {
+export const PricingOverview = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].pricing;
-
   return (
-      <section className="bg-background py-20 md:py-28">
+      <section id="cenik" className="scroll-mt-20 bg-background py-20 md:py-28">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="rounded-[2rem] border border-border/60 bg-card p-8 shadow-soft md:p-10 lg:p-12">
-            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-              <div>
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">
-                {section.eyebrow}
-              </span>
-                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  {section.title}
-                </h2>
-                <p className="mt-4 text-lg leading-8 text-muted-foreground">{section.intro}</p>
-                <div className="mt-8 flex flex-wrap gap-3">
-                  {section.items.map((item) => (
-                      <span
-                          key={item}
-                          className="inline-flex items-center gap-2 rounded-full bg-primary/[0.08] px-4 py-2 text-sm font-medium text-primary"
-                      >
-                    <Sparkles className="h-4 w-4" aria-hidden="true" />
-                        {item}
-                  </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-[1.75rem] bg-foreground p-8 text-background shadow-soft">
-                <div className="flex items-center gap-3">
-                <span className="grid h-12 w-12 place-items-center rounded-2xl bg-background/10 text-background">
-                  <BadgeEuro className="h-6 w-6" aria-hidden="true" />
-                </span>
-                  <div>
-                    <p className="text-sm uppercase tracking-[0.18em] text-background/70">
-                      Calendra
-                    </p>
-                    <p className="font-display text-3xl font-bold">{section.from}</p>
-                  </div>
-                </div>
-
-                <Button asChild className="mt-8 w-full rounded-full bg-background text-foreground hover:bg-background/90">
-                  <a href={getRoutePath("pricing", language)}>{section.cta}</a>
-                </Button>
-              </div>
+          <div className="overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-card to-accent/[0.07] p-8 shadow-soft md:p-12">
+            <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+              <div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{section.intro}</p><Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild><a href={getRoutePath("pricing", language)}>{section.cta}<ArrowRight className="h-4 w-4" /></a></Button></div>
+              <div className="rounded-3xl border border-border/70 bg-background p-7 shadow-soft"><BadgeEuro className="h-8 w-8 text-primary" /><p className="mt-5 font-display text-3xl font-extrabold text-foreground">{section.from}</p><ul className="mt-6 grid gap-3">{section.items.map((item) => <li key={item} className="flex items-center gap-3 text-sm font-medium text-foreground"><Check className="h-4 w-4 text-primary" />{item}</li>)}</ul></div>
             </div>
           </div>
         </div>
@@ -466,50 +267,19 @@ export const PricingHighlightSection = () => {
   );
 };
 
-export const HomepageCtaSection = () => {
+export const HomeFaq = () => {
   const { language } = useSiteLanguage();
-
+  const section = copy[language].faq;
   return (
       <section className="bg-card py-20 md:py-28">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="rounded-[2.25rem] bg-foreground px-8 py-12 text-background shadow-soft md:px-12 md:py-14">
-            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div className="max-w-3xl">
-                <p className="text-sm font-bold uppercase tracking-[0.18em] text-background/70">
-                  Calendra
-                </p>
-                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
-                  {language === "sl"
-                      ? "Začnite poenostavljati naročanje, opomnike in obračunavanje."
-                      : "Start simplifying booking, reminders and invoicing."}
-                </h2>
-                <p className="mt-4 text-lg leading-8 text-background/80">
-                  {language === "sl"
-                      ? "Vzpostavite Calendra za svoje podjetje in strankam ponudite enostavnejšo izkušnjo rezervacije."
-                      : "Set up Calendra for your business and offer customers a smoother booking experience."}
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button asChild size="lg" className="rounded-full bg-background text-foreground hover:bg-background/90">
-                  <a href={TRIAL_SIGNUP_ROUTE}>
-                    {language === "sl" ? "Preizkusite brezplačno" : "Try it free"}
-                  </a>
-                </Button>
-                <Button
-                    asChild
-                    size="lg"
-                    variant="outline"
-                    className="rounded-full border-background/30 bg-transparent text-background hover:bg-background/10"
-                >
-                  <a href={getRoutePath("contact", language)}>
-                    {language === "sl" ? "Kontaktirajte nas" : "Contact us"}
-                  </a>
-                </Button>
-              </div>
-            </div>
-          </div>
+        <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
+          <div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><Sparkles className="mt-6 h-9 w-9 text-primary" /></div>
+          <div className="grid gap-3">{section.items.map((item) => <details key={item.q} className="group rounded-2xl border border-border/60 bg-background p-5"><summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden">{item.q}</summary><p className="mt-3 leading-7 text-muted-foreground">{item.a}</p></details>)}</div>
         </div>
       </section>
   );
 };
+
+export const HomeTrialLink = ({ children }: { children: React.ReactNode }) => (
+    <a href={TRIAL_SIGNUP_ROUTE}>{children}</a>
+);
