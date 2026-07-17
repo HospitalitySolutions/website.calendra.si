@@ -99,6 +99,15 @@ const fallbackFeatures: PublicPricingFeature[] = [
     includedPlans: ["pro", "business"],
   },
   {
+    key: "ai",
+    name: "AI booking assistant",
+    nameSl: "AI pomočnik za rezervacije",
+    description: "Voice booking and intelligent scheduling help.",
+    descriptionSl: "Glasovne rezervacije in pametna pomoč pri urniku.",
+    minimumPlan: "pro",
+    includedPlans: ["pro", "business"],
+  },
+  {
     key: "integrations",
     name: "Integrations",
     nameSl: "Integracije",

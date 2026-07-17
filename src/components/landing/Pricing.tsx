@@ -11,6 +11,14 @@ import { BellRing, Building2, CalendarDays, Check, Link2, MessageSquareText, Rec
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
+import {
+  FALLBACK_PUBLIC_PRICING,
+  fetchPublicPricingCatalog,
+  type PublicAdditionalUserRule,
+  type PublicPricingCatalog,
+  type PublicPricingFeature,
+  type PublicPricingPlanKey,
+} from "@/lib/public-pricing";
 
 type CellValue = boolean | string;
 type PlanKey = "basic" | "professional" | "premium" | "enterprise";
@@ -393,14 +401,33 @@ const standaloneExtras = {
   },
 } as const;
 
-const USERS_PRICE = 9.9;
-const SMS_PRICE = 0.06;
 const FISCAL_PRICE = 9.9;
 const PREMISES_PRICE = 19.9;
 const USER_SLIDER_MAX = 20;
 const SMS_SLIDER_MAX = 1000;
 const SMS_SLIDER_STEP = 50;
-const INCLUDED_USERS = 1;
+
+const API_PLAN_BY_TIER: Partial<Record<PlanKey, PublicPricingPlanKey>> = {
+  basic: "basic",
+  professional: "pro",
+  premium: "business",
+};
+
+const isUserCoveredByRule = (userNumber: number, rule: PublicAdditionalUserRule) =>
+  userNumber >= rule.fromUser && (rule.toUser == null || userNumber <= rule.toUser);
+
+const calculateAdditionalUsersPrice = (
+  totalUsers: number,
+  includedUsers: number,
+  rules: PublicAdditionalUserRule[],
+) => {
+  let total = 0;
+  for (let userNumber = includedUsers + 1; userNumber <= totalUsers; userNumber += 1) {
+    const rule = rules.find((candidate) => isUserCoveredByRule(userNumber, candidate));
+    total += rule?.monthlyGrossPerUser ?? 0;
+  }
+  return Math.round(total * 100) / 100;
+};
 
 const scrollToElement = (element: HTMLElement | null) => {
   if (!element) return;
@@ -409,9 +436,10 @@ const scrollToElement = (element: HTMLElement | null) => {
 
 const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const { language } = useSiteLanguage();
-  const content = useMemo(() => translations[language], [language]);
+  const baseContent = useMemo(() => translations[language], [language]);
+  const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(FALLBACK_PUBLIC_PRICING);
   const [selectedTierKey, setSelectedTierKey] = useState<PlanKey>("premium");
-  const [additionalUsers, setAdditionalUsers] = useState(INCLUDED_USERS);
+  const [additionalUsers, setAdditionalUsers] = useState(FALLBACK_PUBLIC_PRICING.includedUsers);
   const [additionalSms, setAdditionalSms] = useState(0);
   const [fiscalCashRegister, setFiscalCashRegister] = useState(false);
   const [businessPremises, setBusinessPremises] = useState(false);
@@ -424,23 +452,100 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const configuratorRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLDivElement | null>(null);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetchPublicPricingCatalog(controller.signal)
+      .then(setPricingCatalog)
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        console.error("Could not load the public pricing catalog; using the built-in fallback.", error);
+      });
+    return () => controller.abort();
+  }, []);
+
   const formatter = useMemo(
     () =>
-      new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-US", {
+      new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-IE", {
         style: "currency",
-        currency: "EUR",
+        currency: pricingCatalog.currency || "EUR",
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }),
-    [language],
+    [language, pricingCatalog.currency],
   );
+
+  const content = useMemo<TranslationSet>(() => {
+    const featureLabel = (feature: PublicPricingFeature) =>
+      language === "sl" ? feature.nameSl || feature.name : feature.name;
+    const featureByKey = new Map(pricingCatalog.features.map((feature) => [feature.key, feature]));
+    const tiers = baseContent.tiers.map((tier): Tier => {
+      const apiPlanKey = API_PLAN_BY_TIER[tier.key];
+      if (!apiPlanKey) return tier;
+      const plan = pricingCatalog.plans.find((candidate) => candidate.key === apiPlanKey);
+      if (!plan) return tier;
+      const features = plan.featureKeys
+        .map((key) => featureByKey.get(key))
+        .filter((feature): feature is PublicPricingFeature => Boolean(feature))
+        .map(featureLabel);
+      return {
+        ...tier,
+        name: language === "sl" ? plan.nameSl || plan.name : plan.name,
+        price: formatter.format(plan.monthlyGross),
+        baseMonthly: plan.monthlyGross,
+        features: features.length > 0 ? features : tier.features,
+        popular: plan.popular,
+        accent: plan.popular,
+      };
+    });
+
+    const comparisonRows = pricingCatalog.features.length > 0
+      ? pricingCatalog.features.map((feature) => ({
+          label: featureLabel(feature),
+          values: [
+            feature.includedPlans.includes("basic"),
+            feature.includedPlans.includes("pro"),
+            feature.includedPlans.includes("business"),
+            true,
+          ] satisfies CellValue[],
+        }))
+      : baseContent.comparisonRows;
+
+    const rules = pricingCatalog.additionalUserRules;
+    const firstRule = rules[0];
+    const secondRule = rules[1];
+    const usersHint = firstRule
+      ? language === "sl"
+        ? `Od ${firstRule.fromUser}. do ${firstRule.toUser ?? "∞"}. uporabnika: ${formatter.format(firstRule.monthlyGrossPerUser)} na uporabnika/mesec${secondRule ? `; od ${secondRule.fromUser}. uporabnika dalje: ${formatter.format(secondRule.monthlyGrossPerUser)} na uporabnika/mesec` : ""}.`
+        : `Users ${firstRule.fromUser}${firstRule.toUser ? `–${firstRule.toUser}` : "+"}: ${formatter.format(firstRule.monthlyGrossPerUser)} per user/month${secondRule ? `; from user ${secondRule.fromUser}: ${formatter.format(secondRule.monthlyGrossPerUser)} per user/month` : ""}.`
+      : baseContent.usersHint;
+
+    return {
+      ...baseContent,
+      tiers,
+      comparisonRows,
+      usersHint,
+      smsHint: language === "sl"
+        ? `Vsako dodatno SMS sporočilo: ${formatter.format(pricingCatalog.smsPerMessageGross)}`
+        : `Each additional SMS message: ${formatter.format(pricingCatalog.smsPerMessageGross)}`,
+    };
+  }, [baseContent, formatter, language, pricingCatalog]);
+
+  const includedUsers = pricingCatalog.includedUsers || 1;
+
+  useEffect(() => {
+    setAdditionalUsers((current) => Math.max(current, includedUsers));
+  }, [includedUsers]);
 
   const selectedTier = useMemo(
     () => content.tiers.find((tier) => tier.key === selectedTierKey) ?? content.tiers[0],
     [content, selectedTierKey],
   );
   const supportsPremises = selectedTier.key === "professional" || selectedTier.key === "premium";
-  const billableUsers = Math.max(0, additionalUsers - INCLUDED_USERS);
+  const additionalUsersPrice = calculateAdditionalUsersPrice(
+    additionalUsers,
+    includedUsers,
+    pricingCatalog.additionalUserRules,
+  );
 
   useEffect(() => {
     if (!supportsPremises) {
@@ -486,15 +591,15 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
 
   const monthlyTotal =
     (selectedTier.baseMonthly ?? 0) +
-    billableUsers * USERS_PRICE +
-    additionalSms * SMS_PRICE +
+    additionalUsersPrice +
+    additionalSms * pricingCatalog.smsPerMessageGross +
     (fiscalCashRegister ? FISCAL_PRICE : 0) +
     (businessPremises && supportsPremises ? PREMISES_PRICE : 0);
   const oneTimeTotal = 0;
   const firstInvoiceEstimate = monthlyTotal;
 
   const selectedItems = [
-    additionalUsers > INCLUDED_USERS ? `${additionalUsers} ${content.usersCountLabel}` : null,
+    additionalUsers > includedUsers ? `${additionalUsers} ${content.usersCountLabel}` : null,
     additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null,
     fiscalCashRegister ? `${content.optionFiscal} (${content.monthlyLabel.toLowerCase()})` : null,
     businessPremises && supportsPremises ? `${content.optionPremises} (${content.monthlyLabel.toLowerCase()})` : null,
@@ -569,6 +674,31 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     window.location.href = mailto;
   };
 
+  const additionalUserCostLines = pricingCatalog.additionalUserRules.map((rule) => {
+    if (language === "sl") {
+      const range = rule.toUser == null
+        ? `Od ${rule.fromUser}. uporabnika dalje`
+        : `Od ${rule.fromUser}. do ${rule.toUser}. uporabnika`;
+      return `${range}: ${formatter.format(rule.monthlyGrossPerUser)} na uporabnika/mesec`;
+    }
+    const range = rule.toUser == null
+      ? `From user ${rule.fromUser}`
+      : `Users ${rule.fromUser}–${rule.toUser}`;
+    return `${range}: ${formatter.format(rule.monthlyGrossPerUser)} per user/month`;
+  });
+  const extraCostItems = [
+    ...additionalUserCostLines,
+    language === "sl"
+      ? `Dodatna SMS sporočila: ${formatter.format(pricingCatalog.smsPerMessageGross)} / sporočilo`
+      : `Additional SMS messages: ${formatter.format(pricingCatalog.smsPerMessageGross)} / message`,
+    language === "sl" ? "Izbrani dodatni moduli" : "Selected add-on modules",
+  ];
+
+  const guideItems = standaloneExtras[language].guide.map((item, index) => ({
+    ...item,
+    title: content.tiers[index]?.name ?? item.title,
+  }));
+
   const HeadingTag = standalone ? "h1" : "h2";
 
   return (
@@ -589,7 +719,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           <section className="mb-12 rounded-3xl border border-border/60 bg-background p-6 shadow-sm md:p-8" aria-labelledby="package-guide-title">
             <h2 id="package-guide-title" className="font-display text-2xl font-bold text-foreground">{standaloneExtras[language].guideTitle}</h2>
             <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {standaloneExtras[language].guide.map((item) => (
+              {guideItems.map((item) => (
                 <article key={item.title} className="rounded-2xl bg-card p-5">
                   <h3 className="font-semibold text-foreground">{item.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
@@ -695,12 +825,12 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
               <article className="rounded-3xl border border-primary/15 bg-primary/[0.05] p-7">
                 <Check className="h-7 w-7 text-primary" />
                 <h3 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].includedTitle}</h3>
-                <ul className="mt-5 grid gap-3">{standaloneExtras[language].included.map((item) => <li key={item} className="flex gap-3 text-sm text-muted-foreground"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{item}</li>)}</ul>
+                <ul className="mt-5 grid gap-3">{standaloneExtras[language].included.map((item, index) => { const label = index === 1 ? (language === "sl" ? `${includedUsers} uporabnik je vključen` : `${includedUsers} user included`) : item; return <li key={label} className="flex gap-3 text-sm text-muted-foreground"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{label}</li>; })}</ul>
               </article>
               <article className="rounded-3xl border border-border/60 bg-background p-7">
                 <Receipt className="h-7 w-7 text-primary" />
                 <h3 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].extraTitle}</h3>
-                <ul className="mt-5 grid gap-3">{standaloneExtras[language].extra.map((item) => <li key={item} className="flex gap-3 text-sm text-muted-foreground"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />{item}</li>)}</ul>
+                <ul className="mt-5 grid gap-3">{extraCostItems.map((item) => <li key={item} className="flex gap-3 text-sm text-muted-foreground"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />{item}</li>)}</ul>
               </article>
             </div>
           </section>
@@ -736,7 +866,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                       <Users className="h-6 w-6" />
                     </div>
-                    <Slider value={[additionalUsers]} onValueChange={(value) => setAdditionalUsers(value[0] ?? INCLUDED_USERS)} min={INCLUDED_USERS} max={USER_SLIDER_MAX} step={1} />
+                    <Slider value={[additionalUsers]} onValueChange={(value) => setAdditionalUsers(value[0] ?? includedUsers)} min={includedUsers} max={USER_SLIDER_MAX} step={1} />
                   </div>
                 </div>
 
