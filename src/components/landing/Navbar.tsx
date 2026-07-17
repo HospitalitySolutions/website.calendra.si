@@ -211,7 +211,7 @@ const Navbar = () => {
               {aboutAppActive && <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-primary" aria-hidden="true" />}
             </a>
 
-            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-50 w-[980px] -translate-x-1/2 translate-y-2 rounded-[28px] border border-border/70 bg-background/95 p-8 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-50 w-[980px] -translate-x-1/2 translate-y-2 rounded-[28px] border border-border/70 bg-background p-8 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
               <div className="grid gap-8 lg:grid-cols-[1.45fr_0.95fr]">
                 <div>
                   <div className="mb-5">
