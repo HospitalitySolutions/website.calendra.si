@@ -91,7 +91,7 @@ const Hero = () => {
               <Button
                 variant="outline"
                 size="lg"
-                className="h-14 rounded-xl border-border/80 bg-card/90 px-6 text-base font-semibold text-primary shadow-soft hover:border-primary/30 hover:bg-card"
+                className="h-14 rounded-xl border-border/80 bg-card/90 px-6 text-base font-semibold text-primary shadow-soft hover:border-primary/30 hover:bg-card hover:text-primary"
                 asChild
               >
                 <a href={PRESENTATION_HREF}>

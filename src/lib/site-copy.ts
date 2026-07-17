@@ -38,7 +38,7 @@ export const siteCopy = {
       savedTimeDetail: "z avtomatizacijo terminov",
       appointmentsValue: "2.500+",
       appointmentsLabel: "Opravljenih terminov",
-      appointmentsDetail: "in mesečno",
+      appointmentsDetail: "mesečno",
       screenshotAlt: "Tedenski koledar terminov v aplikaciji Calendra",
     },
     features: {
