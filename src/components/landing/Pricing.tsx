@@ -22,6 +22,7 @@ import {
 
 type CellValue = boolean | string;
 type PlanKey = "basic" | "professional" | "premium" | "enterprise";
+type BillingPeriod = "monthly" | "annual";
 
 type Tier = {
   key: PlanKey;
@@ -48,6 +49,9 @@ type TranslationSet = {
   calculatorDescription: string;
   packageSelectorTitle: string;
   addOnsTitle: string;
+  billingMonthlyLabel: string;
+  billingAnnualLabel: string;
+  billingAnnualSavingsLabel: string;
   usersLabel: string;
   usersHint: string;
   usersCountLabel: string;
@@ -92,6 +96,9 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     calculatorDescription: "Izberite paket, nastavite dodatne uporabnike in SMS sporočila ter vključite dodatne module.",
     packageSelectorTitle: "1. Izberite paket",
     addOnsTitle: "Dodatne možnosti",
+    billingMonthlyLabel: "Mesečno",
+    billingAnnualLabel: "Letno",
+    billingAnnualSavingsLabel: "Pri letnem obračunu prihranite {months} meseca",
     usersLabel: "2. Dodatni uporabniki",
     usersHint: "Vsak dodatni uporabnik: 9,90€ / mesec",
     usersCountLabel: "uporabnikov",
@@ -219,6 +226,9 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     calculatorDescription: "Choose a package, set additional users and SMS messages, and include the modules you need.",
     packageSelectorTitle: "1. Choose a package",
     addOnsTitle: "Additional options",
+    billingMonthlyLabel: "Monthly",
+    billingAnnualLabel: "Yearly",
+    billingAnnualSavingsLabel: "Save {months} months with annual billing",
     usersLabel: "2. Additional users",
     usersHint: "Each additional user: €9.90 / month",
     usersCountLabel: "users",
@@ -439,6 +449,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const baseContent = useMemo(() => translations[language], [language]);
   const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(FALLBACK_PUBLIC_PRICING);
   const [selectedTierKey, setSelectedTierKey] = useState<PlanKey>("premium");
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
   const [additionalUsers, setAdditionalUsers] = useState(FALLBACK_PUBLIC_PRICING.includedUsers);
   const [additionalSms, setAdditionalSms] = useState(0);
   const [fiscalCashRegister, setFiscalCashRegister] = useState(false);
@@ -474,6 +485,9 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     [language, pricingCatalog.currency],
   );
 
+  const annualBilledMonths = pricingCatalog.annualBilledMonths || 10;
+  const annualSavingsMonths = pricingCatalog.annualSavingsMonths || Math.max(0, 12 - annualBilledMonths);
+
   const content = useMemo<TranslationSet>(() => {
     const featureLabel = (feature: PublicPricingFeature) =>
       language === "sl" ? feature.nameSl || feature.name : feature.name;
@@ -487,11 +501,14 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
         .map((key) => featureByKey.get(key))
         .filter((feature): feature is PublicPricingFeature => Boolean(feature))
         .map(featureLabel);
+      const displayedMonthlyPrice = billingPeriod === "annual"
+        ? Math.round((plan.annualGross / 12) * 100) / 100
+        : plan.monthlyGross;
       return {
         ...tier,
         name: language === "sl" ? plan.nameSl || plan.name : plan.name,
-        price: formatter.format(plan.monthlyGross),
-        baseMonthly: plan.monthlyGross,
+        price: formatter.format(displayedMonthlyPrice),
+        baseMonthly: displayedMonthlyPrice,
         features: features.length > 0 ? features : tier.features,
         popular: plan.popular,
         accent: plan.popular,
@@ -528,7 +545,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
         ? `Vsako dodatno SMS sporočilo: ${formatter.format(pricingCatalog.smsPerMessageGross)}`
         : `Each additional SMS message: ${formatter.format(pricingCatalog.smsPerMessageGross)}`,
     };
-  }, [baseContent, formatter, language, pricingCatalog]);
+  }, [baseContent, billingPeriod, formatter, language, pricingCatalog]);
 
   const includedUsers = pricingCatalog.includedUsers || 1;
 
@@ -560,6 +577,10 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     const plan = params.get("plan");
     if (plan === "basic" || plan === "professional" || plan === "premium" || plan === "enterprise") {
       setSelectedTierKey(plan);
+    }
+    const billing = params.get("billing");
+    if (billing === "annual" || billing === "monthly") {
+      setBillingPeriod(billing);
     }
 
     const hash = window.location.hash;
@@ -628,6 +649,8 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     ],
   );
 
+  const signupRoute = `${buildPackageSignupRoute(selectedTier.key, signupSummary)}&billing=${billingPeriod}`;
+
   const handleTierSelect = (tierKey: PlanKey) => {
     const tier = content.tiers.find((item) => item.key === tierKey);
     trackMarketingEvent("pricing_package_selected", {
@@ -640,7 +663,8 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     });
 
     if (!standalone) {
-      const target = tierKey === "enterprise" ? `/cenik?plan=${tierKey}#contact-form` : `/cenik?plan=${tierKey}#pricing-configurator`;
+      const query = `plan=${tierKey}&billing=${billingPeriod}`;
+      const target = tierKey === "enterprise" ? `/cenik?${query}#contact-form` : `/cenik?${query}#pricing-configurator`;
       window.location.assign(target);
       return;
     }
@@ -694,11 +718,6 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     language === "sl" ? "Izbrani dodatni moduli" : "Selected add-on modules",
   ];
 
-  const guideItems = standaloneExtras[language].guide.map((item, index) => ({
-    ...item,
-    title: content.tiers[index]?.name ?? item.title,
-  }));
-
   const HeadingTag = standalone ? "h1" : "h2";
 
   return (
@@ -715,19 +734,36 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           <p className="mt-4 text-lg text-muted-foreground">{content.sectionDescription}</p>
         </div>
 
-        {standalone && (
-          <section className="mb-12 rounded-3xl border border-border/60 bg-background p-6 shadow-sm md:p-8" aria-labelledby="package-guide-title">
-            <h2 id="package-guide-title" className="font-display text-2xl font-bold text-foreground">{standaloneExtras[language].guideTitle}</h2>
-            <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {guideItems.map((item) => (
-                <article key={item.title} className="rounded-2xl bg-card p-5">
-                  <h3 className="font-semibold text-foreground">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-        )}
+        <div className="mb-8 flex flex-col gap-3 md:mb-10 md:flex-row md:items-center md:justify-between">
+          <div className="inline-flex w-full max-w-max items-center rounded-full border border-border/70 bg-background p-1 shadow-sm">
+            <button
+              type="button"
+              onClick={() => setBillingPeriod("monthly")}
+              className={`rounded-full px-6 py-3 text-sm font-semibold transition ${
+                billingPeriod === "monthly"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {content.billingMonthlyLabel}
+            </button>
+            <button
+              type="button"
+              onClick={() => setBillingPeriod("annual")}
+              className={`rounded-full px-6 py-3 text-sm font-semibold transition ${
+                billingPeriod === "annual"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {content.billingAnnualLabel}
+            </button>
+          </div>
+
+          <div className="inline-flex max-w-full items-center rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">
+            {content.billingAnnualSavingsLabel.replace("{months}", String(annualSavingsMonths))}
+          </div>
+        </div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {content.tiers.map((tier, index) => {
@@ -1038,7 +1074,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 </div>
 
                 <Button variant="hero" size="lg" className="w-full rounded-xl lg:w-auto lg:min-w-[240px]" asChild>
-                  <a href={buildPackageSignupRoute(selectedTier.key, signupSummary)}>{content.continueToRegister}</a>
+                  <a href={signupRoute}>{content.continueToRegister}</a>
                 </Button>
               </div>
             </div>
