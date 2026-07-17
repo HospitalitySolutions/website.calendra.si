@@ -52,6 +52,10 @@ type TranslationSet = {
   billingMonthlyLabel: string;
   billingAnnualLabel: string;
   billingAnnualSavingsLabel: string;
+  enterprisePanelTitle: string;
+  enterprisePanelDescription: string;
+  enterprisePanelCta: string;
+  enterprisePanelResponse: string;
   usersLabel: string;
   usersHint: string;
   usersCountLabel: string;
@@ -99,6 +103,10 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     billingMonthlyLabel: "Mesečno",
     billingAnnualLabel: "Letno",
     billingAnnualSavingsLabel: "Pri letnem obračunu prihranite {months} meseca",
+    enterprisePanelTitle: "Za večje ekipe ali posebne zahteve",
+    enterprisePanelDescription: "Enterprise paket prilagodimo vašemu poslovanju.",
+    enterprisePanelCta: "Pošljite povpraševanje",
+    enterprisePanelResponse: "Odzovemo se v 24 urah.",
     usersLabel: "2. Dodatni uporabniki",
     usersHint: "Vsak dodatni uporabnik: 9,90€ / mesec",
     usersCountLabel: "uporabnikov",
@@ -229,6 +237,10 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     billingMonthlyLabel: "Monthly",
     billingAnnualLabel: "Yearly",
     billingAnnualSavingsLabel: "Save {months} months with annual billing",
+    enterprisePanelTitle: "For larger teams or special requirements",
+    enterprisePanelDescription: "We tailor the Enterprise plan to your business.",
+    enterprisePanelCta: "Send an enquiry",
+    enterprisePanelResponse: "We respond within 24 hours.",
     usersLabel: "2. Additional users",
     usersHint: "Each additional user: €9.90 / month",
     usersCountLabel: "users",
@@ -557,6 +569,31 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     () => content.tiers.find((tier) => tier.key === selectedTierKey) ?? content.tiers[0],
     [content, selectedTierKey],
   );
+  const enterpriseTier = useMemo(
+    () => content.tiers.find((tier) => tier.key === "enterprise"),
+    [content],
+  );
+  const packageTiers = useMemo(() => {
+    const standardTiers = content.tiers.filter((tier) => tier.key !== "enterprise");
+    return standardTiers.map((tier, index) => {
+      if (index === 0) return { ...tier, inheritedLabel: undefined };
+      const previousTier = standardTiers[index - 1];
+      const previousFeatures = new Set(previousTier.features);
+      const incrementalFeatures = tier.features.filter((feature) => !previousFeatures.has(feature));
+      const inheritedLabel = language === "sl"
+        ? tier.key === "professional"
+          ? "Vse vključeno iz Osnovnega paketa +"
+          : "Vse vključeno iz Poslovnega paketa +"
+        : tier.key === "professional"
+          ? "Everything included in the Basic plan +"
+          : "Everything included in the Professional plan +";
+      return {
+        ...tier,
+        features: incrementalFeatures.length > 0 ? incrementalFeatures : tier.features,
+        inheritedLabel,
+      };
+    });
+  }, [content, language]);
   const supportsPremises = selectedTier.key === "professional" || selectedTier.key === "premium";
   const additionalUsersPrice = calculateAdditionalUsersPrice(
     additionalUsers,
@@ -765,8 +802,8 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           </div>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {content.tiers.map((tier, index) => {
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {packageTiers.map((tier, index) => {
             const isSelected = selectedTierKey === tier.key;
             return (
               <motion.div
@@ -794,7 +831,13 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 </div>
                 <p className={`mt-2 text-sm ${tier.accent ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{tier.description}</p>
 
-                <ul className="mt-6 flex flex-1 flex-col gap-2.5">
+                {tier.inheritedLabel && (
+                  <p className={`mt-6 text-sm font-bold ${tier.accent ? "text-primary-foreground" : "text-foreground"}`}>
+                    {tier.inheritedLabel}
+                  </p>
+                )}
+
+                <ul className={`${tier.inheritedLabel ? "mt-4" : "mt-6"} flex flex-1 flex-col gap-2.5`}>
                   {tier.features.map((feature) => (
                     <li key={feature} className={`flex items-start gap-2 text-sm ${tier.accent ? "text-primary-foreground/90" : "text-foreground"}`}>
                       <Check className={`mt-0.5 h-4 w-4 shrink-0 ${tier.accent ? "text-accent" : "text-primary"}`} />
@@ -818,7 +861,44 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           })}
         </div>
 
-        <motion.div className="mt-20" initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+        {enterpriseTier && (
+          <section className="mt-6 rounded-3xl border border-primary/20 bg-primary/[0.035] p-5 shadow-sm md:p-6" aria-label={enterpriseTier.name}>
+            <div className="grid gap-5 lg:grid-cols-[1.25fr_2.2fr_auto] lg:items-center">
+              <div className="flex items-start gap-4">
+                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-primary/15 bg-primary/[0.08] text-primary">
+                  <Users className="h-7 w-7" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-foreground">{content.enterprisePanelTitle}</h3>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{content.enterprisePanelDescription}</p>
+                </div>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {[
+                  enterpriseTier.features[0],
+                  enterpriseTier.features[1],
+                  enterpriseTier.features[3],
+                  enterpriseTier.features[enterpriseTier.features.length - 1],
+                ].filter(Boolean).map((feature) => (
+                  <div key={feature} className="flex items-center gap-2 text-sm font-medium text-foreground">
+                    <Check className="h-4 w-4 shrink-0 text-primary" />
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col items-stretch gap-2 lg:min-w-[190px]">
+                <Button variant="hero" size="lg" className="rounded-xl" onClick={() => handleTierSelect("enterprise")}>
+                  {content.enterprisePanelCta}
+                </Button>
+                <p className="text-center text-xs text-muted-foreground">{content.enterprisePanelResponse}</p>
+              </div>
+            </div>
+          </section>
+        )}
+
+        <motion.div className="mt-16" initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
           <h3 className="mb-8 text-center font-display text-2xl font-bold" style={{ color: "hsl(var(--text-heading))" }}>
             {content.comparisonTitle}
           </h3>
@@ -827,7 +907,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
               <thead>
                 <tr className="border-b border-border/50 bg-muted/40">
                   <th className="px-6 py-4 text-left font-semibold text-foreground">{content.comparisonHeader}</th>
-                  {content.tiers.map((tier) => (
+                  {packageTiers.map((tier) => (
                     <th key={tier.name} className={`px-4 py-4 text-center font-semibold ${tier.accent ? "text-primary" : "text-foreground"}`}>
                       {tier.name}
                     </th>
@@ -838,7 +918,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 {content.comparisonRows.map((row, rowIndex) => (
                   <tr key={row.label} className={`border-b border-border/30 ${rowIndex % 2 === 0 ? "bg-background" : "bg-muted/20"}`}>
                     <td className="px-6 py-3 font-medium text-foreground">{row.label}</td>
-                    {row.values.map((value, valueIndex) => (
+                    {row.values.slice(0, packageTiers.length).map((value, valueIndex) => (
                       <td key={`${row.label}-${valueIndex}`} className="px-4 py-3 text-center">
                         {typeof value === "boolean" ? (
                           value ? <Check className="mx-auto h-4 w-4 text-primary" /> : <XIcon className="mx-auto h-4 w-4 text-muted-foreground/40" />
