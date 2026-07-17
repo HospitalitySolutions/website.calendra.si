@@ -9,6 +9,7 @@ export const siteCopy = {
   sl: {
     nav: {
       features: "Funkcionalnosti",
+      aboutApp: "O aplikaciji",
       pricing: "Cenik",
       clients: "Stranke",
       booking: "Naročanje",
@@ -38,7 +39,7 @@ export const siteCopy = {
       savedTimeDetail: "z avtomatizacijo terminov",
       appointmentsValue: "2.500+",
       appointmentsLabel: "Opravljenih terminov",
-      appointmentsDetail: "mesečno",
+      appointmentsDetail: "in mesečno",
       screenshotAlt: "Tedenski koledar terminov v aplikaciji Calendra",
     },
     features: {
@@ -230,6 +231,7 @@ export const siteCopy = {
   en: {
     nav: {
       features: "Features",
+      aboutApp: "About the app",
       pricing: "Pricing",
       clients: "Clients",
       booking: "Booking",
