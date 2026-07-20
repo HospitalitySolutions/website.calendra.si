@@ -50,6 +50,21 @@ describe("normalizeDirectoryClients", () => {
     expect(getDirectoryClientBookingPath(client)).toBe("/narocanje/tenant%20001");
   });
 
+
+  it("supports snake_case tenant codes returned by the public API", () => {
+    const [client] = normalizeDirectoryClients([
+      {
+        tenant_code: "avisensa-si",
+        publicSlug: "institut-avisensa",
+        publiclyDiscoverable: true,
+        publicName: "Inštitut Avisensa",
+      },
+    ], "https://app.calendra.si");
+
+    expect(client.tenantCode).toBe("avisensa-si");
+    expect(getDirectoryClientBookingPath(client)).toBe("/narocanje/avisensa-si");
+  });
+
   it("does not expose companies explicitly marked as not publicly discoverable", () => {
     const clients = normalizeDirectoryClients([
       { publicName: "Hidden company", publiclyDiscoverable: false },

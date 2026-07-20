@@ -108,8 +108,8 @@ const AppRoutes = () => (
 
       <Route path="/narocanje" element={<ClientsPage />} />
       <Route path="/en/booking" element={<ClientsPage />} />
-      <Route path="/narocanje/:slug" element={<PublicCompanyProfilePage />} />
-      <Route path="/en/booking/:slug" element={<PublicCompanyProfilePage />} />
+      <Route path="/podjetja/:slug" element={<PublicCompanyProfilePage />} />
+      <Route path="/en/businesses/:slug" element={<PublicCompanyProfilePage />} />
       <Route path="/stranke" element={<Navigate to="/narocanje" replace />} />
       <Route path="/en/clients" element={<Navigate to="/en/booking" replace />} />
       <Route path="/clients" element={<Navigate to="/en/booking" replace />} />

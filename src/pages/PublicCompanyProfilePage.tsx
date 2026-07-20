@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type MouseEvent } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
@@ -6,7 +6,7 @@ import NotFound from "@/pages/NotFound";
 import { Button } from "@/components/ui/button";
 import { APP_BASE_URL } from "@/lib/site";
 import { getDirectoryClientBookingPath, normalizeDirectoryClients, type DirectoryClient } from "@/lib/company-directory";
-import { getPublicCompanyProfile, getPublicCompanyProfilePath } from "@/lib/public-company-profiles";
+import { getPublicCompanyProfile } from "@/lib/public-company-profiles";
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { ArrowLeft, ArrowRight, CalendarDays, CheckCircle2, MapPin, ShieldCheck, Star } from "lucide-react";
@@ -71,7 +71,9 @@ const PublicCompanyProfilePage = () => {
   };
 
   const bookingPath = getDirectoryClientBookingPath(client);
-  const trackBookingStart = () => {
+  const openStandaloneBooking = (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
     trackMarketingEvent("public_booking_started", {
       company_slug: client.slug,
       company_name: client.name,
@@ -79,6 +81,7 @@ const PublicCompanyProfilePage = () => {
       language,
       source: "profile",
     });
+    window.location.assign(bookingPath);
   };
 
   return (
@@ -87,7 +90,7 @@ const PublicCompanyProfilePage = () => {
       <main>
         <section className="border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.05] py-14 md:py-20">
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
-            <a href={getPublicCompanyProfilePath("", language).replace(/\/$/, "")} className="inline-flex items-center gap-2 text-sm font-semibold text-primary"><ArrowLeft className="h-4 w-4" />{text.back}</a>
+            <a href={language === "sl" ? "/narocanje" : "/en/booking"} className="inline-flex items-center gap-2 text-sm font-semibold text-primary"><ArrowLeft className="h-4 w-4" />{text.back}</a>
             <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start">
               <div className="flex items-start gap-5">
                 <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-border/70 bg-card text-2xl font-black text-primary shadow-soft">
@@ -99,7 +102,7 @@ const PublicCompanyProfilePage = () => {
                   <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">{staticProfile.localizedDescription[language]}</p>
                 </div>
               </div>
-              <Button variant="hero" size="lg" className="rounded-xl" asChild><a href={bookingPath} onClick={trackBookingStart}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></a></Button>
+              <Button variant="hero" size="lg" className="rounded-xl" asChild><a href={bookingPath} onClick={openStandaloneBooking}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></a></Button>
             </div>
           </div>
         </section>
@@ -130,7 +133,7 @@ const PublicCompanyProfilePage = () => {
             <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><CalendarDays className="h-7 w-7" /></span>
             <h2 className="mt-6 font-display text-3xl font-bold text-foreground md:text-4xl">{text.bookingTitle}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{text.bookingBody}</p>
-            <Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild><a href={bookingPath} onClick={trackBookingStart}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></a></Button>
+            <Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild><a href={bookingPath} onClick={openStandaloneBooking}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></a></Button>
             <p className="mx-auto mt-5 inline-flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="h-4 w-4 text-primary" />{text.security}</p>
           </div>
         </section>

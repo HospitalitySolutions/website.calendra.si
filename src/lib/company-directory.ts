@@ -170,15 +170,22 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
     const tenant = asRecord(record.tenant);
     const tenantCode = firstString(
       record.tenantCode,
+      record.tenant_code,
       record.code,
       tenant?.code,
+      tenant?.tenantCode,
+      tenant?.tenant_code,
       record.tenantKey,
+      record.tenant_key,
       record.tenantSlug,
+      record.tenant_slug,
       typeof record.tenant === "string" ? record.tenant : undefined,
     );
     const tenantSlug = firstString(
       record.tenantSlug,
+      record.tenant_slug,
       record.tenantKey,
+      record.tenant_key,
       typeof record.tenant === "string" ? record.tenant : undefined,
       record.slug,
       tenantCode,

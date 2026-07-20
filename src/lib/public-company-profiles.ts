@@ -106,11 +106,11 @@ export const getPublicCompanyProfile = (slug: string) =>
   publicCompanyProfiles.find((profile) => profile.slug === slug);
 
 export const getPublicCompanyProfilePath = (slug: string, language: SiteLanguage) =>
-  language === "sl" ? `/narocanje/${slug}` : `/en/booking/${slug}`;
+  language === "sl" ? `/podjetja/${slug}` : `/en/businesses/${slug}`;
 
 export const getPublicCompanyProfileFromPathname = (pathname: string) => {
   const normalized = pathname.split(/[?#]/)[0].replace(/\/+$/, "") || "/";
-  const match = normalized.match(/^\/(?:narocanje|en\/booking)\/([^/]+)$/);
+  const match = normalized.match(/^\/(?:podjetja|en\/businesses)\/([^/]+)$/);
   if (!match) return undefined;
   return getPublicCompanyProfile(decodeURIComponent(match[1]));
 };

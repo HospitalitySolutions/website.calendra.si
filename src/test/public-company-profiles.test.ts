@@ -18,9 +18,11 @@ describe("public company profiles", () => {
 
   it("creates reciprocal Slovenian and English profile routes", () => {
     const profile = publicCompanyProfiles[0];
-    expect(getPublicCompanyProfilePath(profile.slug, "sl")).toBe(`/narocanje/${profile.slug}`);
-    expect(getPublicCompanyProfilePath(profile.slug, "en")).toBe(`/en/booking/${profile.slug}`);
-    expect(getPublicCompanyProfileFromPathname(`/narocanje/${profile.slug}`)?.slug).toBe(profile.slug);
-    expect(getPublicCompanyProfileFromPathname(`/en/booking/${profile.slug}`)?.slug).toBe(profile.slug);
+    expect(getPublicCompanyProfilePath(profile.slug, "sl")).toBe(`/podjetja/${profile.slug}`);
+    expect(getPublicCompanyProfilePath(profile.slug, "en")).toBe(`/en/businesses/${profile.slug}`);
+    expect(getPublicCompanyProfileFromPathname(`/podjetja/${profile.slug}`)?.slug).toBe(profile.slug);
+    expect(getPublicCompanyProfileFromPathname(`/en/businesses/${profile.slug}`)?.slug).toBe(profile.slug);
+    expect(getPublicCompanyProfileFromPathname(`/narocanje/${profile.slug}`)).toBeUndefined();
+    expect(getPublicCompanyProfileFromPathname(`/en/booking/${profile.slug}`)).toBeUndefined();
   });
 });
