@@ -2,11 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import ClientBookingDialog from "@/components/clients/ClientBookingDialog";
 import NotFound from "@/pages/NotFound";
 import { Button } from "@/components/ui/button";
 import { APP_BASE_URL } from "@/lib/site";
-import { normalizeDirectoryClients, type DirectoryClient } from "@/lib/company-directory";
+import { getDirectoryClientBookingPath, normalizeDirectoryClients, type DirectoryClient } from "@/lib/company-directory";
 import { getPublicCompanyProfile, getPublicCompanyProfilePath } from "@/lib/public-company-profiles";
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
@@ -19,7 +18,6 @@ const PublicCompanyProfilePage = () => {
   const { language } = useSiteLanguage();
   const staticProfile = getPublicCompanyProfile(slug);
   const [apiClient, setApiClient] = useState<DirectoryClient | null>(null);
-  const [bookingOpen, setBookingOpen] = useState(false);
 
   useEffect(() => {
     if (!staticProfile) return;
@@ -43,6 +41,7 @@ const PublicCompanyProfilePage = () => {
       ...staticProfile,
       ...apiClient,
       slug: staticProfile.slug,
+      tenantCode: apiClient?.tenantCode || staticProfile.tenantCode,
       description: apiClient?.description || staticProfile.localizedDescription[language],
     };
   }, [apiClient, language, staticProfile]);
@@ -71,9 +70,15 @@ const PublicCompanyProfilePage = () => {
     security: "The booking is added directly to the business calendar.",
   };
 
-  const openBooking = () => {
-    trackMarketingEvent("public_booking_started", { company_slug: client.slug, company_name: client.name, language, source: "profile" });
-    setBookingOpen(true);
+  const bookingPath = getDirectoryClientBookingPath(client);
+  const trackBookingStart = () => {
+    trackMarketingEvent("public_booking_started", {
+      company_slug: client.slug,
+      company_name: client.name,
+      tenant_code: client.tenantCode || client.tenantSlug || client.slug,
+      language,
+      source: "profile",
+    });
   };
 
   return (
@@ -94,7 +99,7 @@ const PublicCompanyProfilePage = () => {
                   <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">{staticProfile.localizedDescription[language]}</p>
                 </div>
               </div>
-              <Button variant="hero" size="lg" className="rounded-xl" onClick={openBooking}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></Button>
+              <Button variant="hero" size="lg" className="rounded-xl" asChild><a href={bookingPath} onClick={trackBookingStart}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></a></Button>
             </div>
           </div>
         </section>
@@ -125,13 +130,12 @@ const PublicCompanyProfilePage = () => {
             <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><CalendarDays className="h-7 w-7" /></span>
             <h2 className="mt-6 font-display text-3xl font-bold text-foreground md:text-4xl">{text.bookingTitle}</h2>
             <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{text.bookingBody}</p>
-            <Button variant="hero" size="lg" className="mt-7 rounded-xl" onClick={openBooking}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></Button>
+            <Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild><a href={bookingPath} onClick={trackBookingStart}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></a></Button>
             <p className="mx-auto mt-5 inline-flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="h-4 w-4 text-primary" />{text.security}</p>
           </div>
         </section>
       </main>
       <Footer />
-      <ClientBookingDialog client={client} language={language} open={bookingOpen} onOpenChange={setBookingOpen} />
     </div>
   );
 };

@@ -2,6 +2,7 @@ export type ClientCategory = "salon" | "fitness" | "wellness" | "health" | "cons
 
 export type DirectoryClient = {
   slug: string;
+  tenantCode?: string;
   tenantSlug: string;
   name: string;
   description: string;
@@ -166,8 +167,23 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
 
     const description = firstString(record.publicDescription, record.javniOpis, record.description);
     const address = buildAddress(record);
-    const tenantSlug = firstString(record.tenantSlug, record.tenantKey, record.tenant, record.slug);
-    const explicitSlug = firstString(record.slug, record.publicSlug);
+    const tenant = asRecord(record.tenant);
+    const tenantCode = firstString(
+      record.tenantCode,
+      record.code,
+      tenant?.code,
+      record.tenantKey,
+      record.tenantSlug,
+      typeof record.tenant === "string" ? record.tenant : undefined,
+    );
+    const tenantSlug = firstString(
+      record.tenantSlug,
+      record.tenantKey,
+      typeof record.tenant === "string" ? record.tenant : undefined,
+      record.slug,
+      tenantCode,
+    );
+    const explicitSlug = firstString(record.publicSlug, record.slug);
     const logo = asRecord(record.logo);
     const carouselLogo = asRecord(record.carouselLogo);
     const googleReviews = asRecord(record.googleReviews) ?? asRecord(record.googleReviewSummary);
@@ -213,7 +229,8 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
       : "");
 
     return [{
-      slug: explicitSlug || tenantSlug || `${slugify(name)}-${index + 1}`,
+      slug: explicitSlug || tenantSlug || tenantCode || `${slugify(name)}-${index + 1}`,
+      tenantCode: tenantCode || undefined,
       tenantSlug,
       name,
       description,
@@ -225,3 +242,10 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
       googleReviewCount,
     }];
   });
+
+export const getDirectoryClientBookingPath = (
+  client: Pick<DirectoryClient, "tenantCode" | "tenantSlug" | "slug">,
+): string => {
+  const tenantCode = client.tenantCode || client.tenantSlug || client.slug;
+  return `/narocanje/${encodeURIComponent(tenantCode)}`;
+};

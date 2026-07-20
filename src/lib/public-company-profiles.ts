@@ -24,6 +24,7 @@ export type PublicCompanyProfile = DirectoryClient & {
 export const publicCompanyProfiles: PublicCompanyProfile[] = [
   {
     slug: "beauty-lounge",
+    tenantCode: "beauty-lounge",
     tenantSlug: "beauty-lounge",
     name: "Beauty Lounge",
     description:
@@ -56,6 +57,7 @@ export const publicCompanyProfiles: PublicCompanyProfile[] = [
   },
   {
     slug: "institut-avisensa",
+    tenantCode: "institut-avisensa",
     tenantSlug: "institut-avisensa",
     name: "Inštitut Avisensa",
     description:

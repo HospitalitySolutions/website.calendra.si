@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/landing/Navbar";
-import ClientBookingDialog from "@/components/clients/ClientBookingDialog";
 import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { APP_BASE_URL } from "@/lib/site";
-import { normalizeDirectoryClients, type ClientCategory, type DirectoryClient } from "@/lib/company-directory";
+import { getDirectoryClientBookingPath, normalizeDirectoryClients, type ClientCategory, type DirectoryClient } from "@/lib/company-directory";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
   getPublicCompanyProfilePath,
@@ -168,6 +167,7 @@ const mergeClients = (language: SiteLanguage, apiClients: DirectoryClient[]) => 
       ...matchingStatic,
       ...client,
       slug: matchingStatic?.slug ?? client.slug,
+      tenantCode: client.tenantCode || matchingStatic?.tenantCode,
       description: client.description || matchingStatic?.description || "",
     });
   });
@@ -184,7 +184,6 @@ const ClientsPage = () => {
   const [activeCategory, setActiveCategory] = useState<ClientCategory | "all">("all");
   const [apiClients, setApiClients] = useState<DirectoryClient[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [bookingClient, setBookingClient] = useState<DirectoryClient | null>(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -212,11 +211,6 @@ const ClientsPage = () => {
       return matchesFilter && (!normalizedQuery || searchableText.includes(normalizedQuery));
     });
   }, [activeCategory, directoryClients, language, query]);
-
-  const openBooking = (client: DirectoryClient) => {
-    trackMarketingEvent("public_booking_started", { company_slug: client.slug, company_name: client.name, language });
-    setBookingClient(client);
-  };
 
   return (
     <div className="min-h-screen overflow-hidden bg-background">
@@ -272,7 +266,7 @@ const ClientsPage = () => {
                     <h3 className="mt-6 font-display text-2xl font-extrabold tracking-tight text-foreground"><a href={getPublicCompanyProfilePath(client.slug, language)} className="transition hover:text-primary">{client.name}</a></h3>
                     <p className="mt-3 flex-1 text-sm leading-6 text-muted-foreground">{client.description}</p>
                     {client.address ? <a href={client.googleMapsUrl} target="_blank" rel="noreferrer noopener" className="mt-5 flex items-start gap-2 rounded-2xl bg-background p-4 text-sm text-muted-foreground transition hover:text-primary"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" /><span>{client.address}</span><ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0" /></a> : null}
-                    <div className="mt-6 grid gap-3"><Button type="button" variant="hero" size="lg" className="rounded-2xl" onClick={() => openBooking(client)}>{text.primaryCta}<ArrowRight className="h-4 w-4" /></Button><Button variant="ghost" asChild><a href={getPublicCompanyProfilePath(client.slug, language)}>{text.profileCta}</a></Button></div>
+                    <div className="mt-6 grid gap-3"><Button variant="hero" size="lg" className="rounded-2xl" asChild><a href={getDirectoryClientBookingPath(client)} onClick={() => trackMarketingEvent("public_booking_started", { company_slug: client.slug, company_name: client.name, tenant_code: client.tenantCode || client.tenantSlug || client.slug, language, source: "directory" })}>{text.primaryCta}<ArrowRight className="h-4 w-4" /></a></Button><Button variant="ghost" asChild><a href={getPublicCompanyProfilePath(client.slug, language)}>{text.profileCta}</a></Button></div>
                   </article>
                 ))}
               </div>
@@ -289,7 +283,6 @@ const ClientsPage = () => {
         </section>
       </main>
       <Footer />
-      <ClientBookingDialog client={bookingClient} language={language} open={bookingClient !== null} onOpenChange={(nextOpen) => { if (!nextOpen) setBookingClient(null); }} />
     </div>
   );
 };
