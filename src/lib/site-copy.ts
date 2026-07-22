@@ -26,7 +26,7 @@ export const siteCopy = {
       title2: "termine in račune na enem mestu",
       supportingTitle: "Enostavnejše upravljanje terminov. Popolna organizacija.",
       description:
-        "Calendra je program za naročanje strank, upravljanje terminov in izdajanje računov na enem mestu. Namenjen je salonom, svetovalcem, terapevtom, trenerjem in drugim storitvenim podjetjem, ki želijo zmanjšati telefonske klice, dvojne rezervacije, pozabljene termine in administracijo.",
+        "Calendra je namenjen salonom, svetovalcem, terapevtom, trenerjem in drugim storitvenim podjetjem, ki želijo izboljšati poslovanje ter prihraniti čas sebi in svojim strankam.",
       primaryCta: "Preizkusi brezplačno",
       secondaryCta: "Rezerviraj predstavitev",
       freeTrial: "14 dni brezplačno",

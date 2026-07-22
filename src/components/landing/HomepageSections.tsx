@@ -30,7 +30,7 @@ const copy = {
     problems: {
       eyebrow: "Rešitve Calendra",
       title: "Manj klicev. Manj administracije. Več pregleda.",
-      intro: "Calendra poenostavi naročanje, komunikacijo s strankami, opomnike in obračunavanje — da prihranite čas in lažje vodite svoje poslovanje.",
+      intro: "",
       items: [
         { title: "Manj telefonskih klicev", body: "Stranke lahko termin rezervirajo, spremenijo ali odpovejo same prek spleta ali aplikacije." },
         { title: "Brez dvojnih rezervacij", body: "Razpoložljivost zaposlenih, prostorov in terminov se preverja v enem sistemu." },
@@ -89,7 +89,7 @@ const copy = {
     problems: {
       eyebrow: "Calendra solutions",
       title: "Fewer calls. Less administration. More control.",
-      intro: "Calendra simplifies booking, customer communication, reminders and invoicing — so you save time and run your business with more clarity.",
+      intro: "",
       items: [
         { title: "Fewer phone calls", body: "Customers can book, change or cancel appointments themselves online or in the app." },
         { title: "No double bookings", body: "Employee, room and appointment availability is checked in one connected system." },
@@ -163,9 +163,11 @@ export const ProblemsAndOutcomes = () => {
           <h2 className="mt-3 font-display text-3xl font-bold tracking-[-0.025em] text-foreground sm:text-4xl lg:text-[2.8rem]">
             {section.title}
           </h2>
-          <p className="mx-auto mt-4 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg">
-            {section.intro}
-          </p>
+          {section.intro ? (
+            <p className="mx-auto mt-4 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg">
+              {section.intro}
+            </p>
+          ) : null}
         </div>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">

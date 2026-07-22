@@ -10,7 +10,6 @@ import ItServicesPromoSsr from "@/components/landing/ItServicesPromo";
 import {
   AudienceSection,
   HomeFaq,
-  HowItWorksSection,
   IntegrationsSection,
   PricingOverview,
   ProblemsAndOutcomes,
@@ -29,7 +28,7 @@ const Index = () => (
     <Hero />
     <ProblemsAndOutcomes />
     <AudienceSection />
-    <HowItWorksSection />
+    <Testimonials />
     <Features />
     <Suspense fallback={<div className="min-h-[520px] bg-background" aria-hidden="true" />}>
       <CalendraConnectPromo />
@@ -38,7 +37,6 @@ const Index = () => (
     <Suspense fallback={<div className="min-h-[520px] bg-background" aria-hidden="true" />}>
       <ItServicesPromo />
     </Suspense>
-    <Testimonials />
     <PricingOverview />
     <HomeFaq />
     <FinalCta />
