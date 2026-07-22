@@ -12,13 +12,17 @@ import {
   Clock3,
   Dumbbell,
   FileText,
-  HeartHandshake,
+  GraduationCap,
+  Headphones,
+  HeartPulse,
   MailCheck,
+  MonitorSmartphone,
   PhoneCall,
   PlugZap,
+  RefreshCw,
   Scissors,
+  ShieldCheck,
   Sparkles,
-  Stethoscope,
 } from "lucide-react";
 
 const copy = {
@@ -142,83 +146,156 @@ const copy = {
   },
 } as const satisfies Record<SiteLanguage, unknown>;
 
-const audienceIcons = [Scissors, HeartHandshake, Stethoscope, Dumbbell] as const;
+const audienceIcons = [Scissors, GraduationCap, HeartPulse, Dumbbell] as const;
 const problemIcons = [PhoneCall, CalendarCheck2, BellRing, FileText] as const;
 const howIcons = [Clock3, CalendarCheck2, MailCheck] as const;
 
 export const ProblemsAndOutcomes = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].problems;
-  return (
-      <section className="bg-[#f8f7f5] py-20 md:py-28">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="mx-auto max-w-4xl text-center">
-            <span className="text-sm font-bold uppercase tracking-[0.22em] text-primary">{section.eyebrow}</span>
-            <h2 className="mt-4 font-display text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-              {section.title}
-            </h2>
-            <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-muted-foreground sm:text-xl">
-              {section.intro}
-            </p>
-          </div>
 
-          <div className="mx-auto mt-14 grid max-w-6xl gap-6 md:grid-cols-2">
-            {section.items.map((item, index) => {
-              const Icon = problemIcons[index];
-              return (
-                  <article
-                      key={item.title}
-                      className="rounded-[2rem] border border-border/60 bg-background p-7 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lg md:p-8"
-                  >
-                    <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
-                  <span className="grid h-24 w-24 shrink-0 place-items-center rounded-full bg-primary/[0.08] text-primary">
-                    <Icon className="h-10 w-10" aria-hidden="true" />
-                  </span>
-                      <div>
-                        <h3 className="text-2xl font-bold tracking-tight text-foreground">{item.title}</h3>
-                        <p className="mt-3 text-base leading-8 text-muted-foreground sm:text-lg">{item.body}</p>
-                      </div>
-                    </div>
-                  </article>
-              );
-            })}
-          </div>
+  return (
+    <section className="relative overflow-hidden bg-background py-16 md:py-20 lg:py-24">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-primary/[0.035] to-transparent" aria-hidden="true" />
+      <div className="container relative mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl text-center">
+          <span className="text-xs font-bold uppercase tracking-[0.24em] text-primary sm:text-sm">{section.eyebrow}</span>
+          <h2 className="mt-3 font-display text-3xl font-bold tracking-[-0.025em] text-foreground sm:text-4xl lg:text-[2.8rem]">
+            {section.title}
+          </h2>
+          <p className="mx-auto mt-4 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg">
+            {section.intro}
+          </p>
         </div>
-      </section>
+
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+          {section.items.map((item, index) => {
+            const Icon = problemIcons[index];
+            const accentClasses = [
+              "bg-blue-500/[0.09] text-blue-600",
+              "bg-emerald-500/[0.10] text-emerald-600",
+              "bg-violet-500/[0.09] text-violet-600",
+              "bg-amber-500/[0.11] text-amber-600",
+            ];
+
+            return (
+              <article
+                key={item.title}
+                className="group rounded-2xl border border-border/60 bg-card/95 p-5 shadow-[0_16px_42px_-34px_hsl(220_25%_10%/0.42)] transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-[0_24px_55px_-34px_hsl(var(--primary)/0.34)] sm:p-6"
+              >
+                <span className={`grid h-12 w-12 place-items-center rounded-2xl ${accentClasses[index]}`}>
+                  <Icon className="h-6 w-6" aria-hidden="true" />
+                </span>
+                <h3 className="mt-5 text-lg font-bold tracking-tight text-foreground">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 };
 
 export const AudienceSection = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].audience;
+  const trustItems = language === "sl"
+    ? [
+        { title: "Varnost in zanesljivost", body: "Vaši podatki so vedno varni", icon: ShieldCheck },
+        { title: "Podpora, ki pomaga", body: "Odzivna slovenska podpora", icon: Headphones },
+        { title: "Redne posodobitve", body: "Nenehno izboljšujemo funkcionalnosti", icon: RefreshCw },
+        { title: "Deluje kjerkoli", body: "Spletna aplikacija za vse naprave", icon: MonitorSmartphone },
+      ]
+    : [
+        { title: "Secure and reliable", body: "Your data stays protected", icon: ShieldCheck },
+        { title: "Helpful support", body: "Responsive local assistance", icon: Headphones },
+        { title: "Regular improvements", body: "Features keep getting better", icon: RefreshCw },
+        { title: "Works everywhere", body: "A web app for every device", icon: MonitorSmartphone },
+      ];
+
   return (
-      <section id="za-koga" className="bg-card py-20 md:py-28">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-3xl"><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><p className="mt-4 text-lg leading-8 text-muted-foreground">{section.intro}</p></div>
-          <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {section.items.map((item, index) => {
-              const Icon = audienceIcons[index];
-              const routeKey = INDUSTRY_ROUTE_KEYS[index];
-              const industry = getIndustryContent(routeKey, language);
-              return (
-                  <a
-                      key={item.title}
-                      href={getRoutePath(routeKey, language)}
-                      className="group flex min-h-[220px] flex-col rounded-3xl border border-border/60 bg-background p-6 transition duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  >
-                    <Icon className="h-7 w-7 text-primary" aria-hidden="true" />
-                    <p className="mt-5 text-lg font-bold text-foreground">{item.title}</p>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
-                    <span className="mt-auto flex items-center gap-2 pt-5 text-sm font-semibold text-primary">
-                  {industry.cardCta}
-                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-                </span>
-                  </a>
-              );
-            })}
-          </div>
+    <section id="za-koga" className="relative overflow-hidden bg-[#fbfaf8] py-16 md:py-20 lg:py-24">
+      <div className="pointer-events-none absolute -right-40 top-12 h-96 w-96 rounded-full bg-primary/[0.055] blur-3xl" aria-hidden="true" />
+      <div className="container relative mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl">
+          <span className="text-xs font-bold uppercase tracking-[0.24em] text-primary sm:text-sm">{section.eyebrow}</span>
+          <h2 className="mt-3 font-display text-3xl font-bold tracking-[-0.025em] text-foreground sm:text-4xl">{section.title}</h2>
+          <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">{section.intro}</p>
         </div>
-      </section>
+
+        <div className="mt-9 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          {section.items.map((item, index) => {
+            const Icon = audienceIcons[index];
+            const routeKey = INDUSTRY_ROUTE_KEYS[index];
+            const industry = getIndustryContent(routeKey, language);
+
+            return (
+              <a
+                key={item.title}
+                href={getRoutePath(routeKey, language)}
+                className="group relative flex min-h-[245px] overflow-hidden rounded-2xl border border-border/60 bg-background shadow-[0_16px_44px_-36px_hsl(220_25%_10%/0.42)] transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_25px_58px_-36px_hsl(var(--primary)/0.34)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+              >
+                <div className="relative z-10 flex w-[64%] flex-col p-5 sm:p-6 xl:w-[67%]">
+                  <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/[0.07] text-primary">
+                    <Icon className="h-6 w-6" aria-hidden="true" />
+                  </span>
+                  <p className="mt-5 text-base font-bold leading-6 text-foreground">{item.title}</p>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
+                  <span className="mt-auto flex items-center gap-2 pt-5 text-sm font-semibold text-primary">
+                    {industry.cardCta}
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                  </span>
+                </div>
+
+                <AudienceCardArtwork index={index} Icon={Icon} />
+              </a>
+            );
+          })}
+        </div>
+
+        <div className="mt-10 grid gap-5 border-t border-border/55 pt-7 sm:grid-cols-2 lg:grid-cols-4">
+          {trustItems.map(({ title, body, icon: Icon }) => (
+            <div key={title} className="flex items-start gap-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/[0.07] text-primary">
+                <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-foreground">{title}</p>
+                <p className="mt-0.5 text-xs leading-5 text-muted-foreground">{body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+type AudienceCardArtworkProps = {
+  index: number;
+  Icon: typeof Scissors;
+};
+
+const AudienceCardArtwork = ({ index, Icon }: AudienceCardArtworkProps) => {
+  const styles = [
+    "from-amber-50 via-stone-100 to-orange-100 text-amber-700/35",
+    "from-blue-50 via-slate-100 to-indigo-100 text-blue-700/30",
+    "from-emerald-50 via-stone-50 to-teal-100 text-emerald-700/30",
+    "from-slate-100 via-zinc-100 to-blue-100 text-slate-700/30",
+  ];
+
+  return (
+    <div className={`absolute inset-y-0 right-0 w-[43%] overflow-hidden bg-gradient-to-br ${styles[index]}`} aria-hidden="true">
+      <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full border border-white/70 bg-white/45" />
+      <div className="absolute -bottom-10 -left-8 h-32 w-32 rounded-full border border-white/60 bg-white/35" />
+      <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(currentColor_1px,transparent_1px)] [background-size:16px_16px]" />
+      <div className="absolute inset-0 grid place-items-center">
+        <span className="grid h-24 w-24 place-items-center rounded-[2rem] border border-white/70 bg-white/55 shadow-sm backdrop-blur-sm transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-2">
+          <Icon className="h-12 w-12 stroke-[1.35]" />
+        </span>
+      </div>
+    </div>
   );
 };
 

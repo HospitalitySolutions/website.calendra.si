@@ -5,10 +5,11 @@ import { enGB, sl } from "date-fns/locale";
 import {
   ArrowLeft,
   CalendarDays,
+  ChevronLeft,
+  ChevronRight,
   Check,
   CheckCircle2,
   Clock3,
-  ExternalLink,
   Loader2,
   Mail,
   RefreshCw,
@@ -34,7 +35,7 @@ const copy = {
     title: "Rezervirajte osebno predstavitev Calendre",
     subtitle: "Izberite termin, ki vam ustreza. Na video klicu vam pokažemo Calendro in odgovorimo na vaša vprašanja.",
     duration: "30 minut",
-    video: "Google Meet ali Zoom",
+    video: "Google Meet",
     timezone: "Časovni pas",
     pickDate: "1. Izberite datum",
     pickTime: "2. Izberite uro",
@@ -67,7 +68,9 @@ const copy = {
     reschedule: "Prestavi termin",
     chooseNew: "Izberite nov termin",
     saveNew: "Potrdi novi termin",
-    status: "Status",
+    platform: "Platforma",
+    previousDates: "Prejšnjih 14 dni",
+    nextDates: "Naslednjih 14 dni",
     bookedFor: "Rezervirano za",
     pageError: "Rezervacije ni bilo mogoče najti ali povezava ni več veljavna.",
   },
@@ -76,7 +79,7 @@ const copy = {
     title: "Book a personal Calendra demo",
     subtitle: "Choose a convenient time. We will show you Calendra on a video call and answer your questions.",
     duration: "30 minutes",
-    video: "Google Meet or Zoom",
+    video: "Google Meet",
     timezone: "Time zone",
     pickDate: "1. Choose a date",
     pickTime: "2. Choose a time",
@@ -109,7 +112,9 @@ const copy = {
     reschedule: "Reschedule",
     chooseNew: "Choose a new time",
     saveNew: "Confirm new time",
-    status: "Status",
+    platform: "Platform",
+    previousDates: "Previous 14 days",
+    nextDates: "Next 14 days",
     bookedFor: "Booked for",
     pageError: "The booking could not be found or this link is no longer valid.",
   },
@@ -118,6 +123,14 @@ const copy = {
 const formatDateTime = (value: string, language: "sl" | "en", timeZone?: string) => new Intl.DateTimeFormat(language === "sl" ? "sl-SI" : "en-GB", {
   weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone,
 }).format(new Date(value));
+
+const DATE_PAGE_SIZE = 14;
+
+const formatSlotStart = (value: string, language: "sl" | "en", timeZone: string) => new Intl.DateTimeFormat(language === "sl" ? "sl-SI" : "en-GB", {
+  hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone,
+}).format(new Date(value));
+
+const meetingProviderLabel = (provider?: string | null) => provider === "ZOOM" ? "Zoom" : "Google Meet";
 
 const downloadIcs = (booking: DemoBooking) => {
   const icsDate = (value: string) => new Date(value).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
@@ -147,6 +160,7 @@ const DemoBookingPage = () => {
   const [profile, setProfile] = useState<DemoProfile | null>(null);
   const [availability, setAvailability] = useState<DemoAvailability | null>(null);
   const [selectedDate, setSelectedDate] = useState("");
+  const [datePage, setDatePage] = useState(0);
   const [selectedSlot, setSelectedSlot] = useState<DemoSlot | null>(null);
   const [hold, setHold] = useState<DemoHold | null>(null);
   const [booking, setBooking] = useState<DemoBooking | null>(null);
@@ -157,13 +171,17 @@ const DemoBookingPage = () => {
   const [error, setError] = useState("");
   const [form, setForm] = useState({ guestName: "", guestEmail: "", guestPhone: "", companyName: "", guestNote: "" });
 
-  const loadAvailability = async () => {
+  const loadAvailability = async (bookingHorizonDays = profile?.bookingHorizonDays || 30) => {
     const from = new Date();
-    const to = addDays(from, 20);
+    const to = addDays(from, Math.max(DATE_PAGE_SIZE, bookingHorizonDays));
     const response = await demoBookingApi.availability(dateInput(from), dateInput(to), timeZone);
     setAvailability(response);
     const first = response.days.find((day) => day.slots.length > 0);
-    setSelectedDate((current) => current || first?.date || response.days[0]?.date || "");
+    const retainedDate = selectedDate && response.days.some((day) => day.date === selectedDate) ? selectedDate : "";
+    const nextDate = retainedDate || first?.date || response.days[0]?.date || "";
+    setSelectedDate(nextDate);
+    const selectedIndex = Math.max(0, response.days.findIndex((day) => day.date === nextDate));
+    setDatePage(Math.floor(selectedIndex / DATE_PAGE_SIZE));
   };
 
   useEffect(() => {
@@ -185,7 +203,7 @@ const DemoBookingPage = () => {
           const currentProfile = await demoBookingApi.profile();
           if (!active) return;
           setProfile(currentProfile);
-          if (currentProfile.enabled) await loadAvailability();
+          if (currentProfile.enabled) await loadAvailability(currentProfile.bookingHorizonDays);
           trackMarketingEvent("demo_booking_page_viewed", { language });
         }
       } catch (cause) {
@@ -199,6 +217,21 @@ const DemoBookingPage = () => {
   }, [token, language]);
 
   const selectedDay = availability?.days.find((day) => day.date === selectedDate);
+  const datePageCount = Math.max(1, Math.ceil((availability?.days.length || 0) / DATE_PAGE_SIZE));
+  const visibleDays = availability?.days.slice(datePage * DATE_PAGE_SIZE, (datePage + 1) * DATE_PAGE_SIZE) || [];
+  const visibleDateRange = visibleDays.length > 0
+    ? `${format(new Date(`${visibleDays[0].date}T12:00:00`), "d. MMM", { locale })} – ${format(new Date(`${visibleDays[visibleDays.length - 1].date}T12:00:00`), "d. MMM", { locale })}`
+    : "";
+
+  const moveDatePage = (direction: -1 | 1) => {
+    const nextPage = Math.min(datePageCount - 1, Math.max(0, datePage + direction));
+    if (nextPage === datePage) return;
+    const nextDays = availability?.days.slice(nextPage * DATE_PAGE_SIZE, (nextPage + 1) * DATE_PAGE_SIZE) || [];
+    const firstAvailable = nextDays.find((day) => day.slots.length > 0) || nextDays[0];
+    setDatePage(nextPage);
+    setSelectedDate(firstAvailable?.date || "");
+    setSelectedSlot(null);
+  };
 
   const chooseSlot = async (slot: DemoSlot) => {
     setSaving(true);
@@ -266,7 +299,7 @@ const DemoBookingPage = () => {
     setSaving(true);
     setError("");
     try {
-      await loadAvailability();
+      await loadAvailability(profile?.bookingHorizonDays);
       setSelectedSlot(null);
       setHold(null);
       setRescheduling(true);
@@ -291,17 +324,26 @@ const DemoBookingPage = () => {
     } finally { setSaving(false); }
   };
 
-  const managementPath = booking ? (language === "sl" ? `/predstavitev/upravljanje/${booking.manageToken}` : `/en/demo/manage/${booking.manageToken}`) : "";
-
   const slotPicker = (
     <div className="grid gap-7">
       <section>
-        <div className="mb-4 flex items-center justify-between gap-4">
-          <h2 className="font-display text-lg font-bold text-foreground">{t.pickDate}</h2>
-          <span className="text-xs font-medium text-muted-foreground">{t.timezone}: {timeZone}</span>
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="font-display text-lg font-bold text-foreground">{t.pickDate}</h2>
+            <span className="mt-1 block text-xs font-medium text-muted-foreground">{t.timezone}: {timeZone}</span>
+          </div>
+          <div className="flex items-center justify-between gap-2 sm:justify-end">
+            <Button type="button" variant="outline" size="icon" className="h-9 w-9 rounded-xl" disabled={datePage <= 0} onClick={() => moveDatePage(-1)} aria-label={t.previousDates}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <span className="min-w-28 text-center text-sm font-semibold text-foreground">{visibleDateRange}</span>
+            <Button type="button" variant="outline" size="icon" className="h-9 w-9 rounded-xl" disabled={datePage >= datePageCount - 1} onClick={() => moveDatePage(1)} aria-label={t.nextDates}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-4 xl:grid-cols-5">
-          {availability?.days.slice(0, 15).map((day) => {
+          {visibleDays.map((day) => {
             const parsed = new Date(`${day.date}T12:00:00`);
             const active = selectedDate === day.date;
             return <button key={day.date} type="button" disabled={day.slots.length === 0} onClick={() => { setSelectedDate(day.date); setSelectedSlot(null); }} className={`rounded-2xl border px-2 py-3 text-center transition ${active ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border-border/70 bg-background hover:border-primary/40"} disabled:cursor-not-allowed disabled:opacity-35`}>
@@ -315,7 +357,7 @@ const DemoBookingPage = () => {
       <section>
         <h2 className="mb-4 font-display text-lg font-bold text-foreground">{t.pickTime}</h2>
         {selectedDay?.slots.length ? <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-          {selectedDay.slots.map((slot) => <button key={slot.startAt} type="button" disabled={saving} onClick={() => void chooseSlot(slot)} className={`min-h-12 rounded-xl border px-4 font-bold transition ${selectedSlot?.startAt === slot.startAt ? "border-primary bg-primary/[0.09] text-primary ring-2 ring-primary/15" : "border-border bg-background text-foreground hover:border-primary/50 hover:text-primary"}`}>{slot.displayTime}</button>)}
+          {selectedDay.slots.map((slot) => <button key={slot.startAt} type="button" disabled={saving} onClick={() => void chooseSlot(slot)} className={`min-h-12 rounded-xl border px-4 font-bold transition ${selectedSlot?.startAt === slot.startAt ? "border-primary bg-primary/[0.09] text-primary ring-2 ring-primary/15" : "border-border bg-background text-foreground hover:border-primary/50 hover:text-primary"}`}>{formatSlotStart(slot.startAt, language, timeZone)}</button>)}
         </div> : <div className="rounded-2xl border border-dashed border-border p-8 text-center text-muted-foreground">{t.noSlots}</div>}
       </section>
     </div>
@@ -330,7 +372,7 @@ const DemoBookingPage = () => {
         <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{t.subtitle}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm font-semibold text-foreground">
           <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Clock3 className="h-4 w-4 text-primary" />{profile?.durationMinutes || 30} {language === "sl" ? "minut" : "minutes"}</span>
-          <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Video className="h-4 w-4 text-primary" />{t.video}</span>
+          <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span>
         </div>
       </header>}
 
@@ -346,16 +388,14 @@ const DemoBookingPage = () => {
               <div className="flex gap-3"><CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div><span className="text-sm text-muted-foreground">{t.bookedFor}</span><strong className="mt-1 block text-foreground">{formatDateTime(booking.startAt, language, booking.guestTimeZone || timeZone)}</strong></div></div>
               <div className="flex gap-3"><Clock3 className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div><span className="text-sm text-muted-foreground">{t.duration}</span><strong className="mt-1 block text-foreground">{booking.durationMinutes} min</strong></div></div>
               <div className="flex gap-3"><Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div><span className="text-sm text-muted-foreground">{t.email}</span><strong className="mt-1 block break-all text-foreground">{booking.guestEmail}</strong></div></div>
-              <div className="flex gap-3"><Video className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div><span className="text-sm text-muted-foreground">{t.status}</span><strong className="mt-1 block text-foreground">{booking.status}</strong></div></div>
+              <div className="flex gap-3"><Video className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div><span className="text-sm text-muted-foreground">{t.platform}</span><strong className="mt-1 block text-foreground">{meetingProviderLabel(booking.meetingProvider)}</strong></div></div>
             </div>
           </div>
           {error && <p className="mt-5 rounded-xl bg-destructive/10 p-4 text-sm text-destructive">{error}</p>}
           {rescheduling ? <div className="mt-8 border-t border-border pt-8"><h2 className="mb-6 font-display text-2xl font-bold">{t.chooseNew}</h2>{slotPicker}<div className="mt-7 flex flex-col gap-3 sm:flex-row"><Button variant="outline" className="h-12 rounded-xl" onClick={() => setRescheduling(false)}>{t.back}</Button><Button className="h-12 rounded-xl" disabled={!hold || saving} onClick={() => void saveReschedule()}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t.saveNew}</Button></div></div> : <div className="mt-7 grid gap-3 sm:grid-cols-2">
-            {booking.status !== "CANCELLED" && booking.meetingJoinUrl && <Button variant="hero" className="h-12 rounded-xl" asChild><a href={booking.meetingJoinUrl} target="_blank" rel="noreferrer"><Video className="mr-2 h-4 w-4" />{t.join}<ExternalLink className="ml-2 h-4 w-4" /></a></Button>}
-            {booking.status !== "CANCELLED" && <Button variant="outline" className="h-12 rounded-xl" onClick={() => downloadIcs(booking)}><CalendarDays className="mr-2 h-4 w-4" />{t.addCalendar}</Button>}
+            {booking.status !== "CANCELLED" && <Button variant="hero" className="h-12 w-full rounded-xl sm:col-span-2" onClick={() => downloadIcs(booking)}><CalendarDays className="mr-2 h-4 w-4" />{t.addCalendar}</Button>}
             {token && booking.canModify && booking.status !== "CANCELLED" && <Button variant="outline" className="h-12 rounded-xl" disabled={saving} onClick={() => void startReschedule()}><RefreshCw className="mr-2 h-4 w-4" />{t.reschedule}</Button>}
             {token && booking.canModify && booking.status !== "CANCELLED" && <Button variant="outline" className="h-12 rounded-xl border-destructive/30 text-destructive hover:bg-destructive/5 hover:text-destructive" disabled={saving} onClick={() => void cancelBooking()}><XCircle className="mr-2 h-4 w-4" />{t.cancel}</Button>}
-            {!token && <Button variant="outline" className="h-12 rounded-xl sm:col-span-2" asChild><a href={managementPath}>{t.manage}</a></Button>}
           </div>}
         </div>
       ) : (
@@ -378,7 +418,7 @@ const DemoBookingPage = () => {
           <aside className="rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-card to-card p-6 shadow-soft lg:sticky lg:top-28 md:p-7">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground"><CalendarDays className="h-6 w-6" /></span>
             <h2 className="mt-5 font-display text-xl font-bold text-foreground">{t.selected}</h2>
-            {selectedSlot ? <><p className="mt-3 text-lg font-bold text-foreground">{formatDateTime(selectedSlot.startAt, language, timeZone)}</p><div className="mt-5 grid gap-3 text-sm text-muted-foreground"><span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-primary" />{profile?.durationMinutes || 30} min</span><span className="flex items-center gap-2"><Video className="h-4 w-4 text-primary" />{t.video}</span></div>{step === "slots" && <Button variant="hero" className="mt-7 h-12 w-full rounded-xl" disabled={!hold || saving} onClick={openDetails}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t.next}</Button>}</> : <p className="mt-3 leading-7 text-muted-foreground">{language === "sl" ? "Najprej izberite datum in prost termin." : "Choose a date and available time first."}</p>}
+            {selectedSlot ? <><p className="mt-3 text-lg font-bold text-foreground">{formatDateTime(selectedSlot.startAt, language, timeZone)}</p><div className="mt-5 grid gap-3 text-sm text-muted-foreground"><span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-primary" />{profile?.durationMinutes || 30} min</span><span className="flex items-center gap-2"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span></div>{step === "slots" && <Button variant="hero" className="mt-7 h-12 w-full rounded-xl" disabled={!hold || saving} onClick={openDetails}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t.next}</Button>}</> : <p className="mt-3 leading-7 text-muted-foreground">{language === "sl" ? "Najprej izberite datum in prost termin." : "Choose a date and available time first."}</p>}
           </aside>
         </div>
       )}

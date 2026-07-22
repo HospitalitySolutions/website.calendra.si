@@ -3,33 +3,58 @@ import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import {
   ArrowRight,
   CalendarCheck2,
-  Clock3,
   CalendarClock,
+  Clock3,
   ShieldCheck,
   Sparkles,
   Star,
+  UsersRound,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 
-
 const Hero = () => {
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).hero;
 
+  const metricCards = [
+    {
+      value: copy.savedTimeValue,
+      label: copy.savedTimeLabel,
+      detail: copy.savedTimeDetail,
+      icon: Clock3,
+      iconClass: "bg-primary/[0.09] text-primary",
+    },
+    {
+      value: copy.appointmentsValue,
+      label: copy.appointmentsLabel,
+      detail: copy.appointmentsDetail,
+      icon: CalendarCheck2,
+      iconClass: "bg-emerald-500/[0.11] text-emerald-600",
+    },
+    {
+      value: copy.teamsValue,
+      label: copy.teamsLabel,
+      detail: copy.teamsDetail,
+      icon: UsersRound,
+      iconClass: "bg-violet-500/[0.10] text-violet-600",
+    },
+  ] as const;
+
   return (
-    <section className="relative overflow-hidden bg-background pb-20 pt-20 md:pb-28 md:pt-28 lg:min-h-[780px] lg:pb-32 lg:pt-32">
+    <section className="relative overflow-hidden bg-background pb-16 pt-16 sm:pt-20 md:pb-20 lg:pb-24 lg:pt-24">
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-        <div className="absolute -right-48 top-4 h-[680px] w-[680px] rounded-full bg-primary/[0.08] blur-3xl" />
-        <div className="absolute bottom-[-220px] right-[5%] h-[540px] w-[900px] rounded-[50%] bg-primary/[0.08] blur-3xl" />
-        <div className="absolute -left-32 top-1/2 h-[340px] w-[340px] rounded-full bg-accent/[0.05] blur-3xl" />
+        <div className="absolute -right-40 top-4 h-[620px] w-[620px] rounded-full bg-primary/[0.08] blur-3xl" />
+        <div className="absolute bottom-[-220px] right-[8%] h-[500px] w-[860px] rounded-[50%] bg-primary/[0.07] blur-3xl" />
+        <div className="absolute -left-32 top-[38%] h-[320px] w-[320px] rounded-full bg-accent/[0.05] blur-3xl" />
+        <div className="absolute right-[3%] top-[17%] hidden h-44 w-44 opacity-35 lg:block [background-image:radial-gradient(hsl(var(--primary)/0.35)_1.2px,transparent_1.2px)] [background-size:18px_18px]" />
       </div>
 
-      <div className="container relative mx-auto max-w-[1720px] px-4 lg:px-8">
-        <div className="grid items-center gap-14 lg:grid-cols-[0.60fr_1.40fr] lg:gap-6 xl:grid-cols-[0.58fr_1.42fr]">
-          <div className="relative z-20 max-w-[530px]">
+      <div className="container relative mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
+        <div className="grid items-center gap-12 lg:grid-cols-[0.76fr_1.24fr] lg:gap-8 xl:grid-cols-[0.72fr_1.28fr]">
+          <div className="relative z-20 max-w-[610px]">
             <motion.div initial={false} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.45 }}>
               <span className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/[0.06] px-4 py-2 text-sm font-semibold text-primary shadow-sm">
                 <Sparkles className="h-4 w-4" aria-hidden="true" />
@@ -38,7 +63,7 @@ const Hero = () => {
             </motion.div>
 
             <motion.h1
-              className="mt-7 font-display text-[2.5rem] font-extrabold leading-[1.07] tracking-[-0.04em] sm:text-[3.15rem] lg:text-[3.55rem] xl:text-[3.95rem]"
+              className="mt-7 font-display text-[2.65rem] font-extrabold leading-[1.04] tracking-[-0.045em] sm:text-[3.35rem] lg:text-[3.8rem] xl:text-[4.25rem]"
               style={{ color: "hsl(var(--text-heading))" }}
               initial={false}
               animate={{ opacity: 1, y: 0 }}
@@ -51,7 +76,7 @@ const Hero = () => {
             </motion.h1>
 
             <motion.p
-              className="mt-7 max-w-lg font-display text-xl font-bold leading-8 text-foreground md:text-2xl"
+              className="mt-6 max-w-xl font-display text-xl font-bold leading-8 text-foreground md:text-[1.35rem]"
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.14 }}
@@ -60,7 +85,7 @@ const Hero = () => {
             </motion.p>
 
             <motion.p
-              className="mt-3 max-w-lg text-lg leading-8 md:text-xl"
+              className="mt-3 max-w-xl text-base leading-7 sm:text-lg sm:leading-8"
               style={{ color: "hsl(var(--text-body))" }}
               initial={false}
               animate={{ opacity: 1, y: 0 }}
@@ -70,7 +95,7 @@ const Hero = () => {
             </motion.p>
 
             <motion.div
-              className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center"
+              className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.24 }}
@@ -81,7 +106,10 @@ const Hero = () => {
                 className="h-14 rounded-xl px-7 text-base font-semibold shadow-xl shadow-primary/25 sm:px-8"
                 asChild
               >
-                <a href={TRIAL_SIGNUP_ROUTE} onClick={() => trackMarketingEvent("trial_cta_click", { placement: "homepage_hero", language })}>
+                <a
+                  href={TRIAL_SIGNUP_ROUTE}
+                  onClick={() => trackMarketingEvent("trial_cta_click", { placement: "homepage_hero", language })}
+                >
                   {copy.primaryCta}
                   <ArrowRight className="ml-1 h-5 w-5" aria-hidden="true" />
                 </a>
@@ -105,18 +133,28 @@ const Hero = () => {
               </Button>
             </motion.div>
 
-            <motion.p
-              className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-muted-foreground"
+            <motion.div
+              className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium text-muted-foreground"
               initial={false}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.45, delay: 0.3 }}
             >
-              <span className="inline-flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-primary" />{copy.freeTrial}</span>
-              <span>{copy.noCard}</span>
-            </motion.p>
+              <span className="inline-flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />
+                {copy.freeTrial}
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary/50" aria-hidden="true" />
+                {copy.noCard}
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-primary/50" aria-hidden="true" />
+                {copy.cancelAnytime}
+              </span>
+            </motion.div>
 
             <motion.div
-              className="mt-10 flex flex-col gap-5 text-sm sm:flex-row sm:items-center sm:gap-7"
+              className="mt-9 flex flex-col gap-5 text-sm sm:flex-row sm:items-center sm:gap-7"
               initial={false}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.38 }}
@@ -145,67 +183,100 @@ const Hero = () => {
           </div>
 
           <motion.div
-            className="relative z-10 mx-auto w-full max-w-[1320px] pb-20 pt-8 lg:-mr-8 lg:pb-12 lg:pl-0 lg:pt-0 xl:-mr-16"
+            className="relative z-10 mx-auto w-full max-w-[1040px] pb-6 pt-2 md:pb-20 lg:-mr-5 lg:pb-14 xl:-mr-8"
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.18 }}
           >
-            <div className="pointer-events-none absolute inset-x-[2%] bottom-[1%] top-[8%] rounded-[45%] bg-primary/[0.09] blur-2xl" aria-hidden="true" />
+            <div className="pointer-events-none absolute inset-x-[4%] bottom-[7%] top-[4%] rounded-[42%] bg-primary/[0.11] blur-3xl" aria-hidden="true" />
 
-            <div className="relative rounded-[1.8rem] border border-white/80 bg-white/75 p-2.5 shadow-[0_34px_90px_-32px_hsl(var(--primary)/0.35)] backdrop-blur-sm lg:-rotate-[0.7deg] lg:p-3.5">
-              <div className="overflow-hidden rounded-[1.35rem] border border-border/60 bg-white">
-                <img
-                  src="/hero/calendra-calendar.webp"
-                  alt={copy.screenshotAlt}
-                  className="block h-auto w-full"
-                  width="2048"
-                  height="782"
-                  loading="eager"
-                  decoding="async"
-                />
+            <div className="relative overflow-hidden rounded-[1.75rem] border border-white/90 bg-white/90 p-2.5 shadow-[0_34px_90px_-30px_hsl(var(--primary)/0.38)] backdrop-blur sm:p-3">
+              <div className="rounded-[1.25rem] border border-border/60 bg-white">
+                <div className="relative flex h-10 items-center border-b border-border/50 bg-gradient-to-b from-white to-slate-50 px-4 sm:h-11">
+                  <div className="flex items-center gap-1.5" aria-hidden="true">
+                    <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                  </div>
+                  <div className="absolute left-1/2 flex h-6 w-[42%] -translate-x-1/2 items-center justify-center rounded-md bg-slate-100 text-[10px] font-medium text-slate-400 sm:text-xs">
+                    app.calendra.si
+                  </div>
+                </div>
+                <div className="overflow-hidden rounded-b-[1.2rem] bg-white">
+                  <img
+                    src="/hero/calendra-calendar-aug-2026.webp"
+                    alt={copy.screenshotAlt}
+                    className="block h-auto w-full"
+                    width="2400"
+                    height="920"
+                    loading="eager"
+                    decoding="async"
+                  />
+                </div>
               </div>
             </div>
 
             <motion.div
-              className="absolute left-[20%] top-[44%] hidden w-[250px] -translate-x-1/2 rounded-2xl border border-border/60 bg-card/95 p-5 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur md:block xl:left-[17%]"
+              className="absolute bottom-[1%] left-[-1%] hidden w-[235px] rounded-2xl border border-border/60 bg-card/95 p-4 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur md:block xl:left-[-4%]"
               initial={false}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.48 }}
             >
-              <div className="flex items-start gap-4">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/[0.09] text-primary">
-                  <Clock3 className="h-6 w-6" aria-hidden="true" />
-                </span>
-                <div>
-                  <p className="font-display text-3xl font-extrabold text-foreground">{copy.savedTimeValue}</p>
-                  <p className="mt-1 font-semibold text-foreground">{copy.savedTimeLabel}</p>
-                  <p className="mt-1 text-xs leading-5 text-muted-foreground">{copy.savedTimeDetail}</p>
-                </div>
-              </div>
+              <MetricCard {...metricCards[0]} />
             </motion.div>
 
             <motion.div
-              className="absolute bottom-0 right-[8%] w-[275px] rounded-2xl border border-border/60 bg-card/95 p-5 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur sm:w-[300px] lg:bottom-[-4%] lg:right-[8%]"
+              className="absolute bottom-[-2%] right-[2%] hidden w-[260px] rounded-2xl border border-border/60 bg-card/95 p-4 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur md:block"
               initial={false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.68 }}
+              transition={{ duration: 0.55, delay: 0.66 }}
             >
-              <div className="flex items-center gap-4">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-500/[0.1] text-emerald-600">
-                  <CalendarCheck2 className="h-6 w-6" aria-hidden="true" />
-                </span>
-                <div>
-                  <p className="font-display text-3xl font-extrabold text-foreground">{copy.appointmentsValue}</p>
-                  <p className="font-semibold text-foreground">{copy.appointmentsLabel}</p>
-                  <p className="text-xs text-muted-foreground">{copy.appointmentsDetail}</p>
-                </div>
-              </div>
+              <MetricCard {...metricCards[1]} />
             </motion.div>
+
+            <motion.div
+              className="absolute right-[-1%] top-[20%] hidden w-[250px] rounded-2xl border border-border/60 bg-card/95 p-4 shadow-[0_22px_55px_-28px_hsl(220_25%_10%/0.35)] backdrop-blur lg:block xl:right-[-6%]"
+              initial={false}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55, delay: 0.58 }}
+            >
+              <MetricCard {...metricCards[2]} />
+            </motion.div>
+
+            <div className="mt-4 grid gap-3 sm:grid-cols-3 md:hidden">
+              {metricCards.map((metric) => (
+                <div key={metric.value} className="rounded-2xl border border-border/60 bg-card/95 p-4 shadow-soft">
+                  <MetricCard {...metric} compact />
+                </div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </div>
     </section>
   );
 };
+
+type MetricCardProps = {
+  value: string;
+  label: string;
+  detail: string;
+  icon: typeof Clock3;
+  iconClass: string;
+  compact?: boolean;
+};
+
+const MetricCard = ({ value, label, detail, icon: Icon, iconClass, compact = false }: MetricCardProps) => (
+  <div className="flex items-center gap-3.5">
+    <span className={`flex shrink-0 items-center justify-center rounded-full ${iconClass} ${compact ? "h-10 w-10" : "h-11 w-11"}`}>
+      <Icon className={compact ? "h-5 w-5" : "h-[22px] w-[22px]"} aria-hidden="true" />
+    </span>
+    <div className="min-w-0">
+      <p className={`font-display font-extrabold leading-none text-foreground ${compact ? "text-2xl" : "text-[1.7rem]"}`}>{value}</p>
+      <p className="mt-1 text-sm font-semibold leading-5 text-foreground">{label}</p>
+      <p className="mt-0.5 text-[11px] leading-4 text-muted-foreground">{detail}</p>
+    </div>
+  </div>
+);
 
 export default Hero;
