@@ -28,7 +28,7 @@ export const siteCopy = {
       description:
         "Calendra je program za naročanje strank, upravljanje terminov in izdajanje računov na enem mestu. Namenjen je salonom, svetovalcem, terapevtom, trenerjem in drugim storitvenim podjetjem, ki želijo zmanjšati telefonske klice, dvojne rezervacije, pozabljene termine in administracijo.",
       primaryCta: "Preizkusi brezplačno",
-      secondaryCta: "Oglej si predstavitev",
+      secondaryCta: "Rezerviraj predstavitev",
       freeTrial: "14 dni brezplačno",
       noCard: "Brez kreditne kartice",
       trustPrefix: "Zaupa nam več kot",
@@ -250,7 +250,7 @@ export const siteCopy = {
       description:
         "Calendra brings appointment booking, scheduling and invoicing together in one place. It is built for salons, consultants, therapists, trainers and other service businesses that want to reduce phone calls, double bookings, missed appointments and administration.",
       primaryCta: "Try it free",
-      secondaryCta: "Watch presentation",
+      secondaryCta: "Book a demo",
       freeTrial: "14-day free trial",
       noCard: "No credit card required",
       trustPrefix: "Trusted by more than",

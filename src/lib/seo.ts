@@ -43,6 +43,10 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     sl: { title: "Spletno naročanje terminov in imenik podjetij | Calendra", description: "Rezervirajte termin pri podjetjih, ki uporabljajo Calendro, ali omogočite spletno naročanje z izbiro storitve, zaposlenega, plačila in opomnikov." },
     en: { title: "Online appointment booking and business directory | Calendra", description: "Book with businesses using Calendra or offer online booking with service and employee selection, payments, confirmations and reminders." },
   },
+  demo: {
+    sl: { title: "Rezervirajte predstavitev Calendre | 30-minutni video klic", description: "Izberite prost termin za 30-minutno spletno predstavitev Calendre in prejmite potrdilo ter povezavo do video klica po e-pošti." },
+    en: { title: "Book a Calendra demo | 30-minute video call", description: "Choose an available time for a 30-minute Calendra demo and receive the confirmation and video-call link by email." },
+  },
   calendar: {
     sl: { title: "Koledar terminov za storitvena podjetja | Calendra", description: "Pregleden koledar terminov za zaposlene, delovni čas, odsotnosti, prostore in ponavljajoče se rezervacije brez dvojnega vnašanja." },
     en: { title: "Appointment calendar for service businesses | Calendra", description: "Manage employees, working hours, absences, rooms and recurring appointments in one clear calendar without duplicate work." },

@@ -23,6 +23,7 @@ import SubprocessorsSsr from "./pages/Subprocessors.tsx";
 import CookiePolicySsr from "./pages/CookiePolicy.tsx";
 import SecuritySsr from "./pages/Security.tsx";
 import DataRightsSsr from "./pages/DataRights.tsx";
+import DemoBookingPageSsr from "./pages/DemoBookingPage.tsx";
 
 const Index = IndexSsr;
 const PrivacyPolicy = import.meta.env.SSR ? PrivacyPolicySsr : lazy(() => import("./pages/PrivacyPolicy.tsx"));
@@ -63,6 +64,7 @@ const Subprocessors = import.meta.env.SSR ? SubprocessorsSsr : lazy(() => import
 const CookiePolicy = import.meta.env.SSR ? CookiePolicySsr : lazy(() => import("./pages/CookiePolicy.tsx"));
 const Security = import.meta.env.SSR ? SecuritySsr : lazy(() => import("./pages/Security.tsx"));
 const DataRights = import.meta.env.SSR ? DataRightsSsr : lazy(() => import("./pages/DataRights.tsx"));
+const DemoBookingPage = import.meta.env.SSR ? DemoBookingPageSsr : lazy(() => import("./pages/DemoBookingPage.tsx"));
 
 const RouteFallback = () => <div className="min-h-screen bg-background" aria-hidden="true" />;
 
@@ -105,6 +107,11 @@ const AppRoutes = () => (
       <Route path="/pravice-posameznikov" element={<DataRights />} />
       <Route path="/en/data-rights" element={<DataRights />} />
       <Route path="/data-rights" element={<Navigate to="/en/data-rights" replace />} />
+
+      <Route path="/predstavitev" element={<DemoBookingPage />} />
+      <Route path="/en/demo" element={<DemoBookingPage />} />
+      <Route path="/predstavitev/upravljanje/:token" element={<DemoBookingPage />} />
+      <Route path="/en/demo/manage/:token" element={<DemoBookingPage />} />
 
       <Route path="/narocanje" element={<ClientsPage />} />
       <Route path="/en/booking" element={<ClientsPage />} />

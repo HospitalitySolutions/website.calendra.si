@@ -4,7 +4,7 @@ import {
   ArrowRight,
   CalendarCheck2,
   Clock3,
-  Play,
+  CalendarClock,
   ShieldCheck,
   Sparkles,
   Star,
@@ -14,7 +14,6 @@ import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 
-const PRESENTATION_HREF = "#funkcionalnosti";
 
 const Hero = () => {
   const { language } = useSiteLanguage();
@@ -94,9 +93,12 @@ const Hero = () => {
                 className="h-14 rounded-xl border-border/80 bg-card/90 px-6 text-base font-semibold text-primary shadow-soft hover:border-primary/30 hover:bg-card hover:text-primary"
                 asChild
               >
-                <a href={PRESENTATION_HREF}>
+                <a
+                  href={language === "sl" ? "/predstavitev" : "/en/demo"}
+                  onClick={() => trackMarketingEvent("demo_booking_cta_clicked", { placement: "homepage_hero", language })}
+                >
                   <span className="mr-2 flex h-8 w-8 items-center justify-center rounded-full border border-primary/20 bg-primary/[0.06]">
-                    <Play className="ml-0.5 h-4 w-4 fill-primary text-primary" aria-hidden="true" />
+                    <CalendarClock className="h-4 w-4 text-primary" aria-hidden="true" />
                   </span>
                   {copy.secondaryCta}
                 </a>

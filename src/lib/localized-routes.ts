@@ -5,6 +5,7 @@ export type CanonicalRouteKey =
   | "home"
   | "pricing"
   | "booking"
+  | "demo"
   | "calendar"
   | "invoicing"
   | "clientManagement"
@@ -40,6 +41,7 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   home: { sl: "/", en: "/en" },
   pricing: { sl: "/cenik", en: "/en/pricing" },
   booking: { sl: "/narocanje", en: "/en/booking" },
+  demo: { sl: "/predstavitev", en: "/en/demo" },
   calendar: { sl: "/koledar-terminov", en: "/en/appointment-calendar" },
   invoicing: { sl: "/racuni-in-placila", en: "/en/invoicing-and-payments" },
   clientManagement: { sl: "/upravljanje-strank", en: "/en/client-management" },
@@ -84,6 +86,7 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   home: { changeFrequency: "weekly", priority: { sl: 1, en: 0.9 }, lastModified: "2026-07-15" },
   pricing: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, lastModified: "2026-07-15" },
   booking: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, lastModified: "2026-07-15" },
+  demo: { changeFrequency: "weekly", priority: { sl: 0.8, en: 0.75 }, lastModified: "2026-07-22" },
   calendar: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   invoicing: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
   clientManagement: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
