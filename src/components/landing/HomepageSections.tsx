@@ -3,6 +3,8 @@ import { getRoutePath } from "@/lib/localized-routes";
 import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
+import { FALLBACK_PUBLIC_PRICING, fetchPublicPricingCatalog, type PublicPricingCatalog } from "@/lib/public-pricing";
+import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
   BadgeEuro,
@@ -68,8 +70,10 @@ const copy = {
     pricing: {
       eyebrow: "Prilagodljivi paketi",
       title: "Paketi in cenik Calendra",
-      intro: "Paketi se začnejo pri 14,90 € na mesec. Izberite raven funkcionalnosti, nato dodajte uporabnike, SMS sporočila ali dodatne module.",
-      from: "od 14,90 € / mesec",
+      introPrefix: "Paketi se začnejo pri",
+      introSuffix: "na mesec. Izberite raven funkcionalnosti, nato dodajte uporabnike, SMS sporočila ali dodatne module.",
+      fromPrefix: "od",
+      perMonth: "/ mesec",
       items: ["14-dnevni brezplačni preizkus", "Brez kreditne kartice", "Jasno prikazani dodatni stroški"],
       cta: "Primerjajte pakete",
     },
@@ -127,8 +131,10 @@ const copy = {
     pricing: {
       eyebrow: "Flexible plans",
       title: "Calendra plans and pricing",
-      intro: "Plans start at €14.90 per month. Choose the right feature level, then add users, SMS messages or optional modules.",
-      from: "from €14.90 / month",
+      introPrefix: "Plans start at",
+      introSuffix: "per month. Choose the right feature level, then add users, SMS messages or optional modules.",
+      fromPrefix: "from",
+      perMonth: "/ month",
       items: ["14-day free trial", "No credit card required", "Clearly shown additional costs"],
       cta: "Compare plans",
     },
@@ -332,13 +338,58 @@ export const IntegrationsSection = () => {
 export const PricingOverview = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].pricing;
+  const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(FALLBACK_PUBLIC_PRICING);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetchPublicPricingCatalog(controller.signal)
+      .then(setPricingCatalog)
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        console.error("Could not load the public pricing catalog for the homepage; using the built-in fallback.", error);
+      });
+    return () => controller.abort();
+  }, []);
+
+  const basicMonthlyPrice = useMemo(() => {
+    const basicPlan = pricingCatalog.plans.find((plan) => plan.key === "basic");
+    const value = basicPlan?.monthlyGross ?? FALLBACK_PUBLIC_PRICING.plans[0].monthlyGross;
+    return new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-IE", {
+      style: "currency",
+      currency: pricingCatalog.currency || "EUR",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  }, [language, pricingCatalog]);
+
   return (
       <section id="cenik" className="scroll-mt-20 bg-background py-20 md:py-28">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-card to-accent/[0.07] p-8 shadow-soft md:p-12">
             <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-              <div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{section.intro}</p><Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild><a href={getRoutePath("pricing", language)}>{section.cta}<ArrowRight className="h-4 w-4" /></a></Button></div>
-              <div className="rounded-3xl border border-border/70 bg-background p-7 shadow-soft"><BadgeEuro className="h-8 w-8 text-primary" /><p className="mt-5 font-display text-3xl font-extrabold text-foreground">{section.from}</p><ul className="mt-6 grid gap-3">{section.items.map((item) => <li key={item} className="flex items-center gap-3 text-sm font-medium text-foreground"><Check className="h-4 w-4 text-primary" />{item}</li>)}</ul></div>
+              <div>
+                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span>
+                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2>
+                <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">
+                  {section.introPrefix} <strong className="font-semibold text-foreground">{basicMonthlyPrice}</strong> {section.introSuffix}
+                </p>
+                <Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild>
+                  <a href={getRoutePath("pricing", language)}>{section.cta}<ArrowRight className="h-4 w-4" /></a>
+                </Button>
+              </div>
+              <div className="rounded-3xl border border-border/70 bg-background p-7 shadow-soft">
+                <BadgeEuro className="h-8 w-8 text-primary" />
+                <p className="mt-5 font-display text-3xl font-extrabold text-foreground">
+                  {section.fromPrefix} {basicMonthlyPrice} {section.perMonth}
+                </p>
+                <ul className="mt-6 grid gap-3">
+                  {section.items.map((item) => (
+                    <li key={item} className="flex items-center gap-3 text-sm font-medium text-foreground">
+                      <Check className="h-4 w-4 text-primary" />{item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>

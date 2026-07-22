@@ -14,10 +14,36 @@ import { motion } from "framer-motion";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
+import { useEffect, useRef, useState } from "react";
 
 const Hero = () => {
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).hero;
+  const heroCtaRef = useRef<HTMLDivElement | null>(null);
+  const [showStickyCtas, setShowStickyCtas] = useState(false);
+
+  useEffect(() => {
+    const heroCtas = heroCtaRef.current;
+    if (!heroCtas) return;
+
+    let frame = 0;
+    const updateVisibility = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        setShowStickyCtas(heroCtas.getBoundingClientRect().bottom < 0);
+      });
+    };
+
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    window.addEventListener("resize", updateVisibility);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", updateVisibility);
+      window.removeEventListener("resize", updateVisibility);
+    };
+  }, []);
 
   const metricCards = [
     {
@@ -44,7 +70,8 @@ const Hero = () => {
   ] as const;
 
   return (
-    <section className="relative overflow-hidden bg-background pb-16 pt-16 sm:pt-20 md:pb-20 lg:pb-24 lg:pt-24">
+    <>
+      <section className="relative overflow-hidden bg-background pb-16 pt-16 sm:pt-20 md:pb-20 lg:pb-24 lg:pt-24">
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         <div className="absolute -right-40 top-4 h-[620px] w-[620px] rounded-full bg-primary/[0.08] blur-3xl" />
         <div className="absolute bottom-[-220px] right-[8%] h-[500px] w-[860px] rounded-[50%] bg-primary/[0.07] blur-3xl" />
@@ -95,6 +122,7 @@ const Hero = () => {
             </motion.p>
 
             <motion.div
+              ref={heroCtaRef}
               className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center"
               initial={false}
               animate={{ opacity: 1, y: 0 }}
@@ -253,7 +281,50 @@ const Hero = () => {
           </motion.div>
         </div>
       </div>
-    </section>
+      </section>
+
+      {showStickyCtas ? (
+        <motion.div
+          className="fixed inset-x-0 bottom-0 z-[80] px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 24 }}
+          transition={{ duration: 0.2 }}
+        >
+          <div className="mx-auto grid max-w-[720px] gap-2 rounded-2xl border border-border/70 bg-background/95 p-2.5 shadow-[0_24px_70px_-24px_hsl(220_35%_10%/0.45)] backdrop-blur-xl sm:grid-cols-2">
+            <Button
+              variant="hero"
+              size="lg"
+              className="h-12 w-full rounded-xl px-5 text-sm font-semibold shadow-lg shadow-primary/20 sm:text-base"
+              asChild
+            >
+              <a
+                href={TRIAL_SIGNUP_ROUTE}
+                onClick={() => trackMarketingEvent("trial_cta_click", { placement: "homepage_sticky", language })}
+              >
+                {copy.primaryCta}
+                <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
+              </a>
+            </Button>
+
+            <Button
+              variant="outline"
+              size="lg"
+              className="h-12 w-full rounded-xl border-border/80 bg-card px-5 text-sm font-semibold text-primary shadow-sm hover:border-primary/30 hover:bg-card hover:text-primary sm:text-base"
+              asChild
+            >
+              <a
+                href={language === "sl" ? "/predstavitev" : "/en/demo"}
+                onClick={() => trackMarketingEvent("demo_booking_cta_clicked", { placement: "homepage_sticky", language })}
+              >
+                <CalendarClock className="mr-2 h-4 w-4" aria-hidden="true" />
+                {copy.secondaryCta}
+              </a>
+            </Button>
+          </div>
+        </motion.div>
+      ) : null}
+    </>
   );
 };
 
