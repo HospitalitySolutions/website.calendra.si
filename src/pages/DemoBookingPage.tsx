@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useParams } from "react-router-dom";
 import { addDays, format } from "date-fns";
 import { enGB, sl } from "date-fns/locale";
@@ -170,6 +170,7 @@ const DemoBookingPage = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({ guestName: "", guestEmail: "", guestPhone: "", companyName: "", guestNote: "" });
+  const selectedSummaryRef = useRef<HTMLElement | null>(null);
 
   const loadAvailability = async (bookingHorizonDays = profile?.bookingHorizonDays || 30) => {
     const from = new Date();
@@ -248,6 +249,17 @@ const DemoBookingPage = () => {
       setSaving(false);
     }
   };
+
+  useEffect(() => {
+    if (step !== "slots" || rescheduling || !selectedSlot || !hold) return;
+    if (typeof window === "undefined" || !window.matchMedia("(max-width: 1023px)").matches) return;
+
+    const frame = window.requestAnimationFrame(() => {
+      selectedSummaryRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [hold, rescheduling, selectedSlot, step]);
 
   const openDetails = () => {
     if (!selectedSlot || !hold) return;
@@ -366,11 +378,11 @@ const DemoBookingPage = () => {
   return <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.08),transparent_36%),linear-gradient(to_bottom,hsl(var(--background)),hsl(var(--muted)/0.35))]">
     <Navbar />
     <main className="container mx-auto max-w-6xl px-4 py-12 md:py-16 lg:px-8">
-      {!token && <header className="mx-auto mb-10 max-w-3xl text-center">
+      {!token && <header className="mx-auto mb-6 max-w-3xl text-center md:mb-10">
         <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.06] px-4 py-2 text-sm font-bold text-primary"><Video className="h-4 w-4" />{t.eyebrow}</span>
-        <h1 className="mt-5 font-display text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">{t.title}</h1>
-        <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{t.subtitle}</p>
-        <div className="mt-6 flex flex-wrap justify-center gap-3 text-sm font-semibold text-foreground">
+        <h1 className="mt-5 hidden font-display text-4xl font-extrabold tracking-tight text-foreground md:block md:text-5xl">{t.title}</h1>
+        <p className="mx-auto mt-4 hidden max-w-2xl text-lg leading-8 text-muted-foreground md:block">{t.subtitle}</p>
+        <div className="mt-6 hidden flex-wrap justify-center gap-3 text-sm font-semibold text-foreground md:flex">
           <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Clock3 className="h-4 w-4 text-primary" />{profile?.durationMinutes || 30} {language === "sl" ? "minut" : "minutes"}</span>
           <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span>
         </div>
@@ -415,7 +427,7 @@ const DemoBookingPage = () => {
               <Button type="submit" variant="hero" className="h-12 rounded-xl text-base" disabled={saving}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}{t.confirm}</Button>
             </form>}
           </section>
-          <aside className="rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-card to-card p-6 shadow-soft lg:sticky lg:top-28 md:p-7">
+          <aside ref={selectedSummaryRef} className="scroll-mt-24 rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-card to-card p-6 shadow-soft lg:sticky lg:top-28 md:p-7">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground"><CalendarDays className="h-6 w-6" /></span>
             <h2 className="mt-5 font-display text-xl font-bold text-foreground">{t.selected}</h2>
             {selectedSlot ? <><p className="mt-3 text-lg font-bold text-foreground">{formatDateTime(selectedSlot.startAt, language, timeZone)}</p><div className="mt-5 grid gap-3 text-sm text-muted-foreground"><span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-primary" />{profile?.durationMinutes || 30} min</span><span className="flex items-center gap-2"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span></div>{step === "slots" && <Button variant="hero" className="mt-7 h-12 w-full rounded-xl" disabled={!hold || saving} onClick={openDetails}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t.next}</Button>}</> : <p className="mt-3 leading-7 text-muted-foreground">{language === "sl" ? "Najprej izberite datum in prost termin." : "Choose a date and available time first."}</p>}
