@@ -268,7 +268,8 @@ const DemoBookingPage = () => {
   };
 
   useEffect(() => {
-    if (step !== "details" || typeof window === "undefined") return;
+    if ((step !== "details" && step !== "confirmed") || typeof window === "undefined") return;
+    if (step === "confirmed" && !window.matchMedia("(max-width: 1023px)").matches) return;
 
     const frame = window.requestAnimationFrame(() => {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -387,8 +388,8 @@ const DemoBookingPage = () => {
 
   return <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.08),transparent_36%),linear-gradient(to_bottom,hsl(var(--background)),hsl(var(--muted)/0.35))]">
     <Navbar />
-    <main className="container mx-auto max-w-6xl px-4 py-12 md:py-16 lg:px-8">
-      {!token && step !== "details" && <header className="mx-auto mb-6 max-w-3xl text-center md:mb-10">
+    <main className={`container mx-auto max-w-6xl px-4 ${step === "confirmed" ? "py-5 md:py-16" : "py-12 md:py-16"} lg:px-8`}>
+      {!token && step === "slots" && <header className="mx-auto mb-6 max-w-3xl text-center md:mb-10">
         <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.06] px-4 py-2 text-sm font-bold text-primary"><Video className="h-4 w-4" />{t.eyebrow}</span>
         <h1 className="mt-5 hidden font-display text-4xl font-extrabold tracking-tight text-foreground md:block md:text-5xl">{t.title}</h1>
         <p className="mx-auto mt-4 hidden max-w-2xl text-lg leading-8 text-muted-foreground md:block">{t.subtitle}</p>
@@ -399,23 +400,23 @@ const DemoBookingPage = () => {
       </header>}
 
       {loading ? <div className="flex min-h-[420px] items-center justify-center"><Loader2 className="h-9 w-9 animate-spin text-primary" /><span className="ml-3 text-muted-foreground">{t.loading}</span></div> : error && !profile && !booking ? <div className="mx-auto max-w-xl rounded-3xl border border-destructive/20 bg-card p-8 text-center shadow-soft"><XCircle className="mx-auto h-12 w-12 text-destructive" /><h1 className="mt-4 font-display text-2xl font-bold">{token ? t.pageError : t.unavailable}</h1><p className="mt-2 text-muted-foreground">{error}</p></div> : !token && profile && !profile.enabled ? <div className="mx-auto max-w-xl rounded-3xl border bg-card p-10 text-center shadow-soft"><CalendarDays className="mx-auto h-12 w-12 text-muted-foreground" /><h2 className="mt-4 font-display text-2xl font-bold">{t.unavailable}</h2></div> : step === "confirmed" && booking ? (
-        <div className="mx-auto max-w-3xl rounded-[2rem] border border-border/70 bg-card p-6 shadow-[0_28px_80px_-40px_hsl(var(--primary)/0.5)] md:p-10">
+        <div className="mx-auto max-w-3xl rounded-[2rem] border border-border/70 bg-card p-4 shadow-[0_28px_80px_-40px_hsl(var(--primary)/0.5)] sm:p-6 md:p-10">
           <div className="text-center">
-            <span className={`mx-auto flex h-16 w-16 items-center justify-center rounded-full ${booking.status === "CANCELLED" ? "bg-destructive/10 text-destructive" : "bg-emerald-500/10 text-emerald-600"}`}>{booking.status === "CANCELLED" ? <XCircle className="h-9 w-9" /> : <CheckCircle2 className="h-9 w-9" />}</span>
-            <h1 className="mt-5 font-display text-3xl font-extrabold text-foreground">{token ? t.managementTitle : booking.status === "CANCELLED" ? t.cancelled : t.confirmed}</h1>
-            {!token && booking.status !== "CANCELLED" && <p className="mx-auto mt-3 max-w-xl text-muted-foreground">{t.confirmedText}</p>}
+            <span className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full sm:h-16 sm:w-16 ${booking.status === "CANCELLED" ? "bg-destructive/10 text-destructive" : "bg-emerald-500/10 text-emerald-600"}`}>{booking.status === "CANCELLED" ? <XCircle className="h-7 w-7 sm:h-9 sm:w-9" /> : <CheckCircle2 className="h-7 w-7 sm:h-9 sm:w-9" />}</span>
+            <h1 className="mt-3 font-display text-2xl font-extrabold text-foreground sm:mt-5 sm:text-3xl">{token ? t.managementTitle : booking.status === "CANCELLED" ? t.cancelled : t.confirmed}</h1>
+            {!token && booking.status !== "CANCELLED" && <p className="mx-auto mt-2 max-w-xl text-sm leading-5 text-muted-foreground sm:mt-3 sm:text-base">{t.confirmedText}</p>}
           </div>
-          <div className="mt-8 rounded-2xl border border-border/70 bg-background p-5 md:p-6">
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div className="flex gap-3"><CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div><span className="text-sm text-muted-foreground">{t.bookedFor}</span><strong className="mt-1 block text-foreground">{formatDateTime(booking.startAt, language, booking.guestTimeZone || timeZone)}</strong></div></div>
-              <div className="flex gap-3"><Clock3 className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div><span className="text-sm text-muted-foreground">{t.duration}</span><strong className="mt-1 block text-foreground">{booking.durationMinutes} min</strong></div></div>
-              <div className="flex gap-3"><Mail className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div><span className="text-sm text-muted-foreground">{t.email}</span><strong className="mt-1 block break-all text-foreground">{booking.guestEmail}</strong></div></div>
-              <div className="flex gap-3"><Video className="mt-0.5 h-5 w-5 shrink-0 text-primary" /><div><span className="text-sm text-muted-foreground">{t.platform}</span><strong className="mt-1 block text-foreground">{meetingProviderLabel(booking.meetingProvider)}</strong></div></div>
+          <div className="mt-4 rounded-2xl border border-border/70 bg-background p-4 sm:mt-8 sm:p-5 md:p-6">
+            <div className="grid grid-cols-2 gap-x-3 gap-y-4 sm:gap-5">
+              <div className="flex min-w-0 gap-2 sm:gap-3"><CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-primary sm:h-5 sm:w-5" /><div className="min-w-0"><span className="text-xs text-muted-foreground sm:text-sm">{t.bookedFor}</span><strong className="mt-0.5 block text-sm leading-5 text-foreground sm:mt-1 sm:text-base">{formatDateTime(booking.startAt, language, booking.guestTimeZone || timeZone)}</strong></div></div>
+              <div className="flex min-w-0 gap-2 sm:gap-3"><Clock3 className="mt-0.5 h-4 w-4 shrink-0 text-primary sm:h-5 sm:w-5" /><div><span className="text-xs text-muted-foreground sm:text-sm">{t.duration}</span><strong className="mt-0.5 block text-sm text-foreground sm:mt-1 sm:text-base">{booking.durationMinutes} min</strong></div></div>
+              <div className="flex min-w-0 gap-2 sm:gap-3"><Mail className="mt-0.5 h-4 w-4 shrink-0 text-primary sm:h-5 sm:w-5" /><div className="min-w-0"><span className="text-xs text-muted-foreground sm:text-sm">{t.email}</span><strong className="mt-0.5 block break-all text-sm leading-5 text-foreground sm:mt-1 sm:text-base">{booking.guestEmail}</strong></div></div>
+              <div className="flex min-w-0 gap-2 sm:gap-3"><Video className="mt-0.5 h-4 w-4 shrink-0 text-primary sm:h-5 sm:w-5" /><div><span className="text-xs text-muted-foreground sm:text-sm">{t.platform}</span><strong className="mt-0.5 block text-sm text-foreground sm:mt-1 sm:text-base">{meetingProviderLabel(booking.meetingProvider)}</strong></div></div>
             </div>
           </div>
-          {error && <p className="mt-5 rounded-xl bg-destructive/10 p-4 text-sm text-destructive">{error}</p>}
-          {rescheduling ? <div className="mt-8 border-t border-border pt-8"><h2 className="mb-6 font-display text-2xl font-bold">{t.chooseNew}</h2>{slotPicker}<div className="mt-7 flex flex-col gap-3 sm:flex-row"><Button variant="outline" className="h-12 rounded-xl" onClick={() => setRescheduling(false)}>{t.back}</Button><Button className="h-12 rounded-xl" disabled={!hold || saving} onClick={() => void saveReschedule()}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t.saveNew}</Button></div></div> : <div className="mt-7 grid gap-3 sm:grid-cols-2">
-            {booking.status !== "CANCELLED" && <Button variant="hero" className="h-12 w-full rounded-xl sm:col-span-2" onClick={() => downloadIcs(booking)}><CalendarDays className="mr-2 h-4 w-4" />{t.addCalendar}</Button>}
+          {error && <p className="mt-4 rounded-xl bg-destructive/10 p-4 text-sm text-destructive sm:mt-5">{error}</p>}
+          {rescheduling ? <div className="mt-8 border-t border-border pt-8"><h2 className="mb-6 font-display text-2xl font-bold">{t.chooseNew}</h2>{slotPicker}<div className="mt-7 flex flex-col gap-3 sm:flex-row"><Button variant="outline" className="h-12 rounded-xl" onClick={() => setRescheduling(false)}>{t.back}</Button><Button className="h-12 rounded-xl" disabled={!hold || saving} onClick={() => void saveReschedule()}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t.saveNew}</Button></div></div> : <div className="mt-4 grid gap-3 sm:mt-7 sm:grid-cols-2">
+            {booking.status !== "CANCELLED" && <Button variant="hero" className="h-11 w-full rounded-xl sm:col-span-2 sm:h-12" onClick={() => downloadIcs(booking)}><CalendarDays className="mr-2 h-4 w-4" />{t.addCalendar}</Button>}
             {token && booking.canModify && booking.status !== "CANCELLED" && <Button variant="outline" className="h-12 rounded-xl" disabled={saving} onClick={() => void startReschedule()}><RefreshCw className="mr-2 h-4 w-4" />{t.reschedule}</Button>}
             {token && booking.canModify && booking.status !== "CANCELLED" && <Button variant="outline" className="h-12 rounded-xl border-destructive/30 text-destructive hover:bg-destructive/5 hover:text-destructive" disabled={saving} onClick={() => void cancelBooking()}><XCircle className="mr-2 h-4 w-4" />{t.cancel}</Button>}
           </div>}
