@@ -267,6 +267,16 @@ const DemoBookingPage = () => {
     trackMarketingEvent("demo_booking_form_started", { language });
   };
 
+  useEffect(() => {
+    if (step !== "details" || typeof window === "undefined") return;
+
+    const frame = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [step]);
+
   const confirm = async (event: FormEvent) => {
     event.preventDefault();
     if (!hold) return;
@@ -378,7 +388,7 @@ const DemoBookingPage = () => {
   return <div className="min-h-screen bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.08),transparent_36%),linear-gradient(to_bottom,hsl(var(--background)),hsl(var(--muted)/0.35))]">
     <Navbar />
     <main className="container mx-auto max-w-6xl px-4 py-12 md:py-16 lg:px-8">
-      {!token && <header className="mx-auto mb-6 max-w-3xl text-center md:mb-10">
+      {!token && step !== "details" && <header className="mx-auto mb-6 max-w-3xl text-center md:mb-10">
         <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.06] px-4 py-2 text-sm font-bold text-primary"><Video className="h-4 w-4" />{t.eyebrow}</span>
         <h1 className="mt-5 hidden font-display text-4xl font-extrabold tracking-tight text-foreground md:block md:text-5xl">{t.title}</h1>
         <p className="mx-auto mt-4 hidden max-w-2xl text-lg leading-8 text-muted-foreground md:block">{t.subtitle}</p>
