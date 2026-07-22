@@ -6,6 +6,8 @@ import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import { ArrowRight, CheckCircle2, Link2 } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useRef } from "react";
+import StickySalesCtaBar from "@/components/landing/StickySalesCtaBar";
 
 type FeatureKey = Extract<CanonicalRouteKey, "calendar" | "invoicing" | "clientManagement" | "reminders" | "integrations">;
 
@@ -183,6 +185,7 @@ const FeatureDetailPage = () => {
   const { language } = useSiteLanguage();
   const routeKey = getRouteKeyFromPathname(pathname) as FeatureKey | undefined;
   const page = routeKey ? content[routeKey]?.[language] : undefined;
+  const heroCtaRef = useRef<HTMLDivElement | null>(null);
 
   if (!routeKey || !page) return null;
 
@@ -195,7 +198,7 @@ const FeatureDetailPage = () => {
             <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.eyebrow}</span>
             <h1 className="mt-4 max-w-4xl font-display text-4xl font-extrabold tracking-tight text-foreground md:text-6xl">{page.title}</h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl">{page.intro}</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <div ref={heroCtaRef} className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button variant="hero" size="lg" className="rounded-xl" asChild>
                 <a href={TRIAL_SIGNUP_ROUTE}>{language === "sl" ? "Preizkusite brezplačno" : "Try it free"}<ArrowRight className="h-4 w-4" /></a>
               </Button>
@@ -264,6 +267,7 @@ const FeatureDetailPage = () => {
         </section>
       </main>
       <Footer />
+      <StickySalesCtaBar anchorRef={heroCtaRef} placement={`feature_${routeKey}`} />
     </div>
   );
 };

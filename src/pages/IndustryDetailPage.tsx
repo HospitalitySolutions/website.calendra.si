@@ -26,6 +26,8 @@ import {
   UsersRound,
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useRef } from "react";
+import StickySalesCtaBar from "@/components/landing/StickySalesCtaBar";
 
 const problemIcons = [Clock3, CalendarCheck2, BellRing, FileText] as const;
 const featureIcons = [CalendarCheck2, Repeat2, MapPin, BellRing, UsersRound, ShieldCheck] as const;
@@ -38,6 +40,7 @@ const IndustryDetailPage = () => {
   if (!isIndustryRouteKey(routeKey)) return null;
 
   const page = getIndustryContent(routeKey, language);
+  const heroCtaRef = useRef<HTMLDivElement | null>(null);
   const otherIndustries = INDUSTRY_ROUTE_KEYS.filter((key) => key !== routeKey);
   const primaryLabel = language === "sl" ? "Preizkusite brezplačno" : "Try it free";
   const featuresLabel = language === "sl" ? "Oglejte si funkcionalnosti" : "Explore features";
@@ -66,7 +69,7 @@ const IndustryDetailPage = () => {
                   </li>
                 ))}
               </ul>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <div ref={heroCtaRef} className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Button variant="hero" size="lg" className="rounded-xl" asChild>
                   <a href={TRIAL_SIGNUP_ROUTE}>{primaryLabel}<ArrowRight className="h-4 w-4" /></a>
                 </Button>
@@ -264,6 +267,7 @@ const IndustryDetailPage = () => {
         </section>
       </main>
       <Footer />
+      <StickySalesCtaBar anchorRef={heroCtaRef} placement={`industry_${routeKey}`} />
     </div>
   );
 };
