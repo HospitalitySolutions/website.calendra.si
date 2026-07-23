@@ -15,6 +15,7 @@ import {
   FALLBACK_PUBLIC_PRICING,
   fetchPublicPricingCatalog,
   type PublicAdditionalUserRule,
+  type PublicPricingAddOn,
   type PublicPricingCatalog,
   type PublicPricingFeature,
   type PublicPricingPlanKey,
@@ -423,8 +424,6 @@ const standaloneExtras = {
   },
 } as const;
 
-const FISCAL_PRICE = 9.9;
-const PREMISES_PRICE = 19.9;
 const USER_SLIDER_MAX = 20;
 const SMS_SLIDER_MAX = 1000;
 const SMS_SLIDER_STEP = 50;
@@ -460,12 +459,11 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const { language } = useSiteLanguage();
   const baseContent = useMemo(() => translations[language], [language]);
   const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(FALLBACK_PUBLIC_PRICING);
-  const [selectedTierKey, setSelectedTierKey] = useState<PlanKey>("premium");
+  const [selectedTierKey, setSelectedTierKey] = useState<PlanKey>("professional");
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
   const [additionalUsers, setAdditionalUsers] = useState(FALLBACK_PUBLIC_PRICING.includedUsers);
   const [additionalSms, setAdditionalSms] = useState(0);
-  const [fiscalCashRegister, setFiscalCashRegister] = useState(false);
-  const [businessPremises, setBusinessPremises] = useState(false);
+  const [selectedAddOnKeys, setSelectedAddOnKeys] = useState<string[]>([]);
   const [contactCompany, setContactCompany] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -576,7 +574,15 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const packageTiers = useMemo(() => {
     const standardTiers = content.tiers.filter((tier) => tier.key !== "enterprise");
     return standardTiers.map((tier, index) => {
-      if (index === 0) return { ...tier, inheritedLabel: undefined };
+      const isMiddlePackage = index === 1;
+      if (index === 0) {
+        return {
+          ...tier,
+          inheritedLabel: undefined,
+          popular: false,
+          accent: false,
+        };
+      }
       const previousTier = standardTiers[index - 1];
       const previousFeatures = new Set(previousTier.features);
       const incrementalFeatures = tier.features.filter((feature) => !previousFeatures.has(feature));
@@ -591,10 +597,23 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
         ...tier,
         features: incrementalFeatures.length > 0 ? incrementalFeatures : tier.features,
         inheritedLabel,
+        popular: isMiddlePackage,
+        accent: isMiddlePackage,
       };
     });
   }, [content, language]);
-  const supportsPremises = selectedTier.key === "professional" || selectedTier.key === "premium";
+
+  const selectedApiPlanKey = API_PLAN_BY_TIER[selectedTier.key];
+  const visibleAddOns = useMemo(
+    () => selectedApiPlanKey
+      ? pricingCatalog.addOns.filter((addOn) => addOn.availablePlans.includes(selectedApiPlanKey))
+      : [],
+    [pricingCatalog.addOns, selectedApiPlanKey],
+  );
+  const selectedAddOns = useMemo(
+    () => pricingCatalog.addOns.filter((addOn) => selectedAddOnKeys.includes(addOn.key)),
+    [pricingCatalog.addOns, selectedAddOnKeys],
+  );
   const additionalUsersPrice = calculateAdditionalUsersPrice(
     additionalUsers,
     includedUsers,
@@ -602,10 +621,8 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   );
 
   useEffect(() => {
-    if (!supportsPremises) {
-      setBusinessPremises(false);
-    }
-  }, [supportsPremises]);
+    setSelectedAddOnKeys((current) => current.filter((key) => visibleAddOns.some((addOn) => addOn.key === key)));
+  }, [visibleAddOns]);
 
   useEffect(() => {
     if (!standalone || typeof window === "undefined") return;
@@ -651,25 +668,32 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     (selectedTier.baseMonthly ?? 0) +
     additionalUsersPrice +
     additionalSms * pricingCatalog.smsPerMessageGross +
-    (fiscalCashRegister ? FISCAL_PRICE : 0) +
-    (businessPremises && supportsPremises ? PREMISES_PRICE : 0);
+    selectedAddOns.reduce((total, addOn) => total + addOn.monthlyGross, 0);
   const oneTimeTotal = 0;
   const firstInvoiceEstimate = monthlyTotal;
+
+  const addOnLabel = (addOn: PublicPricingAddOn) =>
+    language === "sl" ? addOn.nameSl || addOn.name : addOn.name;
+  const addOnDescription = (addOn: PublicPricingAddOn) =>
+    language === "sl"
+      ? addOn.descriptionSl || addOn.description
+      : addOn.description;
 
   const selectedItems = [
     additionalUsers > includedUsers ? `${additionalUsers} ${content.usersCountLabel}` : null,
     additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null,
-    fiscalCashRegister ? `${content.optionFiscal} (${content.monthlyLabel.toLowerCase()})` : null,
-    businessPremises && supportsPremises ? `${content.optionPremises} (${content.monthlyLabel.toLowerCase()})` : null,
+    ...selectedAddOns.map((addOn) => `${addOnLabel(addOn)} (${content.monthlyLabel.toLowerCase()})`),
   ].filter(Boolean) as string[];
 
   const signupSummary = useMemo<PricingSignupSummary>(
     () => ({
       totalUsers: additionalUsers,
       additionalSms,
-      fiscalCashRegister,
+      fiscalCashRegister: selectedAddOns.some((addOn) => addOn.code === "FISCAL_CASH_REGISTER"),
       websiteCreation: false,
-      businessPremises: businessPremises && supportsPremises,
+      businessPremises: selectedAddOns.some((addOn) => addOn.code === "BUSINESS_PREMISES"),
+      selectedAddOnKeys: selectedAddOns.map((addOn) => addOn.key),
+      selectedAddOnCodes: selectedAddOns.map((addOn) => addOn.code),
       monthlyTotal,
       oneTimeTotal,
       firstInvoiceEstimate,
@@ -677,9 +701,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     [
       additionalUsers,
       additionalSms,
-      fiscalCashRegister,
-      businessPremises,
-      supportsPremises,
+      selectedAddOns,
       monthlyTotal,
       oneTimeTotal,
       firstInvoiceEstimate,
@@ -1009,29 +1031,34 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   <p className="mt-1 text-sm text-muted-foreground">{content.addOnsTitle}</p>
 
                   <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
-                      <Checkbox checked={fiscalCashRegister} onCheckedChange={(checked) => setFiscalCashRegister(Boolean(checked))} className="mt-1" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <Building2 className="h-4 w-4 text-primary" />
-                          <span className="font-semibold text-foreground">{content.optionFiscal}</span>
-                        </div>
-                        <p className="mt-1 text-sm text-muted-foreground">{formatter.format(FISCAL_PRICE)} / {language === "sl" ? "mesec" : "month"}</p>
-                      </div>
-                    </label>
-
-                    {supportsPremises && (
-                      <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
-                        <Checkbox checked={businessPremises} onCheckedChange={(checked) => setBusinessPremises(Boolean(checked))} className="mt-1" />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2">
-                            <Building2 className="h-4 w-4 text-primary" />
-                            <span className="font-semibold text-foreground">{content.optionPremises}</span>
+                    {visibleAddOns.map((addOn) => {
+                      const checked = selectedAddOnKeys.includes(addOn.key);
+                      const description = addOnDescription(addOn);
+                      return (
+                        <label key={addOn.key} className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={(nextChecked) => {
+                              setSelectedAddOnKeys((current) => {
+                                if (Boolean(nextChecked)) {
+                                  return current.includes(addOn.key) ? current : [...current, addOn.key];
+                                }
+                                return current.filter((key) => key !== addOn.key);
+                              });
+                            }}
+                            className="mt-1"
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <Building2 className="h-4 w-4 text-primary" />
+                              <span className="font-semibold text-foreground">{addOnLabel(addOn)}</span>
+                            </div>
+                            <p className="mt-1 text-sm text-muted-foreground">{formatter.format(addOn.monthlyGross)} / {language === "sl" ? "mesec" : "month"}</p>
+                            {description && <p className="mt-2 text-sm text-muted-foreground">{description}</p>}
                           </div>
-                          <p className="mt-1 text-sm text-muted-foreground">{formatter.format(PREMISES_PRICE)} / {language === "sl" ? "mesec" : "month"}</p>
-                        </div>
-                      </label>
-                    )}
+                        </label>
+                      );
+                    })}
                   </div>
                 </div>
               </div>

@@ -20,6 +20,8 @@ export type PricingSignupSummary = {
   fiscalCashRegister: boolean;
   websiteCreation: boolean;
   businessPremises: boolean;
+  selectedAddOnKeys?: string[];
+  selectedAddOnCodes?: string[];
   monthlyTotal: number;
   oneTimeTotal: number;
   firstInvoiceEstimate: number;
