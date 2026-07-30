@@ -24,6 +24,11 @@ import CookiePolicySsr from "./pages/CookiePolicy.tsx";
 import SecuritySsr from "./pages/Security.tsx";
 import DataRightsSsr from "./pages/DataRights.tsx";
 import DemoBookingPageSsr from "./pages/DemoBookingPage.tsx";
+import BlogIndexPageSsr from "./pages/BlogIndexPage.tsx";
+import BlogArticlePageSsr from "./pages/BlogArticlePage.tsx";
+import AuthorPageSsr from "./pages/AuthorPage.tsx";
+import ComparisonIndexPageSsr from "./pages/ComparisonIndexPage.tsx";
+import ComparisonPageSsr from "./pages/ComparisonPage.tsx";
 
 const Index = IndexSsr;
 const PrivacyPolicy = import.meta.env.SSR ? PrivacyPolicySsr : lazy(() => import("./pages/PrivacyPolicy.tsx"));
@@ -65,6 +70,11 @@ const CookiePolicy = import.meta.env.SSR ? CookiePolicySsr : lazy(() => import("
 const Security = import.meta.env.SSR ? SecuritySsr : lazy(() => import("./pages/Security.tsx"));
 const DataRights = import.meta.env.SSR ? DataRightsSsr : lazy(() => import("./pages/DataRights.tsx"));
 const DemoBookingPage = import.meta.env.SSR ? DemoBookingPageSsr : lazy(() => import("./pages/DemoBookingPage.tsx"));
+const BlogIndexPage = import.meta.env.SSR ? BlogIndexPageSsr : lazy(() => import("./pages/BlogIndexPage.tsx"));
+const BlogArticlePage = import.meta.env.SSR ? BlogArticlePageSsr : lazy(() => import("./pages/BlogArticlePage.tsx"));
+const AuthorPage = import.meta.env.SSR ? AuthorPageSsr : lazy(() => import("./pages/AuthorPage.tsx"));
+const ComparisonIndexPage = import.meta.env.SSR ? ComparisonIndexPageSsr : lazy(() => import("./pages/ComparisonIndexPage.tsx"));
+const ComparisonPage = import.meta.env.SSR ? ComparisonPageSsr : lazy(() => import("./pages/ComparisonPage.tsx"));
 
 const RouteFallback = () => <div className="min-h-screen bg-background" aria-hidden="true" />;
 
@@ -181,6 +191,18 @@ const AppRoutes = () => (
       <Route path="/ai-transparentnost" element={<AITransparency />} />
       <Route path="/en/ai-transparency" element={<AITransparency />} />
       <Route path="/ai-transparency" element={<Navigate to="/en/ai-transparency" replace />} />
+
+      <Route path="/blog" element={<BlogIndexPage />} />
+      <Route path="/en/blog" element={<BlogIndexPage />} />
+      <Route path="/blog/:slug" element={<BlogArticlePage />} />
+      <Route path="/en/blog/:slug" element={<BlogArticlePage />} />
+      <Route path="/avtor/david-mirc" element={<AuthorPage />} />
+      <Route path="/en/author/david-mirc" element={<AuthorPage />} />
+
+      <Route path="/primerjava" element={<ComparisonIndexPage />} />
+      <Route path="/en/comparison" element={<ComparisonIndexPage />} />
+      <Route path="/primerjava/:competitor" element={<ComparisonPage />} />
+      <Route path="/en/comparison/:competitor" element={<ComparisonPage />} />
 
       <Route path="/izbris-racuna" element={<AccountDeletion />} />
       <Route path="/en/account-deletion" element={<AccountDeletion />} />

@@ -1,4 +1,72 @@
+# https://calendra.si robots policy
+#
+# Pages that must stay out of the index (account deletion, unknown routes) are
+# excluded with a per-page `noindex, follow` meta tag rather than a Disallow
+# rule here, because a crawler has to be able to fetch a page in order to see
+# that it is marked noindex.
+
 User-agent: *
+Allow: /
+
+# --- AI search and citation crawlers ---
+# These fetch pages on demand to answer user questions and cite sources, which
+# is a direct referral channel. All are explicitly allowed.
+
+# OpenAI: ChatGPT search index and live browsing
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Anthropic: Claude search index and live browsing
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Google AI Overviews and Gemini grounding
+User-agent: Google-Extended
+Allow: /
+
+# Apple Intelligence and Siri
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Meta AI
+User-agent: meta-externalagent
+Allow: /
+
+# Mistral, You.com, Common Crawl-adjacent search agents
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+# --- Model training crawlers ---
+# These collect content for model pre-training and do not drive citations or
+# referral traffic. Allowed here so Calendra is represented in future model
+# knowledge; change Allow to Disallow to opt out without affecting AI search.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: CCBot
 Allow: /
 
 Sitemap: https://calendra.si/sitemap.xml

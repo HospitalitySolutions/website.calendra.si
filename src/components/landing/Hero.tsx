@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { getSiteCopy } from "@/lib/site-copy";
+import { HERO_IMAGE } from "@/lib/hero-media";
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { useEffect, useRef, useState } from "react";
@@ -112,6 +113,7 @@ const Hero = () => {
             </motion.p>
 
             <motion.p
+              data-speakable="answer"
               className="mt-3 max-w-xl text-base leading-7 sm:text-lg sm:leading-8"
               style={{ color: "hsl(var(--text-body))" }}
               initial={false}
@@ -200,7 +202,8 @@ const Hero = () => {
               <div className="hidden h-11 w-px bg-border sm:block" aria-hidden="true" />
 
               <div>
-                <div className="flex items-center gap-0.5" aria-label={copy.reviewRating}>
+                {/* The rating is announced by the paragraph below, so the stars stay decorative. */}
+                <div className="flex items-center gap-0.5" aria-hidden="true">
                   {Array.from({ length: 5 }).map((_, index) => (
                     <Star key={index} className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />
                   ))}
@@ -226,17 +229,19 @@ const Hero = () => {
                     <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
                     <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
                   </div>
-                  <div className="absolute left-1/2 flex h-6 w-[42%] -translate-x-1/2 items-center justify-center rounded-md bg-slate-100 text-[10px] font-medium text-slate-400 sm:text-xs">
+                  <div className="absolute left-1/2 flex h-6 w-[42%] -translate-x-1/2 items-center justify-center rounded-md bg-slate-100 text-[10px] font-medium text-slate-600 sm:text-xs">
                     app.calendra.si
                   </div>
                 </div>
                 <div className="overflow-hidden rounded-b-[1.2rem] bg-white">
                   <img
-                    src="/hero/calendra-calendar-aug-2026.webp"
+                    src={HERO_IMAGE.src}
+                    srcSet={HERO_IMAGE.srcSet}
+                    sizes={HERO_IMAGE.sizes}
                     alt={copy.screenshotAlt}
                     className="block h-auto w-full"
-                    width="2400"
-                    height="920"
+                    width={HERO_IMAGE.width}
+                    height={HERO_IMAGE.height}
                     loading="eager"
                     decoding="async"
                   />

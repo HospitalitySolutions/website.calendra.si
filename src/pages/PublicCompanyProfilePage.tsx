@@ -120,7 +120,7 @@ const PublicCompanyProfilePage = () => {
           </article>
           {staticProfile.review ? (
             <article className="rounded-3xl border border-border/60 bg-card p-7 shadow-soft">
-              <div className="flex gap-0.5" aria-label={`${staticProfile.review.rating} / 5`}>{Array.from({ length: staticProfile.review.rating }).map((_, index) => <Star key={index} className="h-4 w-4 fill-amber-400 text-amber-400" />)}</div>
+              <div className="flex gap-0.5" role="img" aria-label={`${staticProfile.review.rating} / 5`}>{Array.from({ length: staticProfile.review.rating }).map((_, index) => <Star key={index} className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />)}</div>
               <h2 className="mt-5 text-xl font-bold text-foreground">{text.review}</h2>
               <blockquote className="mt-4 leading-7 text-muted-foreground">“{staticProfile.review.text[language]}”</blockquote>
               <p className="mt-4 text-sm font-semibold text-foreground">{staticProfile.review.author} · {staticProfile.review.source}</p>

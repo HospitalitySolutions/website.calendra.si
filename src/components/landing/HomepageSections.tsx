@@ -1,9 +1,15 @@
 import { Button } from "@/components/ui/button";
+import { StepWatermark } from "@/components/ui/step-watermark";
 import { getRoutePath } from "@/lib/localized-routes";
 import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
+import { getFaqForRoute } from "@/lib/faq";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
-import { FALLBACK_PUBLIC_PRICING, fetchPublicPricingCatalog, type PublicPricingCatalog } from "@/lib/public-pricing";
+import {
+  fetchPublicPricingCatalog,
+  getInitialPricingCatalog,
+  type PublicPricingCatalog,
+} from "@/lib/public-pricing";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
@@ -80,13 +86,6 @@ const copy = {
     faq: {
       eyebrow: "Dobro je vedeti",
       title: "Pogosta vprašanja o Calendri",
-      items: [
-        { q: "Komu je Calendra namenjena?", a: "Storitvenim podjetjem in posameznikom, ki upravljajo termine, stranke, zaposlene, opomnike, plačila ali račune." },
-        { q: "Ali lahko stranke rezervirajo same?", a: "Da. Uporabite lahko javno povezavo, vtičnik na svoji spletni strani ali gostujočo aplikacijo. Pravila naročanja določite sami." },
-        { q: "Ali Calendra preprečuje dvojne rezervacije?", a: "Calendra pri razpoložljivosti upošteva delovni čas, odsotnosti, obstoječe termine, zaposlene in po potrebi prostore ali naprave." },
-        { q: "Ali so opomniki vključeni?", a: "E-poštna in SMS obvestila so odvisna od izbranega paketa in nastavitev. SMS poraba je jasno prikazana v ceniku." },
-        { q: "Kako dolgo traja brezplačni preizkus?", a: "Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice." },
-      ],
     },
   },
   en: {
@@ -141,13 +140,6 @@ const copy = {
     faq: {
       eyebrow: "Good to know",
       title: "Frequently asked questions about Calendra",
-      items: [
-        { q: "Who is Calendra for?", a: "Service businesses and professionals managing appointments, clients, employees, reminders, payments or invoices." },
-        { q: "Can customers book by themselves?", a: "Yes. Use a public link, a widget on your website or the guest app. You control the booking rules." },
-        { q: "Does Calendra prevent double bookings?", a: "Availability considers working hours, absences, existing appointments, employees and, when needed, rooms or equipment." },
-        { q: "Are reminders included?", a: "Email and SMS notifications depend on the selected plan and configuration. SMS usage is shown clearly in pricing." },
-        { q: "How long is the free trial?", a: "The free trial lasts 14 days and does not require a credit card." },
-      ],
     },
   },
 } as const satisfies Record<SiteLanguage, unknown>;
@@ -248,7 +240,7 @@ export const AudienceSection = () => {
                   <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/[0.07] text-primary">
                     <Icon className="h-6 w-6" aria-hidden="true" />
                   </span>
-                  <p className="mt-5 text-base font-bold leading-6 text-foreground">{item.title}</p>
+                  <h3 className="mt-5 text-base font-bold leading-6 text-foreground">{item.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
                   <span className="mt-auto flex items-center gap-2 pt-5 text-sm font-semibold text-primary">
                     {industry.cardCta}
@@ -315,7 +307,7 @@ export const HowItWorksSection = () => {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="mx-auto max-w-3xl text-center"><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2></div>
           <div className="mt-12 grid gap-6 lg:grid-cols-3">
-            {section.items.map((item, index) => { const Icon = howIcons[index]; return <article key={item.title} className="relative rounded-3xl border border-border/60 bg-card p-7 shadow-soft"><span className="absolute right-6 top-5 font-display text-5xl font-black text-primary/[0.08]" aria-hidden="true">0{index + 1}</span><span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Icon className="h-6 w-6" aria-hidden="true" /></span><h3 className="mt-6 text-xl font-bold text-foreground">{item.title}</h3><p className="mt-3 leading-7 text-muted-foreground">{item.body}</p></article>; })}
+            {section.items.map((item, index) => { const Icon = howIcons[index]; return <article key={item.title} className="relative rounded-3xl border border-border/60 bg-card p-7 shadow-soft"><StepWatermark index={index} className="right-6 top-5 text-5xl" /><span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Icon className="h-6 w-6" aria-hidden="true" /></span><h3 className="mt-6 text-xl font-bold text-foreground">{item.title}</h3><p className="mt-3 leading-7 text-muted-foreground">{item.body}</p></article>; })}
           </div>
         </div>
       </section>
@@ -338,7 +330,7 @@ export const IntegrationsSection = () => {
 export const PricingOverview = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].pricing;
-  const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(FALLBACK_PUBLIC_PRICING);
+  const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(getInitialPricingCatalog);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -353,7 +345,7 @@ export const PricingOverview = () => {
 
   const basicMonthlyPrice = useMemo(() => {
     const basicPlan = pricingCatalog.plans.find((plan) => plan.key === "basic");
-    const value = basicPlan?.monthlyGross ?? FALLBACK_PUBLIC_PRICING.plans[0].monthlyGross;
+    const value = basicPlan?.monthlyGross ?? pricingCatalog.plans[0].monthlyGross;
     return new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-IE", {
       style: "currency",
       currency: pricingCatalog.currency || "EUR",
@@ -400,11 +392,12 @@ export const PricingOverview = () => {
 export const HomeFaq = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].faq;
+  const items = getFaqForRoute("home", language) ?? [];
   return (
       <section className="bg-card py-20 md:py-28">
         <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
           <div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><Sparkles className="mt-6 h-9 w-9 text-primary" /></div>
-          <div className="grid gap-3">{section.items.map((item) => <details key={item.q} className="group rounded-2xl border border-border/60 bg-background p-5"><summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden">{item.q}</summary><p className="mt-3 leading-7 text-muted-foreground">{item.a}</p></details>)}</div>
+          <div className="grid gap-3" data-speakable="faq">{items.map((item) => <details key={item.question} className="group rounded-2xl border border-border/60 bg-background p-5"><summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden"><h3 className="inline text-base font-semibold">{item.question}</h3></summary><p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p></details>)}</div>
         </div>
       </section>
   );

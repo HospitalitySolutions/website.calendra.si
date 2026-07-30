@@ -10,8 +10,29 @@ import {
 import type { SiteLanguage } from "@/lib/site-language";
 import { APP_STORE_APP_URL, CALENDRA_CONNECT_STORE_URLS, GOOGLE_PLAY_APP_URL } from "@/lib/calendra-connect-config";
 import { LEGAL } from "@/lib/legal";
-import { OFFICIAL_PROFILE_URLS } from "@/lib/external-profiles";
+import {
+  AUTHOR_PROFILE_URLS,
+  COMPANY_REGISTRATION_NUMBER,
+  COMPANY_VAT_ID,
+  OFFICIAL_PROFILE_URLS,
+  WIKIDATA_ENTITY_ID,
+} from "@/lib/external-profiles";
 import { getItServiceContent, isItServiceRouteKey, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
+import { FALLBACK_PUBLIC_PRICING, getInitialPricingCatalog } from "@/lib/public-pricing";
+import {
+  type BlogArticleMeta,
+  getArticleAlternates,
+  getArticleFromPathname,
+  getArticlesForLanguage,
+  getBlogArticlePath,
+} from "@/lib/blog";
+import {
+  allComparisons,
+  getComparison,
+  getComparisonPath,
+  getComparisonSlugFromPathname,
+} from "@/lib/comparison-pages";
+import { getFaqForRoute } from "@/lib/faq";
 import { getIndustryContent, isIndustryRouteKey, type IndustryRouteKey } from "@/lib/industry-pages";
 import {
   getPublicCompanyProfileFromPathname,
@@ -159,6 +180,18 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     sl: { title: "Zoom integracija | Calendra navodila", description: "Navodila za povezavo, uporabo in odstranitev Zoom integracije v Calendri za ustvarjanje spletnih terminov in Zoom povezav." },
     en: { title: "Zoom integration | Calendra setup guide", description: "How to connect, use and remove the Zoom integration in Calendra for online appointments and automatically generated Zoom links." },
   },
+  blog: {
+    sl: { title: "Nasveti za storitvena podjetja | Calendra blog", description: "Praktični vodniki o naročanju strank, zmanjševanju pozabljenih terminov, izdaji računov, davčnem potrjevanju in GDPR za slovenska storitvena podjetja." },
+    en: { title: "Guides for service businesses | Calendra blog", description: "Practical guides on appointment booking, reducing no-shows, invoicing, fiscal verification and GDPR for service businesses in Slovenia." },
+  },
+  author: {
+    sl: { title: "David Mirc | Avtor vsebin Calendra", description: "David Mirc je ustanovitelj Calendre in avtor vodnikov o naročanju strank, avtomatizaciji terminov in poslovanju storitvenih podjetij v Sloveniji." },
+    en: { title: "David Mirc | Calendra content author", description: "David Mirc is the founder of Calendra and the author of guides on appointment booking, scheduling automation and running a service business in Slovenia." },
+  },
+  comparisons: {
+    sl: { title: "Primerjave programov za naročanje | Calendra", description: "Iskrene primerjave Calendre s Calendlyjem, Booksyjem, Fresho, Treatwellom, Setmorom in SimplyBook.me, vključno s tem, kdaj je boljša izbira drugi ponudnik." },
+    en: { title: "Booking software comparisons | Calendra", description: "Honest comparisons of Calendra with Calendly, Booksy, Fresha, Treatwell, Setmore and SimplyBook.me, including when another vendor is the better choice." },
+  },
   aiTransparency: {
     sl: { title: "AI transparentnost | Calendra", description: "Javno razkritje uporabe AI funkcionalnosti v Calendri, vključno s statusom produkcijskega zagona in ponudnikom OpenAI, če bodo AI funkcije omogočene." },
     en: { title: "AI transparency | Calendra", description: "Public disclosure of Calendra AI features, including production launch status and OpenAI provider information if AI features are enabled." },
@@ -171,6 +204,22 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
 
 export const absoluteUrl = (path: string) => `${SITE_URL}${path === "/" ? "/" : path}`;
 
+const formatPrice = (value: number) => value.toFixed(2);
+
+/**
+ * Schema prices are derived from the same catalog the pricing page renders, so
+ * published markup cannot advertise a price the site never shows. Read lazily:
+ * during a build the prerender script snapshots the live catalog first, and
+ * these numbers have to follow it rather than the committed fallback.
+ */
+const cheapestPlan = () =>
+  [...getInitialPricingCatalog().plans].sort((a, b) => a.monthlyGross - b.monthlyGross)[0];
+
+/** Fallback-derived, because the static `index.html` shell is built without a catalog. */
+export const ENTRY_PLAN_MONTHLY_PRICE = formatPrice(
+  [...FALLBACK_PUBLIC_PRICING.plans].sort((a, b) => a.monthlyGross - b.monthlyGross)[0].monthlyGross,
+);
+
 const organizationSchema = {
   "@type": "Organization",
   "@id": `${SITE_URL}/#organization`,
@@ -182,6 +231,19 @@ const organizationSchema = {
   logo: { "@type": "ImageObject", url: `${SITE_URL}/calendra-logo.png`, width: 512, height: 512 },
   address: { "@type": "PostalAddress", streetAddress: LEGAL.businessAddress, postalCode: LEGAL.postalCode, addressLocality: LEGAL.city, addressCountry: "SI" },
   contactPoint: { "@type": "ContactPoint", contactType: "customer support", email: LEGAL.supportEmail, telephone: LEGAL.supportPhoneTel, availableLanguage: ["Slovenian", "English"] },
+  founder: { "@id": `${SITE_URL}/#author-david-mirc` },
+  areaServed: { "@type": "Country", name: "Slovenia" },
+  knowsLanguage: ["sl", "en"],
+  vatID: COMPANY_VAT_ID,
+  taxID: COMPANY_VAT_ID,
+  identifier: COMPANY_REGISTRATION_NUMBER
+    ? {
+        "@type": "PropertyValue",
+        propertyID: "AJPES",
+        name: "Matična številka",
+        value: COMPANY_REGISTRATION_NUMBER,
+      }
+    : undefined,
   sameAs: OFFICIAL_PROFILE_URLS,
 };
 
@@ -205,7 +267,17 @@ const softwareSchema = (language: SiteLanguage) => ({
   description: language === "sl"
     ? "Slovenska platforma za spletno naročanje, koledar terminov, opomnike, račune, plačila, analitiko in upravljanje strank."
     : "A booking and appointment management platform for service businesses, including reminders, invoicing, payments, analytics and client management.",
-  offers: { "@type": "Offer", price: "14.90", priceCurrency: "EUR", availability: "https://schema.org/InStock", url: absoluteUrl(canonicalRoutes.pricing[language]) },
+  offers: {
+    "@type": "Offer",
+    price: formatPrice(cheapestPlan().monthlyGross),
+    priceCurrency: getInitialPricingCatalog().currency,
+    availability: "https://schema.org/InStock",
+    url: absoluteUrl(canonicalRoutes.pricing[language]),
+  },
+  // Set once a Wikidata item for Calendra exists. A Wikidata identifier is the
+  // reference most knowledge graphs and AI assistants reconcile entities
+  // against, so it is the single highest-value off-site signal.
+  sameAs: WIKIDATA_ENTITY_ID ? [`https://www.wikidata.org/wiki/${WIKIDATA_ENTITY_ID}`] : undefined,
   publisher: { "@id": `${SITE_URL}/#organization` },
 });
 
@@ -286,25 +358,400 @@ const industryServiceSchema = (routeKey: IndustryRouteKey, language: SiteLanguag
   };
 };
 
-const industryFaqSchema = (routeKey: IndustryRouteKey, language: SiteLanguage) => {
-  const industry = getIndustryContent(routeKey, language);
+/**
+ * FAQ markup is one of the most frequently quoted sources in AI answers and
+ * powers Google's expandable results, so every page that shows questions to a
+ * visitor emits them as structured data too.
+ */
+const faqSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage) => {
+  const faq = getFaqForRoute(routeKey, language);
+  if (!faq) return [];
+
+  return [
+    {
+      "@type": "FAQPage",
+      "@id": `${absoluteUrl(canonicalRoutes[routeKey][language])}#faq`,
+      mainEntity: faq.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
+      speakable: {
+        "@type": "SpeakableSpecification",
+        cssSelector: ["[data-speakable='faq']"],
+      },
+    },
+  ];
+};
+
+/**
+ * Wikidata identifiers attach Calendra to entities that language models and
+ * knowledge graphs already understand, rather than leaving "appointment
+ * scheduling software" as an unlinked string.
+ */
+const WIKIDATA = {
+  appointmentScheduling: "https://www.wikidata.org/wiki/Q4781294",
+  saas: "https://www.wikidata.org/wiki/Q1254596",
+  slovenia: "https://www.wikidata.org/wiki/Q215",
+} as const;
+
+/**
+ * Named author and founder. Google's quality guidance and AI citation
+ * behaviour both favour content attributable to an identifiable person.
+ */
+export const AUTHOR = {
+  name: "David Mirc",
+  slug: "david-mirc",
+  jobTitle: { sl: "Ustanovitelj in razvijalec Calendre", en: "Founder and developer of Calendra" },
+  bio: {
+    sl: "David Mirc je ustanovitelj Calendre in vodi razvoj platforme za naročanje strank, upravljanje terminov ter izdajo računov za slovenska storitvena podjetja. Poleg tega izvaja IT storitve za mala podjetja.",
+    en: "David Mirc is the founder of Calendra and leads development of its booking, appointment management and invoicing platform for Slovenian service businesses. He also delivers IT services for small businesses.",
+  },
+} as const;
+
+export const personSchema = (language: SiteLanguage) => ({
+  "@type": "Person",
+  "@id": `${SITE_URL}/#author-${AUTHOR.slug}`,
+  name: AUTHOR.name,
+  jobTitle: AUTHOR.jobTitle[language],
+  description: AUTHOR.bio[language],
+  email: LEGAL.generalEmail,
+  worksFor: { "@id": `${SITE_URL}/#organization` },
+  url: absoluteUrl(canonicalRoutes.author[language]),
+  sameAs: AUTHOR_PROFILE_URLS.length > 0 ? AUTHOR_PROFILE_URLS : undefined,
+  knowsAbout:
+    language === "sl"
+      ? ["Spletno naročanje terminov", "Upravljanje storitvenih podjetij", "Izdaja računov in davčno potrjevanje", "IT podpora za mala podjetja"]
+      : ["Online appointment booking", "Service business management", "Invoicing and fiscal verification", "Small business IT support"],
+});
+
+const pricingProductSchema = (language: SiteLanguage) => {
+  const catalog = getInitialPricingCatalog();
+  const prices = catalog.plans.map((plan) => plan.monthlyGross);
+
   return {
-    "@type": "FAQPage",
-    mainEntity: industry.faq.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: { "@type": "Answer", text: item.answer },
-    })),
+    "@type": "Product",
+    "@id": `${absoluteUrl(canonicalRoutes.pricing[language])}#product`,
+    name: "Calendra",
+    description: pageSeo.pricing[language].description,
+    url: absoluteUrl(canonicalRoutes.pricing[language]),
+    brand: { "@id": `${SITE_URL}/#organization` },
+    category: language === "sl" ? "Program za naročanje strank" : "Appointment booking software",
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: catalog.currency,
+      lowPrice: formatPrice(Math.min(...prices)),
+      highPrice: formatPrice(Math.max(...prices)),
+      offerCount: catalog.plans.length,
+      availability: "https://schema.org/InStock",
+      url: absoluteUrl(canonicalRoutes.pricing[language]),
+      offers: catalog.plans.map((plan) => ({
+        "@type": "Offer",
+        name: language === "sl" ? plan.nameSl : plan.name,
+        price: formatPrice(plan.monthlyGross),
+        priceCurrency: catalog.currency,
+        availability: "https://schema.org/InStock",
+        url: absoluteUrl(canonicalRoutes.pricing[language]),
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: formatPrice(plan.monthlyGross),
+          priceCurrency: catalog.currency,
+          valueAddedTaxIncluded: catalog.vatIncluded,
+          unitCode: "MON",
+          billingIncrement: 1,
+        },
+      })),
+    },
   };
 };
 
-const breadcrumbSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage, canonicalPath: string) => ({
+const zoomHowToSchema = (language: SiteLanguage) => ({
+  "@type": "HowTo",
+  "@id": `${absoluteUrl(canonicalRoutes.zoom[language])}#howto`,
+  name: language === "sl" ? "Kako povezati Zoom s Calendro" : "How to connect Zoom to Calendra",
+  description: pageSeo.zoom[language].description,
+  totalTime: "PT5M",
+  step:
+    language === "sl"
+      ? [
+          { "@type": "HowToStep", position: 1, name: "Odprite nastavitve integracij", text: "V Calendri odprite Nastavitve in izberite zavihek Integracije." },
+          { "@type": "HowToStep", position: 2, name: "Povežite Zoom račun", text: "Kliknite Poveži pri Zoom in potrdite dostop v Zoom oknu za avtorizacijo." },
+          { "@type": "HowToStep", position: 3, name: "Omogočite Zoom pri storitvah", text: "Pri storitvah, ki potekajo na daljavo, vklopite možnost spletnega srečanja." },
+          { "@type": "HowToStep", position: 4, name: "Preverite delovanje", text: "Ustvarite testni termin. Calendra samodejno ustvari Zoom povezavo in jo pošlje v potrditvenem sporočilu." },
+        ]
+      : [
+          { "@type": "HowToStep", position: 1, name: "Open integration settings", text: "In Calendra, open Settings and select the Integrations tab." },
+          { "@type": "HowToStep", position: 2, name: "Connect your Zoom account", text: "Click Connect next to Zoom and approve access in the Zoom authorisation window." },
+          { "@type": "HowToStep", position: 3, name: "Enable Zoom on services", text: "Turn on the online meeting option for the services you deliver remotely." },
+          { "@type": "HowToStep", position: 4, name: "Verify the setup", text: "Create a test appointment. Calendra generates the Zoom link automatically and includes it in the confirmation message." },
+        ],
+});
+
+const webPageSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage, canonicalPath: string) => ({
+  "@type": "WebPage",
+  "@id": `${absoluteUrl(canonicalPath)}#webpage`,
+  url: absoluteUrl(canonicalPath),
+  name: pageSeo[routeKey][language].title,
+  description: pageSeo[routeKey][language].description,
+  inLanguage: language === "sl" ? "sl-SI" : "en",
+  isPartOf: { "@id": `${SITE_URL}/#website` },
+  about: { "@id": WIKIDATA.appointmentScheduling },
+  mentions: [
+    { "@type": "Thing", "@id": WIKIDATA.appointmentScheduling, name: "Appointment scheduling software" },
+    { "@type": "Thing", "@id": WIKIDATA.saas, name: "Software as a service" },
+  ],
+  speakable: {
+    "@type": "SpeakableSpecification",
+    cssSelector: ["[data-speakable='answer']", "[data-speakable='faq']"],
+  },
+});
+
+/**
+ * Intermediate breadcrumb hops. Only IT service detail pages sit under a real
+ * hub page today; features and industries are linked from the navigation rather
+ * than from an index page, so they stay one level below home.
+ */
+export const breadcrumbParentByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey>> = {
+  itSupport: "itServices",
+  websiteDesign: "itServices",
+  websiteMaintenance: "itServices",
+  businessEmail: "itServices",
+  backupsSecurity: "itServices",
+  automation: "itServices",
+  dpa: "legal",
+  subprocessors: "legal",
+  cookies: "legal",
+  dataRights: "legal",
+  security: "legal",
+  privacy: "legal",
+  terms: "legal",
+};
+
+const breadcrumbSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage, canonicalPath: string) => {
+  if (routeKey === "home") {
+    return {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
+      ],
+    };
+  }
+
+  const parentRouteKey = breadcrumbParentByRouteKey[routeKey];
+  const trail: CanonicalRouteKey[] = parentRouteKey ? [parentRouteKey] : [];
+
+  return {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
+      ...trail.map((key, index) => ({
+        "@type": "ListItem",
+        position: index + 2,
+        name: pageSeo[key][language].title.split("|")[0].trim(),
+        item: absoluteUrl(canonicalRoutes[key][language]),
+      })),
+      {
+        "@type": "ListItem",
+        position: trail.length + 2,
+        name: pageSeo[routeKey][language].title.split("|")[0].trim(),
+        item: absoluteUrl(canonicalPath),
+      },
+    ],
+  };
+};
+
+export const getArticleOgImage = (article: BlogArticleMeta) =>
+  `${SITE_URL}/og/blog/${article.language}/${article.slug}.png`;
+
+/**
+ * `BlogPosting` is what makes an article eligible for Google's article
+ * treatments and gives AI assistants an explicit author, publication date and
+ * word count to weigh the source by. `speakable` points at the same
+ * answer-first paragraph a human reads first.
+ */
+const blogPostingSchema = (article: BlogArticleMeta, canonicalUrl: string) => ({
+  "@type": "BlogPosting",
+  "@id": `${canonicalUrl}#article`,
+  mainEntityOfPage: { "@id": `${canonicalUrl}#webpage` },
+  headline: article.title,
+  description: article.description,
+  abstract: article.answer,
+  url: canonicalUrl,
+  inLanguage: article.language === "sl" ? "sl-SI" : "en",
+  datePublished: article.datePublished,
+  dateModified: article.dateModified,
+  wordCount: article.wordCount,
+  timeRequired: `PT${article.readingMinutes}M`,
+  articleSection: article.category,
+  keywords: article.tags.join(", "),
+  author: { "@id": `${SITE_URL}/#author-${AUTHOR.slug}` },
+  publisher: { "@id": `${SITE_URL}/#organization` },
+  image: {
+    "@type": "ImageObject",
+    url: getArticleOgImage(article),
+    width: 1200,
+    height: 630,
+    caption: article.heroImageAlt,
+  },
+  isPartOf: { "@id": `${absoluteUrl(canonicalRoutes.blog[article.language])}#blog` },
+  speakable: {
+    "@type": "SpeakableSpecification",
+    cssSelector: ["[data-speakable='answer']"],
+  },
+});
+
+const blogSchema = (language: SiteLanguage) => ({
+  "@type": "Blog",
+  "@id": `${absoluteUrl(canonicalRoutes.blog[language])}#blog`,
+  name: pageSeo.blog[language].title,
+  description: pageSeo.blog[language].description,
+  url: absoluteUrl(canonicalRoutes.blog[language]),
+  inLanguage: language === "sl" ? "sl-SI" : "en",
+  publisher: { "@id": `${SITE_URL}/#organization` },
+  author: { "@id": `${SITE_URL}/#author-${AUTHOR.slug}` },
+  blogPost: getArticlesForLanguage(language).map((article) => ({
+    "@type": "BlogPosting",
+    "@id": `${absoluteUrl(getBlogArticlePath(article.slug, language))}#article`,
+    headline: article.title,
+    url: absoluteUrl(getBlogArticlePath(article.slug, language)),
+    datePublished: article.datePublished,
+  })),
+});
+
+const articleBreadcrumbSchema = (article: BlogArticleMeta, canonicalUrl: string) => ({
   "@type": "BreadcrumbList",
   itemListElement: [
-    { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
-    ...(routeKey === "home" ? [] : [{ "@type": "ListItem", position: 2, name: pageSeo[routeKey][language].title.split("|")[0].trim(), item: absoluteUrl(canonicalPath) }]),
+    { "@type": "ListItem", position: 1, name: article.language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[article.language]) },
+    { "@type": "ListItem", position: 2, name: "Blog", item: absoluteUrl(canonicalRoutes.blog[article.language]) },
+    { "@type": "ListItem", position: 3, name: article.title, item: canonicalUrl },
   ],
 });
+
+const getArticleSeo = (pathname: string) => {
+  const article = getArticleFromPathname(pathname);
+  if (!article) return undefined;
+
+  const alternates = getArticleAlternates(article);
+  const canonicalUrl = absoluteUrl(getBlogArticlePath(article.slug, article.language));
+  const ogImage = getArticleOgImage(article);
+
+  return {
+    articleSlug: article.slug,
+    language: article.language,
+    title: `${article.title} | Calendra`,
+    description: article.description,
+    ogTitle: article.title,
+    ogDescription: article.description,
+    ogImage,
+    canonicalUrl,
+    alternateUrls: {
+      sl: absoluteUrl(alternates.sl),
+      en: absoluteUrl(alternates.en),
+      xDefault: absoluteUrl(alternates.sl),
+    },
+    noindex: false,
+    articleDates: { published: article.datePublished, modified: article.dateModified },
+    structuredData: {
+      "@context": "https://schema.org",
+      "@graph": [
+        organizationSchema,
+        websiteSchema(article.language),
+        {
+          "@type": "WebPage",
+          "@id": `${canonicalUrl}#webpage`,
+          url: canonicalUrl,
+          name: article.title,
+          description: article.description,
+          inLanguage: article.language === "sl" ? "sl-SI" : "en",
+          isPartOf: { "@id": `${SITE_URL}/#website` },
+          datePublished: article.datePublished,
+          dateModified: article.dateModified,
+        },
+        blogPostingSchema(article, canonicalUrl),
+        personSchema(article.language),
+        articleBreadcrumbSchema(article, canonicalUrl),
+      ],
+    },
+  };
+};
+
+/**
+ * Comparison pages are not `Product` markup: describing a competitor as an offer
+ * on our own domain would be misleading. They are plain `WebPage` entries with
+ * the FAQ and breadcrumb trail, plus `about` pointing at both products so an
+ * assistant can tell which two things are being compared.
+ */
+const getComparisonSeo = (pathname: string, language: SiteLanguage) => {
+  const slug = getComparisonSlugFromPathname(pathname);
+  if (!slug) return undefined;
+
+  const comparison = getComparison(slug);
+  const content = comparison.content[language];
+  const canonicalPath = getComparisonPath(slug, language);
+  const canonicalUrl = absoluteUrl(canonicalPath);
+
+  return {
+    comparisonSlug: slug,
+    language,
+    title: content.metaTitle,
+    description: content.metaDescription,
+    ogTitle: content.title,
+    ogDescription: content.metaDescription,
+    ogImage: DEFAULT_OG_IMAGE,
+    canonicalUrl,
+    alternateUrls: {
+      sl: absoluteUrl(getComparisonPath(slug, "sl")),
+      en: absoluteUrl(getComparisonPath(slug, "en")),
+      xDefault: absoluteUrl(getComparisonPath(slug, "sl")),
+    },
+    noindex: false,
+    structuredData: {
+      "@context": "https://schema.org",
+      "@graph": [
+        organizationSchema,
+        websiteSchema(language),
+        {
+          "@type": "WebPage",
+          "@id": `${canonicalUrl}#webpage`,
+          url: canonicalUrl,
+          name: content.title,
+          description: content.metaDescription,
+          inLanguage: language === "sl" ? "sl-SI" : "en",
+          isPartOf: { "@id": `${SITE_URL}/#website` },
+          dateModified: comparison.lastReviewed,
+          about: [
+            { "@id": `${SITE_URL}/#software` },
+            { "@type": "SoftwareApplication", name: comparison.competitorName, url: comparison.competitorUrl },
+          ],
+          author: { "@id": `${SITE_URL}/#author-${AUTHOR.slug}` },
+          speakable: {
+            "@type": "SpeakableSpecification",
+            cssSelector: ["[data-speakable='answer']", "[data-speakable='faq']"],
+          },
+        },
+        softwareSchema(language),
+        {
+          "@type": "FAQPage",
+          "@id": `${canonicalUrl}#faq`,
+          mainEntity: content.faq.map((item) => ({
+            "@type": "Question",
+            name: item.question,
+            acceptedAnswer: { "@type": "Answer", text: item.answer },
+          })),
+        },
+        personSchema(language),
+        {
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
+            { "@type": "ListItem", position: 2, name: language === "sl" ? "Primerjave" : "Comparisons", item: absoluteUrl(canonicalRoutes.comparisons[language]) },
+            { "@type": "ListItem", position: 3, name: content.title, item: canonicalUrl },
+          ],
+        },
+      ],
+    },
+  };
+};
 
 const getProfileSeo = (pathname: string, language: SiteLanguage) => {
   const profile = getPublicCompanyProfileFromPathname(pathname);
@@ -376,6 +823,12 @@ export const getSeoForPathname = (pathname: string) => {
   const profileSeo = getProfileSeo(pathname, language);
   if (profileSeo) return profileSeo;
 
+  const articleSeo = getArticleSeo(pathname);
+  if (articleSeo) return articleSeo;
+
+  const comparisonSeo = getComparisonSeo(pathname, language);
+  if (comparisonSeo) return comparisonSeo;
+
   const routeKey = getRouteKeyFromPathname(pathname);
   const canonicalPath = getCanonicalPathname(pathname);
 
@@ -412,17 +865,46 @@ export const getSeoForPathname = (pathname: string) => {
       "@graph": [
         organizationSchema,
         websiteSchema(language),
-        ...(routeKey === "connect"
+        webPageSchema(routeKey, language, canonicalPath),
+        ...(routeKey === "comparisons"
+          ? [
+              softwareSchema(language),
+              {
+                "@type": "ItemList",
+                "@id": `${absoluteUrl(canonicalRoutes.comparisons[language])}#list`,
+                itemListElement: allComparisons.map((comparison, index) => ({
+                  "@type": "ListItem",
+                  position: index + 1,
+                  name: comparison.content[language].title,
+                  url: absoluteUrl(getComparisonPath(comparison.slug, language)),
+                })),
+              },
+            ]
+          : routeKey === "blog"
+          ? [blogSchema(language)]
+          : routeKey === "author"
+          ? [{
+              "@type": "ProfilePage",
+              "@id": `${absoluteUrl(canonicalRoutes.author[language])}#profile`,
+              mainEntity: { "@id": `${SITE_URL}/#author-${AUTHOR.slug}` },
+            }]
+          : routeKey === "connect"
           ? [mobileApplicationSchema(language)]
           : routeKey === "itServices"
             ? [itServicesOverviewSchema(language)]
             : isItServiceRouteKey(routeKey)
               ? [itServiceSchema(routeKey, language)]
               : isIndustryRouteKey(routeKey)
-                ? [softwareSchema(language), industryServiceSchema(routeKey, language), industryFaqSchema(routeKey, language)]
-                : routeKey === "contact"
-                  ? []
-                  : [softwareSchema(language)]),
+                ? [softwareSchema(language), industryServiceSchema(routeKey, language)]
+                : routeKey === "pricing"
+                  ? [softwareSchema(language), pricingProductSchema(language)]
+                  : routeKey === "zoom"
+                    ? [softwareSchema(language), zoomHowToSchema(language)]
+                    : routeKey === "contact"
+                      ? []
+                      : [softwareSchema(language)]),
+        ...faqSchema(routeKey, language),
+        personSchema(language),
         breadcrumbSchema(routeKey, language, canonicalPath),
       ],
     },

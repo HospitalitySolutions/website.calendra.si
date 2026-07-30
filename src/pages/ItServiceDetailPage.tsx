@@ -1,6 +1,9 @@
 import Footer from "@/components/landing/Footer";
 import Navbar from "@/components/landing/Navbar";
+import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
+import RelatedPages from "@/components/seo/RelatedPages";
 import { Button } from "@/components/ui/button";
+import { StepWatermark } from "@/components/ui/step-watermark";
 import { getItServiceContent, isItServiceRouteKey } from "@/lib/it-services";
 import { getRouteKeyFromPathname, getRoutePath } from "@/lib/localized-routes";
 import { useSiteLanguage } from "@/lib/site-language";
@@ -71,10 +74,8 @@ const ItServiceDetailPage = () => {
           <div className="pointer-events-none absolute -right-32 top-0 h-96 w-96 rounded-full bg-primary/[0.09] blur-3xl" aria-hidden="true" />
           <div className="container relative mx-auto px-4 lg:px-8">
             <div className="max-w-4xl">
-              <a href={getRoutePath("itServices", language)} className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:gap-3">
-                ← {copy.allServices}
-              </a>
-              <span className="mt-6 block text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.badge}</span>
+              <PageBreadcrumbs routeKey={routeKey} parentRouteKey="itServices" />
+              <span className="block text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.badge}</span>
               <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight tracking-[-0.03em] text-foreground sm:text-5xl lg:text-6xl">{service.title}</h1>
               <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl">{service.intro}</p>
               <Button variant="hero" size="lg" className="mt-8 rounded-xl" asChild>
@@ -128,7 +129,7 @@ const ItServiceDetailPage = () => {
               <div className="mt-8 grid gap-4">
                 {service.process.map((item, index) => (
                   <article key={item.title} className="relative rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
-                    <span className="absolute right-5 top-4 font-display text-4xl font-black text-primary/[0.08]" aria-hidden="true">0{index + 1}</span>
+                    <StepWatermark index={index} className="right-5 top-4 text-4xl" />
                     <ClipboardCheck className="h-6 w-6 text-primary" aria-hidden="true" />
                     <h3 className="mt-4 text-lg font-bold text-foreground">{item.title}</h3>
                     <p className="mt-2 leading-7 text-muted-foreground">{item.body}</p>
@@ -151,31 +152,7 @@ const ItServiceDetailPage = () => {
           </div>
         </section>
 
-        <section className="bg-card py-20 md:py-28">
-          <div className="container mx-auto px-4 lg:px-8">
-            <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-              <div>
-                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.relatedEyebrow}</span>
-                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.relatedTitle}</h2>
-              </div>
-              <a href={getRoutePath("itServices", language)} className="font-semibold text-primary">{copy.allServices} →</a>
-            </div>
-            <div className="mt-8 grid gap-5 md:grid-cols-2">
-              {service.related.map((relatedKey) => {
-                const related = getItServiceContent(relatedKey, language);
-                return (
-                  <article key={relatedKey} className="rounded-3xl border border-border/60 bg-background p-7">
-                    <h3 className="text-xl font-bold text-foreground">{related.title}</h3>
-                    <p className="mt-3 leading-7 text-muted-foreground">{related.shortDescription}</p>
-                    <a href={getRoutePath(relatedKey, language)} className="mt-5 inline-flex items-center gap-2 font-semibold text-primary">
-                      {language === "sl" ? "Preberite več" : "Learn more"}<ArrowRight className="h-4 w-4" />
-                    </a>
-                  </article>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+        <RelatedPages routeKey={routeKey} title={copy.relatedTitle} className="bg-card" />
 
         <section className="bg-background py-20 md:py-28">
           <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
@@ -184,7 +161,7 @@ const ItServiceDetailPage = () => {
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.faqTitle}</h2>
               <CircleHelp className="mt-6 h-8 w-8 text-primary" aria-hidden="true" />
             </div>
-            <div className="grid gap-3">
+            <div className="grid gap-3" data-speakable="faq">
               {service.faq.map((item) => (
                 <details key={item.question} className="rounded-2xl border border-border/60 bg-card p-5">
                   <summary className="cursor-pointer list-none font-semibold text-foreground">{item.question}</summary>

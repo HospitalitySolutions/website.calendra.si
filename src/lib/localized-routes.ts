@@ -1,4 +1,6 @@
 import type { SiteLanguage } from "@/lib/site-language";
+import { getArticleAlternates, getArticleFromPathname, getBlogArticlePath } from "@/lib/blog";
+import { getComparisonPath, getComparisonSlugFromPathname } from "@/lib/comparison-routes";
 import { getPublicCompanyProfileFromPathname, getPublicCompanyProfilePath } from "@/lib/public-company-profiles";
 
 export type CanonicalRouteKey =
@@ -34,6 +36,9 @@ export type CanonicalRouteKey =
   | "security"
   | "dataRights"
   | "zoom"
+  | "blog"
+  | "author"
+  | "comparisons"
   | "aiTransparency"
   | "accountDeletion";
 
@@ -70,6 +75,9 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   security: { sl: "/varnost", en: "/en/security" },
   dataRights: { sl: "/pravice-posameznikov", en: "/en/data-rights" },
   zoom: { sl: "/zoom-integracija", en: "/en/zoom-integration" },
+  blog: { sl: "/blog", en: "/en/blog" },
+  author: { sl: "/avtor/david-mirc", en: "/en/author/david-mirc" },
+  comparisons: { sl: "/primerjava", en: "/en/comparison" },
   aiTransparency: { sl: "/ai-transparentnost", en: "/en/ai-transparency" },
   accountDeletion: { sl: "/izbris-racuna", en: "/en/account-deletion" },
 };
@@ -115,6 +123,9 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   security: { changeFrequency: "yearly", priority: { sl: 0.3, en: 0.3 } },
   dataRights: { changeFrequency: "yearly", priority: { sl: 0.3, en: 0.3 } },
   zoom: { changeFrequency: "yearly", priority: { sl: 0.4, en: 0.4 } },
+  blog: { changeFrequency: "weekly", priority: { sl: 0.8, en: 0.7 } },
+  author: { changeFrequency: "monthly", priority: { sl: 0.4, en: 0.3 } },
+  comparisons: { changeFrequency: "monthly", priority: { sl: 0.7, en: 0.6 } },
   aiTransparency: { changeFrequency: "yearly", priority: { sl: 0.3, en: 0.3 } },
   accountDeletion: { changeFrequency: "yearly", priority: { sl: 0.1, en: 0.1 } },
 };
@@ -174,6 +185,12 @@ export const getCanonicalPathname = (pathname: string) => {
   const profile = getPublicCompanyProfileFromPathname(normalized);
   if (profile) return getPublicCompanyProfilePath(profile.slug, getLanguageFromPathname(normalized));
 
+  const article = getArticleFromPathname(normalized);
+  if (article) return getBlogArticlePath(article.slug, article.language);
+
+  const comparisonSlug = getComparisonSlugFromPathname(normalized);
+  if (comparisonSlug) return getComparisonPath(comparisonSlug, getLanguageFromPathname(normalized));
+
   const legacyTarget = legacyAliases[normalized];
   if (legacyTarget) return legacyTarget;
 
@@ -187,6 +204,12 @@ export const getCanonicalPathname = (pathname: string) => {
 export const getLocalizedPathname = (pathname: string, language: SiteLanguage) => {
   const profile = getPublicCompanyProfileFromPathname(pathname);
   if (profile) return getPublicCompanyProfilePath(profile.slug, language);
+
+  const article = getArticleFromPathname(pathname);
+  if (article) return getArticleAlternates(article)[language];
+
+  const comparisonSlug = getComparisonSlugFromPathname(pathname);
+  if (comparisonSlug) return getComparisonPath(comparisonSlug, language);
 
   const key = getRouteKeyFromPathname(pathname);
   if (!key) return language === "en" ? "/en" : "/";

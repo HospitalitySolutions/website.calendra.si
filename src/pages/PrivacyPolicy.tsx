@@ -52,8 +52,9 @@ const copy = {
     cookiesTitle: "8. Piškotki in analitika",
     cookiesParagraphs: [
       LEGAL.websiteAnalyticsEnabled
-        ? "Spletna stran lahko uporablja analitične piškotke ali podobne tehnologije v skladu s politiko piškotkov in nastavitvami soglasja."
+        ? "Spletna stran ne uporablja analitičnih ali oglaševalskih piškotkov. Obisk merimo z Umami, analitiko brez piškotkov, ki jo gostimo sami na svoji infrastrukturi v EU. Umami ne nastavlja piškotkov, ne uporablja prstnih odtisov naprave in ne ustvarja identifikatorjev za sledenje med spletnimi stranmi, zato za to merjenje ni potrebno soglasje."
         : "Spletna stran trenutno ne uporablja analitičnih ali oglaševalskih piškotkov. Lahko uporablja nujne tehnične piškotke ali lokalno shranjevanje za delovanje spletne strani in izbiro jezika.",
+      "Zbrani podatki o obisku so agregirani in ne omogočajo identifikacije posameznika. Podrobnosti so opisane v politiki piškotkov.",
     ],
     aiTitle: "9. AI funkcionalnosti",
     aiParagraphs: [
@@ -123,8 +124,9 @@ const copy = {
     cookiesTitle: "8. Cookies and analytics",
     cookiesParagraphs: [
       LEGAL.websiteAnalyticsEnabled
-        ? "The website may use analytics cookies or similar technologies according to the Cookie Policy and consent settings."
+        ? "The website does not use analytics or advertising cookies. We measure traffic with Umami, a cookieless analytics tool we self-host on our own EU infrastructure. Umami sets no cookies, does not fingerprint devices and creates no cross-site tracking identifiers, so this measurement does not require consent."
         : "The website does not currently use analytics or advertising cookies. It may use strictly necessary technical cookies or local storage for website operation and language choice.",
+      "The traffic data collected is aggregated and cannot identify an individual. Details are described in the Cookie Policy.",
     ],
     aiTitle: "9. AI features",
     aiParagraphs: [

@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
+import AnswerSummary from "@/components/seo/AnswerSummary";
+import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
+import RelatedPages from "@/components/seo/RelatedPages";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
@@ -11,6 +14,7 @@ import {
   getPublicCompanyProfilePath,
   publicCompanyProfiles,
 } from "@/lib/public-company-profiles";
+import { getFaqForRoute } from "@/lib/faq";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import {
   ArrowRight,
@@ -65,6 +69,8 @@ const copy = {
       { title: "Izbere prost termin", description: "Calendra upošteva delovni čas, odsotnosti, druge rezervacije, prostore in pravila storitve." },
       { title: "Potrdi rezervacijo", description: "Stranka pregleda podatke, izbere plačilo in prejme potrditev." },
     ],
+    capabilitiesEyebrow: "Nastavitve naročanja",
+    capabilitiesTitle: "Katera pravila naročanja lahko določite?",
     capabilities: [
       { title: "Prilagodljiva izbira zaposlenega", description: "Korak izbire zaposlenega lahko vključite ali izpustite glede na storitev in način dela." },
       { title: "Predplačilo, celotno plačilo ali plačilo na lokaciji", description: "Za vsako ponudbo določite podprte načine plačila in višino zahtevanega predplačila." },
@@ -85,13 +91,6 @@ const copy = {
     emptyBody: "Poskusite z drugim iskalnim izrazom ali filtrom.",
     faqEyebrow: "Pogosta vprašanja",
     faqTitle: "Spletno naročanje brez tehničnih zapletov",
-    faq: [
-      { q: "Ali potrebujem novo spletno stran?", a: "Ne. Uporabite lahko javno povezavo ali pa Calendra vtičnik dodate na obstoječo spletno stran." },
-      { q: "Kaj se zgodi, če storitev izvaja več zaposlenih?", a: "Podjetje določi, ali stranka izbere zaposlenega, ali Calendra ponudi prvega razpoložljivega izvajalca." },
-      { q: "Ali lahko zahtevam plačilo pred rezervacijo?", a: "Da. Glede na nastavitve je mogoče zahtevati delno ali celotno plačilo ali dovoliti plačilo na lokaciji." },
-      { q: "Ali lahko stranka spremeni ali odpove termin?", a: "Da, kadar podjetje to omogoči. Varne povezave v potrditvenem sporočilu vodijo do spremembe ali odpovedi." },
-      { q: "Ali se rezervacija takoj prikaže v koledarju?", a: "Da. Po uspešni potrditvi se termin zapiše neposredno v koledar Calendra." },
-    ],
     ctaEyebrow: "Za storitvena podjetja",
     ctaTitle: "Omogočite naročanje 24 ur na dan",
     ctaDescription: "Začnite s 14-dnevnim brezplačnim preizkusom in nastavite svoj rezervacijski tok brez kreditne kartice.",
@@ -113,6 +112,8 @@ const copy = {
       { title: "Choose an available time", description: "Calendra considers working hours, absences, other bookings, resources and service rules." },
       { title: "Confirm the booking", description: "The customer reviews the details, selects payment and receives confirmation." },
     ],
+    capabilitiesEyebrow: "Booking settings",
+    capabilitiesTitle: "Which booking rules can you define?",
     capabilities: [
       { title: "Flexible employee selection", description: "The employee step can be enabled or skipped based on the service and workflow." },
       { title: "Deposit, full payment or pay on site", description: "Choose supported payment methods and the required deposit for each offer." },
@@ -133,13 +134,6 @@ const copy = {
     emptyBody: "Try a different search term or filter.",
     faqEyebrow: "Frequently asked questions",
     faqTitle: "Online booking without technical friction",
-    faq: [
-      { q: "Do I need a new website?", a: "No. You can use a public link or add the Calendra widget to your existing website." },
-      { q: "What happens when several employees provide a service?", a: "The business decides whether customers select an employee or Calendra offers the first available provider." },
-      { q: "Can payment be required before booking?", a: "Yes. Depending on configuration, the business can require a deposit, full payment or payment on site." },
-      { q: "Can a customer reschedule or cancel?", a: "Yes, when enabled by the business. Secure links in the confirmation message open the change or cancellation flow." },
-      { q: "Does the booking appear immediately in the calendar?", a: "Yes. After successful confirmation, the appointment is added directly to the Calendra calendar." },
-    ],
     ctaEyebrow: "For service businesses",
     ctaTitle: "Accept bookings 24 hours a day",
     ctaDescription: "Start a 14-day free trial and configure your booking flow without a credit card.",
@@ -221,9 +215,11 @@ const ClientsPage = () => {
           <div className="absolute -right-24 top-28 h-80 w-80 rounded-full bg-primary/[0.10] blur-3xl" aria-hidden="true" />
           <div className="container relative mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:px-8">
             <div>
+              <PageBreadcrumbs routeKey="booking" />
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/[0.08] px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-primary"><Sparkles className="h-4 w-4" />{text.badge}</div>
               <h1 className="mt-7 font-display text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-6xl">{text.title}</h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground md:text-xl">{text.intro}</p>
+              <AnswerSummary routeKey="booking" className="mt-6" />
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button variant="hero" size="lg" className="rounded-xl" asChild><a href="#podjetja">{text.heroPrimary}<ArrowRight className="h-4 w-4" /></a></Button>
                 <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={TRIAL_SIGNUP_ROUTE}>{text.heroSecondary}</a></Button>
@@ -243,7 +239,8 @@ const ClientsPage = () => {
 
         <section className="bg-card py-20 md:py-28">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-            <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">{text.capabilities.map((item, index) => { const Icon = capabilityIcons[index]; return <article key={item.title} className="rounded-3xl border border-border/60 bg-background p-7"><Icon className="h-7 w-7 text-primary" /><h2 className="mt-5 text-xl font-bold text-foreground">{item.title}</h2><p className="mt-3 leading-7 text-muted-foreground">{item.description}</p></article>; })}</div>
+            <div className="max-w-3xl"><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{text.capabilitiesEyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{text.capabilitiesTitle}</h2></div>
+            <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{text.capabilities.map((item, index) => { const Icon = capabilityIcons[index]; return <article key={item.title} className="rounded-3xl border border-border/60 bg-background p-7"><Icon className="h-7 w-7 text-primary" /><h3 className="mt-5 text-xl font-bold text-foreground">{item.title}</h3><p className="mt-3 leading-7 text-muted-foreground">{item.description}</p></article>; })}</div>
           </div>
         </section>
 
@@ -275,8 +272,10 @@ const ClientsPage = () => {
         </section>
 
         <section className="bg-card py-20 md:py-28">
-          <div className="container mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-[0.75fr_1.25fr] lg:px-8"><div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{text.faqEyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{text.faqTitle}</h2><Link2 className="mt-7 h-9 w-9 text-primary" /></div><div className="grid gap-3">{text.faq.map((item) => <details key={item.q} className="rounded-2xl border border-border/60 bg-background p-5"><summary className="cursor-pointer list-none font-semibold text-foreground">{item.q}</summary><p className="mt-3 leading-7 text-muted-foreground">{item.a}</p></details>)}</div></div>
+          <div className="container mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-[0.75fr_1.25fr] lg:px-8"><div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{text.faqEyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{text.faqTitle}</h2><Link2 className="mt-7 h-9 w-9 text-primary" /></div><div className="grid gap-3" data-speakable="faq">{(getFaqForRoute("booking", language) ?? []).map((item) => <details key={item.question} className="rounded-2xl border border-border/60 bg-background p-5"><summary className="cursor-pointer list-none font-semibold text-foreground"><h3 className="inline text-base font-semibold">{item.question}</h3></summary><p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p></details>)}</div></div>
         </section>
+
+        <RelatedPages routeKey="booking" />
 
         <section className="container mx-auto max-w-7xl px-4 py-16 lg:px-8 md:py-24">
           <div className="overflow-hidden rounded-[2rem] border border-primary/10 bg-gradient-to-br from-primary/[0.10] via-card to-accent/[0.08] p-8 shadow-soft md:p-12"><div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center"><div><p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{text.ctaEyebrow}</p><h2 className="mt-3 font-display text-3xl font-extrabold text-foreground md:text-4xl">{text.ctaTitle}</h2><p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{text.ctaDescription}</p></div><Button variant="hero" size="lg" className="rounded-xl" asChild><a href={TRIAL_SIGNUP_ROUTE}>{text.ctaButton}<ArrowRight className="h-4 w-4" /></a></Button></div></div>

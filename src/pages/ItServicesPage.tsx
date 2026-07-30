@@ -1,7 +1,9 @@
 import Footer from "@/components/landing/Footer";
 import Navbar from "@/components/landing/Navbar";
+import AnswerSummary from "@/components/seo/AnswerSummary";
 import { Button } from "@/components/ui/button";
 import { getItServiceContent, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
+import { getFaqForRoute } from "@/lib/faq";
 import { getRoutePath } from "@/lib/localized-routes";
 import { useSiteLanguage } from "@/lib/site-language";
 import {
@@ -57,12 +59,6 @@ const pageCopy = {
     ],
     faqEyebrow: "Pogosta vprašanja",
     faqTitle: "Pred začetkom sodelovanja",
-    faq: [
-      { q: "Ali delate samo z uporabniki Calendre?", a: "Ne. IT storitve so samostojna ponudba za mala podjetja in niso vezane na uporabo aplikacije Calendra." },
-      { q: "Ali je možna pomoč na daljavo?", a: "Da. Velik del podpore, nastavitev in diagnostike izvedemo oddaljeno. Obiske na lokaciji dogovorimo glede na kraj in obseg dela." },
-      { q: "Kako določite ceno?", a: "Po kratkem uvodnem pogovoru predlagamo projektno ceno, urno sodelovanje ali mesečni obseg podpore. IT storitve niso vključene v naročnino Calendra." },
-      { q: "Ali lahko prevzamete obstoječo spletno stran ali IT-okolje?", a: "Da, po začetnem tehničnem pregledu, s katerim ugotovimo stanje, odprta tveganja in realen obseg prevzema." },
-    ],
     finalTitle: "Potrebujete zanesljivo pomoč pri IT-ju ali spletni strani?",
     finalBody: "Opišite trenutno stanje in cilj. Predlagali bomo naslednji smiseln korak brez obveznosti.",
     finalCta: "Pogovorimo se o vaših potrebah",
@@ -102,12 +98,6 @@ const pageCopy = {
     ],
     faqEyebrow: "Frequently asked questions",
     faqTitle: "Before we start",
-    faq: [
-      { q: "Do you work only with Calendra customers?", a: "No. IT services are a standalone offer for small businesses and do not require use of the Calendra application." },
-      { q: "Can support be remote?", a: "Yes. A large share of support, configuration and diagnosis can be completed remotely. On-site work is agreed based on location and scope." },
-      { q: "How is pricing determined?", a: "After a short discussion, we propose a project price, hourly work or a monthly support scope. IT services are not included in a Calendra subscription." },
-      { q: "Can you take over an existing website or IT environment?", a: "Yes, following an initial technical review of its condition, open risks and the realistic takeover scope." },
-    ],
     finalTitle: "Do you need reliable help with IT or your website?",
     finalBody: "Describe the current situation and your goal. We will suggest a sensible next step without obligation.",
     finalCta: "Discuss your requirements",
@@ -130,6 +120,7 @@ const ItServicesPage = () => {
                 <span className="inline-flex rounded-full border border-primary/20 bg-primary/[0.07] px-4 py-2 text-sm font-semibold text-primary">{copy.badge}</span>
                 <h1 className="mt-6 font-display text-4xl font-extrabold leading-tight tracking-[-0.03em] text-foreground sm:text-5xl lg:text-6xl">{copy.title}</h1>
                 <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl">{copy.intro}</p>
+                <AnswerSummary routeKey="itServices" className="mt-6" />
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                   <Button variant="hero" size="lg" className="rounded-xl" asChild>
                     <a href={getRoutePath("contact", language)}>{copy.primaryCta}<ArrowRight className="h-4 w-4" /></a>
@@ -236,11 +227,13 @@ const ItServicesPage = () => {
               <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.faqEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.faqTitle}</h2>
             </div>
-            <div className="grid gap-3">
-              {copy.faq.map((item) => (
-                <details key={item.q} className="rounded-2xl border border-border/60 bg-card p-5">
-                  <summary className="cursor-pointer list-none font-semibold text-foreground">{item.q}</summary>
-                  <p className="mt-3 leading-7 text-muted-foreground">{item.a}</p>
+            <div className="grid gap-3" data-speakable="faq">
+              {(getFaqForRoute("itServices", language) ?? []).map((item) => (
+                <details key={item.question} className="rounded-2xl border border-border/60 bg-card p-5">
+                  <summary className="cursor-pointer list-none font-semibold text-foreground">
+                    <h3 className="inline text-base font-semibold">{item.question}</h3>
+                  </summary>
+                  <p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p>
                 </details>
               ))}
             </div>

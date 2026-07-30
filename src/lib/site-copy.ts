@@ -15,6 +15,7 @@ export const siteCopy = {
       booking: "Naročanje",
       connect: "Calendra Connect",
       itServices: "IT storitve",
+      blog: "Nasveti",
       contact: "Kontakt",
       language: "Jezik",
       login: "Prijava",
@@ -90,14 +91,6 @@ export const siteCopy = {
     },
     footer: {
       rights: "Vse pravice pridržane.",
-      clients: "Stranke",
-      booking: "Naročanje",
-      privacy: "Politika zasebnosti",
-      privacyContact: "Kontakt glede zasebnosti",
-      terms: "Pogoji uporabe",
-      support: "Podpora",
-      accountDeletion: "Izbris računa",
-      aiTransparency: "AI transparentnost",
     },
     aiTransparencySection: {
       eyebrow: "AI transparentnost",
@@ -121,85 +114,6 @@ export const siteCopy = {
       linkTitle: "Več podrobnosti",
       linkBody: "Celotno javno razkritje je dostopno na namenski strani AI transparentnosti.",
       linkCta: "Odpri AI transparentnost",
-    },
-    aiTransparencyPage: {
-      badge: "AI transparentnost",
-      title: "AI transparentnost za Calendra",
-      intro:
-        "Ta javna stran pojasnjuje, katere AI storitve uporablja Calendra in kako so uporabljene v aplikaciji. Namenjena je uporabnikom, partnerjem in preglednikom skladnosti.",
-      cards: [
-        {
-          title: "Ponudnik AI storitev",
-          body: "Calendra uporablja OpenAI storitve za podporo določenim AI funkcionalnostim v aplikaciji.",
-        },
-        {
-          title: "Podprte funkcionalnosti",
-          body: "To lahko vključuje AI podprte funkcije, kot so glasovni ukazi, pomoč pri obdelavi vsebin in druge uporabniške izkušnje, kjer je AI izrecno del funkcionalnosti.",
-        },
-        {
-          title: "Transparentnost do uporabnikov",
-          body: "Na tej strani javno razkrivamo uporabo OpenAI, da so uporabniki jasno obveščeni o AI komponentah v storitvi.",
-        },
-      ],
-      disclosureTitle: "Javno razkritje",
-      disclosureBody1: "Calendra uporablja OpenAI storitve za podporo določenim AI funkcionalnostim v aplikaciji.",
-      disclosureBody2: "AI funkcije lahko obdelujejo uporabniške vnose za ustvarjanje odgovorov, pomoč pri avtomatizaciji ali izboljšanje uporabniške izkušnje znotraj platforme.",
-      disclosureBody3: "AI generirane vsebine ali predlogi so lahko netočni ali nepopolni in jih je treba po potrebi pregledati pred uporabo.",
-    },
-    bookingPage: {
-      back: "Nazaj na predstavitveno stran",
-      badge: "Naročanje",
-      title: "Spletno naročanje strank neposredno na vaši spletni strani",
-      description:
-        "Stranka izbere storitev, po potrebi zaposlenega, datum in prost termin ter nato varno odda rezervacijo. Termin se takoj zapiše v vaš koledar Calendra.",
-      cards: [
-        {
-          title: "Izbira storitve",
-          description: "Obiskovalec najprej izbere storitev, ki jo želi rezervirati.",
-        },
-        {
-          title: "Izbira zaposlenega",
-          description: "Če storitev izvaja več zaposlenih, lahko stranka izbere želeno osebo.",
-        },
-        {
-          title: "Samo dejansko prosti termini",
-          description: "Prikažejo se samo termini, ki so glede na delovni čas, odsotnosti in obstoječe rezervacije prosti.",
-        },
-        {
-          title: "Neposredno povezano s Calendro",
-          description: "Rezervacija se takoj zapiše v vaš koledar, brez prepisovanja podatkov ali dodatnih korakov.",
-        },
-      ],
-      tenantInfoPrefix: "Ta stran uporablja tenant",
-      tenantInfoMiddle: "in nalaga widget iz",
-      openBooking: "Odpri naročanje",
-      moreAbout: "Več o Calendri",
-      widgetTitle: "Naročanje termina",
-      widgetSubtitle: "Vgrajeni Calendra booking widget.",
-      loadingWidget: "Nalagam booking widget ...",
-      widgetLoadError: "Widgeta ni bilo mogoče naložiti. Preverite, ali je script dosegljiv na",
-      tenantBadge: "Tenant 3DAV",
-    },
-
-    clientsPage: {
-      badge: "Za goste",
-      titlePrefix: "Naše",
-      titleHighlight: "stranke",
-      intro:
-        "Odkrijte podjetja, ki uporabljajo Calendro za enostavno rezervacijo terminov, in rezervirajte neposredno v Calendri.",
-      searchPlaceholder: "Išči po imenu ali lokaciji ...",
-      filters: ["Vse", "Salon", "Fitness", "Wellness", "Zdravje", "Svetovanje"],
-      featuredLabel: "Preverjeno v Calendri",
-      primaryCta: "Rezerviraj termin",
-      secondaryCta: "Poglej profil",
-      emptyTitle: "Ni zadetkov",
-      emptyBody: "Poskusite z drugim iskalnim izrazom ali filtrom.",
-      ctaEyebrow: "Postanite vidni",
-      ctaTitle: "Želite biti prikazani tukaj?",
-      ctaDescription:
-        "Pridružite se podjetjem, ki s Calendro poenostavljajo rezervacije in pridobivajo nove stranke.",
-      ctaButton: "Preizkusite brezplačno",
-      ctaNote: "Brez kreditne kartice",
     },
     supportPage: {
       badge: "Podpora",
@@ -241,6 +155,7 @@ export const siteCopy = {
       booking: "Booking",
       connect: "Calendra Connect",
       itServices: "IT services",
+      blog: "Guides",
       contact: "Contact",
       language: "Language",
       login: "Login",
@@ -316,14 +231,6 @@ export const siteCopy = {
     },
     footer: {
       rights: "All rights reserved.",
-      clients: "Clients",
-      booking: "Booking",
-      privacy: "Privacy policy",
-      privacyContact: "Privacy contact",
-      terms: "Terms of service",
-      support: "Support",
-      accountDeletion: "Account deletion",
-      aiTransparency: "AI Transparency",
     },
     aiTransparencySection: {
       eyebrow: "AI Transparency",
@@ -347,85 +254,6 @@ export const siteCopy = {
       linkTitle: "More details",
       linkBody: "The full public disclosure is available on the dedicated AI Transparency page.",
       linkCta: "Open AI Transparency",
-    },
-    aiTransparencyPage: {
-      badge: "AI Transparency",
-      title: "AI transparency for Calendra",
-      intro:
-        "This public page explains which AI services Calendra uses and how they are used in the application. It is intended for users, partners, and compliance reviewers.",
-      cards: [
-        {
-          title: "AI service provider",
-          body: "Calendra uses OpenAI services to support certain AI-powered functionality in the application.",
-        },
-        {
-          title: "Supported functionality",
-          body: "This may include AI-assisted capabilities such as voice commands, content processing assistance, and other product experiences where AI is an explicit part of the feature.",
-        },
-        {
-          title: "User transparency",
-          body: "We publicly disclose the use of OpenAI on this page so users are clearly informed about AI components in the service.",
-        },
-      ],
-      disclosureTitle: "Public disclosure",
-      disclosureBody1: "Calendra uses OpenAI services to support certain AI-powered features in the application.",
-      disclosureBody2: "These AI features may process user input to generate responses, assist with automation, or improve the user experience within the platform.",
-      disclosureBody3: "AI-generated content or suggestions may be inaccurate or incomplete and should be reviewed as appropriate before use.",
-    },
-    bookingPage: {
-      back: "Back to the landing page",
-      badge: "Booking",
-      title: "Online appointment booking directly on your website",
-      description:
-        "Customers choose a service, an employee when needed, a date, and an available appointment. The booking is then added directly to your Calendra calendar.",
-      cards: [
-        {
-          title: "Choose a service",
-          description: "Visitors first select the service they want to book.",
-        },
-        {
-          title: "Choose an employee",
-          description: "When several employees provide the service, customers can choose their preferred person.",
-        },
-        {
-          title: "Only genuinely available times",
-          description: "Customers see only appointments that are free based on working hours, absences, and existing bookings.",
-        },
-        {
-          title: "Directly connected to Calendra",
-          description: "The appointment is added to your calendar immediately, without re-entering data or extra steps.",
-        },
-      ],
-      tenantInfoPrefix: "This page uses tenant",
-      tenantInfoMiddle: "and loads the widget from",
-      openBooking: "Open booking",
-      moreAbout: "More about Calendra",
-      widgetTitle: "Book a session",
-      widgetSubtitle: "Embedded Calendra booking widget.",
-      loadingWidget: "Loading booking widget ...",
-      widgetLoadError: "The widget could not be loaded. Check whether the script is reachable at",
-      tenantBadge: "Tenant 3DAV",
-    },
-
-    clientsPage: {
-      badge: "For guests",
-      titlePrefix: "Our",
-      titleHighlight: "clients",
-      intro:
-        "Discover businesses that use Calendra for simple appointment booking, and reserve directly through Calendra.",
-      searchPlaceholder: "Search by name or location ...",
-      filters: ["All", "Salon", "Fitness", "Wellness", "Health", "Consulting"],
-      featuredLabel: "Verified in Calendra",
-      primaryCta: "Book a slot",
-      secondaryCta: "View profile",
-      emptyTitle: "No results",
-      emptyBody: "Try a different search term or filter.",
-      ctaEyebrow: "Get discovered",
-      ctaTitle: "Want to be listed here?",
-      ctaDescription:
-        "Join businesses that simplify booking with Calendra and get discovered by new customers.",
-      ctaButton: "Try it free",
-      ctaNote: "No credit card required",
     },
     supportPage: {
       badge: "Support",

@@ -10,6 +10,57 @@ services:
         VITE_YOUTUBE_URL: ${VITE_YOUTUBE_URL:-}
         VITE_GOOGLE_PLAY_URL: ${VITE_GOOGLE_PLAY_URL:-}
         VITE_APP_STORE_URL: ${VITE_APP_STORE_URL:-}
+        VITE_UMAMI_WEBSITE_ID: ${VITE_UMAMI_WEBSITE_ID:-}
+        VITE_UMAMI_SCRIPT_URL: ${VITE_UMAMI_SCRIPT_URL:-/stats/script.js}
+        VITE_UMAMI_HOST_URL: ${VITE_UMAMI_HOST_URL:-/stats}
+              VITE_GOOGLE_SITE_VERIFICATION: ${VITE_GOOGLE_SITE_VERIFICATION:-}
+              VITE_BING_SITE_VERIFICATION: ${VITE_BING_SITE_VERIFICATION:-}
+              VITE_ENTITY_PROFILE_URLS: ${VITE_ENTITY_PROFILE_URLS:-}
+              VITE_AUTHOR_PROFILE_URLS: ${VITE_AUTHOR_PROFILE_URLS:-}
+              VITE_COMPANY_VAT_ID: ${VITE_COMPANY_VAT_ID:-}
+              VITE_COMPANY_REGISTRATION_NUMBER: ${VITE_COMPANY_REGISTRATION_NUMBER:-}
+              VITE_WIKIDATA_ENTITY_ID: ${VITE_WIKIDATA_ENTITY_ID:-}
+              INDEXNOW_KEY: ${INDEXNOW_KEY:-}
     ports:
       - "${WEBSITE_PORT:-8080}:80"
     restart: unless-stopped
+    depends_on:
+      - analytics
+
+  # Cookieless analytics, self-hosted so visitor data never leaves our own EU
+  # infrastructure and no additional GDPR subprocessor is introduced.
+  analytics:
+    container_name: calendra-analytics
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    environment:
+      DATABASE_URL: postgresql://umami:${UMAMI_DB_PASSWORD:?set UMAMI_DB_PASSWORD in .env}@analytics-db:5432/umami
+      DATABASE_TYPE: postgresql
+      APP_SECRET: ${UMAMI_APP_SECRET:?set UMAMI_APP_SECRET in .env}
+      # Caddy serves the dashboard and the tracker under /stats on the main domain.
+      BASE_PATH: /stats
+      TRACKER_SCRIPT_NAME: script
+    expose:
+      - "3000"
+    restart: unless-stopped
+    depends_on:
+      analytics-db:
+        condition: service_healthy
+
+  analytics-db:
+    container_name: calendra-analytics-db
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD:?set UMAMI_DB_PASSWORD in .env}
+    volumes:
+      - analytics-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U umami -d umami"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  analytics-db-data:

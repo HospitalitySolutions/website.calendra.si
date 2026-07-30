@@ -1,5 +1,7 @@
 import Footer from "@/components/landing/Footer";
 import Navbar from "@/components/landing/Navbar";
+import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
+import RelatedPages from "@/components/seo/RelatedPages";
 import { Button } from "@/components/ui/button";
 import {
   getIndustryContent,
@@ -36,11 +38,11 @@ const IndustryDetailPage = () => {
   const { pathname } = useLocation();
   const { language } = useSiteLanguage();
   const routeKey = getRouteKeyFromPathname(pathname);
+  const heroCtaRef = useRef<HTMLDivElement | null>(null);
 
   if (!isIndustryRouteKey(routeKey)) return null;
 
   const page = getIndustryContent(routeKey, language);
-  const heroCtaRef = useRef<HTMLDivElement | null>(null);
   const otherIndustries = INDUSTRY_ROUTE_KEYS.filter((key) => key !== routeKey);
   const primaryLabel = language === "sl" ? "Preizkusite brezplačno" : "Try it free";
   const featuresLabel = language === "sl" ? "Oglejte si funkcionalnosti" : "Explore features";
@@ -54,6 +56,7 @@ const IndustryDetailPage = () => {
         <section className="overflow-hidden border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.07] py-14 md:py-20 lg:py-24">
           <div className="container mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:px-8">
             <div>
+              <PageBreadcrumbs routeKey={routeKey} />
               <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.eyebrow}</span>
               <h1 className="mt-4 max-w-4xl font-display text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                 {page.title}
@@ -217,7 +220,7 @@ const IndustryDetailPage = () => {
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.faqTitle}</h2>
               <Sparkles className="mt-7 h-9 w-9 text-primary" aria-hidden="true" />
             </div>
-            <div className="grid gap-3">
+            <div className="grid gap-3" data-speakable="faq">
               {page.faq.map((item) => (
                 <details key={item.question} className="group rounded-2xl border border-border/60 bg-background p-5 open:border-primary/25 open:shadow-sm">
                   <summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden">{item.question}</summary>
@@ -228,9 +231,11 @@ const IndustryDetailPage = () => {
           </div>
         </section>
 
-        <section className="bg-background py-16 md:py-20">
+        <RelatedPages routeKey={routeKey} />
+
+        <section className="border-t border-border/60 bg-background py-16 md:py-20">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-            <p className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{otherSolutionsLabel}</p>
+            <h2 className="font-display text-2xl font-bold text-foreground">{otherSolutionsLabel}</h2>
             <div className="mt-6 grid gap-4 md:grid-cols-3">
               {otherIndustries.map((key: IndustryRouteKey) => {
                 const other = getIndustryContent(key, language);

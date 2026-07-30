@@ -1,5 +1,6 @@
 import { createRoot, hydrateRoot } from "react-dom/client";
 import App from "./App.tsx";
+import { reportWebVitals } from "@/lib/web-vitals-reporter";
 import "./index.css";
 
 const rootElement = document.getElementById("root");
@@ -13,3 +14,5 @@ if (rootElement.hasChildNodes()) {
 } else {
   createRoot(rootElement).render(<App />);
 }
+
+reportWebVitals();

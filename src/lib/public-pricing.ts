@@ -405,10 +405,49 @@ export const normalizePublicPricingCatalog = (
   };
 };
 
+export const PUBLIC_PRICING_ENDPOINT = `${APP_BASE_URL}/api/register/public-pricing`;
+
+/**
+ * Id of the JSON island `scripts/prerender.mjs` writes into every page.
+ *
+ * The pricing configurator used to render fallback prices and then swap in the
+ * live catalog after mount. When the two differed the tier grid changed height
+ * and the page reflowed, which is a Cumulative Layout Shift the visitor sees as
+ * the buttons jumping while they reach for one. Snapshotting the catalog at
+ * build time means the prerendered markup, the JSON-LD offers and the first
+ * client render are all produced from the same numbers, so nothing moves. The
+ * live fetch still runs afterwards to catch a price change made since the last
+ * deploy.
+ */
+export const PRICING_CATALOG_SCRIPT_ID = "calendra-pricing-catalog";
+
+let initialCatalog: PublicPricingCatalog | undefined;
+
+/** Called by the prerender script before rendering, so SSR output matches the island. */
+export const setPrerenderedPricingCatalog = (catalog: PublicPricingCatalog) => {
+  initialCatalog = catalog;
+};
+
+export const getInitialPricingCatalog = (): PublicPricingCatalog => {
+  if (initialCatalog) return initialCatalog;
+  if (typeof document === "undefined") return FALLBACK_PUBLIC_PRICING;
+
+  const island = document.getElementById(PRICING_CATALOG_SCRIPT_ID);
+  if (!island?.textContent) return FALLBACK_PUBLIC_PRICING;
+
+  try {
+    initialCatalog = normalizePublicPricingCatalog(JSON.parse(island.textContent) as Partial<PublicPricingCatalog>);
+  } catch {
+    initialCatalog = FALLBACK_PUBLIC_PRICING;
+  }
+
+  return initialCatalog;
+};
+
 export const fetchPublicPricingCatalog = async (
   signal?: AbortSignal,
 ): Promise<PublicPricingCatalog> => {
-  const response = await fetch(`${APP_BASE_URL}/api/register/public-pricing`, {
+  const response = await fetch(PUBLIC_PRICING_ENDPOINT, {
     method: "GET",
     headers: { Accept: "application/json" },
     signal,

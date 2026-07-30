@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
+import AnswerSummary from "@/components/seo/AnswerSummary";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -393,6 +394,7 @@ const DemoBookingPage = () => {
         <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.06] px-4 py-2 text-sm font-bold text-primary"><Video className="h-4 w-4" />{t.eyebrow}</span>
         <h1 className="mt-5 hidden font-display text-4xl font-extrabold tracking-tight text-foreground md:block md:text-5xl">{t.title}</h1>
         <p className="mx-auto mt-4 hidden max-w-2xl text-lg leading-8 text-muted-foreground md:block">{t.subtitle}</p>
+        <AnswerSummary routeKey="demo" className="mx-auto mt-6 hidden text-left md:block" />
         <div className="mt-6 hidden flex-wrap justify-center gap-3 text-sm font-semibold text-foreground md:flex">
           <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Clock3 className="h-4 w-4 text-primary" />{profile?.durationMinutes || 30} {language === "sl" ? "minut" : "minutes"}</span>
           <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span>

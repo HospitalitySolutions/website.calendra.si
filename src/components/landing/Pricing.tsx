@@ -1,3 +1,5 @@
+import AnswerSummary from "@/components/seo/AnswerSummary";
+import RelatedPages from "@/components/seo/RelatedPages";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -5,6 +7,7 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { buildPackageSignupRoute, type PricingSignupSummary } from "@/lib/routes";
 import { LEGAL } from "@/lib/legal";
+import { getFaqForRoute } from "@/lib/faq";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { getRoutePath } from "@/lib/localized-routes";
 import { BellRing, Building2, CalendarDays, Check, Link2, MessageSquareText, Receipt, Send, Star, Users, X as XIcon } from "lucide-react";
@@ -12,8 +15,8 @@ import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
-  FALLBACK_PUBLIC_PRICING,
   fetchPublicPricingCatalog,
+  getInitialPricingCatalog,
   type PublicAdditionalUserRule,
   type PublicPricingAddOn,
   type PublicPricingCatalog,
@@ -376,20 +379,7 @@ const standaloneExtras = {
     trialTitle: "Pogoji brezplačnega preizkusa",
     trialBody: "Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice. Pred potrditvijo plačljivega paketa vidite izbrani paket, dodatke ter ocenjeni mesečni in prvi račun.",
     relatedTitle: "Preverite povezane funkcionalnosti",
-    related: [
-      { key: "booking", label: "Spletno naročanje" },
-      { key: "calendar", label: "Koledar terminov" },
-      { key: "reminders", label: "SMS in e-poštni opomniki" },
-      { key: "invoicing", label: "Računi in plačila" },
-      { key: "integrations", label: "Integracije" },
-    ],
     faqTitle: "Pogosta vprašanja o ceniku",
-    faq: [
-      { q: "Ali je v ceni vključen uporabnik?", a: "Da. Vsak paket vključuje enega uporabnika. Dodatne uporabnike lahko dodate po objavljeni mesečni ceni." },
-      { q: "Kako se obračunajo SMS sporočila?", a: "SMS sporočila se obračunajo glede na izbrano količino oziroma porabo po ceni, prikazani v konfiguratorju." },
-      { q: "Ali lahko paket pozneje spremenim?", a: "Da. Paket, število uporabnikov in dodatke lahko prilagodite glede na razvoj poslovanja." },
-      { q: "Ali potrebujem kreditno kartico za preizkus?", a: "Ne. Za 14-dnevni brezplačni preizkus kreditna kartica ni potrebna." },
-    ],
   },
   en: {
     guideTitle: "Which plan fits your business?",
@@ -407,20 +397,7 @@ const standaloneExtras = {
     trialTitle: "Free-trial terms",
     trialBody: "The free trial lasts 14 days and does not require a credit card. Before confirming a paid plan, you can review the selected package, add-ons and estimated monthly and first invoice.",
     relatedTitle: "Explore related features",
-    related: [
-      { key: "booking", label: "Online booking" },
-      { key: "calendar", label: "Appointment calendar" },
-      { key: "reminders", label: "SMS and email reminders" },
-      { key: "invoicing", label: "Invoicing and payments" },
-      { key: "integrations", label: "Integrations" },
-    ],
     faqTitle: "Pricing questions",
-    faq: [
-      { q: "Is one user included?", a: "Yes. Every plan includes one user. Additional users can be added at the published monthly price." },
-      { q: "How are SMS messages charged?", a: "SMS messages are charged based on the selected quantity or usage at the price shown in the configurator." },
-      { q: "Can I change plans later?", a: "Yes. You can adjust the plan, user count and add-ons as your business develops." },
-      { q: "Do I need a credit card for the trial?", a: "No. A credit card is not required for the 14-day free trial." },
-    ],
   },
 } as const;
 
@@ -458,10 +435,10 @@ const scrollToElement = (element: HTMLElement | null) => {
 const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const { language } = useSiteLanguage();
   const baseContent = useMemo(() => translations[language], [language]);
-  const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(FALLBACK_PUBLIC_PRICING);
+  const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(getInitialPricingCatalog);
   const [selectedTierKey, setSelectedTierKey] = useState<PlanKey>("professional");
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
-  const [additionalUsers, setAdditionalUsers] = useState(FALLBACK_PUBLIC_PRICING.includedUsers);
+  const [additionalUsers, setAdditionalUsers] = useState(() => getInitialPricingCatalog().includedUsers);
   const [additionalSms, setAdditionalSms] = useState(0);
   const [selectedAddOnKeys, setSelectedAddOnKeys] = useState<string[]>([]);
   const [contactCompany, setContactCompany] = useState("");
@@ -777,7 +754,11 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     language === "sl" ? "Izbrani dodatni moduli" : "Selected add-on modules",
   ];
 
+  // On /cenik this block is the page, so its heading is the h1 and the plan
+  // names sit one level below it. Embedded on the homepage everything shifts
+  // down a level, which keeps the document outline gapless in both places.
   const HeadingTag = standalone ? "h1" : "h2";
+  const TierHeadingTag = standalone ? "h2" : "h3";
 
   return (
     <section
@@ -791,6 +772,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             {standalone ? content.standaloneTitle : content.sectionTitle}
           </HeadingTag>
           <p className="mt-4 text-lg text-muted-foreground">{content.sectionDescription}</p>
+          {standalone ? <AnswerSummary routeKey="pricing" className="mx-auto mt-6 text-left" /> : null}
         </div>
 
         <div className="mb-8 flex flex-col gap-3 md:mb-10 md:flex-row md:items-center md:justify-between">
@@ -844,14 +826,16 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   </span>
                 )}
 
-                <h3 className={`font-display text-lg font-bold ${tier.accent ? "" : "text-foreground"}`}>{tier.name}</h3>
+                <TierHeadingTag className={`font-display text-lg font-bold ${tier.accent ? "" : "text-foreground"}`}>
+                  {tier.name}
+                </TierHeadingTag>
                 <div className="mt-4 flex items-baseline gap-1">
                   <span className={`font-display text-4xl font-extrabold ${tier.accent ? "" : "text-foreground"}`}>{tier.price}</span>
                   {tier.priceSuffix && (
-                    <span className={`text-sm ${tier.accent ? "text-primary-foreground/70" : "text-muted-foreground"}`}>{tier.priceSuffix}</span>
+                    <span className={`text-sm ${tier.accent ? "text-primary-foreground" : "text-muted-foreground"}`}>{tier.priceSuffix}</span>
                   )}
                 </div>
-                <p className={`mt-2 text-sm ${tier.accent ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{tier.description}</p>
+                <p className={`mt-2 text-sm ${tier.accent ? "text-primary-foreground" : "text-muted-foreground"}`}>{tier.description}</p>
 
                 {tier.inheritedLabel && (
                   <p className={`mt-6 text-sm font-bold ${tier.accent ? "text-primary-foreground" : "text-foreground"}`}>
@@ -861,7 +845,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
 
                 <ul className={`${tier.inheritedLabel ? "mt-4" : "mt-6"} flex flex-1 flex-col gap-2.5`}>
                   {tier.features.map((feature) => (
-                    <li key={feature} className={`flex items-start gap-2 text-sm ${tier.accent ? "text-primary-foreground/90" : "text-foreground"}`}>
+                    <li key={feature} className={`flex items-start gap-2 text-sm ${tier.accent ? "text-primary-foreground" : "text-foreground"}`}>
                       <Check className={`mt-0.5 h-4 w-4 shrink-0 ${tier.accent ? "text-accent" : "text-primary"}`} />
                       {feature}
                     </li>
@@ -872,7 +856,9 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   variant={tier.accent ? "hero-outline" : "hero"}
                   size="lg"
                   className={`mt-8 w-full rounded-xl ${
-                    tier.accent ? "border-primary-foreground/30 bg-primary-foreground/10 text-primary-foreground hover:bg-primary-foreground/20" : ""
+                    tier.accent
+                      ? "border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/15"
+                      : ""
                   }`}
                   onClick={() => handleTierSelect(tier.key)}
                 >
@@ -891,7 +877,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   <Users className="h-7 w-7" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-foreground">{content.enterprisePanelTitle}</h3>
+                  <TierHeadingTag className="text-lg font-bold text-foreground">{content.enterprisePanelTitle}</TierHeadingTag>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">{content.enterprisePanelDescription}</p>
                 </div>
               </div>
@@ -1004,7 +990,14 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                       <Users className="h-6 w-6" />
                     </div>
-                    <Slider value={[additionalUsers]} onValueChange={(value) => setAdditionalUsers(value[0] ?? includedUsers)} min={includedUsers} max={USER_SLIDER_MAX} step={1} />
+                    <Slider
+                      aria-label={content.usersLabel}
+                      value={[additionalUsers]}
+                      onValueChange={(value) => setAdditionalUsers(value[0] ?? includedUsers)}
+                      min={includedUsers}
+                      max={USER_SLIDER_MAX}
+                      step={1}
+                    />
                   </div>
                 </div>
 
@@ -1022,7 +1015,13 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                       <MessageSquareText className="h-6 w-6" />
                     </div>
-                    <Slider value={[additionalSms]} onValueChange={(value) => setAdditionalSms(value[0] ?? 0)} max={SMS_SLIDER_MAX} step={SMS_SLIDER_STEP} />
+                    <Slider
+                      aria-label={content.smsLabel}
+                      value={[additionalSms]}
+                      onValueChange={(value) => setAdditionalSms(value[0] ?? 0)}
+                      max={SMS_SLIDER_MAX}
+                      step={SMS_SLIDER_STEP}
+                    />
                   </div>
                 </div>
 
@@ -1040,7 +1039,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                             checked={checked}
                             onCheckedChange={(nextChecked) => {
                               setSelectedAddOnKeys((current) => {
-                                if (Boolean(nextChecked)) {
+                                if (nextChecked) {
                                   return current.includes(addOn.key) ? current : [...current, addOn.key];
                                 }
                                 return current.filter((key) => key !== addOn.key);
@@ -1129,21 +1128,19 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
               <article className="rounded-3xl border border-border/60 bg-background p-7">
                 <Link2 className="h-7 w-7 text-primary" />
                 <h2 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].relatedTitle}</h2>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {standaloneExtras[language].related.map((item) => (
-                    <a key={item.key} href={getRoutePath(item.key, language)} className="rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition hover:border-primary/30 hover:text-primary">{item.label}</a>
-                  ))}
-                </div>
+                <RelatedPages routeKey="pricing" variant="pills" limit={8} className="mt-5" />
               </article>
             </section>
 
             <section className="mt-16" aria-labelledby="pricing-faq-title">
               <div className="flex items-center gap-3"><BellRing className="h-7 w-7 text-primary" /><h2 id="pricing-faq-title" className="font-display text-2xl font-bold text-foreground">{standaloneExtras[language].faqTitle}</h2></div>
-              <div className="mt-6 grid gap-3">
-                {standaloneExtras[language].faq.map((item) => (
-                  <details key={item.q} className="rounded-2xl border border-border/60 bg-background p-5">
-                    <summary className="cursor-pointer list-none font-semibold text-foreground">{item.q}</summary>
-                    <p className="mt-3 leading-7 text-muted-foreground">{item.a}</p>
+              <div className="mt-6 grid gap-3" data-speakable="faq">
+                {(getFaqForRoute("pricing", language) ?? []).map((item) => (
+                  <details key={item.question} className="rounded-2xl border border-border/60 bg-background p-5">
+                    <summary className="cursor-pointer list-none font-semibold text-foreground">
+                      <h3 className="inline text-base font-semibold">{item.question}</h3>
+                    </summary>
+                    <p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p>
                   </details>
                 ))}
               </div>

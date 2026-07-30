@@ -13,7 +13,13 @@ export const LEGAL = {
   audience: "B2B",
   governingLaw: "Republic of Slovenia",
   hostingRegion: "AWS EU region",
-  websiteAnalyticsEnabled: false,
+  // Self-hosted Umami on our own AWS EU infrastructure: no cookies, no device
+  // storage, no cross-site identifiers, so no consent banner is required and no
+  // new subprocessor is involved.
+  websiteAnalyticsEnabled: true,
+  websiteAnalyticsProvider: "Umami",
+  websiteAnalyticsIsCookieless: true,
+  websiteAnalyticsSelfHosted: true,
   aiEnabledAtProductionLaunch: false,
   tenantSignupRequiresTermsAndDpa: true,
 } as const;

@@ -21,7 +21,7 @@ const Stats = () => (
             transition={{ delay: i * 0.08 }}
           >
             <p className={`font-display text-3xl font-extrabold md:text-4xl ${s.accent ? "" : "text-foreground"}`}>{s.value}</p>
-            <p className={`mt-1 text-sm font-medium ${s.accent ? "text-primary-foreground/80" : "text-muted-foreground"}`}>{s.label}</p>
+            <p className={`mt-1 text-sm font-medium ${s.accent ? "text-primary-foreground" : "text-muted-foreground"}`}>{s.label}</p>
           </motion.div>
         ))}
       </div>

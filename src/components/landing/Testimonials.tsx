@@ -117,7 +117,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
 };
 
 const RatingStars = () => (
-  <div className="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+  <div className="flex items-center gap-0.5" role="img" aria-label="5 out of 5 stars">
     {Array.from({ length: 5 }).map((_, index) => (
       <Star key={index} className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />
     ))}
@@ -216,7 +216,7 @@ const Testimonials = () => {
                     <div className="min-w-0">
                       <p className="font-semibold text-foreground">{review.name}</p>
                       <p className="text-sm text-muted-foreground">{review.context}</p>
-                      {review.translated && <p className="mt-0.5 text-xs text-muted-foreground/80">{copy.translated}</p>}
+                      {review.translated && <p className="mt-0.5 text-xs text-muted-foreground">{copy.translated}</p>}
                     </div>
                   </div>
                 </motion.article>

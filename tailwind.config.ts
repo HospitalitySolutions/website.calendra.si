@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
+import fontStacks from "./src/styles/font-stacks.json";
 
 export default {
   darkMode: ["class"],
@@ -59,9 +60,13 @@ export default {
           ring: "hsl(var(--sidebar-ring))",
         },
       },
+      // The `... Fallback` entries are metric-matched faces declared in
+      // src/styles/fonts.css, so text laid out in the fallback occupies the same
+      // space as the web font and nothing moves when the font arrives. Both this
+      // list and those faces come from `node scripts/fetch-fonts.mjs`.
       fontFamily: {
-        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
-        display: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+        sans: [...fontStacks.sans.split(", "), "system-ui", "sans-serif"],
+        display: [...fontStacks.display.split(", "), "system-ui", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",

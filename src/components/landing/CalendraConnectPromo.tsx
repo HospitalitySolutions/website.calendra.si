@@ -66,7 +66,7 @@ const CalendraConnectPromo = () => {
                   </div>
                   <p className="mt-7 font-display text-xl font-bold text-foreground">{copy.appointments}</p>
                   <div className="mt-5 rounded-2xl bg-primary p-5 text-primary-foreground">
-                    <p className="text-xs text-primary-foreground/75">{copy.next}</p>
+                    <p className="text-xs text-primary-foreground">{copy.next}</p>
                     <p className="mt-5 font-bold">{copy.time}</p>
                   </div>
                   {[0, 1, 2].map((item) => <div key={item} className="mt-3 flex items-center gap-3 rounded-xl border border-border/60 bg-background p-3"><Check className="h-4 w-4 text-primary" /><span className="h-2 flex-1 rounded-full bg-muted" /></div>)}

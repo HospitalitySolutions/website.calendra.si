@@ -2,6 +2,19 @@
   root * /srv
   encode gzip zstd
 
+  # Applied to every response. TLS is terminated in front of this container, so
+  # Strict-Transport-Security is set here and only ever honoured by the browser
+  # over HTTPS. No Content-Security-Policy yet: the prerendered pages carry
+  # inline JSON-LD, and a policy loose enough to allow that buys little.
+  header {
+    Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    X-Content-Type-Options "nosniff"
+    Referrer-Policy "strict-origin-when-cross-origin"
+    Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
+    X-Frame-Options "SAMEORIGIN"
+    -Server
+  }
+
   # Canonical language-specific URLs. Legacy English aliases redirect to /en/*.
   redir /pricing /en/pricing 308
   redir /mobilna-aplikacija /calendra-connect 308
@@ -27,13 +40,39 @@
   redir /ai-transparency /en/ai-transparency 308
   redir /account-deletion /en/account-deletion 308
 
+  # Cookieless analytics served first-party. Content blockers match on known
+  # third-party analytics hostnames, so proxying the tracker and its collect
+  # endpoint through our own domain is what keeps the data usable.
+  handle /stats/* {
+    reverse_proxy analytics:3000
+  }
+
   # Vite fingerprints files in /assets, so they can be cached indefinitely.
   @immutableAssets path /assets/*
   header @immutableAssets Cache-Control "public, max-age=31536000, immutable"
 
   # Public images and icons use stable names and a shorter browser cache.
-  @staticImages path /hero/* /reviews/* /favicon.ico /favicon-*.png /apple-touch-icon.png /icon-*.png /calendra-logo.png /og-calendra.png /connect/*
+  @staticImages path /hero/* /reviews/* /og/* /favicon.ico /favicon-*.png /apple-touch-icon.png /icon-*.png /calendra-logo.png /calendra-wordmark.webp /og-calendra.png /connect/*
   header @staticImages Cache-Control "public, max-age=604800"
+
+  # Font subsets are regenerated only when a family changes, and the filename
+  # changes with it, so they can be cached for a year.
+  @fonts path /fonts/*
+  header @fonts Cache-Control "public, max-age=31536000, immutable"
+
+  # Prerendered HTML references fingerprinted assets, so a stale copy would keep
+  # pointing at a bundle that no longer exists. Left unset, browsers apply their
+  # own heuristic freshness; this makes them revalidate against the ETag every
+  # time, which is cheap because unchanged pages come back as 304.
+  # Extensionless routes plus any .html file; anything with another extension is
+  # a fingerprinted or long-lived asset already handled above.
+  @documents path_regexp ^(/[^.]*|.*\.html)$
+  header @documents Cache-Control "public, max-age=0, must-revalidate"
+
+  # Crawler and AI-assistant entry points change on every deploy, and a stale
+  # sitemap or llms.txt is worse than a slightly slower fetch.
+  @crawlerFiles path /sitemap.xml /robots.txt /llms.txt /llms-full.txt
+  header @crawlerFiles Cache-Control "public, max-age=3600"
 
   # Serve any route that was actually prerendered by the build. Unknown paths
   # remain unknown and are returned as 404 by file_server—there is no second

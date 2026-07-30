@@ -22,7 +22,7 @@ import {
   X,
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import calendraLogo from "@/assets/calendra-logo.png";
+import { WORDMARK } from "@/lib/brand-assets";
 import { languageNames, getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 
@@ -189,13 +189,31 @@ const Navbar = () => {
       href: pricingPath,
       activePaths: [getRoutePath("pricing", "sl"), getRoutePath("pricing", "en")],
     },
+    {
+      label: copy.nav.blog,
+      href: getRoutePath("blog", language),
+      activePaths: [getRoutePath("blog", "sl"), getRoutePath("blog", "en")],
+    },
   ];
+
+  /**
+   * Article URLs sit below their index path, so the blog tab has to stay
+   * highlighted while an article is open, not only on the index itself.
+   */
+  const isLinkActive = (activePaths: string[]) =>
+    activePaths.some((activePath) => pathname === activePath || pathname.startsWith(`${activePath}/`));
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/40 bg-card/70 backdrop-blur-xl">
       <div className="container mx-auto flex h-20 items-center justify-between gap-3 px-4 lg:px-8">
         <a href={homePath} className="flex items-center">
-          <img src={calendraLogo} alt="Calendra" width="628" height="205" className="h-8 w-auto md:h-9" />
+          <img
+            src={WORDMARK.src}
+            alt="Calendra"
+            width={WORDMARK.width}
+            height={WORDMARK.height}
+            className="h-8 w-auto md:h-9"
+          />
         </a>
 
         <div className="hidden items-center gap-5 xl:flex">
@@ -301,7 +319,7 @@ const Navbar = () => {
           </div>
 
           {topLevelLinks.slice(0, 2).map((link) => {
-            const isActive = link.activePaths.includes(pathname);
+            const isActive = isLinkActive(link.activePaths);
             return (
               <a
                 key={link.href}
@@ -355,7 +373,7 @@ const Navbar = () => {
           </div>
 
           {topLevelLinks.slice(2).map((link) => {
-            const isActive = link.activePaths.includes(pathname);
+            const isActive = isLinkActive(link.activePaths);
             return (
               <a
                 key={link.href}
@@ -482,7 +500,7 @@ const Navbar = () => {
             </div>
 
             {topLevelLinks.slice(0, 2).map((link) => {
-              const isActive = link.activePaths.includes(pathname);
+              const isActive = isLinkActive(link.activePaths);
               return (
                 <a
                   key={link.href}
@@ -539,7 +557,7 @@ const Navbar = () => {
             </div>
 
             {topLevelLinks.slice(2).map((link) => {
-              const isActive = link.activePaths.includes(pathname);
+              const isActive = isLinkActive(link.activePaths);
               return (
                 <a
                   key={link.href}

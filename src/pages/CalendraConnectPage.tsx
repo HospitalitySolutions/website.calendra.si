@@ -2,7 +2,9 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import CalendraConnectLogo from "@/components/connect/CalendraConnectLogo";
 import StoreButtons from "@/components/connect/StoreButtons";
+import AnswerSummary from "@/components/seo/AnswerSummary";
 import { Button } from "@/components/ui/button";
+import { StepWatermark } from "@/components/ui/step-watermark";
 import { getCalendraConnectCopy } from "@/lib/calendra-connect";
 import { getRoutePath } from "@/lib/localized-routes";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
@@ -46,7 +48,7 @@ const PhonePreview = ({ screen, index }: { screen: { label: string; title: strin
         <div className="mt-6 rounded-2xl bg-gradient-to-br from-primary to-primary/75 p-5 text-primary-foreground shadow-glow">
           <Icon className="h-7 w-7" aria-hidden="true" />
           <p className="mt-7 text-base font-bold">{screen.primary}</p>
-          <p className="mt-1 text-xs text-primary-foreground/80">{screen.secondary}</p>
+          <p className="mt-1 text-xs text-primary-foreground">{screen.secondary}</p>
         </div>
         <div className="mt-4 grid gap-3">
           {[0, 1].map((item) => (
@@ -89,6 +91,7 @@ const CalendraConnectPage = () => {
                 <span className="mt-2 block text-4xl sm:text-5xl lg:text-6xl">{copy.hero.title}</span>
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground">{copy.hero.description}</p>
+              <AnswerSummary routeKey="connect" className="mt-6" />
               <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-foreground">
                 <Check className="h-5 w-5 text-primary" aria-hidden="true" />
                 {copy.hero.free}
@@ -139,7 +142,7 @@ const CalendraConnectPage = () => {
                 const Icon = stepIcons[index];
                 return (
                   <article key={item.title} className="relative rounded-3xl border border-border/60 bg-card p-7 shadow-soft">
-                    <span className="absolute right-6 top-5 font-display text-5xl font-black text-primary/[0.08]" aria-hidden="true">0{index + 1}</span>
+                    <StepWatermark index={index} className="right-6 top-5 text-5xl" />
                     <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.09] text-primary"><Icon className="h-6 w-6" aria-hidden="true" /></span>
                     <h3 className="mt-6 text-xl font-bold text-foreground">{item.title}</h3>
                     <p className="mt-3 leading-7 text-muted-foreground">{item.body}</p>
@@ -212,7 +215,7 @@ const CalendraConnectPage = () => {
               <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.faq.eyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.faq.title}</h2>
             </div>
-            <div className="grid gap-3">
+            <div className="grid gap-3" data-speakable="faq">
               {copy.faq.items.map((item) => (
                 <details key={item.q} className="group rounded-2xl border border-border/60 bg-background p-5">
                   <summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden">{item.q}</summary>

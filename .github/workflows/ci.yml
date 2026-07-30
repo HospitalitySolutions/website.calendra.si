@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npx tsc --noEmit
+
+      - run: npm test
+
+      # Builds once and reuses dist/ for every check below. The pricing catalog
+      # fetch inside the prerender falls back to the committed catalog when the
+      # runner cannot reach app.calendra.si, so this does not depend on it.
+      - run: npm run build
+
+      - name: Bundle budget
+        run: node scripts/check-bundle-budget.mjs
+
+      - name: Prerender and crawler checks
+        run: node scripts/test-sitemap-routes.mjs
+
+      # Lighthouse runs against the same static server the crawl test uses, so a
+      # score change reflects the build rather than a difference in serving.
+      # `canonical` and `is-crawlable` are skipped in lighthouserc.json because
+      # the pages canonicalise to calendra.si, not to the local test origin.
+      - name: Lighthouse CI
+        run: npx lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}

@@ -1,3 +1,5 @@
+import { trackAnalyticsEvent } from "@/lib/analytics";
+
 export type MarketingEventName =
   | "pricing_package_selected"
   | "trial_cta_click"
@@ -9,16 +11,12 @@ export type MarketingEventName =
   | "demo_booking_form_started"
   | "demo_booking_confirmed"
   | "demo_booking_cancelled"
-  | "demo_booking_rescheduled";
+  | "demo_booking_rescheduled"
+  | "contact_path_selected"
+  | "calendra_inquiry_submitted"
+  | "it_service_inquiry_submitted";
 
 type MarketingEventPayload = Record<string, string | number | boolean | null | undefined>;
-
-declare global {
-  interface Window {
-    dataLayer?: Array<Record<string, unknown>>;
-    gtag?: (...args: unknown[]) => void;
-  }
-}
 
 export const trackMarketingEvent = (eventName: MarketingEventName, payload: MarketingEventPayload = {}) => {
   if (typeof window === "undefined") return;
@@ -27,9 +25,7 @@ export const trackMarketingEvent = (eventName: MarketingEventName, payload: Mark
     Object.entries(payload).filter(([, value]) => value !== undefined),
   );
 
-  window.dataLayer = window.dataLayer ?? [];
-  window.dataLayer.push({ event: eventName, ...cleanPayload });
-  window.gtag?.("event", eventName, cleanPayload);
+  trackAnalyticsEvent(eventName, cleanPayload);
   window.dispatchEvent(new CustomEvent("calendra:marketing-event", {
     detail: { event: eventName, ...cleanPayload },
   }));
