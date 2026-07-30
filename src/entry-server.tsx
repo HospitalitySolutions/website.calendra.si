@@ -2,7 +2,6 @@ import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import AppRoutes from "./AppRoutes.tsx";
 import { allBlogArticles, blogArticlePathnames } from "@/lib/blog";
-import { comparisonPathnames, getComparison } from "@/lib/comparison-pages";
 import { canonicalPathnames, getLanguageFromPathname, sitemapRouteMetadata } from "@/lib/localized-routes";
 import { SiteLanguageProvider } from "@/lib/site-language";
 import { DEFAULT_OG_IMAGE, getSeoForPathname } from "@/lib/seo";
@@ -25,7 +24,6 @@ export const routesToPrerender = [
   ...canonicalPathnames,
   ...publicProfilePathnames,
   ...blogArticlePathnames,
-  ...comparisonPathnames,
 ];
 export {
   DEFAULT_OG_IMAGE,
@@ -79,17 +77,6 @@ export const getSitemapEntries = () =>
         };
       }
 
-      if ("comparisonSlug" in seo && seo.comparisonSlug) {
-        return {
-          pathname,
-          location: seo.canonicalUrl,
-          language: seo.language,
-          alternateUrls: seo.alternateUrls,
-          changeFrequency: "monthly" as const,
-          priority: seo.language === "sl" ? 0.7 : 0.6,
-          lastModified: getComparison(seo.comparisonSlug).lastReviewed,
-        };
-      }
 
       if ("profileSlug" in seo && seo.profileSlug) {
         const profile = indexablePublicCompanyProfiles.find((item) => item.slug === seo.profileSlug);

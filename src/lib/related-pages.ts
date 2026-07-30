@@ -40,7 +40,6 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
     privacy: "Zasebnost",
     blog: "Nasveti in vodniki",
     author: "David Mirc",
-    comparisons: "Primerjave ponudnikov",
   },
   en: {
     home: "Calendra",
@@ -71,7 +70,6 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
     privacy: "Privacy",
     blog: "Guides and advice",
     author: "David Mirc",
-    comparisons: "Vendor comparisons",
   },
 };
 
@@ -82,9 +80,9 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
  * page clusters unlinked.
  */
 const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>> = {
-  pricing: ["booking", "calendar", "reminders", "invoicing", "comparisons", "blog"],
+  pricing: ["booking", "calendar", "reminders", "invoicing", "blog"],
   booking: ["calendar", "reminders", "connect", "integrations", "pricing", "blog"],
-  demo: ["pricing", "booking", "calendar", "comparisons"],
+  demo: ["pricing", "booking", "calendar"],
 
   calendar: ["booking", "reminders", "clientManagement", "beautyHair", "healthWellbeing", "pricing"],
   invoicing: ["clientManagement", "booking", "integrations", "beautyHair", "consultantsEducators", "pricing"],
@@ -100,9 +98,8 @@ const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>>
   connect: ["booking", "reminders", "calendar", "support"],
   zoom: ["integrations", "calendar", "consultantsEducators", "booking"],
 
-  blog: ["booking", "reminders", "invoicing", "comparisons", "pricing", "author"],
+  blog: ["booking", "reminders", "invoicing", "pricing", "author"],
   author: ["blog", "itServices", "booking", "contact"],
-  comparisons: ["pricing", "booking", "calendar", "invoicing", "blog", "demo"],
 
   itServices: [...IT_SERVICE_ROUTE_KEYS],
   itSupport: ["backupsSecurity", "businessEmail", "automation", "itServices"],

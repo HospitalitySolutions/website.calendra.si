@@ -1,5 +1,4 @@
 import { getArticlesForLanguage, getBlogArticlePath } from "@/lib/blog";
-import { allComparisons, getComparisonPath } from "@/lib/comparison-pages";
 import { getFaqForRoute } from "@/lib/faq";
 import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import { getItServiceContent, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
@@ -44,10 +43,6 @@ const routeGroups: RouteGroup[] = [
   {
     heading: { sl: "Nasveti in vodniki", en: "Guides and advice" },
     routeKeys: ["blog", "author"],
-  },
-  {
-    heading: { sl: "Primerjave ponudnikov", en: "Vendor comparisons" },
-    routeKeys: ["comparisons"],
   },
   {
     heading: { sl: "Pravno in zaupanje", en: "Legal and trust" },
@@ -146,20 +141,6 @@ const articleLines = (language: SiteLanguage) => {
   ];
 };
 
-/**
- * Comparisons are listed individually rather than behind the hub link. "Which
- * booking system should I use in Slovenia" is exactly the question an assistant
- * answers from a comparison page, and it can only cite one it can see.
- */
-const comparisonLines = (language: SiteLanguage) => [
-  "",
-  `### ${language === "sl" ? "Primerjave s posameznimi ponudniki" : "Individual vendor comparisons"}`,
-  "",
-  ...allComparisons.map((comparison) => {
-    const content = comparison.content[language];
-    return `- [${content.title}](${absoluteUrl(getComparisonPath(comparison.slug, language))}): ${content.metaDescription}`;
-  }),
-];
 
 /**
  * llms.txt is the emerging convention for giving language models a curated,
@@ -194,7 +175,6 @@ export const buildLlmsTxt = () => {
   }
 
   sections.push(...articleLines("sl"));
-  sections.push(...comparisonLines("sl"));
 
   sections.push("", "---", "", "# Calendra (English)", "", summary.en, "", "## Key facts", "");
   sections.push(...keyFacts("en").map((fact) => `- ${fact}`));
@@ -206,7 +186,6 @@ export const buildLlmsTxt = () => {
   }
 
   sections.push(...articleLines("en"));
-  sections.push(...comparisonLines("en"));
 
   sections.push(
     "",

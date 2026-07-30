@@ -32,7 +32,6 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
     ],
     support: [
       { key: "blog", label: "Nasveti in vodniki" },
-      { key: "comparisons", label: "Primerjave ponudnikov" },
       { key: "contact", label: "Kontakt" },
       { key: "support", label: "Podpora za Calendro" },
       { key: "zoom", label: "Zoom integracija" },
@@ -65,7 +64,6 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
     ],
     support: [
       { key: "blog", label: "Guides and advice" },
-      { key: "comparisons", label: "Vendor comparisons" },
       { key: "contact", label: "Contact" },
       { key: "support", label: "Calendra support" },
       { key: "zoom", label: "Zoom integration" },

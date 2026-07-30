@@ -26,12 +26,6 @@ import {
   getArticlesForLanguage,
   getBlogArticlePath,
 } from "@/lib/blog";
-import {
-  allComparisons,
-  getComparison,
-  getComparisonPath,
-  getComparisonSlugFromPathname,
-} from "@/lib/comparison-pages";
 import { getFaqForRoute } from "@/lib/faq";
 import { getIndustryContent, isIndustryRouteKey, type IndustryRouteKey } from "@/lib/industry-pages";
 import {
@@ -187,10 +181,6 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
   author: {
     sl: { title: "David Mirc | Avtor vsebin Calendra", description: "David Mirc je ustanovitelj Calendre in avtor vodnikov o naročanju strank, avtomatizaciji terminov in poslovanju storitvenih podjetij v Sloveniji." },
     en: { title: "David Mirc | Calendra content author", description: "David Mirc is the founder of Calendra and the author of guides on appointment booking, scheduling automation and running a service business in Slovenia." },
-  },
-  comparisons: {
-    sl: { title: "Primerjave programov za naročanje | Calendra", description: "Iskrene primerjave Calendre s Calendlyjem, Booksyjem, Fresho, Treatwellom, Setmorom in SimplyBook.me, vključno s tem, kdaj je boljša izbira drugi ponudnik." },
-    en: { title: "Booking software comparisons | Calendra", description: "Honest comparisons of Calendra with Calendly, Booksy, Fresha, Treatwell, Setmore and SimplyBook.me, including when another vendor is the better choice." },
   },
   aiTransparency: {
     sl: { title: "AI transparentnost | Calendra", description: "Javno razkritje uporabe AI funkcionalnosti v Calendri, vključno s statusom produkcijskega zagona in ponudnikom OpenAI, če bodo AI funkcije omogočene." },
@@ -675,84 +665,6 @@ const getArticleSeo = (pathname: string) => {
   };
 };
 
-/**
- * Comparison pages are not `Product` markup: describing a competitor as an offer
- * on our own domain would be misleading. They are plain `WebPage` entries with
- * the FAQ and breadcrumb trail, plus `about` pointing at both products so an
- * assistant can tell which two things are being compared.
- */
-const getComparisonSeo = (pathname: string, language: SiteLanguage) => {
-  const slug = getComparisonSlugFromPathname(pathname);
-  if (!slug) return undefined;
-
-  const comparison = getComparison(slug);
-  const content = comparison.content[language];
-  const canonicalPath = getComparisonPath(slug, language);
-  const canonicalUrl = absoluteUrl(canonicalPath);
-
-  return {
-    comparisonSlug: slug,
-    language,
-    title: content.metaTitle,
-    description: content.metaDescription,
-    ogTitle: content.title,
-    ogDescription: content.metaDescription,
-    ogImage: DEFAULT_OG_IMAGE,
-    canonicalUrl,
-    alternateUrls: {
-      sl: absoluteUrl(getComparisonPath(slug, "sl")),
-      en: absoluteUrl(getComparisonPath(slug, "en")),
-      xDefault: absoluteUrl(getComparisonPath(slug, "sl")),
-    },
-    noindex: false,
-    structuredData: {
-      "@context": "https://schema.org",
-      "@graph": [
-        organizationSchema,
-        websiteSchema(language),
-        {
-          "@type": "WebPage",
-          "@id": `${canonicalUrl}#webpage`,
-          url: canonicalUrl,
-          name: content.title,
-          description: content.metaDescription,
-          inLanguage: language === "sl" ? "sl-SI" : "en",
-          isPartOf: { "@id": `${SITE_URL}/#website` },
-          dateModified: comparison.lastReviewed,
-          about: [
-            { "@id": `${SITE_URL}/#software` },
-            { "@type": "SoftwareApplication", name: comparison.competitorName, url: comparison.competitorUrl },
-          ],
-          author: { "@id": `${SITE_URL}/#author-${AUTHOR.slug}` },
-          speakable: {
-            "@type": "SpeakableSpecification",
-            cssSelector: ["[data-speakable='answer']", "[data-speakable='faq']"],
-          },
-        },
-        softwareSchema(language),
-        {
-          "@type": "FAQPage",
-          "@id": `${canonicalUrl}#faq`,
-          mainEntity: content.faq.map((item) => ({
-            "@type": "Question",
-            name: item.question,
-            acceptedAnswer: { "@type": "Answer", text: item.answer },
-          })),
-        },
-        personSchema(language),
-        {
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
-            { "@type": "ListItem", position: 2, name: language === "sl" ? "Primerjave" : "Comparisons", item: absoluteUrl(canonicalRoutes.comparisons[language]) },
-            { "@type": "ListItem", position: 3, name: content.title, item: canonicalUrl },
-          ],
-        },
-      ],
-    },
-  };
-};
-
 const getProfileSeo = (pathname: string, language: SiteLanguage) => {
   const profile = getPublicCompanyProfileFromPathname(pathname);
   if (!profile) return undefined;
@@ -826,9 +738,6 @@ export const getSeoForPathname = (pathname: string) => {
   const articleSeo = getArticleSeo(pathname);
   if (articleSeo) return articleSeo;
 
-  const comparisonSeo = getComparisonSeo(pathname, language);
-  if (comparisonSeo) return comparisonSeo;
-
   const routeKey = getRouteKeyFromPathname(pathname);
   const canonicalPath = getCanonicalPathname(pathname);
 
@@ -866,21 +775,7 @@ export const getSeoForPathname = (pathname: string) => {
         organizationSchema,
         websiteSchema(language),
         webPageSchema(routeKey, language, canonicalPath),
-        ...(routeKey === "comparisons"
-          ? [
-              softwareSchema(language),
-              {
-                "@type": "ItemList",
-                "@id": `${absoluteUrl(canonicalRoutes.comparisons[language])}#list`,
-                itemListElement: allComparisons.map((comparison, index) => ({
-                  "@type": "ListItem",
-                  position: index + 1,
-                  name: comparison.content[language].title,
-                  url: absoluteUrl(getComparisonPath(comparison.slug, language)),
-                })),
-              },
-            ]
-          : routeKey === "blog"
+        ...(routeKey === "blog"
           ? [blogSchema(language)]
           : routeKey === "author"
           ? [{

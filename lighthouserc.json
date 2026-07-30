@@ -8,8 +8,7 @@
         "http://127.0.0.1:4173/cenik",
         "http://127.0.0.1:4173/narocanje",
         "http://127.0.0.1:4173/blog",
-        "http://127.0.0.1:4173/blog/kako-zmanjsati-pozabljene-termine",
-        "http://127.0.0.1:4173/primerjava/calendly"
+        "http://127.0.0.1:4173/blog/kako-zmanjsati-pozabljene-termine"
       ],
       "numberOfRuns": 3,
       "settings": {
