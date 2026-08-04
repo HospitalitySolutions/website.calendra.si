@@ -145,6 +145,18 @@ const copy = {
 } as const satisfies Record<SiteLanguage, unknown>;
 
 const audienceIcons = [Scissors, GraduationCap, HeartPulse, Dumbbell] as const;
+const audienceCardBackgrounds = [
+  "/industries/beauty-salon-bg.png",
+  "/industries/consulting-education-bg.png",
+  "/industries/wellbeing-bg.png",
+  "/industries/fitness-groups-bg.png",
+] as const;
+const audienceCardImagePositions = [
+  "78% center",
+  "76% center",
+  "74% center",
+  "78% center",
+] as const;
 const problemIcons = [PhoneCall, CalendarCheck2, BellRing, FileText] as const;
 const howIcons = [Clock3, CalendarCheck2, MailCheck] as const;
 
@@ -224,31 +236,52 @@ export const AudienceSection = () => {
           <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">{section.intro}</p>
         </div>
 
-        <div className="mt-9 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {section.items.map((item, index) => {
             const Icon = audienceIcons[index];
             const routeKey = INDUSTRY_ROUTE_KEYS[index];
             const industry = getIndustryContent(routeKey, language);
+            const imageSrc = audienceCardBackgrounds[index];
+            const imagePosition = audienceCardImagePositions[index];
 
             return (
               <a
                 key={item.title}
                 href={getRoutePath(routeKey, language)}
-                className="group relative flex min-h-[245px] overflow-hidden rounded-2xl border border-border/60 bg-background shadow-[0_16px_44px_-36px_hsl(220_25%_10%/0.42)] transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_25px_58px_-36px_hsl(var(--primary)/0.34)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                className="group relative flex min-h-[330px] overflow-hidden rounded-[28px] border border-border/60 bg-background shadow-[0_20px_46px_-36px_hsl(220_25%_10%/0.35)] transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_26px_60px_-34px_hsl(var(--primary)/0.26)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               >
-                <div className="relative z-10 flex w-[64%] flex-col p-5 sm:p-6 xl:w-[67%]">
-                  <span className="grid h-11 w-11 place-items-center rounded-xl bg-primary/[0.07] text-primary">
+                <div className="absolute inset-0">
+                  <img
+                    src={imageSrc}
+                    alt=""
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    style={{ objectPosition: imagePosition }}
+                    aria-hidden="true"
+                    loading="lazy"
+                  />
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        "linear-gradient(90deg, rgba(255,255,255,0.985) 0%, rgba(255,255,255,0.965) 44%, rgba(255,255,255,0.82) 60%, rgba(255,255,255,0.28) 100%)",
+                    }}
+                    aria-hidden="true"
+                  />
+                </div>
+
+                <div className="relative z-10 flex w-full flex-col p-6 sm:p-7">
+                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.07] text-primary shadow-sm backdrop-blur-sm">
                     <Icon className="h-6 w-6" aria-hidden="true" />
                   </span>
-                  <h3 className="mt-5 text-base font-bold leading-6 text-foreground">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
-                  <span className="mt-auto flex items-center gap-2 pt-5 text-sm font-semibold text-primary">
+                  <div className="max-w-[58%] sm:max-w-[56%] xl:max-w-[54%]">
+                    <h3 className="mt-6 text-[1.05rem] font-bold leading-[1.45] tracking-[-0.01em] text-foreground sm:text-[1.12rem]">{item.title}</h3>
+                    <p className="mt-3 text-[0.98rem] leading-8 text-muted-foreground">{item.body}</p>
+                  </div>
+                  <span className="mt-auto flex items-center gap-2 pt-6 text-base font-semibold text-primary">
                     {industry.cardCta}
                     <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                   </span>
                 </div>
-
-                <AudienceCardArtwork index={index} Icon={Icon} />
               </a>
             );
           })}
@@ -272,32 +305,6 @@ export const AudienceSection = () => {
   );
 };
 
-type AudienceCardArtworkProps = {
-  index: number;
-  Icon: typeof Scissors;
-};
-
-const AudienceCardArtwork = ({ index, Icon }: AudienceCardArtworkProps) => {
-  const styles = [
-    "from-amber-50 via-stone-100 to-orange-100 text-amber-700/35",
-    "from-blue-50 via-slate-100 to-indigo-100 text-blue-700/30",
-    "from-emerald-50 via-stone-50 to-teal-100 text-emerald-700/30",
-    "from-slate-100 via-zinc-100 to-blue-100 text-slate-700/30",
-  ];
-
-  return (
-    <div className={`absolute inset-y-0 right-0 w-[43%] overflow-hidden bg-gradient-to-br ${styles[index]}`} aria-hidden="true">
-      <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full border border-white/70 bg-white/45" />
-      <div className="absolute -bottom-10 -left-8 h-32 w-32 rounded-full border border-white/60 bg-white/35" />
-      <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(currentColor_1px,transparent_1px)] [background-size:16px_16px]" />
-      <div className="absolute inset-0 grid place-items-center">
-        <span className="grid h-24 w-24 place-items-center rounded-[2rem] border border-white/70 bg-white/55 shadow-sm backdrop-blur-sm transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-2">
-          <Icon className="h-12 w-12 stroke-[1.35]" />
-        </span>
-      </div>
-    </div>
-  );
-};
 
 export const HowItWorksSection = () => {
   const { language } = useSiteLanguage();
