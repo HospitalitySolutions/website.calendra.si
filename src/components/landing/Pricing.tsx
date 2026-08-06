@@ -404,6 +404,11 @@ const USER_SLIDER_MAX = 20;
 const SMS_SLIDER_MAX = 1000;
 const SMS_SLIDER_STEP = 50;
 
+const HIDDEN_PRICING_ADD_ON_CODES = new Set([
+  "FISCAL_CASH_REGISTER",
+  "BUSINESS_PREMISES",
+]);
+
 const API_PLAN_BY_TIER: Partial<Record<PlanKey, PublicPricingPlanKey>> = {
   basic: "basic",
   professional: "pro",
@@ -580,15 +585,21 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   }, [content, language]);
 
   const selectedApiPlanKey = API_PLAN_BY_TIER[selectedTier.key];
+  const availableAddOns = useMemo(
+    () => pricingCatalog.addOns.filter(
+      (addOn) => !HIDDEN_PRICING_ADD_ON_CODES.has(addOn.code),
+    ),
+    [pricingCatalog.addOns],
+  );
   const visibleAddOns = useMemo(
     () => selectedApiPlanKey
-      ? pricingCatalog.addOns.filter((addOn) => addOn.availablePlans.includes(selectedApiPlanKey))
+      ? availableAddOns.filter((addOn) => addOn.availablePlans.includes(selectedApiPlanKey))
       : [],
-    [pricingCatalog.addOns, selectedApiPlanKey],
+    [availableAddOns, selectedApiPlanKey],
   );
   const selectedAddOns = useMemo(
-    () => pricingCatalog.addOns.filter((addOn) => selectedAddOnKeys.includes(addOn.key)),
-    [pricingCatalog.addOns, selectedAddOnKeys],
+    () => availableAddOns.filter((addOn) => selectedAddOnKeys.includes(addOn.key)),
+    [availableAddOns, selectedAddOnKeys],
   );
   const additionalUsersPrice = calculateAdditionalUsersPrice(
     additionalUsers,
@@ -750,7 +761,9 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     language === "sl"
       ? `Dodatna SMS sporočila: ${formatter.format(pricingCatalog.smsPerMessageGross)} / sporočilo`
       : `Additional SMS messages: ${formatter.format(pricingCatalog.smsPerMessageGross)} / message`,
-    language === "sl" ? "Izbrani dodatni moduli" : "Selected add-on modules",
+    ...(visibleAddOns.length > 0
+      ? [language === "sl" ? "Izbrani dodatni moduli" : "Selected add-on modules"]
+      : []),
   ];
 
   // On /cenik this block is the page, so its heading is the h1 and the plan
@@ -970,7 +983,13 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             >
               <div className="max-w-3xl">
                 <h3 className="font-display text-2xl font-bold text-foreground">{content.calculatorTitle}</h3>
-                <p className="mt-3 text-muted-foreground">{content.calculatorDescription}</p>
+                <p className="mt-3 text-muted-foreground">
+                  {visibleAddOns.length > 0
+                    ? content.calculatorDescription
+                    : language === "sl"
+                      ? "Izberite paket ter nastavite dodatne uporabnike in SMS sporočila."
+                      : "Choose a package and set additional users and SMS messages."}
+                </p>
               </div>
 
               <div className="mt-8 space-y-6">
@@ -1023,41 +1042,43 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
-                  <p className="text-xl font-semibold text-foreground">{content.optionsLabel}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">{content.addOnsTitle}</p>
+                {visibleAddOns.length > 0 && (
+                  <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
+                    <p className="text-xl font-semibold text-foreground">{content.optionsLabel}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{content.addOnsTitle}</p>
 
-                  <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {visibleAddOns.map((addOn) => {
-                      const checked = selectedAddOnKeys.includes(addOn.key);
-                      const description = addOnDescription(addOn);
-                      return (
-                        <label key={addOn.key} className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
-                          <Checkbox
-                            checked={checked}
-                            onCheckedChange={(nextChecked) => {
-                              setSelectedAddOnKeys((current) => {
-                                if (nextChecked) {
-                                  return current.includes(addOn.key) ? current : [...current, addOn.key];
-                                }
-                                return current.filter((key) => key !== addOn.key);
-                              });
-                            }}
-                            className="mt-1"
-                          />
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <Building2 className="h-4 w-4 text-primary" />
-                              <span className="font-semibold text-foreground">{addOnLabel(addOn)}</span>
+                    <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                      {visibleAddOns.map((addOn) => {
+                        const checked = selectedAddOnKeys.includes(addOn.key);
+                        const description = addOnDescription(addOn);
+                        return (
+                          <label key={addOn.key} className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
+                            <Checkbox
+                              checked={checked}
+                              onCheckedChange={(nextChecked) => {
+                                setSelectedAddOnKeys((current) => {
+                                  if (nextChecked) {
+                                    return current.includes(addOn.key) ? current : [...current, addOn.key];
+                                  }
+                                  return current.filter((key) => key !== addOn.key);
+                                });
+                              }}
+                              className="mt-1"
+                            />
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <Building2 className="h-4 w-4 text-primary" />
+                                <span className="font-semibold text-foreground">{addOnLabel(addOn)}</span>
+                              </div>
+                              <p className="mt-1 text-sm text-muted-foreground">{formatter.format(addOn.monthlyGross)} / {language === "sl" ? "mesec" : "month"}</p>
+                              {description && <p className="mt-2 text-sm text-muted-foreground">{description}</p>}
                             </div>
-                            <p className="mt-1 text-sm text-muted-foreground">{formatter.format(addOn.monthlyGross)} / {language === "sl" ? "mesec" : "month"}</p>
-                            {description && <p className="mt-2 text-sm text-muted-foreground">{description}</p>}
-                          </div>
-                        </label>
-                      );
-                    })}
+                          </label>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </motion.div>
 
