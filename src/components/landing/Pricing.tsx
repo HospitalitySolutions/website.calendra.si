@@ -1,4 +1,3 @@
-import AnswerSummary from "@/components/seo/AnswerSummary";
 import RelatedPages from "@/components/seo/RelatedPages";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -772,7 +771,6 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             {standalone ? content.standaloneTitle : content.sectionTitle}
           </HeadingTag>
           <p className="mt-4 text-lg text-muted-foreground">{content.sectionDescription}</p>
-          {standalone ? <AnswerSummary routeKey="pricing" className="mx-auto mt-6 text-left" /> : null}
         </div>
 
         <div className="mb-8 flex flex-col gap-3 md:mb-10 md:flex-row md:items-center md:justify-between">
