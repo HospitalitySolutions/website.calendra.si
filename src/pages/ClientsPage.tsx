@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { APP_BASE_URL } from "@/lib/site";
-import { getDirectoryClientBookingPath, normalizeDirectoryClients, type ClientCategory, type DirectoryClient } from "@/lib/company-directory";
+import { getDirectoryClientBookingPath, isDirectoryClientBookingEnabled, mergeDirectoryClients, normalizeDirectoryClients, type ClientCategory, type DirectoryClient } from "@/lib/company-directory";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
   getPublicCompanyProfilePath,
@@ -151,21 +151,13 @@ const initialsFor = (name: string) => name.split(/\s+/).filter(Boolean).slice(0,
 const mergeClients = (language: SiteLanguage, apiClients: DirectoryClient[]) => {
   const staticClients: DirectoryClient[] = publicCompanyProfiles
     .filter((profile) => profile.publicEnabled)
-    .map((profile) => ({ ...profile, description: profile.localizedDescription[language] }));
+    .map((profile) => ({
+      ...profile,
+      profileSlug: profile.slug,
+      description: profile.localizedDescription[language],
+    }));
 
-  const merged = new Map<string, DirectoryClient>();
-  staticClients.forEach((client) => merged.set(client.slug, client));
-  apiClients.forEach((client) => {
-    const matchingStatic = staticClients.find((item) => item.slug === client.slug || item.name.toLowerCase() === client.name.toLowerCase());
-    merged.set(matchingStatic?.slug ?? client.slug, {
-      ...matchingStatic,
-      ...client,
-      slug: matchingStatic?.slug ?? client.slug,
-      tenantCode: client.tenantCode || matchingStatic?.tenantCode,
-      description: client.description || matchingStatic?.description || "",
-    });
-  });
-  return Array.from(merged.values());
+  return mergeDirectoryClients(apiClients, staticClients);
 };
 
 const capabilityIcons = [UserRoundCheck, WalletCards, MessageSquareText, BellRing, MonitorSmartphone, CalendarDays] as const;
@@ -182,7 +174,7 @@ const ClientsPage = () => {
   useEffect(() => {
     const controller = new AbortController();
     setRefreshing(true);
-    fetch(`${APP_BASE_URL}/api/public/company-directory`, { signal: controller.signal })
+    fetch(`${APP_BASE_URL}/api/public/location-directory`, { signal: controller.signal })
       .then((response) => {
         if (!response.ok) throw new Error(`Directory request failed: ${response.status}`);
         return response.json();
@@ -257,15 +249,24 @@ const ClientsPage = () => {
 
             {filteredClients.length > 0 ? (
               <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                {filteredClients.map((client) => (
-                  <article key={client.slug} className="group flex flex-col rounded-3xl border border-border/70 bg-card p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-glow">
-                    <div className="flex items-start justify-between gap-4"><div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-border/70 bg-background text-lg font-black text-primary shadow-soft">{client.logoUrl ? <img src={client.logoUrl} alt={language === "sl" ? `Logotip podjetja ${client.name}` : `${client.name} company logo`} width="64" height="64" className="h-full w-full object-contain p-1.5" loading="lazy" decoding="async" /> : initialsFor(client.name)}</div>{client.category ? <div className={`rounded-full px-3 py-1 text-xs font-bold ${categoryClasses[client.category]}`}>{categoryLabels[client.category][language]}</div> : null}</div>
-                    <h3 className="mt-6 font-display text-2xl font-extrabold tracking-tight text-foreground"><a href={getPublicCompanyProfilePath(client.slug, language)} className="transition hover:text-primary">{client.name}</a></h3>
-                    <p className="mt-3 flex-1 text-sm leading-6 text-muted-foreground">{client.description}</p>
-                    {client.address ? <a href={client.googleMapsUrl} target="_blank" rel="noreferrer noopener" className="mt-5 flex items-start gap-2 rounded-2xl bg-background p-4 text-sm text-muted-foreground transition hover:text-primary"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" /><span>{client.address}</span><ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0" /></a> : null}
-                    <div className="mt-6 grid gap-3"><Button variant="hero" size="lg" className="rounded-2xl" asChild><a href={getDirectoryClientBookingPath(client)} onClick={(event) => { event.preventDefault(); event.stopPropagation(); trackMarketingEvent("public_booking_started", { company_slug: client.slug, company_name: client.name, tenant_code: client.tenantCode || client.tenantSlug || client.slug, language, source: "directory" }); window.location.assign(getDirectoryClientBookingPath(client)); }}>{text.primaryCta}<ArrowRight className="h-4 w-4" /></a></Button><Button variant="ghost" asChild><a href={getPublicCompanyProfilePath(client.slug, language)}>{text.profileCta}</a></Button></div>
-                  </article>
-                ))}
+                {filteredClients.map((client) => {
+                  const profilePath = client.profileSlug ? getPublicCompanyProfilePath(client.profileSlug, language) : null;
+                  const bookingEnabled = isDirectoryClientBookingEnabled(client);
+                  const bookingPath = getDirectoryClientBookingPath(client);
+
+                  return (
+                    <article key={client.locationId ? `location-${client.locationId}` : client.slug} className="group flex flex-col rounded-3xl border border-border/70 bg-card p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-glow">
+                      <div className="flex items-start justify-between gap-4"><div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-border/70 bg-background text-lg font-black text-primary shadow-soft">{client.logoUrl ? <img src={client.logoUrl} alt={language === "sl" ? `Logotip podjetja ${client.name}` : `${client.name} company logo`} width="64" height="64" className="h-full w-full object-contain p-1.5" loading="lazy" decoding="async" /> : initialsFor(client.name)}</div>{client.category ? <div className={`rounded-full px-3 py-1 text-xs font-bold ${categoryClasses[client.category]}`}>{categoryLabels[client.category][language]}</div> : null}</div>
+                      <h3 className="mt-6 font-display text-2xl font-extrabold tracking-tight text-foreground">{profilePath ? <a href={profilePath} className="transition hover:text-primary">{client.name}</a> : client.name}</h3>
+                      <p className="mt-3 flex-1 text-sm leading-6 text-muted-foreground">{client.description}</p>
+                      {client.address ? <a href={client.googleMapsUrl} target="_blank" rel="noreferrer noopener" className="mt-5 flex items-start gap-2 rounded-2xl bg-background p-4 text-sm text-muted-foreground transition hover:text-primary"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" /><span>{client.address}</span><ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0" /></a> : null}
+                      <div className="mt-6 grid gap-3">
+                        {bookingEnabled ? <Button variant="hero" size="lg" className="rounded-2xl" asChild><a href={bookingPath} onClick={(event) => { event.preventDefault(); event.stopPropagation(); trackMarketingEvent("public_booking_started", { company_slug: client.slug, company_name: client.name, tenant_code: client.tenantCode || client.tenantSlug || client.slug, location_id: client.locationId, language, source: "directory" }); window.location.assign(bookingPath); }}>{text.primaryCta}<ArrowRight className="h-4 w-4" /></a></Button> : null}
+                        {profilePath ? <Button variant="ghost" asChild><a href={profilePath}>{text.profileCta}</a></Button> : null}
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
             ) : <div className="mt-8 rounded-3xl border border-dashed border-border bg-card p-10 text-center shadow-soft"><Search className="mx-auto h-7 w-7 text-primary" /><h3 className="mt-5 text-2xl font-bold text-foreground">{text.emptyTitle}</h3><p className="mt-2 text-muted-foreground">{text.emptyBody}</p></div>}
           </div>

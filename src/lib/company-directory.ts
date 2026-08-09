@@ -4,6 +4,10 @@ export type DirectoryClient = {
   slug: string;
   tenantCode?: string;
   tenantSlug: string;
+  locationId?: number;
+  bookingUrl?: string;
+  publicBookingEnabled?: boolean;
+  profileSlug?: string;
   name: string;
   description: string;
   address: string;
@@ -91,6 +95,9 @@ const resolveLogoUrl = (value: string, appBaseUrl: string): string | null => {
 };
 
 const buildAddress = (record: UnknownRecord): string => {
+  const publicAddress = firstString(record.publicAddress, record.public_address);
+  if (publicAddress) return publicAddress;
+
   const physicalAddress = asRecord(record.physicalAddress);
   const address = asRecord(record.address);
 
@@ -110,7 +117,7 @@ const buildAddress = (record: UnknownRecord): string => {
     physicalAddress?.streetAddress,
     physicalAddress?.street,
     physicalAddress?.addressLine1,
-    // Backwards-compatible API fallbacks. The app endpoint should prefer physical-address fields.
+    // Backwards-compatible API fallbacks. The location endpoint should prefer physical-address fields.
     record.streetAddress,
     address?.streetAddress,
     address?.street,
@@ -139,11 +146,54 @@ const extractRows = (payload: unknown): unknown[] => {
   const record = asRecord(payload);
   if (!record) return [];
 
-  for (const key of ["companies", "items", "content", "data", "results"]) {
+  for (const key of ["locations", "companies", "items", "content", "data", "results"]) {
     if (Array.isArray(record[key])) return record[key] as unknown[];
   }
 
   return [];
+};
+
+const normalizedIdentity = (value: string | undefined): string => value?.trim().toLowerCase() ?? "";
+
+const sameTenant = (left: DirectoryClient, right: DirectoryClient): boolean => {
+  const leftTenant = normalizedIdentity(left.tenantCode || left.tenantSlug);
+  const rightTenant = normalizedIdentity(right.tenantCode || right.tenantSlug);
+  return Boolean(leftTenant && rightTenant && leftTenant === rightTenant);
+};
+
+/**
+ * Keeps every live location as its own directory entry while still allowing
+ * curated company profiles to provide fallback copy/category/logo metadata.
+ * A live location always keeps its own slug, locationId and bookingUrl.
+ */
+export const mergeDirectoryClients = (
+  apiClients: DirectoryClient[],
+  staticClients: DirectoryClient[],
+): DirectoryClient[] => {
+  const matchedStaticSlugs = new Set<string>();
+  const mergedLive = apiClients.map((client) => {
+    const matchingStatic = staticClients.find((item) =>
+      item.slug === client.slug || sameTenant(item, client) || item.name.toLowerCase() === client.name.toLowerCase());
+
+    if (matchingStatic) matchedStaticSlugs.add(matchingStatic.slug);
+
+    return {
+      ...matchingStatic,
+      ...client,
+      slug: client.slug,
+      profileSlug: matchingStatic?.profileSlug || matchingStatic?.slug || client.profileSlug,
+      tenantCode: client.tenantCode || matchingStatic?.tenantCode,
+      tenantSlug: client.tenantSlug || matchingStatic?.tenantSlug || client.slug,
+      description: client.description || matchingStatic?.description || "",
+      address: client.address || matchingStatic?.address || "",
+      googleMapsUrl: client.googleMapsUrl || matchingStatic?.googleMapsUrl || "",
+      category: client.category || matchingStatic?.category,
+      logoUrl: client.logoUrl || matchingStatic?.logoUrl || null,
+    } satisfies DirectoryClient;
+  });
+
+  const unmatchedStatic = staticClients.filter((client) => !matchedStaticSlugs.has(client.slug));
+  return [...mergedLive, ...unmatchedStatic];
 };
 
 export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string): DirectoryClient[] =>
@@ -191,6 +241,15 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
       tenantCode,
     );
     const explicitSlug = firstString(record.publicSlug, record.slug);
+    const rawLocationId = firstNumber(record.locationId, record.location_id);
+    const locationId = rawLocationId !== null && rawLocationId > 0 ? Math.trunc(rawLocationId) : undefined;
+    const bookingUrl = firstString(record.bookingUrl, record.booking_url);
+    const publicBookingEnabled = firstBoolean(
+      record.publicBookingEnabled,
+      record.public_booking_enabled,
+      record.bookingEnabled,
+      record.booking_enabled,
+    );
     const logo = asRecord(record.logo);
     const carouselLogo = asRecord(record.carouselLogo);
     const googleReviews = asRecord(record.googleReviews) ?? asRecord(record.googleReviewSummary);
@@ -239,6 +298,9 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
       slug: explicitSlug || tenantSlug || tenantCode || `${slugify(name)}-${index + 1}`,
       tenantCode: tenantCode || undefined,
       tenantSlug,
+      locationId,
+      bookingUrl: bookingUrl || undefined,
+      publicBookingEnabled: publicBookingEnabled ?? undefined,
       name,
       description,
       address,
@@ -250,9 +312,16 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
     }];
   });
 
+export const isDirectoryClientBookingEnabled = (
+  client: Pick<DirectoryClient, "publicBookingEnabled">,
+): boolean => client.publicBookingEnabled !== false;
+
 export const getDirectoryClientBookingPath = (
-  client: Pick<DirectoryClient, "tenantCode" | "tenantSlug" | "slug">,
+  client: Pick<DirectoryClient, "tenantCode" | "tenantSlug" | "slug" | "locationId" | "bookingUrl">,
 ): string => {
+  if (client.bookingUrl?.trim()) return client.bookingUrl.trim();
+
   const tenantCode = client.tenantCode || client.tenantSlug || client.slug;
-  return `/narocanje/${encodeURIComponent(tenantCode)}`;
+  const basePath = `/narocanje/${encodeURIComponent(tenantCode)}`;
+  return client.locationId ? `${basePath}?locationId=${encodeURIComponent(String(client.locationId))}` : basePath;
 };
