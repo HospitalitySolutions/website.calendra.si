@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { canonicalRoutes, type CanonicalRouteKey, sitemapRouteMetadata } from "@/lib/localized-routes";
+import { canonicalRoutes, getSitemapLastModified, SHARED_SITE_LAST_MODIFIED, type CanonicalRouteKey, sitemapRouteMetadata } from "@/lib/localized-routes";
 import { ENTRY_PLAN_MONTHLY_PRICE, getSeoForPathname, pageSeo } from "@/lib/seo";
 import { HERO_IMAGE } from "@/lib/hero-media";
 
@@ -25,6 +25,23 @@ describe("SEO registry completeness", () => {
   it("defines sitemap metadata for every canonical route", () => {
     for (const routeKey of routeKeys) {
       expect(sitemapRouteMetadata[routeKey], `missing sitemap metadata for ${routeKey}`).toBeDefined();
+    }
+  });
+
+  it("uses the latest meaningful page or shared-site date for sitemap lastmod", () => {
+    expect(getSitemapLastModified("2026-07-15")).toBe(SHARED_SITE_LAST_MODIFIED);
+    expect(getSitemapLastModified("2099-01-01")).toBe("2099-01-01");
+    expect(getSitemapLastModified()).toBe(SHARED_SITE_LAST_MODIFIED);
+  });
+
+  it("does not emit deprecated FAQ or irrelevant speakable schema", () => {
+    for (const routeKey of routeKeys) {
+      for (const language of languages) {
+        const seo = getSeoForPathname(canonicalRoutes[routeKey][language]);
+        const schema = JSON.stringify(seo.structuredData ?? {});
+        expect(schema).not.toContain('"@type":"FAQPage"');
+        expect(schema).not.toContain('"@type":"SpeakableSpecification"');
+      }
     }
   });
 

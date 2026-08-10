@@ -72,7 +72,7 @@ const BlogIndexPage = () => {
             <h1 className="mt-4 max-w-4xl font-display text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
               {seo.title.split("|")[0].trim()}
             </h1>
-            <p data-speakable="answer" className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">
               {seo.description}
             </p>
             <p className="mt-4 text-sm text-muted-foreground">

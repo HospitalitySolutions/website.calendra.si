@@ -161,7 +161,7 @@ const ItServiceDetailPage = () => {
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.faqTitle}</h2>
               <CircleHelp className="mt-6 h-8 w-8 text-primary" aria-hidden="true" />
             </div>
-            <div className="grid gap-3" data-speakable="faq">
+            <div className="grid gap-3">
               {service.faq.map((item) => (
                 <details key={item.question} className="rounded-2xl border border-border/60 bg-card p-5">
                   <summary className="cursor-pointer list-none font-semibold text-foreground">{item.question}</summary>

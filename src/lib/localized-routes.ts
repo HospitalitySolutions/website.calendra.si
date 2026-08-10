@@ -84,32 +84,44 @@ export type SitemapChangeFrequency = "weekly" | "monthly" | "yearly";
 export type SitemapRouteMetadata = {
   changeFrequency: SitemapChangeFrequency;
   priority: Record<SiteLanguage, number>;
-  lastModified?: string;
+  contentLastModified?: string;
+};
+
+/**
+ * Shared markup/navigation changes can materially change every indexable page.
+ * Keep this explicit rather than using the build date: sitemap <lastmod> should
+ * only move when a page (or shared page output) changes meaningfully.
+ */
+export const SHARED_SITE_LAST_MODIFIED = "2026-08-10";
+
+export const getSitemapLastModified = (contentLastModified?: string) => {
+  if (!contentLastModified) return SHARED_SITE_LAST_MODIFIED;
+  return contentLastModified > SHARED_SITE_LAST_MODIFIED ? contentLastModified : SHARED_SITE_LAST_MODIFIED;
 };
 
 export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadata> = {
-  home: { changeFrequency: "weekly", priority: { sl: 1, en: 0.9 }, lastModified: "2026-07-15" },
-  pricing: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, lastModified: "2026-07-15" },
-  booking: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, lastModified: "2026-07-15" },
-  demo: { changeFrequency: "weekly", priority: { sl: 0.8, en: 0.75 }, lastModified: "2026-07-22" },
-  calendar: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
-  invoicing: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
-  clientManagement: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
-  reminders: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
-  integrations: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
-  beautyHair: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, lastModified: "2026-07-15" },
-  consultantsEducators: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, lastModified: "2026-07-15" },
-  healthWellbeing: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, lastModified: "2026-07-15" },
-  fitnessGroups: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, lastModified: "2026-07-15" },
-  connect: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
-  itServices: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
-  itSupport: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, lastModified: "2026-07-15" },
-  websiteDesign: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, lastModified: "2026-07-15" },
-  websiteMaintenance: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, lastModified: "2026-07-15" },
-  businessEmail: { changeFrequency: "monthly", priority: { sl: 0.7, en: 0.6 }, lastModified: "2026-07-15" },
-  backupsSecurity: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, lastModified: "2026-07-15" },
-  automation: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, lastModified: "2026-07-15" },
-  contact: { changeFrequency: "monthly", priority: { sl: 0.6, en: 0.5 }, lastModified: "2026-07-15" },
+  home: { changeFrequency: "weekly", priority: { sl: 1, en: 0.9 }, contentLastModified: "2026-07-15" },
+  pricing: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-07-15" },
+  booking: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-07-15" },
+  demo: { changeFrequency: "weekly", priority: { sl: 0.8, en: 0.75 }, contentLastModified: "2026-07-22" },
+  calendar: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
+  invoicing: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
+  clientManagement: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
+  reminders: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
+  integrations: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
+  beautyHair: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },
+  consultantsEducators: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },
+  healthWellbeing: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },
+  fitnessGroups: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },
+  connect: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
+  itServices: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
+  itSupport: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, contentLastModified: "2026-07-15" },
+  websiteDesign: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
+  websiteMaintenance: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, contentLastModified: "2026-07-15" },
+  businessEmail: { changeFrequency: "monthly", priority: { sl: 0.7, en: 0.6 }, contentLastModified: "2026-07-15" },
+  backupsSecurity: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, contentLastModified: "2026-07-15" },
+  automation: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, contentLastModified: "2026-07-15" },
+  contact: { changeFrequency: "monthly", priority: { sl: 0.6, en: 0.5 }, contentLastModified: "2026-07-15" },
   support: { changeFrequency: "monthly", priority: { sl: 0.6, en: 0.5 } },
   privacy: { changeFrequency: "yearly", priority: { sl: 0.4, en: 0.4 } },
   terms: { changeFrequency: "yearly", priority: { sl: 0.4, en: 0.4 } },

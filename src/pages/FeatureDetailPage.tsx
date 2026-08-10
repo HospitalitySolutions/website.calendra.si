@@ -188,7 +188,7 @@ const FeatureDetailPage = () => {
 
         <section className="container mx-auto max-w-6xl px-4 py-16 lg:px-8 md:py-24">
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.faqTitle}</h2>
-          <div className="mt-8 grid gap-3" data-speakable="faq">
+          <div className="mt-8 grid gap-3">
             {faq.map((item) => (
               <details key={item.question} className="rounded-2xl border border-border/60 bg-card p-5">
                 <summary className="cursor-pointer list-none font-semibold text-foreground">

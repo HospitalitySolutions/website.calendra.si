@@ -15,6 +15,13 @@ if (locations.length === 0) {
   throw new Error('No URLs were found in dist/sitemap.xml.');
 }
 
+const sitemapBlocks = [...sitemapXml.matchAll(/<url>([\s\S]*?)<\/url>/g)].map((match) => match[1]);
+for (const block of sitemapBlocks) {
+  if (!/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/.test(block)) {
+    throw new Error('Every sitemap URL must include an explicit meaningful <lastmod> date.');
+  }
+}
+
 const server = await startDistServer();
 const { origin } = server;
 const failures = [];
@@ -93,6 +100,14 @@ try {
 
     if (!/<script type="application\/ld\+json" data-seo="calendra"[^>]*>/.test(html)) {
       failures.push(`${route}: missing JSON-LD structured data`);
+    }
+
+    if (/"@type"\s*:\s*"FAQPage"/.test(html)) {
+      failures.push(`${route}: obsolete FAQPage structured data is still present`);
+    }
+
+    if (/"@type"\s*:\s*"SpeakableSpecification"/.test(html)) {
+      failures.push(`${route}: irrelevant SpeakableSpecification structured data is still present`);
     }
 
     // SeoManager skips its first run when this matches, so a wrong value would

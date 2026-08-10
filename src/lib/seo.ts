@@ -26,7 +26,6 @@ import {
   getArticlesForLanguage,
   getBlogArticlePath,
 } from "@/lib/blog";
-import { getFaqForRoute } from "@/lib/faq";
 import { getIndustryContent, isIndustryRouteKey, type IndustryRouteKey } from "@/lib/industry-pages";
 import {
   getPublicCompanyProfileFromPathname,
@@ -349,32 +348,6 @@ const industryServiceSchema = (routeKey: IndustryRouteKey, language: SiteLanguag
 };
 
 /**
- * FAQ markup is one of the most frequently quoted sources in AI answers and
- * powers Google's expandable results, so every page that shows questions to a
- * visitor emits them as structured data too.
- */
-const faqSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage) => {
-  const faq = getFaqForRoute(routeKey, language);
-  if (!faq) return [];
-
-  return [
-    {
-      "@type": "FAQPage",
-      "@id": `${absoluteUrl(canonicalRoutes[routeKey][language])}#faq`,
-      mainEntity: faq.map((item) => ({
-        "@type": "Question",
-        name: item.question,
-        acceptedAnswer: { "@type": "Answer", text: item.answer },
-      })),
-      speakable: {
-        "@type": "SpeakableSpecification",
-        cssSelector: ["[data-speakable='faq']"],
-      },
-    },
-  ];
-};
-
-/**
  * Wikidata identifiers attach Calendra to entities that language models and
  * knowledge graphs already understand, rather than leaving "appointment
  * scheduling software" as an unlinked string.
@@ -490,10 +463,6 @@ const webPageSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage, cano
     { "@type": "Thing", "@id": WIKIDATA.appointmentScheduling, name: "Appointment scheduling software" },
     { "@type": "Thing", "@id": WIKIDATA.saas, name: "Software as a service" },
   ],
-  speakable: {
-    "@type": "SpeakableSpecification",
-    cssSelector: ["[data-speakable='answer']", "[data-speakable='faq']"],
-  },
 });
 
 /**
@@ -554,10 +523,9 @@ export const getArticleOgImage = (article: BlogArticleMeta) =>
   `${SITE_URL}/og/blog/${article.language}/${article.slug}.png`;
 
 /**
- * `BlogPosting` is what makes an article eligible for Google's article
- * treatments and gives AI assistants an explicit author, publication date and
- * word count to weigh the source by. `speakable` points at the same
- * answer-first paragraph a human reads first.
+ * `BlogPosting` gives search engines explicit article metadata such as author,
+ * publication dates, image and section while keeping the visible page as the
+ * source of truth.
  */
 const blogPostingSchema = (article: BlogArticleMeta, canonicalUrl: string) => ({
   "@type": "BlogPosting",
@@ -584,10 +552,6 @@ const blogPostingSchema = (article: BlogArticleMeta, canonicalUrl: string) => ({
     caption: article.heroImageAlt,
   },
   isPartOf: { "@id": `${absoluteUrl(canonicalRoutes.blog[article.language])}#blog` },
-  speakable: {
-    "@type": "SpeakableSpecification",
-    cssSelector: ["[data-speakable='answer']"],
-  },
 });
 
 const blogSchema = (language: SiteLanguage) => ({
@@ -798,7 +762,6 @@ export const getSeoForPathname = (pathname: string) => {
                     : routeKey === "contact"
                       ? []
                       : [softwareSchema(language)]),
-        ...faqSchema(routeKey, language),
         personSchema(language),
         breadcrumbSchema(routeKey, language, canonicalPath),
       ],

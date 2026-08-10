@@ -227,7 +227,7 @@ const ItServicesPage = () => {
               <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.faqEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.faqTitle}</h2>
             </div>
-            <div className="grid gap-3" data-speakable="faq">
+            <div className="grid gap-3">
               {(getFaqForRoute("itServices", language) ?? []).map((item) => (
                 <details key={item.question} className="rounded-2xl border border-border/60 bg-card p-5">
                   <summary className="cursor-pointer list-none font-semibold text-foreground">

@@ -46,6 +46,7 @@ RUN npm run build
 
 FROM caddy:2-alpine
 COPY Caddyfile /etc/caddy/Caddyfile
+RUN caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
 COPY --from=build /app/dist /srv
 
 EXPOSE 80

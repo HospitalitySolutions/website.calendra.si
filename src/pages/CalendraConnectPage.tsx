@@ -215,7 +215,7 @@ const CalendraConnectPage = () => {
               <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.faq.eyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.faq.title}</h2>
             </div>
-            <div className="grid gap-3" data-speakable="faq">
+            <div className="grid gap-3">
               {copy.faq.items.map((item) => (
                 <details key={item.q} className="group rounded-2xl border border-border/60 bg-background p-5">
                   <summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden">{item.q}</summary>

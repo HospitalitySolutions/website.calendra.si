@@ -113,9 +113,8 @@ const buildRegistry = (): Partial<Record<CanonicalRouteKey, LocalizedFaq>> => {
 };
 
 /**
- * Single registry of every FAQ on the site. Pages render from it and
- * `src/lib/seo.ts` emits FAQPage structured data from it, so a page can never
- * show questions to visitors that search engines and AI assistants cannot see.
+ * Single registry of every FAQ on the site so visible question-and-answer
+ * sections stay consistent across pages and generated summaries.
  */
 export const faqByRouteKey = buildRegistry();
 

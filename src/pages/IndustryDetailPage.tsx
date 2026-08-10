@@ -220,7 +220,7 @@ const IndustryDetailPage = () => {
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.faqTitle}</h2>
               <Sparkles className="mt-7 h-9 w-9 text-primary" aria-hidden="true" />
             </div>
-            <div className="grid gap-3" data-speakable="faq">
+            <div className="grid gap-3">
               {page.faq.map((item) => (
                 <details key={item.question} className="group rounded-2xl border border-border/60 bg-background p-5 open:border-primary/25 open:shadow-sm">
                   <summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden">{item.question}</summary>

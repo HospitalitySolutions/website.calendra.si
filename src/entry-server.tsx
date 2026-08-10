@@ -2,7 +2,7 @@ import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import AppRoutes from "./AppRoutes.tsx";
 import { allBlogArticles, blogArticlePathnames } from "@/lib/blog";
-import { canonicalPathnames, getLanguageFromPathname, sitemapRouteMetadata } from "@/lib/localized-routes";
+import { canonicalPathnames, getLanguageFromPathname, getSitemapLastModified, sitemapRouteMetadata } from "@/lib/localized-routes";
 import { SiteLanguageProvider } from "@/lib/site-language";
 import { DEFAULT_OG_IMAGE, getSeoForPathname } from "@/lib/seo";
 import { HERO_IMAGE } from "@/lib/hero-media";
@@ -61,7 +61,7 @@ export const getSitemapEntries = () =>
           alternateUrls: seo.alternateUrls,
           changeFrequency: metadata.changeFrequency,
           priority: metadata.priority[seo.language],
-          lastModified: metadata.lastModified,
+          lastModified: getSitemapLastModified(metadata.contentLastModified),
         };
       }
 
@@ -73,7 +73,7 @@ export const getSitemapEntries = () =>
           alternateUrls: seo.alternateUrls,
           changeFrequency: "monthly" as const,
           priority: seo.language === "sl" ? 0.7 : 0.6,
-          lastModified: seo.articleDates?.modified,
+          lastModified: getSitemapLastModified(seo.articleDates?.modified),
         };
       }
 
@@ -87,7 +87,7 @@ export const getSitemapEntries = () =>
           alternateUrls: seo.alternateUrls,
           changeFrequency: "weekly" as const,
           priority: seo.language === "sl" ? 0.7 : 0.6,
-          lastModified: profile?.lastModified,
+          lastModified: getSitemapLastModified(profile?.lastModified),
         };
       }
 

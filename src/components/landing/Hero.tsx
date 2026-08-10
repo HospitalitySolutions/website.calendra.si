@@ -113,7 +113,6 @@ const Hero = () => {
             </motion.p>
 
             <motion.p
-              data-speakable="answer"
               className="mt-3 max-w-xl text-base leading-7 sm:text-lg sm:leading-8"
               style={{ color: "hsl(var(--text-body))" }}
               initial={false}

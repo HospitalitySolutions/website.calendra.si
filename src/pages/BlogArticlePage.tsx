@@ -108,7 +108,6 @@ const BlogArticlePage = () => {
               </h1>
 
               <p
-                data-speakable="answer"
                 className="mt-6 rounded-2xl border border-primary/15 bg-primary/[0.04] p-5 text-base leading-8 text-foreground sm:text-lg"
               >
                 {article.answer}

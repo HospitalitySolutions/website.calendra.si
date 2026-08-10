@@ -1153,7 +1153,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
 
             <section className="mt-16" aria-labelledby="pricing-faq-title">
               <div className="flex items-center gap-3"><BellRing className="h-7 w-7 text-primary" /><h2 id="pricing-faq-title" className="font-display text-2xl font-bold text-foreground">{standaloneExtras[language].faqTitle}</h2></div>
-              <div className="mt-6 grid gap-3" data-speakable="faq">
+              <div className="mt-6 grid gap-3">
                 {(getFaqForRoute("pricing", language) ?? []).map((item) => (
                   <details key={item.question} className="rounded-2xl border border-border/60 bg-background p-5">
                     <summary className="cursor-pointer list-none font-semibold text-foreground">

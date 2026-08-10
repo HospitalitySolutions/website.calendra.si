@@ -68,7 +68,7 @@ const AuthorPage = () => {
               {AUTHOR.name}
             </h1>
             <p className="mt-3 text-lg font-semibold text-primary">{AUTHOR.jobTitle[language]}</p>
-            <p data-speakable="answer" className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground">
               {AUTHOR.bio[language]}
             </p>
             <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">

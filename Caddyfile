@@ -15,30 +15,49 @@
     -Server
   }
 
-  # Canonical language-specific URLs. Legacy English aliases redirect to /en/*.
-  redir /pricing /en/pricing 308
-  redir /mobilna-aplikacija /calendra-connect 308
-  redir /mobile-app /en/calendra-connect 308
-  redir /en/mobile-app /en/calendra-connect 308
-  redir /stranke /narocanje 308
-  redir /en/clients /en/booking 308
-  redir /clients /en/booking 308
-  redir /booking /en/booking 308
-  redir /support /en/support 308
-  redir /privacy-policy /en/privacy-policy 308
-  redir /terms-of-service /en/terms-of-service 308
-  redir /legal /en/legal 308
-  redir /data-processing-agreement /en/data-processing-agreement 308
-  redir /dpa /en/data-processing-agreement 308
-  redir /subprocessors /en/subprocessors 308
-  redir /cookie-policy /en/cookie-policy 308
-  redir /cookies /en/cookie-policy 308
-  redir /security /en/security 308
-  redir /data-rights /en/data-rights 308
-  redir /zoom /en/zoom-integration 308
-  redir /zoom-integration /en/zoom-integration 308
-  redir /ai-transparency /en/ai-transparency 308
-  redir /account-deletion /en/account-deletion 308
+  # Old public-booking links used ?tenant=<tenantCode>. Move those requests to
+  # the canonical per-tenant booking path instead of serving the generic page
+  # with only a canonical tag. Preserve locationId when the old link contains it.
+  @legacyTenantBookingWithLocation {
+    path /narocanje /stranke /booking /clients /en/booking /en/clients
+    query tenant=* locationId=*
+  }
+  @legacyTenantBooking {
+    path /narocanje /stranke /booking /clients /en/booking /en/clients
+    query tenant=*
+  }
+
+  # Keep this redirect group literal. A plain path redirect such as /booking
+  # would otherwise be sorted ahead of the more specific query-aware matcher.
+  route {
+    redir @legacyTenantBookingWithLocation /narocanje/{http.request.uri.query.tenant}?locationId={http.request.uri.query.locationId} 308
+    redir @legacyTenantBooking /narocanje/{http.request.uri.query.tenant} 308
+
+    # Canonical language-specific URLs. Legacy English aliases redirect to /en/*.
+    redir /pricing /en/pricing 308
+    redir /mobilna-aplikacija /calendra-connect 308
+    redir /mobile-app /en/calendra-connect 308
+    redir /en/mobile-app /en/calendra-connect 308
+    redir /stranke /narocanje 308
+    redir /en/clients /en/booking 308
+    redir /clients /en/booking 308
+    redir /booking /en/booking 308
+    redir /support /en/support 308
+    redir /privacy-policy /en/privacy-policy 308
+    redir /terms-of-service /en/terms-of-service 308
+    redir /legal /en/legal 308
+    redir /data-processing-agreement /en/data-processing-agreement 308
+    redir /dpa /en/data-processing-agreement 308
+    redir /subprocessors /en/subprocessors 308
+    redir /cookie-policy /en/cookie-policy 308
+    redir /cookies /en/cookie-policy 308
+    redir /security /en/security 308
+    redir /data-rights /en/data-rights 308
+    redir /zoom /en/zoom-integration 308
+    redir /zoom-integration /en/zoom-integration 308
+    redir /ai-transparency /en/ai-transparency 308
+    redir /account-deletion /en/account-deletion 308
+  }
 
   # Cookieless analytics served first-party. Content blockers match on known
   # third-party analytics hostnames, so proxying the tracker and its collect
