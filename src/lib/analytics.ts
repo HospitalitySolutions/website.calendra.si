@@ -1,3 +1,5 @@
+import { GOOGLE_ANALYTICS_ID, trackGoogleAnalyticsEvent } from "@/lib/google-analytics";
+
 /**
  * Cookieless analytics configuration.
  *
@@ -5,8 +7,8 @@
  * self-hosted Umami container) so that content blockers, which match on
  * third-party analytics hostnames, do not silently drop the majority of traffic.
  *
- * Analytics stay disabled unless a website id is supplied at build time, which
- * keeps local development and preview builds clean.
+ * Umami stays disabled unless its website id is supplied at build time. GA4 is
+ * configured separately and remains consent-gated in the browser.
  */
 const trimUrl = (value: string) => value.replace(/\/+$/, "");
 
@@ -14,7 +16,8 @@ export const UMAMI_WEBSITE_ID = import.meta.env.VITE_UMAMI_WEBSITE_ID ?? "";
 export const UMAMI_SCRIPT_URL = import.meta.env.VITE_UMAMI_SCRIPT_URL ?? "/stats/script.js";
 export const UMAMI_HOST_URL = trimUrl(import.meta.env.VITE_UMAMI_HOST_URL ?? "/stats");
 
-export const ANALYTICS_ENABLED = Boolean(UMAMI_WEBSITE_ID);
+export const UMAMI_ANALYTICS_ENABLED = Boolean(UMAMI_WEBSITE_ID);
+export const ANALYTICS_ENABLED = UMAMI_ANALYTICS_ENABLED || Boolean(GOOGLE_ANALYTICS_ID);
 
 type UmamiTracker = {
   track: ((eventName: string, data?: Record<string, unknown>) => void) &
@@ -70,6 +73,10 @@ const scheduleFlush = () => {
 
 export const trackAnalyticsEvent = (eventName: string, data: Record<string, unknown> = {}) => {
   if (typeof window === "undefined" || !ANALYTICS_ENABLED) return;
+
+  trackGoogleAnalyticsEvent(eventName, data);
+
+  if (!UMAMI_ANALYTICS_ENABLED) return;
 
   if (window.umami) {
     window.umami.track(eventName, data);

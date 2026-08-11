@@ -13,13 +13,16 @@ export const LEGAL = {
   audience: "B2B",
   governingLaw: "Republic of Slovenia",
   hostingRegion: "AWS EU region",
-  // Self-hosted Umami on our own AWS EU infrastructure: no cookies, no device
-  // storage, no cross-site identifiers, so no consent banner is required and no
-  // new subprocessor is involved.
+  // Baseline analytics use self-hosted Umami without cookies. Google Analytics 4
+  // is optional and is loaded only after an explicit analytics-consent choice.
   websiteAnalyticsEnabled: true,
   websiteAnalyticsProvider: "Umami",
   websiteAnalyticsIsCookieless: true,
   websiteAnalyticsSelfHosted: true,
+  googleAnalyticsEnabled: true,
+  googleAnalyticsProvider: "Google Analytics 4",
+  googleAnalyticsMeasurementId: "G-DVDT4W7BYS",
+  googleAnalyticsRequiresConsent: true,
   aiEnabledAtProductionLaunch: false,
   tenantSignupRequiresTermsAndDpa: true,
 } as const;
@@ -74,6 +77,22 @@ export const SUBPROCESSORS: Subprocessor[] = [
     safeguard: {
       sl: "Ponudnikovi pogoji obdelave podatkov in ustrezni mehanizmi prenosa, kadar pride do prenosa izven EGP.",
       en: "Provider data processing terms and appropriate transfer mechanisms where transfers outside the EEA occur.",
+    },
+  },
+  {
+    name: "Google Analytics / Google",
+    purpose: {
+      sl: "Merjenje uporabe javne spletne strani in učinkovitosti vsebin po tem, ko obiskovalec dovoli analitiko.",
+      en: "Measuring use of the public website and content effectiveness after the visitor allows analytics.",
+    },
+    dataCategories: {
+      sl: "Tehnični podatki o uporabi spletne strani, kot so ogledane strani, napotitveni vir, podatki o napravi in brskalniku ter spletni identifikatorji, ki jih obdeluje ponudnik.",
+      en: "Technical website-usage data such as pages viewed, referrer, device and browser information, and online identifiers processed by the provider.",
+    },
+    region: "EU / global provider infrastructure",
+    safeguard: {
+      sl: "Google Analytics se naloži šele po soglasju za analitiko; oglaševalske vrste soglasja ostanejo onemogočene. Uporabljajo se ponudnikovi pogoji obdelave in ustrezni mehanizmi prenosa, kadar so potrebni.",
+      en: "Google Analytics loads only after analytics consent; advertising consent types remain disabled. Provider processing terms and appropriate transfer mechanisms are used where required.",
     },
   },
   {

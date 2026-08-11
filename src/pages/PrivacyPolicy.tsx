@@ -9,7 +9,7 @@ const copy = {
     badge: "Politika zasebnosti",
     title: `Politika zasebnosti za ${SITE_HOST} in Calendra`,
     intro: "Ta politika pojasnjuje, kako Calendra obdeluje osebne podatke pri uporabi spletne strani, platforme, tenant aplikacije, Calendra Guest aplikacije, integracij in podpore.",
-    lastUpdated: "Zadnja posodobitev: 23. junij 2026",
+    lastUpdated: "Zadnja posodobitev: 11. avgust 2026",
     controllerTitle: "1. Upravljavec in kontakt",
     controllerIntro: "Za obdelave, pri katerih Calendra sama določa namen in sredstva obdelave, je upravljavec:",
     controllerProcessorTitle: "2. Kdaj je Calendra upravljavec in kdaj obdelovalec",
@@ -52,9 +52,9 @@ const copy = {
     cookiesTitle: "8. Piškotki in analitika",
     cookiesParagraphs: [
       LEGAL.websiteAnalyticsEnabled
-        ? "Spletna stran ne uporablja analitičnih ali oglaševalskih piškotkov. Obisk merimo z Umami, analitiko brez piškotkov, ki jo gostimo sami na svoji infrastrukturi v EU. Umami ne nastavlja piškotkov, ne uporablja prstnih odtisov naprave in ne ustvarja identifikatorjev za sledenje med spletnimi stranmi, zato za to merjenje ni potrebno soglasje."
-        : "Spletna stran trenutno ne uporablja analitičnih ali oglaševalskih piškotkov. Lahko uporablja nujne tehnične piškotke ali lokalno shranjevanje za delovanje spletne strani in izbiro jezika.",
-      "Zbrani podatki o obisku so agregirani in ne omogočajo identifikacije posameznika. Podrobnosti so opisane v politiki piškotkov.",
+        ? "Osnovni obisk merimo z Umami, analitiko brez piškotkov, ki jo gostimo sami na infrastrukturi v EU. Google Analytics 4 uporabljamo dodatno samo po soglasju obiskovalca za analitiko; Google Analytics se pred soglasjem ne naloži, oglaševalske vrste soglasja pa ostanejo onemogočene."
+        : "Spletna stran trenutno ne uporablja analitike. Lahko uporablja nujne tehnične piškotke ali lokalno shranjevanje za delovanje spletne strani in izbiro jezika.",
+      "V Google Analytics ne pošiljamo vsebine obrazcev, imen, e-poštnih naslovov ali telefonskih številk. Izbiro za Google Analytics lahko obiskovalec kadarkoli spremeni v nastavitvah piškotkov. Podrobnosti so opisane v Politiki piškotkov.",
     ],
     aiTitle: "9. AI funkcionalnosti",
     aiParagraphs: [
@@ -82,7 +82,7 @@ const copy = {
     badge: "Privacy Policy",
     title: `Privacy Policy for ${SITE_HOST} and Calendra`,
     intro: "This policy explains how Calendra processes personal data when users interact with the website, platform, tenant app, Calendra Guest app, integrations and support.",
-    lastUpdated: "Last updated: 23 June 2026",
+    lastUpdated: "Last updated: 11 August 2026",
     controllerTitle: "1. Controller and contact",
     controllerIntro: "For processing where Calendra determines the purposes and means of processing, the controller is:",
     controllerProcessorTitle: "2. When Calendra is controller and when it is processor",
@@ -124,9 +124,9 @@ const copy = {
     cookiesTitle: "8. Cookies and analytics",
     cookiesParagraphs: [
       LEGAL.websiteAnalyticsEnabled
-        ? "The website does not use analytics or advertising cookies. We measure traffic with Umami, a cookieless analytics tool we self-host on our own EU infrastructure. Umami sets no cookies, does not fingerprint devices and creates no cross-site tracking identifiers, so this measurement does not require consent."
-        : "The website does not currently use analytics or advertising cookies. It may use strictly necessary technical cookies or local storage for website operation and language choice.",
-      "The traffic data collected is aggregated and cannot identify an individual. Details are described in the Cookie Policy.",
+        ? "We measure baseline traffic with Umami, a cookieless analytics tool we self-host on EU infrastructure. We additionally use Google Analytics 4 only after the visitor consents to analytics; Google Analytics is not loaded before consent and advertising consent types remain disabled."
+        : "The website does not currently use analytics. It may use strictly necessary technical cookies or local storage for website operation and language choice.",
+      "We do not send form contents, names, email addresses or phone numbers to Google Analytics. Visitors can change the Google Analytics choice at any time in cookie settings. Details are described in the Cookie Policy.",
     ],
     aiTitle: "9. AI features",
     aiParagraphs: [

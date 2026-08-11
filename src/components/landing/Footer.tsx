@@ -10,6 +10,7 @@ import {
   LINKEDIN_PROFILE_URL,
 } from "@/lib/external-profiles";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
+import { OPEN_COOKIE_SETTINGS_EVENT } from "@/lib/google-analytics";
 
 type FooterLink = {
   key: CanonicalRouteKey;
@@ -100,6 +101,27 @@ const FooterColumn = ({ title, links, language }: { title: string; links: Footer
   </nav>
 );
 
+
+const FooterLegalColumn = ({ links, language }: { links: FooterLink[]; language: "sl" | "en" }) => (
+  <nav aria-label={language === "sl" ? "Pravno in zaupanje" : "Legal & Trust"}>
+    <p className="text-sm font-semibold text-foreground">{language === "sl" ? "Pravno in zaupanje" : "Legal & Trust"}</p>
+    <div className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
+      {links.map((link) => (
+        <a key={link.key} href={getRoutePath(link.key, language)} className="transition-colors hover:text-foreground">
+          {link.label}
+        </a>
+      ))}
+      <button
+        type="button"
+        className="w-fit text-left transition-colors hover:text-foreground"
+        onClick={() => window.dispatchEvent(new Event(OPEN_COOKIE_SETTINGS_EVENT))}
+      >
+        {language === "sl" ? "Nastavitve piškotkov" : "Cookie settings"}
+      </button>
+    </div>
+  </nav>
+);
+
 const Footer = () => {
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).footer;
@@ -169,7 +191,7 @@ const Footer = () => {
             </div>
           </nav>
           <FooterColumn title={language === "sl" ? "Kontakt in podpora" : "Contact & support"} links={links.support} language={language} />
-          <FooterColumn title={language === "sl" ? "Pravno in zaupanje" : "Legal & Trust"} links={links.legal} language={language} />
+          <FooterLegalColumn links={links.legal} language={language} />
         </div>
       </div>
     </footer>
