@@ -86,8 +86,8 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     en: { title: "Booking integrations: Google Calendar, Zoom and payments | Calendra", description: "Connect Calendra with Google Calendar, Zoom, online payments, email, SMS and a website booking widget." },
   },
   beautyHair: {
-    sl: { title: "Program za naročanje za lepotne in frizerske salone | Calendra", description: "Upravljajte termine, zaposlene, storitve, prostore, opomnike, plačila in spletno naročanje za lepotni ali frizerski salon." },
-    en: { title: "Booking software for beauty and hair salons | Calendra", description: "Manage appointments, employees, services, rooms, reminders, payments and online booking for your beauty or hair salon." },
+    sl: { title: "Program za kozmetični in frizerski salon | Calendra", description: "Spletno naročanje strank, urniki zaposlenih, različne storitve, prostori, opomniki, plačila in računi za kozmetični ali frizerski salon." },
+    en: { title: "Booking software for beauty, hair and cosmetic salons | Calendra", description: "Online booking, employee schedules, flexible services, rooms, reminders, payments and invoices for beauty, hair and cosmetic salons." },
   },
   consultantsEducators: {
     sl: { title: "Naročanje za svetovalce in izobraževalce | Calendra", description: "Osebni in spletni termini, ponavljajoča se srečanja, Zoom, dokumenti, paketi obiskov, komunikacija, plačila in računi na enem mestu." },
@@ -98,8 +98,8 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     en: { title: "Booking for health and wellbeing providers | Calendra", description: "Reliable booking, reminders, providers, rooms, recurring visits, customer profiles and access control for wellbeing services." },
   },
   fitnessGroups: {
-    sl: { title: "Rezervacije za fitnes in skupinske storitve | Calendra", description: "Upravljajte individualne vadbe, skupinske termine, kapacitete, ponovitve, prijave, pakete obiskov, vstopnice in obvestila." },
-    en: { title: "Booking for fitness and group services | Calendra", description: "Manage individual sessions, group appointments, capacity, recurrence, registrations, visit packages, tickets and notifications." },
+    sl: { title: "Program za fitnes in skupinske vadbe | Calendra", description: "Spletne prijave na vadbe, kapaciteta, čakalna vrsta, članstva, paketi obiskov, evidenca obiskov in obvestila za fitnes ali studio." },
+    en: { title: "Fitness and group class booking software | Calendra", description: "Online class registration, capacity, waiting lists, memberships, visit packages, attendance tracking and notifications for fitness studios." },
   },
   connect: {
     sl: { title: "Calendra Connect | Aplikacija za rezervacijo terminov", description: "Calendra Connect je brezplačna mobilna aplikacija za rezervacijo, prestavljanje in odpoved terminov, obvestila, plačila, ugodnosti in vstopnice.", ogImage: `${SITE_URL}/connect/og-calendra-connect.png` },

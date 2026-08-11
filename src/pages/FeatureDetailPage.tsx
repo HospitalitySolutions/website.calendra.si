@@ -24,6 +24,11 @@ const FeatureDetailPage = () => {
 
   const page = getFeatureContent(routeKey, language);
   const faq = getFaqForRoute(routeKey, language) ?? [];
+  const screenshotWidthClass = routeKey === "clientManagement"
+    ? "mx-auto max-w-2xl"
+    : routeKey === "invoicing"
+      ? "mx-auto max-w-4xl"
+      : "";
 
   return (
     <div className="min-h-screen bg-background">
@@ -155,9 +160,11 @@ const FeatureDetailPage = () => {
 
         {page.screenshot ? (
           <section className="container mx-auto max-w-6xl px-4 py-16 lg:px-8 md:py-24">
-            <figure className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-soft">
+            <figure className={`overflow-hidden rounded-3xl border border-border/60 bg-card shadow-soft ${screenshotWidthClass}`.trim()}>
               <img
                 src={page.screenshot.src}
+                srcSet={page.screenshot.srcSet}
+                sizes={page.screenshot.sizes}
                 alt={page.screenshot.alt}
                 width={page.screenshot.width}
                 height={page.screenshot.height}

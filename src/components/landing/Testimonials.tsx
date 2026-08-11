@@ -18,6 +18,9 @@ type Review = {
   avatar?: string;
   avatarClassName?: string;
   translated?: boolean;
+  sourceUrl?: string;
+  sourceLabel?: string;
+  sourceKind?: "google" | "customer";
 };
 
 type TestimonialsCopy = {
@@ -55,14 +58,29 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         initials: "LP",
         avatar: "/reviews/latanya-powell.png",
         translated: true,
+        sourceKind: "google",
       },
       {
-        name: "Nina",
+        name: "Nina Piberčnik",
         quote:
-          "Ta sistem za naročanje strank uporabljamo pri Inštitutu Avisensa. Je zelo pregleden in vsebuje veliko pomembnih funkcionalnosti, s katerimi si prihranimo čas in energijo. Res priporočam!",
-        context: "Inštitut Avisensa",
-        initials: "N",
+          "Calendra nam omogoča, da imamo termine, stranke in organizacijo dela pregledno na enem mestu. Posebej nam je pomembno, da je sistem enostaven za uporabo tako za našo ekipo kot za stranke, ki se naročajo na termine.",
+        context: "Direktor, Inštitut Avisensa",
+        initials: "NP",
         avatarClassName: "bg-pink-500",
+        sourceUrl: "https://avisensa.com/",
+        sourceLabel: "Inštitut Avisensa",
+        sourceKind: "customer",
+      },
+      {
+        name: "Urška Grmek",
+        quote:
+          "S Calendro je organizacija terminov precej enostavnejša. Stranke se lahko naročijo same, mi pa imamo ves čas jasen pregled nad urnikom in manj usklajevanja po telefonu ali sporočilih.",
+        context: "Lastnik, Depilacije UG",
+        initials: "UG",
+        avatarClassName: "bg-emerald-500",
+        sourceUrl: "https://www.depilacijeug.si/",
+        sourceLabel: "Depilacije UG",
+        sourceKind: "customer",
       },
       {
         name: "Andrej Novak",
@@ -71,6 +89,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         context: "Uporabnik Calendre",
         initials: "A",
         avatarClassName: "bg-violet-500",
+        sourceKind: "google",
       },
     ],
   },
@@ -93,15 +112,31 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         context: "Beauty Lounge",
         initials: "LP",
         avatar: "/reviews/latanya-powell.png",
+        sourceKind: "google",
       },
       {
-        name: "Nina",
+        name: "Nina Piberčnik",
         quote:
-          "We use this client booking system at the Avisensa Institute. It is very clear and includes many important features that help us save time and energy. Highly recommended!",
-        context: "Avisensa Institute",
-        initials: "N",
+          "Calendra lets us keep appointments, clients and work organisation clearly in one place. It is especially important to us that the system is easy to use both for our team and for clients booking appointments.",
+        context: "Director, Inštitut Avisensa",
+        initials: "NP",
         avatarClassName: "bg-pink-500",
         translated: true,
+        sourceUrl: "https://avisensa.com/",
+        sourceLabel: "Inštitut Avisensa",
+        sourceKind: "customer",
+      },
+      {
+        name: "Urška Grmek",
+        quote:
+          "Calendra makes appointment organisation much simpler. Customers can book themselves, while we always have a clear view of the schedule and spend less time coordinating by phone or messages.",
+        context: "Owner, Depilacije UG",
+        initials: "UG",
+        avatarClassName: "bg-emerald-500",
+        translated: true,
+        sourceUrl: "https://www.depilacijeug.si/",
+        sourceLabel: "Depilacije UG",
+        sourceKind: "customer",
       },
       {
         name: "Andrej Novak",
@@ -111,6 +146,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         initials: "A",
         avatarClassName: "bg-violet-500",
         translated: true,
+        sourceKind: "google",
       },
     ],
   },
@@ -179,13 +215,17 @@ const Testimonials = () => {
                   <div className="flex items-center justify-between gap-4">
                     <RatingStars />
                     <a
-                      href={GOOGLE_BUSINESS_PROFILE_URL}
+                      href={review.sourceUrl ?? GOOGLE_BUSINESS_PROFILE_URL}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noreferrer noopener"
                       className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground transition hover:text-primary"
                     >
-                      <span className="text-sm font-bold text-blue-600">G</span>
-                      {copy.reviewSource}
+                      {review.sourceKind === "customer" ? (
+                        <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                      ) : (
+                        <span className="text-sm font-bold text-blue-600">G</span>
+                      )}
+                      {review.sourceLabel ?? copy.reviewSource}
                     </a>
                   </div>
 

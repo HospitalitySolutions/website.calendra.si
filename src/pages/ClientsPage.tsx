@@ -3,9 +3,11 @@ import Footer from "@/components/landing/Footer";
 import AnswerSummary from "@/components/seo/AnswerSummary";
 import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
 import RelatedPages from "@/components/seo/RelatedPages";
+import ResponsiveScreenshot from "@/components/marketing/ResponsiveScreenshot";
 import { Button } from "@/components/ui/button";
 import { getFaqForRoute } from "@/lib/faq";
 import { getRoutePath } from "@/lib/localized-routes";
+import { MARKETING_IMAGES } from "@/lib/marketing-images";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage } from "@/lib/site-language";
 import {
@@ -32,7 +34,7 @@ const copy = {
       "Stranke same izberejo storitev, zaposlenega in prost termin. Calendra preveri dejansko razpoložljivost, zapiše rezervacijo neposredno v koledar ter pošlje potrditev in opomnike brez ročnega usklajevanja.",
     heroPrimary: "Omogočite naročanje",
     heroSecondary: "Poiščite podjetje",
-    screenshotAlt: "Koledar in spletne rezervacije v aplikaciji Calendra",
+    screenshotAlt: "Spletno naročanje v Calendri z izbiro storitve, trajanjem in ceno",
     workflowEyebrow: "Preprost rezervacijski tok",
     workflowTitle: "Kako stranka rezervira termin",
     workflowItems: [
@@ -51,6 +53,15 @@ const copy = {
       { title: "Vtičnik ali javna povezava", description: "Naročanje vgradite na svojo spletno stran ali delite samostojno javno povezavo." },
       { title: "Takojšen zapis v koledar", description: "Potrjena rezervacija se brez prepisovanja pojavi v Calendri in pri izbranem zaposlenem." },
     ],
+    visualEyebrow: "Rezervacijska izkušnja",
+    visualTitle: "Stranka vidi samo jasne naslednje korake",
+    visualIntro: "Javna stran za naročanje vodi stranko od izbire prostega termina do pregleda rezervacije brez telefonskega usklajevanja.",
+    timeTitle: "Prosti termini in kapaciteta v realnem času",
+    timeBody: "Pri skupinskih storitvah stranka vidi odprte ure in število prostih mest. Pri individualnih storitvah se pokažejo samo termini, ki so dejansko na voljo.",
+    reviewTitle: "Pregled rezervacije in način plačila",
+    reviewBody: "Pred potrditvijo stranka pregleda storitev, datum, uro in plačilo. Podjetje samo določi, ali je plačilo na lokaciji, predplačilo ali spletno plačilo del rezervacijskega toka.",
+    trustedEyebrow: "Uporabljajo Calendro",
+    trustedTitle: "Od psihološkega svetovanja do lepotnih storitev",
     directoryEyebrow: "Želite rezervirati termin?",
     directoryTitle: "Poiščite podjetje, ki uporablja Calendro",
     directoryBody:
@@ -70,7 +81,7 @@ const copy = {
       "Customers choose a service, employee and available time themselves. Calendra checks real availability, writes the booking directly to the calendar and sends confirmations and reminders without manual coordination.",
     heroPrimary: "Enable online booking",
     heroSecondary: "Find a business",
-    screenshotAlt: "Calendar and online bookings in the Calendra application",
+    screenshotAlt: "Calendra online booking with service selection, duration and price",
     workflowEyebrow: "A simple booking flow",
     workflowTitle: "How a customer books",
     workflowItems: [
@@ -89,6 +100,15 @@ const copy = {
       { title: "Website widget or public link", description: "Embed booking on your website or share a standalone public booking link." },
       { title: "Immediate calendar entry", description: "A confirmed booking appears in Calendra and for the selected employee without re-entering data." },
     ],
+    visualEyebrow: "Booking experience",
+    visualTitle: "Customers always see a clear next step",
+    visualIntro: "The public booking page guides customers from available time selection to the final booking review without phone coordination.",
+    timeTitle: "Real-time availability and group capacity",
+    timeBody: "For group services, customers see open class times and remaining places. For one-to-one services, only genuinely available appointments are offered.",
+    reviewTitle: "Booking review and payment method",
+    reviewBody: "Before confirming, customers review the service, date, time and payment. The business decides whether the flow uses pay on site, a deposit or online payment.",
+    trustedEyebrow: "Businesses using Calendra",
+    trustedTitle: "From psychological counselling to beauty services",
     directoryEyebrow: "Looking to book an appointment?",
     directoryTitle: "Find a business that uses Calendra",
     directoryBody:
@@ -131,7 +151,17 @@ const ClientsPage = () => {
               </div>
             </div>
             <div className="relative rounded-[1.75rem] border border-white/80 bg-white/75 p-3 shadow-[0_30px_80px_-35px_hsl(var(--primary)/0.45)]">
-              <img src="/hero/calendra-calendar.webp" alt={text.screenshotAlt} width="2048" height="782" loading="eager" decoding="async" className="w-full rounded-[1.3rem] border border-border/60" />
+              <img
+                src={MARKETING_IMAGES.bookingService.src}
+                srcSet={MARKETING_IMAGES.bookingService.srcSet}
+                sizes="(min-width: 1024px) 55vw, 100vw"
+                alt={text.screenshotAlt}
+                width={MARKETING_IMAGES.bookingService.width}
+                height={MARKETING_IMAGES.bookingService.height}
+                loading="eager"
+                decoding="async"
+                className="w-full rounded-[1.3rem] border border-border/60"
+              />
               <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:flex sm:items-center sm:gap-3"><CheckCircle2 className="h-6 w-6 text-primary" /><span className="text-sm font-semibold text-foreground">{language === "sl" ? "Rezervacija se takoj zapiše v koledar" : "The booking is added to the calendar immediately"}</span></div>
             </div>
           </div>
@@ -142,10 +172,53 @@ const ClientsPage = () => {
           <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">{text.workflowItems.map((item, index) => { const Icon = workflowIcons[index]; return <article key={item.title} className="rounded-3xl border border-border/60 bg-card p-6 shadow-soft"><span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Icon className="h-5 w-5" /></span><p className="mt-5 text-xs font-black uppercase tracking-[0.15em] text-primary">{language === "sl" ? "Korak" : "Step"} {index + 1}</p><h3 className="mt-2 text-lg font-bold text-foreground">{item.title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{item.description}</p></article>; })}</div>
         </section>
 
+        <section className="border-y border-border/50 bg-background py-20 md:py-28">
+          <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+            <div className="mx-auto max-w-3xl text-center">
+              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{text.visualEyebrow}</span>
+              <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{text.visualTitle}</h2>
+              <p className="mt-4 text-lg leading-8 text-muted-foreground">{text.visualIntro}</p>
+            </div>
+            <div className="mt-12 grid gap-8 lg:grid-cols-2">
+              <div>
+                <ResponsiveScreenshot
+                  image={MARKETING_IMAGES.bookingTime}
+                  alt={language === "sl" ? "Spletno naročanje v Calendri z izbiro datuma, odprtimi skupinskimi termini in prikazom prostih mest" : "Calendra online booking with date selection, open group times and remaining places"}
+                  caption={language === "sl" ? "Stranka izbere datum in vidi samo odprte termine z aktualnim številom prostih mest." : "Customers select a date and see only open times with the current number of available places."}
+                />
+                <h3 className="mt-5 text-xl font-bold text-foreground">{text.timeTitle}</h3>
+                <p className="mt-3 leading-7 text-muted-foreground">{text.timeBody}</p>
+              </div>
+              <div>
+                <ResponsiveScreenshot
+                  image={MARKETING_IMAGES.bookingReview}
+                  alt={language === "sl" ? "Pregled spletne rezervacije v Calendri z vnosom podatkov, načinom plačila in povzetkom termina" : "Calendra booking review with customer details, payment method and appointment summary"}
+                  caption={language === "sl" ? "Pred potrditvijo so storitev, datum, ura in način plačila jasno prikazani na enem mestu." : "Before confirmation, the service, date, time and payment method are clearly shown in one place."}
+                />
+                <h3 className="mt-5 text-xl font-bold text-foreground">{text.reviewTitle}</h3>
+                <p className="mt-3 leading-7 text-muted-foreground">{text.reviewBody}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="bg-card py-20 md:py-28">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">
             <div className="max-w-3xl"><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{text.capabilitiesEyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{text.capabilitiesTitle}</h2></div>
             <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{text.capabilities.map((item, index) => { const Icon = capabilityIcons[index]; return <article key={item.title} className="rounded-3xl border border-border/60 bg-background p-7"><Icon className="h-7 w-7 text-primary" /><h3 className="mt-5 text-xl font-bold text-foreground">{item.title}</h3><p className="mt-3 leading-7 text-muted-foreground">{item.description}</p></article>; })}</div>
+          </div>
+        </section>
+
+        <section className="bg-background py-14">
+          <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+            <div className="rounded-[2rem] border border-primary/15 bg-primary/[0.035] p-7 md:p-9">
+              <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{text.trustedEyebrow}</p>
+              <h2 className="mt-3 font-display text-2xl font-extrabold text-foreground md:text-3xl">{text.trustedTitle}</h2>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <a href="https://avisensa.com/" target="_blank" rel="noreferrer noopener" className="rounded-2xl border border-border/70 bg-card px-5 py-4 font-semibold text-foreground shadow-sm transition hover:border-primary/30 hover:text-primary">Inštitut Avisensa</a>
+                <a href="https://www.depilacijeug.si/" target="_blank" rel="noreferrer noopener" className="rounded-2xl border border-border/70 bg-card px-5 py-4 font-semibold text-foreground shadow-sm transition hover:border-primary/30 hover:text-primary">Depilacije UG</a>
+              </div>
+            </div>
           </div>
         </section>
 

@@ -1,4 +1,4 @@
-import { HERO_IMAGE } from "@/lib/hero-media";
+import { MARKETING_IMAGES } from "@/lib/marketing-images";
 import type { CanonicalRouteKey } from "@/lib/localized-routes";
 import type { SiteLanguage } from "@/lib/site-language";
 
@@ -56,6 +56,8 @@ export type FeaturePageContent = {
    */
   screenshot?: {
     src: string;
+    srcSet?: string;
+    sizes?: string;
     alt: string;
     caption: string;
     width: number;
@@ -70,11 +72,7 @@ export type FeaturePageContent = {
   faq: Array<{ question: string; answer: string }>;
 };
 
-const calendarScreenshot = {
-  src: HERO_IMAGE.src,
-  width: HERO_IMAGE.width,
-  height: HERO_IMAGE.height,
-};
+const calendarScreenshot = MARKETING_IMAGES.calendar;
 
 const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>> = {
   calendar: {
@@ -491,6 +489,11 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         "Calendra pripravi račun, ki ga po potrebi davčno potrdite.",
         "Plačilo se evidentira, račun in termin pa ostaneta povezana na profilu stranke.",
       ],
+      screenshot: {
+        ...MARKETING_IMAGES.invoicing,
+        alt: "Odprt račun v Calendri z dvema postavkama, popustom, več načini plačila in končnim zneskom",
+        caption: "Obračun storitev, popustov in več načinov plačila v enem pogledu.",
+      },
       detailsTitle: "Kako obračun deluje v praksi",
       details: [
         {
@@ -643,6 +646,11 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         "Calendra prepares the invoice, with fiscal verification where required.",
         "The payment is recorded and invoice and appointment stay linked on the client profile.",
       ],
+      screenshot: {
+        ...MARKETING_IMAGES.invoicing,
+        alt: "Open invoice in Calendra with two line items, a discount, multiple payment methods and the final total",
+        caption: "Services, discounts and multiple payment methods managed in one billing view.",
+      },
       detailsTitle: "How billing works in practice",
       details: [
         {
@@ -797,6 +805,11 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         "Zaposleni med izvedbo dodajo opombe, dokumente ali podatke v polja po meri.",
         "Računi, plačila in poslana obvestila se sami zbirajo v zgodovini stranke.",
       ],
+      screenshot: {
+        ...MARKETING_IMAGES.clientProfile,
+        alt: "Profil stranke v Calendri z zavihki za termine, denarnico, datoteke in nastavitve ter seznamom prihajajočih terminov",
+        caption: "Profil stranke poveže kontaktne podatke, termine, ugodnosti in dokumente.",
+      },
       detailsTitle: "Kako deluje evidenca strank",
       details: [
         {
@@ -949,6 +962,11 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         "Employees add notes, documents or custom field values while delivering the service.",
         "Invoices, payments and sent notifications collect themselves in the client history.",
       ],
+      screenshot: {
+        ...MARKETING_IMAGES.clientProfile,
+        alt: "Calendra client profile with appointments, wallet, files and settings tabs plus a list of upcoming bookings",
+        caption: "A client profile connects contact details, appointments, benefits and documents.",
+      },
       detailsTitle: "How client records work",
       details: [
         {
@@ -1103,6 +1121,11 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         "Sporočilo se sestavi iz podatkov o terminu, storitvi, zaposlenem in lokaciji.",
         "Stranka prejme sporočilo s povezavo za spremembo ali odpoved, poslano obvestilo pa ostane v zgodovini.",
       ],
+      screenshot: {
+        ...MARKETING_IMAGES.reminders,
+        alt: "Nastavitve obvestil v Calendri z e-poštnimi predlogami za novo sejo, spremembo, preklic, opomnik in dostavo računa",
+        caption: "Predloge e-pošte in SMS sporočil uredite ter vključite samo za dogodke, ki jih potrebujete.",
+      },
       detailsTitle: "Kako opomniki delujejo",
       details: [
         {
@@ -1255,6 +1278,11 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         "The message is assembled from the appointment, service, employee and location.",
         "The client receives it with reschedule and cancellation links, and the sent notification stays in the history.",
       ],
+      screenshot: {
+        ...MARKETING_IMAGES.reminders,
+        alt: "Calendra notification settings with email templates for new bookings, changes, cancellations, reminders and invoice delivery",
+        caption: "Edit email and SMS templates and enable only the events your workflow needs.",
+      },
       detailsTitle: "How reminders work",
       details: [
         {

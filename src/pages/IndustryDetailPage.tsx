@@ -2,6 +2,7 @@ import Footer from "@/components/landing/Footer";
 import Navbar from "@/components/landing/Navbar";
 import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
 import RelatedPages from "@/components/seo/RelatedPages";
+import ResponsiveScreenshot from "@/components/marketing/ResponsiveScreenshot";
 import { Button } from "@/components/ui/button";
 import {
   getIndustryContent,
@@ -10,6 +11,7 @@ import {
   type IndustryRouteKey,
 } from "@/lib/industry-pages";
 import { getRouteKeyFromPathname, getRoutePath } from "@/lib/localized-routes";
+import { MARKETING_IMAGES } from "@/lib/marketing-images";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage } from "@/lib/site-language";
 import {
@@ -48,6 +50,35 @@ const IndustryDetailPage = () => {
   const featuresLabel = language === "sl" ? "Oglejte si funkcionalnosti" : "Explore features";
   const pricingLabel = language === "sl" ? "Oglejte si cenik" : "View pricing";
   const otherSolutionsLabel = language === "sl" ? "Druge rešitve Calendra" : "Other Calendra solutions";
+  const heroImage = routeKey === "fitnessGroups" ? MARKETING_IMAGES.bookingTime : MARKETING_IMAGES.calendar;
+  const heroImageAlt = routeKey === "fitnessGroups"
+    ? language === "sl"
+      ? "Spletna prijava na skupinsko vadbo v Calendri z izbiro datuma, ure in prikazom prostih mest"
+      : "Online group-class booking in Calendra with date, time and remaining-place selection"
+    : language === "sl"
+      ? "Tedenski koledar terminov v aplikaciji Calendra z individualnimi in skupinskimi storitvami"
+      : "Weekly Calendra appointment calendar with individual and group services";
+  const customerProof = routeKey === "beautyHair"
+    ? {
+        quote: language === "sl"
+          ? "S Calendro je organizacija terminov precej enostavnejša. Stranke se lahko naročijo same, mi pa imamo ves čas jasen pregled nad urnikom in manj usklajevanja po telefonu ali sporočilih."
+          : "Calendra makes appointment organisation much simpler. Customers can book themselves, while we always have a clear view of the schedule and spend less time coordinating by phone or messages.",
+        name: "Urška Grmek",
+        role: language === "sl" ? "Lastnik, Depilacije UG" : "Owner, Depilacije UG",
+        href: "https://www.depilacijeug.si/",
+        translated: language === "en",
+      }
+    : routeKey === "healthWellbeing"
+      ? {
+          quote: language === "sl"
+            ? "Calendra nam omogoča, da imamo termine, stranke in organizacijo dela pregledno na enem mestu. Posebej nam je pomembno, da je sistem enostaven za uporabo tako za našo ekipo kot za stranke, ki se naročajo na termine."
+            : "Calendra lets us keep appointments, clients and work organisation clearly in one place. It is especially important to us that the system is easy to use both for our team and for clients booking appointments.",
+          name: "Nina Piberčnik",
+          role: language === "sl" ? "Direktor, Inštitut Avisensa" : "Director, Inštitut Avisensa",
+          href: "https://avisensa.com/",
+          translated: language === "en",
+        }
+      : null;
 
   return (
     <div className="min-h-screen bg-background">
@@ -93,12 +124,15 @@ const IndustryDetailPage = () => {
                   <span className="ml-2 rounded-full bg-primary/[0.08] px-3 py-1 text-xs font-semibold text-primary">Calendra</span>
                 </div>
                 <img
-                  src="/hero/calendra-calendar.webp"
-                  alt={language === "sl" ? "Koledar terminov v aplikaciji Calendra" : "Appointment calendar in Calendra"}
-                  width="1536"
-                  height="960"
+                  src={heroImage.src}
+                  srcSet={heroImage.srcSet}
+                  sizes="(min-width: 1024px) 52vw, 100vw"
+                  alt={heroImageAlt}
+                  width={heroImage.width}
+                  height={heroImage.height}
                   loading="eager"
-                  className="mt-3 aspect-[16/10] w-full rounded-2xl object-cover object-left-top"
+                  decoding="async"
+                  className="mt-3 h-auto w-full rounded-2xl object-left-top"
                 />
               </div>
             </div>
@@ -171,28 +205,59 @@ const IndustryDetailPage = () => {
           </div>
         </section>
 
-        <section className="bg-card py-20 md:py-28">
-          <div className="container mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:px-8">
-            <div className="overflow-hidden rounded-[2rem] border border-border/70 bg-background p-3 shadow-xl md:p-4">
-              <img
-                src="/hero/calendra-calendar.webp"
-                alt={language === "sl" ? "Pregled terminov v Calendri" : "Calendra appointment overview"}
-                width="1536"
-                height="960"
-                loading="lazy"
-                className="aspect-[16/10] w-full rounded-2xl object-cover object-center"
+        {routeKey === "fitnessGroups" ? (
+          <section className="bg-card py-20 md:py-28">
+            <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+              <div className="mx-auto max-w-3xl text-center">
+                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.screenshotEyebrow}</span>
+                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.screenshotTitle}</h2>
+                <p className="mt-5 text-lg leading-8 text-muted-foreground">{page.screenshotDescription}</p>
+              </div>
+              <div className="mt-12 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+                <ResponsiveScreenshot
+                  image={MARKETING_IMAGES.bookingTime}
+                  alt={language === "sl" ? "Izbira skupinske vadbe v Calendri z odprtimi termini in številom prostih mest" : "Group class selection in Calendra with open times and remaining places"}
+                  caption={language === "sl" ? "Udeleženec vidi aktualno kapaciteto še preden potrdi prijavo." : "Participants see live capacity before confirming their booking."}
+                />
+                <div className="grid gap-6">
+                  <ResponsiveScreenshot
+                    image={MARKETING_IMAGES.groupParticipants}
+                    alt={language === "sl" ? "Podrobnosti skupine v Calendri s kapaciteto 4 od 16 in seznamom prijavljenih udeležencev" : "Calendra group details showing 4 of 16 places filled and the participant list"}
+                    caption={language === "sl" ? "Na enem mestu so kapaciteta, prosta mesta in seznam prijavljenih." : "Capacity, remaining places and the participant list stay together."}
+                  />
+                  <ResponsiveScreenshot
+                    image={MARKETING_IMAGES.membership}
+                    alt={language === "sl" ? "Denarnica stranke v Calendri z aktivnim mesečnim članstvom za Pilates" : "Calendra client wallet with an active monthly Pilates membership"}
+                    caption={language === "sl" ? "Članstva, paketi, tečaji in boni so povezani s profilom udeleženca." : "Memberships, packages, courses and vouchers connect to the participant profile."}
+                  />
+                </div>
+              </div>
+              <div className="mt-8 text-center">
+                <Button variant="outline" size="lg" className="rounded-xl" asChild>
+                  <a href={getRoutePath("booking", language)}>{language === "sl" ? "Oglejte si spletno naročanje" : "Explore online booking"}<ArrowRight className="h-4 w-4" /></a>
+                </Button>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className="bg-card py-20 md:py-28">
+            <div className="container mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:px-8">
+              <ResponsiveScreenshot
+                image={MARKETING_IMAGES.calendar}
+                alt={language === "sl" ? "Tedenski pregled individualnih in skupinskih terminov v Calendri" : "Weekly view of individual and group appointments in Calendra"}
+                caption={language === "sl" ? "Tedenski pogled poveže različne storitve, odsotnosti in skupinske termine." : "The weekly view combines services, absences and group appointments."}
               />
+              <div>
+                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.screenshotEyebrow}</span>
+                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.screenshotTitle}</h2>
+                <p className="mt-5 text-lg leading-8 text-muted-foreground">{page.screenshotDescription}</p>
+                <Button variant="outline" size="lg" className="mt-7 rounded-xl" asChild>
+                  <a href={getRoutePath("calendar", language)}>{language === "sl" ? "Spoznajte koledar terminov" : "Explore the appointment calendar"}<ArrowRight className="h-4 w-4" /></a>
+                </Button>
+              </div>
             </div>
-            <div>
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.screenshotEyebrow}</span>
-              <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.screenshotTitle}</h2>
-              <p className="mt-5 text-lg leading-8 text-muted-foreground">{page.screenshotDescription}</p>
-              <Button variant="outline" size="lg" className="mt-7 rounded-xl" asChild>
-                <a href={getRoutePath("calendar", language)}>{language === "sl" ? "Spoznajte koledar terminov" : "Explore the appointment calendar"}<ArrowRight className="h-4 w-4" /></a>
-              </Button>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <section className="bg-background py-20 md:py-28">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">
@@ -212,6 +277,22 @@ const IndustryDetailPage = () => {
             </div>
           </div>
         </section>
+
+        {customerProof ? (
+          <section className="bg-background py-16 md:py-20">
+            <div className="container mx-auto max-w-5xl px-4 lg:px-8">
+              <figure className="rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.07] via-card to-accent/[0.05] p-8 shadow-soft md:p-10">
+                <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{language === "sl" ? "Izkušnja uporabnika" : "Customer experience"}</p>
+                <blockquote className="mt-5 font-display text-2xl font-semibold leading-relaxed text-foreground md:text-3xl">“{customerProof.quote}”</blockquote>
+                <figcaption className="mt-7 flex flex-col gap-1 text-sm text-muted-foreground">
+                  <a href={customerProof.href} target="_blank" rel="noreferrer noopener" className="w-fit font-bold text-foreground transition hover:text-primary">{customerProof.name}</a>
+                  <span>{customerProof.role}</span>
+                  {customerProof.translated ? <span className="text-xs">Translated from Slovenian.</span> : null}
+                </figcaption>
+              </figure>
+            </div>
+          </section>
+        ) : null}
 
         <section className="bg-card py-20 md:py-28">
           <div className="container mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-[0.72fr_1.28fr] lg:px-8">
