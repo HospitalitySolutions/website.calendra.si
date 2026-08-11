@@ -28,6 +28,7 @@ import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
+  const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
   const { language, setLanguage } = useSiteLanguage();
   const { pathname } = useLocation();
   const copy = getSiteCopy(language);
@@ -55,9 +56,16 @@ const Navbar = () => {
     getRoutePath("integrations", "en"),
   ];
   const industryPaths = INDUSTRY_ROUTE_KEYS.flatMap((key) => [getRoutePath(key, "sl"), getRoutePath(key, "en")]);
-  const aboutAppActive = [getRoutePath("home", "sl"), getRoutePath("home", "en"), ...featurePaths, ...industryPaths].includes(pathname);
+  const bookingPaths = [getRoutePath("booking", "sl"), getRoutePath("booking", "en")];
+  const aboutAppActive = [getRoutePath("home", "sl"), getRoutePath("home", "en"), ...featurePaths, ...industryPaths, ...bookingPaths].includes(pathname);
+  const customerStoriesPaths = [getRoutePath("customerStories", "sl"), getRoutePath("customerStories", "en")];
+  const blogPaths = [getRoutePath("blog", "sl"), getRoutePath("blog", "en")];
+  const resourcesActive = [...customerStoriesPaths, ...blogPaths].some(
+    (activePath) => pathname === activePath || pathname.startsWith(`${activePath}/`),
+  );
   const solutionsLabel = language === "sl" ? "Rešitve" : "Solutions";
   const aboutAppLabel = copy.nav.aboutApp ?? (language === "sl" ? "O aplikaciji" : "About the app");
+  const resourcesLabel = language === "sl" ? "Vsebine" : "Resources";
 
   const featureMenuItems = useMemo(
     () => [
@@ -124,6 +132,15 @@ const Navbar = () => {
         href: bookingPath,
         icon: ClipboardList,
       },
+      {
+        title: language === "sl" ? "Spletno naročanje" : "Online booking",
+        description:
+          language === "sl"
+            ? "Stranke si lahko termin hitro in preprosto rezervirajo prek spleta."
+            : "Let clients quickly and easily book appointments online.",
+        href: bookingPath,
+        icon: Globe,
+      },
     ],
     [bookingPath, calendarPath, clientManagementPath, homePath, invoicingPath, language, remindersPath],
   );
@@ -166,11 +183,6 @@ const Navbar = () => {
 
   const topLevelLinks = [
     {
-      label: copy.nav.booking,
-      href: bookingPath,
-      activePaths: [getRoutePath("booking", "sl"), getRoutePath("booking", "en")],
-    },
-    {
       label: copy.nav.connect,
       href: connectPath,
       activePaths: [getRoutePath("connect", "sl"), getRoutePath("connect", "en")],
@@ -180,15 +192,24 @@ const Navbar = () => {
       href: pricingPath,
       activePaths: [getRoutePath("pricing", "sl"), getRoutePath("pricing", "en")],
     },
+  ];
+
+  const resourceMenuItems = [
     {
-      label: language === "sl" ? "Zgodbe strank" : "Customer stories",
+      title: language === "sl" ? "Zgodbe strank" : "Customer stories",
+      description:
+        language === "sl"
+          ? "Kako Calendra pomaga različnim podjetjem pri vsakodnevnem delu."
+          : "See how different businesses use Calendra in their day-to-day work.",
       href: getRoutePath("customerStories", language),
-      activePaths: [getRoutePath("customerStories", "sl"), getRoutePath("customerStories", "en")],
     },
     {
-      label: copy.nav.blog,
+      title: copy.nav.blog,
+      description:
+        language === "sl"
+          ? "Praktični nasveti za naročanje, organizacijo dela in poslovanje."
+          : "Practical guides for booking, organisation and running your business.",
       href: getRoutePath("blog", language),
-      activePaths: [getRoutePath("blog", "sl"), getRoutePath("blog", "en")],
     },
   ];
 
@@ -329,6 +350,37 @@ const Navbar = () => {
               </a>
             );
           })}
+
+          <div className="group relative">
+            <button
+              type="button"
+              className={`relative inline-flex items-center gap-1 whitespace-nowrap py-7 text-sm font-medium transition-colors hover:text-foreground ${
+                resourcesActive ? "text-foreground" : "text-muted-foreground"
+              }`}
+            >
+              {resourcesLabel}
+              <ChevronDown className="h-4 w-4 transition group-hover:rotate-180 group-focus-within:rotate-180" aria-hidden="true" />
+              {resourcesActive && <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-primary" aria-hidden="true" />}
+            </button>
+
+            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-50 w-[390px] -translate-x-1/2 translate-y-2 rounded-[24px] border border-border/70 bg-background p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+              <div className="grid gap-2">
+                {resourceMenuItems.map((item) => (
+                  <a
+                    key={item.href}
+                    href={item.href}
+                    className="flex items-center justify-between rounded-2xl px-4 py-4 transition hover:bg-secondary/60"
+                  >
+                    <span>
+                      <span className="block text-sm font-semibold text-foreground">{item.title}</span>
+                      <span className="mt-1 block text-sm leading-5 text-muted-foreground">{item.description}</span>
+                    </span>
+                    <ChevronRight className="ml-4 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="hidden items-center gap-3 xl:flex">
@@ -456,6 +508,38 @@ const Navbar = () => {
                 </a>
               );
             })}
+
+            <div className="rounded-2xl border border-border/60 bg-background p-2">
+              <button
+                type="button"
+                onClick={() => setMobileResourcesOpen((current) => !current)}
+                className={`flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left font-semibold ${
+                  resourcesActive ? "text-primary" : "text-foreground"
+                }`}
+              >
+                <span>{resourcesLabel}</span>
+                <ChevronDown className={`h-4 w-4 text-muted-foreground transition ${mobileResourcesOpen ? "rotate-180" : ""}`} />
+              </button>
+
+              {mobileResourcesOpen && (
+                <div className="mt-2 grid gap-2 px-1 pb-1">
+                  {resourceMenuItems.map((item) => (
+                    <a
+                      key={item.href}
+                      href={item.href}
+                      className="flex items-center justify-between rounded-2xl border border-border/60 px-3 py-3 hover:bg-secondary"
+                      onClick={() => setOpen(false)}
+                    >
+                      <span>
+                        <span className="block text-sm font-semibold text-foreground">{item.title}</span>
+                        <span className="mt-1 block text-sm leading-5 text-muted-foreground">{item.description}</span>
+                      </span>
+                      <ChevronRight className="ml-3 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
 
             <Button variant="hero" size="lg" className="rounded-xl" asChild>
               <a href={TRIAL_SIGNUP_ROUTE}>{copy.nav.trial}</a>
