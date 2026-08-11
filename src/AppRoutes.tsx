@@ -5,6 +5,7 @@ import PrivacyPolicySsr from "./pages/PrivacyPolicy.tsx";
 import TermsOfServiceSsr from "./pages/TermsOfService.tsx";
 import PricingPageSsr from "./pages/PricingPage.tsx";
 import ClientsPageSsr from "./pages/ClientsPage.tsx";
+import BusinessDirectoryPageSsr from "./pages/BusinessDirectoryPage.tsx";
 import PublicCompanyProfilePageSsr from "./pages/PublicCompanyProfilePage.tsx";
 import FeatureDetailPageSsr from "./pages/FeatureDetailPage.tsx";
 import IndustryDetailPageSsr from "./pages/IndustryDetailPage.tsx";
@@ -33,6 +34,9 @@ const PrivacyPolicy = import.meta.env.SSR ? PrivacyPolicySsr : lazy(() => import
 const TermsOfService = import.meta.env.SSR ? TermsOfServiceSsr : lazy(() => import("./pages/TermsOfService.tsx"));
 const PricingPage = import.meta.env.SSR ? PricingPageSsr : lazy(() => import("./pages/PricingPage.tsx"));
 const ClientsPage = import.meta.env.SSR ? ClientsPageSsr : lazy(() => import("./pages/ClientsPage.tsx"));
+const BusinessDirectoryPage = import.meta.env.SSR
+  ? BusinessDirectoryPageSsr
+  : lazy(() => import("./pages/BusinessDirectoryPage.tsx"));
 const PublicCompanyProfilePage = import.meta.env.SSR
   ? PublicCompanyProfilePageSsr
   : lazy(() => import("./pages/PublicCompanyProfilePage.tsx"));
@@ -121,11 +125,13 @@ const AppRoutes = () => (
 
       <Route path="/narocanje" element={<ClientsPage />} />
       <Route path="/en/booking" element={<ClientsPage />} />
+      <Route path="/podjetja" element={<BusinessDirectoryPage />} />
+      <Route path="/en/businesses" element={<BusinessDirectoryPage />} />
       <Route path="/podjetja/:slug" element={<PublicCompanyProfilePage />} />
       <Route path="/en/businesses/:slug" element={<PublicCompanyProfilePage />} />
-      <Route path="/stranke" element={<Navigate to="/narocanje" replace />} />
-      <Route path="/en/clients" element={<Navigate to="/en/booking" replace />} />
-      <Route path="/clients" element={<Navigate to="/en/booking" replace />} />
+      <Route path="/stranke" element={<Navigate to="/podjetja" replace />} />
+      <Route path="/en/clients" element={<Navigate to="/en/businesses" replace />} />
+      <Route path="/clients" element={<Navigate to="/en/businesses" replace />} />
       <Route path="/booking" element={<Navigate to="/en/booking" replace />} />
 
       <Route path="/koledar-terminov" element={<FeatureDetailPage />} />

@@ -18,6 +18,10 @@ const answers: Partial<Record<CanonicalRouteKey, Record<SiteLanguage, string>>> 
     sl: "Spletno naročanje v Calendri strankam omogoča, da 24 ur na dan same izberejo storitev, zaposlenega in prost termin. Rezervacija se takoj zapiše v koledar, stranka pa prejme potrditev ter povezavo za spremembo ali odpoved. Nove spletne strani ne potrebujete: uporabite javno povezavo ali vtičnik.",
     en: "Online booking in Calendra lets customers choose a service, an employee and a free time slot themselves, 24 hours a day. The booking is written straight into the calendar, and the customer receives a confirmation plus links to reschedule or cancel. You do not need a new website: use a public link or the widget.",
   },
+  businesses: {
+    sl: "Imenik podjetij Calendra prikazuje javno objavljene ponudnike, ki so omogočili vidnost v imeniku. Ponudnika lahko poiščete po imenu, dejavnosti ali lokaciji, odprete njegov javni profil in nato nadaljujete neposredno v rezervacijo termina pri izbranem podjetju.",
+    en: "The Calendra business directory lists providers that have enabled public visibility. Search by business name, category or location, open the provider’s public profile and then continue directly to that business’s appointment booking flow.",
+  },
   calendar: {
     sl: "Koledar terminov v Calendri prikaže termine vseh zaposlenih, prostorov in storitev na enem zaslonu. Pri vsaki rezervaciji samodejno preveri delovni čas, odsotnosti in obstoječe termine, zato dvojne rezervacije niso mogoče. Na voljo so dnevni, tedenski in mesečni pogled ter ponavljajoči se termini.",
     en: "The Calendra appointment calendar shows appointments for every employee, room and service on one screen. Each booking automatically checks working hours, absences and existing appointments, so double bookings cannot happen. Daily, weekly and monthly views are available, along with recurring appointments.",

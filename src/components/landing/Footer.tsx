@@ -19,7 +19,8 @@ type FooterLink = {
 const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: FooterLink[]; support: FooterLink[]; legal: FooterLink[] }> = {
   sl: {
     product: [
-      { key: "booking", label: "Naročanje" },
+      { key: "booking", label: "Spletno naročanje" },
+      { key: "businesses", label: "Podjetja" },
       { key: "connect", label: "Calendra Connect" },
       { key: "pricing", label: "Cenik" },
     ],
@@ -51,7 +52,8 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
   },
   en: {
     product: [
-      { key: "booking", label: "Booking" },
+      { key: "booking", label: "Online booking" },
+      { key: "businesses", label: "Businesses" },
       { key: "connect", label: "Calendra Connect" },
       { key: "pricing", label: "Pricing" },
     ],

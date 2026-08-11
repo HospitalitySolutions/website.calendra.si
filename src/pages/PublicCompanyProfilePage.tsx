@@ -9,7 +9,7 @@ import { getDirectoryClientBookingPath, normalizeDirectoryClients, type Director
 import { getPublicCompanyProfile } from "@/lib/public-company-profiles";
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
-import { ArrowLeft, ArrowRight, CalendarDays, CheckCircle2, MapPin, ShieldCheck, Star } from "lucide-react";
+import { ArrowRight, CalendarDays, CheckCircle2, ChevronRight, MapPin, ShieldCheck, Star } from "lucide-react";
 
 const initialsFor = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() || "").join("") || "C";
 
@@ -49,7 +49,8 @@ const PublicCompanyProfilePage = () => {
   if (!staticProfile || !client) return <NotFound />;
 
   const text = language === "sl" ? {
-    back: "Nazaj na naročanje",
+    home: "Domov",
+    directory: "Podjetja",
     verified: "Javno podjetje v Calendri",
     services: "Storitve in področja",
     location: "Lokacija",
@@ -59,7 +60,8 @@ const PublicCompanyProfilePage = () => {
     bookingButton: "Odpri naročanje",
     security: "Rezervacija se zapiše neposredno v koledar podjetja.",
   } : {
-    back: "Back to booking",
+    home: "Home",
+    directory: "Businesses",
     verified: "Public business in Calendra",
     services: "Services and categories",
     location: "Location",
@@ -90,7 +92,13 @@ const PublicCompanyProfilePage = () => {
       <main>
         <section className="border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.05] py-14 md:py-20">
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
-            <a href={language === "sl" ? "/narocanje" : "/en/booking"} className="inline-flex items-center gap-2 text-sm font-semibold text-primary"><ArrowLeft className="h-4 w-4" />{text.back}</a>
+            <nav aria-label={language === "sl" ? "Drobtinice" : "Breadcrumb"} className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+              <a href={language === "sl" ? "/" : "/en"} className="font-medium transition hover:text-primary">{text.home}</a>
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              <a href={language === "sl" ? "/podjetja" : "/en/businesses"} className="font-medium transition hover:text-primary">{text.directory}</a>
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              <span className="font-semibold text-foreground" aria-current="page">{client.name}</span>
+            </nav>
             <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start">
               <div className="flex items-start gap-5">
                 <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-border/70 bg-card text-2xl font-black text-primary shadow-soft">

@@ -15,6 +15,7 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
     home: "Calendra",
     pricing: "Cenik in paketi",
     booking: "Spletno naročanje",
+    businesses: "Podjetja",
     demo: "Rezervirajte predstavitev",
     calendar: "Koledar terminov",
     invoicing: "Računi in plačila",
@@ -45,6 +46,7 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
     home: "Calendra",
     pricing: "Pricing and plans",
     booking: "Online booking",
+    businesses: "Businesses",
     demo: "Book a demo",
     calendar: "Appointment calendar",
     invoicing: "Invoicing and payments",
@@ -81,7 +83,8 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
  */
 const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>> = {
   pricing: ["booking", "calendar", "reminders", "invoicing", "blog"],
-  booking: ["calendar", "reminders", "connect", "integrations", "pricing", "blog"],
+  booking: ["businesses", "calendar", "reminders", "connect", "integrations", "pricing"],
+  businesses: ["booking", "connect", "pricing"],
   demo: ["pricing", "booking", "calendar"],
 
   calendar: ["booking", "reminders", "clientManagement", "beautyHair", "healthWellbeing", "pricing"],

@@ -1,66 +1,38 @@
-import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnswerSummary from "@/components/seo/AnswerSummary";
 import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
 import RelatedPages from "@/components/seo/RelatedPages";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
-import { APP_BASE_URL } from "@/lib/site";
-import { getDirectoryClientBookingPath, isDirectoryClientBookingEnabled, mergeDirectoryClients, normalizeDirectoryClients, type ClientCategory, type DirectoryClient } from "@/lib/company-directory";
-import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
-import {
-  getPublicCompanyProfilePath,
-  publicCompanyProfiles,
-} from "@/lib/public-company-profiles";
 import { getFaqForRoute } from "@/lib/faq";
-import { trackMarketingEvent } from "@/lib/marketing-events";
+import { getRoutePath } from "@/lib/localized-routes";
+import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { useSiteLanguage } from "@/lib/site-language";
 import {
   ArrowRight,
   BellRing,
   CalendarDays,
   CheckCircle2,
-  CreditCard,
-  ExternalLink,
   Link2,
-  MapPin,
   MessageSquareText,
   MonitorSmartphone,
   Search,
   ShieldCheck,
   Sparkles,
-  Star,
   UserRoundCheck,
   Users,
   WalletCards,
 } from "lucide-react";
 
-const categoryLabels: Record<ClientCategory, Record<SiteLanguage, string>> = {
-  salon: { sl: "Salon", en: "Salon" },
-  fitness: { sl: "Fitnes", en: "Fitness" },
-  wellness: { sl: "Wellness", en: "Wellness" },
-  health: { sl: "Zdravje", en: "Health" },
-  consulting: { sl: "Svetovanje", en: "Consulting" },
-};
-
-const categoryClasses: Record<ClientCategory, string> = {
-  salon: "bg-primary/[0.08] text-primary",
-  fitness: "bg-blue-500/[0.10] text-blue-700",
-  wellness: "bg-violet-500/[0.10] text-violet-700",
-  health: "bg-emerald-500/[0.10] text-emerald-700",
-  consulting: "bg-accent/[0.12] text-orange-700",
-};
-
 const copy = {
   sl: {
     badge: "Spletno naročanje s Calendro",
-    title: "Rezervirajte termin ali ponudite spletno naročanje svojim strankam",
+    title: "Spletno naročanje strank 24 ur na dan",
     intro:
-      "Stranka izbere storitev, zaposlenega, datum in način plačila. Calendra preveri dejansko razpoložljivost, zapiše termin v koledar in pošlje ustrezna obvestila.",
-    heroPrimary: "Poiščite podjetje",
-    heroSecondary: "Omogočite naročanje",
-    screenshotAlt: "Koledar in rezervacije v aplikaciji Calendra",
+      "Stranke same izberejo storitev, zaposlenega in prost termin. Calendra preveri dejansko razpoložljivost, zapiše rezervacijo neposredno v koledar ter pošlje potrditev in opomnike brez ročnega usklajevanja.",
+    heroPrimary: "Omogočite naročanje",
+    heroSecondary: "Poiščite podjetje",
+    screenshotAlt: "Koledar in spletne rezervacije v aplikaciji Calendra",
     workflowEyebrow: "Preprost rezervacijski tok",
     workflowTitle: "Kako stranka rezervira termin",
     workflowItems: [
@@ -79,16 +51,11 @@ const copy = {
       { title: "Vtičnik ali javna povezava", description: "Naročanje vgradite na svojo spletno stran ali delite samostojno javno povezavo." },
       { title: "Takojšen zapis v koledar", description: "Potrjena rezervacija se brez prepisovanja pojavi v Calendri in pri izbranem zaposlenem." },
     ],
-    directoryEyebrow: "Naročanje pri podjetjih",
-    directoryTitle: "Poiščite podjetje in rezervirajte termin",
-    directoryIntro: "Spodaj so javno objavljena podjetja, ki uporabljajo Calendro in so omogočila prikaz v imeniku.",
-    searchPlaceholder: "Išči po imenu, storitvi ali lokaciji …",
-    filters: ["Vse", "Salon", "Fitnes", "Wellness", "Zdravje", "Svetovanje"],
-    primaryCta: "Rezerviraj termin",
-    profileCta: "Poglej profil",
-    loading: "Osvežujem seznam podjetij …",
-    emptyTitle: "Ni zadetkov",
-    emptyBody: "Poskusite z drugim iskalnim izrazom ali filtrom.",
+    directoryEyebrow: "Želite rezervirati termin?",
+    directoryTitle: "Poiščite podjetje, ki uporablja Calendro",
+    directoryBody:
+      "Javni imenik je zdaj ločen od predstavitve funkcionalnosti. Tako lahko hitro poiščete ponudnika, pregledate njegov profil in odprete njegovo neposredno rezervacijsko povezavo.",
+    directoryButton: "Odprite imenik podjetij",
     faqEyebrow: "Pogosta vprašanja",
     faqTitle: "Spletno naročanje brez tehničnih zapletov",
     ctaEyebrow: "Za storitvena podjetja",
@@ -98,12 +65,12 @@ const copy = {
   },
   en: {
     badge: "Online booking with Calendra",
-    title: "Book an appointment or offer online booking to your customers",
+    title: "Accept customer bookings 24 hours a day",
     intro:
-      "The customer chooses a service, employee, date and payment method. Calendra checks real availability, adds the appointment to the calendar and sends the right notifications.",
-    heroPrimary: "Find a business",
-    heroSecondary: "Enable online booking",
-    screenshotAlt: "Calendar and appointments in the Calendra application",
+      "Customers choose a service, employee and available time themselves. Calendra checks real availability, writes the booking directly to the calendar and sends confirmations and reminders without manual coordination.",
+    heroPrimary: "Enable online booking",
+    heroSecondary: "Find a business",
+    screenshotAlt: "Calendar and online bookings in the Calendra application",
     workflowEyebrow: "A simple booking flow",
     workflowTitle: "How a customer books",
     workflowItems: [
@@ -122,16 +89,11 @@ const copy = {
       { title: "Website widget or public link", description: "Embed booking on your website or share a standalone public booking link." },
       { title: "Immediate calendar entry", description: "A confirmed booking appears in Calendra and for the selected employee without re-entering data." },
     ],
-    directoryEyebrow: "Book with a business",
-    directoryTitle: "Find a business and book an appointment",
-    directoryIntro: "These businesses use Calendra and have enabled public visibility in the directory.",
-    searchPlaceholder: "Search by name, service or location …",
-    filters: ["All", "Salon", "Fitness", "Wellness", "Health", "Consulting"],
-    primaryCta: "Book an appointment",
-    profileCta: "View profile",
-    loading: "Refreshing businesses …",
-    emptyTitle: "No results",
-    emptyBody: "Try a different search term or filter.",
+    directoryEyebrow: "Looking to book an appointment?",
+    directoryTitle: "Find a business that uses Calendra",
+    directoryBody:
+      "The public business directory is now separate from the product page. Search for a provider, review its public profile and open its direct booking link without mixing customer discovery with Calendra product information.",
+    directoryButton: "Open the business directory",
     faqEyebrow: "Frequently asked questions",
     faqTitle: "Online booking without technical friction",
     ctaEyebrow: "For service businesses",
@@ -141,62 +103,13 @@ const copy = {
   },
 } as const;
 
-const filterCategoryMap: Record<SiteLanguage, Record<string, ClientCategory | "all">> = {
-  sl: { Vse: "all", Salon: "salon", Fitnes: "fitness", Wellness: "wellness", Zdravje: "health", Svetovanje: "consulting" },
-  en: { All: "all", Salon: "salon", Fitness: "fitness", Wellness: "wellness", Health: "health", Consulting: "consulting" },
-};
-
-const initialsFor = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() || "").join("") || "C";
-
-const mergeClients = (language: SiteLanguage, apiClients: DirectoryClient[]) => {
-  const staticClients: DirectoryClient[] = publicCompanyProfiles
-    .filter((profile) => profile.publicEnabled)
-    .map((profile) => ({
-      ...profile,
-      profileSlug: profile.slug,
-      description: profile.localizedDescription[language],
-    }));
-
-  return mergeDirectoryClients(apiClients, staticClients);
-};
-
 const capabilityIcons = [UserRoundCheck, WalletCards, MessageSquareText, BellRing, MonitorSmartphone, CalendarDays] as const;
 const workflowIcons = [Sparkles, Users, CalendarDays, ShieldCheck] as const;
 
 const ClientsPage = () => {
   const { language } = useSiteLanguage();
   const text = copy[language];
-  const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<ClientCategory | "all">("all");
-  const [apiClients, setApiClients] = useState<DirectoryClient[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    setRefreshing(true);
-    fetch(`${APP_BASE_URL}/api/public/location-directory`, { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error(`Directory request failed: ${response.status}`);
-        return response.json();
-      })
-      .then((data) => setApiClients(normalizeDirectoryClients(data, APP_BASE_URL)))
-      .catch((error) => {
-        if (error?.name !== "AbortError") console.warn("Public directory could not be refreshed.", error);
-      })
-      .finally(() => setRefreshing(false));
-    return () => controller.abort();
-  }, []);
-
-  const directoryClients = useMemo(() => mergeClients(language, apiClients), [apiClients, language]);
-
-  const filteredClients = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase();
-    return directoryClients.filter((client) => {
-      const matchesFilter = activeCategory === "all" || client.category === activeCategory;
-      const searchableText = [client.name, client.address, client.category ? categoryLabels[client.category][language] : "", client.description].join(" ").toLowerCase();
-      return matchesFilter && (!normalizedQuery || searchableText.includes(normalizedQuery));
-    });
-  }, [activeCategory, directoryClients, language, query]);
+  const businessesPath = getRoutePath("businesses", language);
 
   return (
     <div className="min-h-screen overflow-hidden bg-background">
@@ -213,8 +126,8 @@ const ClientsPage = () => {
               <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground md:text-xl">{text.intro}</p>
               <AnswerSummary routeKey="booking" className="mt-6" />
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button variant="hero" size="lg" className="rounded-xl" asChild><a href="#podjetja">{text.heroPrimary}<ArrowRight className="h-4 w-4" /></a></Button>
-                <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={TRIAL_SIGNUP_ROUTE}>{text.heroSecondary}</a></Button>
+                <Button variant="hero" size="lg" className="rounded-xl" asChild><a href={TRIAL_SIGNUP_ROUTE}>{text.heroPrimary}<ArrowRight className="h-4 w-4" /></a></Button>
+                <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={businessesPath}>{text.heroSecondary}</a></Button>
               </div>
             </div>
             <div className="relative rounded-[1.75rem] border border-white/80 bg-white/75 p-3 shadow-[0_30px_80px_-35px_hsl(var(--primary)/0.45)]">
@@ -236,39 +149,14 @@ const ClientsPage = () => {
           </div>
         </section>
 
-        <section id="podjetja" className="scroll-mt-24 bg-background py-20 md:py-28">
-          <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-            <div className="max-w-3xl"><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{text.directoryEyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{text.directoryTitle}</h2><p className="mt-4 text-lg leading-8 text-muted-foreground">{text.directoryIntro}</p></div>
-            <div className="mt-9 rounded-3xl border border-border/70 bg-card p-4 shadow-soft md:p-5">
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div className="relative w-full lg:max-w-lg"><Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={text.searchPlaceholder} className="h-14 rounded-2xl border-border bg-background pl-12 text-base shadow-sm" /></div>
-                <div className="flex flex-wrap gap-2">{text.filters.map((filter) => { const filterCategory = filterCategoryMap[language][filter] ?? "all"; const isActive = activeCategory === filterCategory; return <button key={filter} type="button" onClick={() => setActiveCategory(filterCategory)} className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${isActive ? "border-primary/20 bg-primary/[0.10] text-primary shadow-sm" : "border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground"}`}>{filter}</button>; })}</div>
-              </div>
-              {refreshing ? <p className="mt-3 text-xs text-muted-foreground">{text.loading}</p> : null}
+        <section className="container mx-auto max-w-7xl px-4 py-16 lg:px-8 md:py-20">
+          <div className="grid gap-6 rounded-[2rem] border border-border/70 bg-card p-8 shadow-soft md:grid-cols-[1fr_auto] md:items-center md:p-10">
+            <div>
+              <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{text.directoryEyebrow}</p>
+              <h2 className="mt-3 font-display text-3xl font-extrabold text-foreground">{text.directoryTitle}</h2>
+              <p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{text.directoryBody}</p>
             </div>
-
-            {filteredClients.length > 0 ? (
-              <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-                {filteredClients.map((client) => {
-                  const profilePath = client.profileSlug ? getPublicCompanyProfilePath(client.profileSlug, language) : null;
-                  const bookingEnabled = isDirectoryClientBookingEnabled(client);
-                  const bookingPath = getDirectoryClientBookingPath(client);
-
-                  return (
-                    <article key={client.locationId ? `location-${client.locationId}` : client.slug} className="group flex flex-col rounded-3xl border border-border/70 bg-card p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-glow">
-                      <div className="flex items-start justify-between gap-4"><div className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-border/70 bg-background text-lg font-black text-primary shadow-soft">{client.logoUrl ? <img src={client.logoUrl} alt={language === "sl" ? `Logotip podjetja ${client.name}` : `${client.name} company logo`} width="64" height="64" className="h-full w-full object-contain p-1.5" loading="lazy" decoding="async" /> : initialsFor(client.name)}</div>{client.category ? <div className={`rounded-full px-3 py-1 text-xs font-bold ${categoryClasses[client.category]}`}>{categoryLabels[client.category][language]}</div> : null}</div>
-                      <h3 className="mt-6 font-display text-2xl font-extrabold tracking-tight text-foreground">{profilePath ? <a href={profilePath} className="transition hover:text-primary">{client.name}</a> : client.name}</h3>
-                      <p className="mt-3 flex-1 text-sm leading-6 text-muted-foreground">{client.description}</p>
-                      {client.address ? <a href={client.googleMapsUrl} target="_blank" rel="noreferrer noopener" className="mt-5 flex items-start gap-2 rounded-2xl bg-background p-4 text-sm text-muted-foreground transition hover:text-primary"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" /><span>{client.address}</span><ExternalLink className="ml-auto h-3.5 w-3.5 shrink-0" /></a> : null}
-                      <div className="mt-6 grid gap-3">
-                        {bookingEnabled ? <Button variant="hero" size="lg" className="rounded-2xl" asChild><a href={bookingPath} onClick={(event) => { event.preventDefault(); event.stopPropagation(); trackMarketingEvent("public_booking_started", { company_slug: client.slug, company_name: client.name, tenant_code: client.tenantCode || client.tenantSlug || client.slug, location_id: client.locationId, language, source: "directory" }); window.location.assign(bookingPath); }}>{text.primaryCta}<ArrowRight className="h-4 w-4" /></a></Button> : null}
-                        {profilePath ? <Button variant="ghost" asChild><a href={profilePath}>{text.profileCta}</a></Button> : null}
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-            ) : <div className="mt-8 rounded-3xl border border-dashed border-border bg-card p-10 text-center shadow-soft"><Search className="mx-auto h-7 w-7 text-primary" /><h3 className="mt-5 text-2xl font-bold text-foreground">{text.emptyTitle}</h3><p className="mt-2 text-muted-foreground">{text.emptyBody}</p></div>}
+            <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={businessesPath}><Search className="h-4 w-4" />{text.directoryButton}</a></Button>
           </div>
         </section>
 

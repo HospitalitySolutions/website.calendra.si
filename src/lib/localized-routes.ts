@@ -6,6 +6,7 @@ export type CanonicalRouteKey =
   | "home"
   | "pricing"
   | "booking"
+  | "businesses"
   | "demo"
   | "calendar"
   | "invoicing"
@@ -44,6 +45,7 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   home: { sl: "/", en: "/en" },
   pricing: { sl: "/cenik", en: "/en/pricing" },
   booking: { sl: "/narocanje", en: "/en/booking" },
+  businesses: { sl: "/podjetja", en: "/en/businesses" },
   demo: { sl: "/predstavitev", en: "/en/demo" },
   calendar: { sl: "/koledar-terminov", en: "/en/appointment-calendar" },
   invoicing: { sl: "/racuni-in-placila", en: "/en/invoicing-and-payments" },
@@ -92,7 +94,7 @@ export type SitemapRouteMetadata = {
  * Keep this explicit rather than using the build date: sitemap <lastmod> should
  * only move when a page (or shared page output) changes meaningfully.
  */
-export const SHARED_SITE_LAST_MODIFIED = "2026-08-10";
+export const SHARED_SITE_LAST_MODIFIED = "2026-08-11";
 
 export const getSitemapLastModified = (contentLastModified?: string) => {
   if (!contentLastModified) return SHARED_SITE_LAST_MODIFIED;
@@ -102,7 +104,8 @@ export const getSitemapLastModified = (contentLastModified?: string) => {
 export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadata> = {
   home: { changeFrequency: "weekly", priority: { sl: 1, en: 0.9 }, contentLastModified: "2026-07-15" },
   pricing: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-07-15" },
-  booking: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-07-15" },
+  booking: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-08-11" },
+  businesses: { changeFrequency: "weekly", priority: { sl: 0.75, en: 0.65 }, contentLastModified: "2026-08-11" },
   demo: { changeFrequency: "weekly", priority: { sl: 0.8, en: 0.75 }, contentLastModified: "2026-07-22" },
   calendar: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
   invoicing: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
@@ -145,9 +148,9 @@ const legacyAliases: Record<string, string> = {
   "/mobilna-aplikacija": canonicalRoutes.connect.sl,
   "/mobile-app": canonicalRoutes.connect.en,
   "/en/mobile-app": canonicalRoutes.connect.en,
-  "/stranke": canonicalRoutes.booking.sl,
-  "/clients": canonicalRoutes.booking.en,
-  "/en/clients": canonicalRoutes.booking.en,
+  "/stranke": canonicalRoutes.businesses.sl,
+  "/clients": canonicalRoutes.businesses.en,
+  "/en/clients": canonicalRoutes.businesses.en,
   "/booking": canonicalRoutes.booking.en,
   "/support": canonicalRoutes.support.en,
   "/privacy-policy": canonicalRoutes.privacy.en,

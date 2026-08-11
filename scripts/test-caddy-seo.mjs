@@ -14,6 +14,9 @@ const required = [
   "query tenant=*",
   "/narocanje/{http.request.uri.query.tenant}?locationId={http.request.uri.query.locationId}",
   "/narocanje/{http.request.uri.query.tenant} 308",
+  "redir /stranke /podjetja 308",
+  "redir /en/clients /en/businesses 308",
+  "redir /clients /en/businesses 308",
 ];
 
 for (const token of required) {

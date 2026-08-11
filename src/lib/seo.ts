@@ -54,8 +54,12 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     en: { title: "Appointment booking software pricing | Calendra", description: "Compare Calendra plans, included features, additional users, SMS usage and optional modules. Start with a 14-day free trial." },
   },
   booking: {
-    sl: { title: "Spletno naročanje terminov in imenik podjetij | Calendra", description: "Rezervirajte termin pri podjetjih, ki uporabljajo Calendro, ali omogočite spletno naročanje z izbiro storitve, zaposlenega, plačila in opomnikov." },
-    en: { title: "Online appointment booking and business directory | Calendra", description: "Book with businesses using Calendra or offer online booking with service and employee selection, payments, confirmations and reminders." },
+    sl: { title: "Spletno naročanje strank in terminov | Calendra", description: "Omogočite spletno naročanje 24 ur na dan z izbiro storitve, zaposlenega in prostega termina, plačili, potrditvami ter SMS in e-poštnimi opomniki." },
+    en: { title: "Online customer and appointment booking | Calendra", description: "Offer online booking 24 hours a day with service, employee and time-slot selection, payments, confirmations plus SMS and email reminders." },
+  },
+  businesses: {
+    sl: { title: "Podjetja za spletno naročanje | Calendra", description: "Poiščite javno objavljena podjetja, ki uporabljajo Calendro, preglejte njihove profile, lokacije in področja storitev ter odprite neposredno rezervacijo termina." },
+    en: { title: "Businesses offering online booking | Calendra", description: "Find publicly listed businesses that use Calendra, review their profiles, locations and service categories, then open their direct appointment booking flow." },
   },
   demo: {
     sl: { title: "Rezervirajte predstavitev Calendre | 30-minutni video klic", description: "Izberite prost termin za 30-minutno spletno predstavitev Calendre in prejmite potrdilo ter povezavo do video klica po e-pošti." },
@@ -674,7 +678,7 @@ const getProfileSeo = (pathname: string, language: SiteLanguage) => {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
-      { "@type": "ListItem", position: 2, name: language === "sl" ? "Naročanje" : "Booking", item: absoluteUrl(canonicalRoutes.booking[language]) },
+      { "@type": "ListItem", position: 2, name: language === "sl" ? "Podjetja" : "Businesses", item: absoluteUrl(canonicalRoutes.businesses[language]) },
       { "@type": "ListItem", position: 3, name: profile.name, item: absoluteUrl(canonicalPath) },
     ],
   };
@@ -759,7 +763,7 @@ export const getSeoForPathname = (pathname: string) => {
                   ? [softwareSchema(language), pricingProductSchema(language)]
                   : routeKey === "zoom"
                     ? [softwareSchema(language), zoomHowToSchema(language)]
-                    : routeKey === "contact"
+                    : routeKey === "contact" || routeKey === "businesses"
                       ? []
                       : [softwareSchema(language)]),
         personSchema(language),
