@@ -115,12 +115,18 @@ export const loadGoogleAnalytics = () => {
 export const initializeGoogleAnalytics = () => {
   if (typeof window === "undefined" || !GOOGLE_ANALYTICS_ID) return;
 
+  // Advanced Consent Mode: establish a denied default before the Google tag
+  // is requested. The tag may then send limited cookieless measurement pings,
+  // but analytics cookies are unavailable until the visitor grants consent.
   setDefaultConsent();
-  const consent = getGoogleAnalyticsConsent();
-  if (!consent) return;
 
-  updateConsentMode(consent);
-  if (consent === "granted") loadGoogleAnalytics();
+  const consent = getGoogleAnalyticsConsent();
+  if (consent) updateConsentMode(consent);
+
+  // Unlike Basic Consent Mode, Advanced Consent Mode loads the Google tag even
+  // while analytics_storage is denied. This also lets Google/Tag Assistant
+  // detect the installation without needing to interact with the consent UI.
+  loadGoogleAnalytics();
 };
 
 export const setGoogleAnalyticsConsent = (consent: GoogleAnalyticsConsent) => {
@@ -133,10 +139,9 @@ export const setGoogleAnalyticsConsent = (consent: GoogleAnalyticsConsent) => {
   }
 
   updateConsentMode(consent);
+  loadGoogleAnalytics();
 
-  if (consent === "granted") {
-    loadGoogleAnalytics();
-  } else {
+  if (consent === "denied") {
     clearGoogleAnalyticsCookies();
   }
 

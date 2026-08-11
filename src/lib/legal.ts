@@ -14,7 +14,8 @@ export const LEGAL = {
   governingLaw: "Republic of Slovenia",
   hostingRegion: "AWS EU region",
   // Baseline analytics use self-hosted Umami without cookies. Google Analytics 4
-  // is optional and is loaded only after an explicit analytics-consent choice.
+  // uses Advanced Consent Mode: the tag loads with analytics storage denied by
+  // default and only gains analytics-cookie storage after explicit consent.
   websiteAnalyticsEnabled: true,
   websiteAnalyticsProvider: "Umami",
   websiteAnalyticsIsCookieless: true,
@@ -82,8 +83,8 @@ export const SUBPROCESSORS: Subprocessor[] = [
   {
     name: "Google Analytics / Google",
     purpose: {
-      sl: "Merjenje uporabe javne spletne strani in učinkovitosti vsebin po tem, ko obiskovalec dovoli analitiko.",
-      en: "Measuring use of the public website and content effectiveness after the visitor allows analytics.",
+      sl: "Merjenje uporabe javne spletne strani in učinkovitosti vsebin. Pred soglasjem Google tag deluje z zavrnjenim analitičnim shranjevanjem in lahko pošilja omejene meritve brez piškotkov; po soglasju se omogoči podrobnejša analitika.",
+      en: "Measuring use of the public website and content effectiveness. Before consent, the Google tag runs with analytics storage denied and may send limited cookieless measurements; after consent, more detailed analytics is enabled.",
     },
     dataCategories: {
       sl: "Tehnični podatki o uporabi spletne strani, kot so ogledane strani, napotitveni vir, podatki o napravi in brskalniku ter spletni identifikatorji, ki jih obdeluje ponudnik.",
@@ -91,8 +92,8 @@ export const SUBPROCESSORS: Subprocessor[] = [
     },
     region: "EU / global provider infrastructure",
     safeguard: {
-      sl: "Google Analytics se naloži šele po soglasju za analitiko; oglaševalske vrste soglasja ostanejo onemogočene. Uporabljajo se ponudnikovi pogoji obdelave in ustrezni mehanizmi prenosa, kadar so potrebni.",
-      en: "Google Analytics loads only after analytics consent; advertising consent types remain disabled. Provider processing terms and appropriate transfer mechanisms are used where required.",
+      sl: "Google tag uporablja napredni način soglasja: analitično shranjevanje je do soglasja zavrnjeno, zato se analitični piškotki ne nastavijo, Google pa lahko prejme omejene meritve brez piškotkov. Oglaševalske vrste soglasja ostanejo onemogočene. Uporabljajo se ponudnikovi pogoji obdelave in ustrezni mehanizmi prenosa, kadar so potrebni.",
+      en: "The Google tag uses Advanced Consent Mode: analytics storage is denied until consent, so analytics cookies are not set, while Google may receive limited cookieless measurements. Advertising consent types remain disabled. Provider processing terms and appropriate transfer mechanisms are used where required.",
     },
   },
   {

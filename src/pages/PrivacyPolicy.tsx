@@ -52,7 +52,7 @@ const copy = {
     cookiesTitle: "8. Piškotki in analitika",
     cookiesParagraphs: [
       LEGAL.websiteAnalyticsEnabled
-        ? "Osnovni obisk merimo z Umami, analitiko brez piškotkov, ki jo gostimo sami na infrastrukturi v EU. Google Analytics 4 uporabljamo dodatno samo po soglasju obiskovalca za analitiko; Google Analytics se pred soglasjem ne naloži, oglaševalske vrste soglasja pa ostanejo onemogočene."
+        ? "Osnovni obisk merimo z Umami, analitiko brez piškotkov, ki jo gostimo sami na infrastrukturi v EU. Google Analytics 4 uporablja napredni način soglasja: Google tag se naloži z analitičnim shranjevanjem privzeto zavrnjenim. Pred soglasjem ne nastavlja analitičnih piškotkov, Google pa lahko prejme omejene meritve brez piškotkov. Po soglasju se omogoči podrobnejše merjenje. Oglaševalske vrste soglasja ostanejo onemogočene."
         : "Spletna stran trenutno ne uporablja analitike. Lahko uporablja nujne tehnične piškotke ali lokalno shranjevanje za delovanje spletne strani in izbiro jezika.",
       "V Google Analytics ne pošiljamo vsebine obrazcev, imen, e-poštnih naslovov ali telefonskih številk. Izbiro za Google Analytics lahko obiskovalec kadarkoli spremeni v nastavitvah piškotkov. Podrobnosti so opisane v Politiki piškotkov.",
     ],
@@ -124,7 +124,7 @@ const copy = {
     cookiesTitle: "8. Cookies and analytics",
     cookiesParagraphs: [
       LEGAL.websiteAnalyticsEnabled
-        ? "We measure baseline traffic with Umami, a cookieless analytics tool we self-host on EU infrastructure. We additionally use Google Analytics 4 only after the visitor consents to analytics; Google Analytics is not loaded before consent and advertising consent types remain disabled."
+        ? "We measure baseline traffic with Umami, a cookieless analytics tool we self-host on EU infrastructure. Google Analytics 4 uses Advanced Consent Mode: the Google tag loads with analytics storage denied by default. Before consent it does not set analytics cookies, while Google may receive limited cookieless measurements. More detailed measurement is enabled after consent. Advertising consent types remain disabled."
         : "The website does not currently use analytics. It may use strictly necessary technical cookies or local storage for website operation and language choice.",
       "We do not send form contents, names, email addresses or phone numbers to Google Analytics. Visitors can change the Google Analytics choice at any time in cookie settings. Details are described in the Cookie Policy.",
     ],

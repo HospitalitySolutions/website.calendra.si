@@ -13,9 +13,9 @@ const copy = {
         title: "1. Trenutno stanje",
         paragraphs: [
           LEGAL.websiteAnalyticsEnabled
-            ? "Za osnovno merjenje obiska uporabljamo Umami, analitiko brez piškotkov, ki jo gostimo sami na svoji infrastrukturi v EU. Google Analytics 4 uporabljamo dodatno samo, če obiskovalec dovoli analitiko."
+            ? "Za osnovno merjenje obiska uporabljamo Umami, analitiko brez piškotkov, ki jo gostimo sami na svoji infrastrukturi v EU. Google Analytics 4 uporabljamo dodatno z naprednim načinom soglasja."
             : "Spletna stran trenutno ne uporablja analitike.",
-          "Google Analytics se pred soglasjem ne naloži. Če analitiko dovolite, lahko Google Analytics uporablja analitične piškotke oziroma podobne identifikatorje za merjenje uporabe spletne strani. Oglaševalske vrste soglasja ostanejo onemogočene.",
+          "Google tag se naloži z analitičnim shranjevanjem privzeto zavrnjenim. Pred soglasjem ne nastavlja analitičnih piškotkov, lahko pa Googlu pošlje omejene meritve brez piškotkov. Če analitiko dovolite, se analitično shranjevanje omogoči in Google Analytics lahko uporablja analitične piškotke oziroma podobne identifikatorje za podrobnejše merjenje. Oglaševalske vrste soglasja ostanejo onemogočene.",
           "Uporabljamo lahko tudi tehnično nujne piškotke ali lokalno shranjevanje za delovanje spletne strani, izbiro jezika, varnost in shranjevanje vaše izbire glede analitike.",
         ],
       },
@@ -33,7 +33,7 @@ const copy = {
         paragraphs: [
           "Umami gostimo sami na lastni infrastrukturi v EU, zato se podatki o obisku ne posredujejo zunanjim oglaševalskim omrežjem in ne dodajajo novega podobdelovalca.",
           "Umami ne nastavlja piškotkov, ne uporablja prstnih odtisov naprave in ne ustvarja identifikatorjev, ki bi vas prepoznali na drugih spletnih straneh. Ne zbiramo IP naslovov v obliki, ki bi omogočala identifikacijo posameznika.",
-          "Za Umami zato ne zahtevamo soglasja za analitične piškotke. Google Analytics je ločen in se naloži samo po vaši izbiri »Dovoli analitiko«.",
+          "Za Umami zato ne zahtevamo soglasja za analitične piškotke. Google Analytics je ločen in uporablja napredni način soglasja: tag se naloži že z zavrnjenim analitičnim shranjevanjem, analitični piškotki pa se omogočijo šele po vaši izbiri »Dovoli analitiko«.",
           "Google Analytics uporabljamo za dodatno razumevanje ogledov strani, virov obiska in interakcij s spletno stranjo. V Google Analytics ne pošiljamo vsebine obrazcev, imen, e-poštnih naslovov ali telefonskih številk.",
         ],
         bullets: [
@@ -64,9 +64,9 @@ const copy = {
         title: "1. Current status",
         paragraphs: [
           LEGAL.websiteAnalyticsEnabled
-            ? "For baseline traffic measurement we use Umami, a cookieless analytics tool we self-host on our own EU infrastructure. We additionally use Google Analytics 4 only when the visitor allows analytics."
+            ? "For baseline traffic measurement we use Umami, a cookieless analytics tool we self-host on our own EU infrastructure. We additionally use Google Analytics 4 with Advanced Consent Mode."
             : "The website does not currently use analytics.",
-          "Google Analytics is not loaded before consent. If you allow analytics, Google Analytics may use analytics cookies or similar identifiers to measure website usage. Advertising consent types remain disabled.",
+          "The Google tag loads with analytics storage denied by default. Before consent it does not set analytics cookies, but it may send limited cookieless measurements to Google. If you allow analytics, analytics storage is enabled and Google Analytics may use analytics cookies or similar identifiers for more detailed measurement. Advertising consent types remain disabled.",
           "We may also use strictly necessary cookies or local storage for website operation, language selection, security and storing your analytics choice.",
         ],
       },
@@ -84,7 +84,7 @@ const copy = {
         paragraphs: [
           "We self-host Umami on our own EU infrastructure, so traffic data is never shared with external advertising networks and no additional subprocessor is involved.",
           "Umami sets no cookies, does not fingerprint your device and does not create identifiers that could recognise you on other websites. We do not retain IP addresses in a form that identifies an individual.",
-          "We therefore do not request analytics-cookie consent for Umami. Google Analytics is separate and loads only after you choose “Allow analytics”.",
+          "We therefore do not request analytics-cookie consent for Umami. Google Analytics is separate and uses Advanced Consent Mode: the tag loads with analytics storage denied, while analytics cookies are enabled only after you choose “Allow analytics”.",
           "We use Google Analytics for additional understanding of page views, traffic sources and website interactions. We do not send form contents, names, email addresses or phone numbers to Google Analytics.",
         ],
         bullets: [

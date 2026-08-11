@@ -11,14 +11,14 @@ import { useSiteLanguage } from "@/lib/site-language";
 const copy = {
   sl: {
     title: "Nastavitve analitike",
-    text: "Za osnovno merjenje obiska uporabljamo analitiko brez piškotkov. Google Analytics vključimo samo z vašim soglasjem in ga uporabljamo za razumevanje uporabe spletne strani.",
+    text: "Za osnovno merjenje obiska uporabljamo analitiko brez piškotkov. Google tag se naloži z analitičnim shranjevanjem privzeto onemogočenim; brez soglasja ne nastavlja analitičnih piškotkov. Z dovoljenjem omogočite podrobnejše merjenje z Google Analytics.",
     necessary: "Samo nujni",
     analytics: "Dovoli analitiko",
     more: "Več o piškotkih",
   },
   en: {
     title: "Analytics settings",
-    text: "We use cookieless analytics for basic traffic measurement. Google Analytics is enabled only with your consent and is used to understand how the website is used.",
+    text: "We use cookieless analytics for basic traffic measurement. The Google tag loads with analytics storage denied by default and does not set analytics cookies without consent. Allowing analytics enables more detailed measurement with Google Analytics.",
     necessary: "Necessary only",
     analytics: "Allow analytics",
     more: "Cookie details",
