@@ -28,6 +28,8 @@ import DemoBookingPageSsr from "./pages/DemoBookingPage.tsx";
 import BlogIndexPageSsr from "./pages/BlogIndexPage.tsx";
 import BlogArticlePageSsr from "./pages/BlogArticlePage.tsx";
 import AuthorPageSsr from "./pages/AuthorPage.tsx";
+import CustomerStoriesPageSsr from "./pages/CustomerStoriesPage.tsx";
+import CustomerStoryDetailPageSsr from "./pages/CustomerStoryDetailPage.tsx";
 
 const Index = IndexSsr;
 const PrivacyPolicy = import.meta.env.SSR ? PrivacyPolicySsr : lazy(() => import("./pages/PrivacyPolicy.tsx"));
@@ -75,6 +77,8 @@ const DemoBookingPage = import.meta.env.SSR ? DemoBookingPageSsr : lazy(() => im
 const BlogIndexPage = import.meta.env.SSR ? BlogIndexPageSsr : lazy(() => import("./pages/BlogIndexPage.tsx"));
 const BlogArticlePage = import.meta.env.SSR ? BlogArticlePageSsr : lazy(() => import("./pages/BlogArticlePage.tsx"));
 const AuthorPage = import.meta.env.SSR ? AuthorPageSsr : lazy(() => import("./pages/AuthorPage.tsx"));
+const CustomerStoriesPage = import.meta.env.SSR ? CustomerStoriesPageSsr : lazy(() => import("./pages/CustomerStoriesPage.tsx"));
+const CustomerStoryDetailPage = import.meta.env.SSR ? CustomerStoryDetailPageSsr : lazy(() => import("./pages/CustomerStoryDetailPage.tsx"));
 
 const RouteFallback = () => <div className="min-h-screen bg-background" aria-hidden="true" />;
 
@@ -129,6 +133,10 @@ const AppRoutes = () => (
       <Route path="/en/businesses" element={<BusinessDirectoryPage />} />
       <Route path="/podjetja/:slug" element={<PublicCompanyProfilePage />} />
       <Route path="/en/businesses/:slug" element={<PublicCompanyProfilePage />} />
+      <Route path="/zgodbe-strank" element={<CustomerStoriesPage />} />
+      <Route path="/en/customer-stories" element={<CustomerStoriesPage />} />
+      <Route path="/zgodbe-strank/:slug" element={<CustomerStoryDetailPage />} />
+      <Route path="/en/customer-stories/:slug" element={<CustomerStoryDetailPage />} />
       <Route path="/stranke" element={<Navigate to="/podjetja" replace />} />
       <Route path="/en/clients" element={<Navigate to="/en/businesses" replace />} />
       <Route path="/clients" element={<Navigate to="/en/businesses" replace />} />

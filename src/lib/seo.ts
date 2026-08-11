@@ -27,6 +27,7 @@ import {
   getBlogArticlePath,
 } from "@/lib/blog";
 import { getIndustryContent, isIndustryRouteKey, type IndustryRouteKey } from "@/lib/industry-pages";
+import { getCustomerStoryFromPathname, getCustomerStoryPath } from "@/lib/customer-stories";
 import {
   getPublicCompanyProfileFromPathname,
   getPublicCompanyProfilePath,
@@ -60,6 +61,10 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
   businesses: {
     sl: { title: "Podjetja za spletno naročanje | Calendra", description: "Poiščite javno objavljena podjetja, ki uporabljajo Calendro, preglejte njihove profile, lokacije in področja storitev ter odprite neposredno rezervacijo termina." },
     en: { title: "Businesses offering online booking | Calendra", description: "Find publicly listed businesses that use Calendra, review their profiles, locations and service categories, then open their direct appointment booking flow." },
+  },
+  customerStories: {
+    sl: { title: "Zgodbe strank in primeri uporabe | Calendra", description: "Preberite, kako resnična storitvena podjetja uporabljajo Calendro za termine, stranke, spletno naročanje, opomnike, račune in plačila." },
+    en: { title: "Customer stories and real use cases | Calendra", description: "See how real service businesses use Calendra for appointments, client management, online booking, reminders, invoicing and payments." },
   },
   demo: {
     sl: { title: "Rezervirajte predstavitev Calendre | 30-minutni video klic", description: "Izberite prost termin za 30-minutno spletno predstavitev Calendre in prejmite potrdilo ter povezavo do video klica po e-pošti." },
@@ -698,10 +703,95 @@ const getProfileSeo = (pathname: string, language: SiteLanguage) => {
   };
 };
 
+
+const getCustomerStorySeo = (pathname: string, language: SiteLanguage) => {
+  const story = getCustomerStoryFromPathname(pathname);
+  if (!story) return undefined;
+
+  const content = story.content[language];
+  const canonicalPath = getCustomerStoryPath(story.slug, language);
+  const canonicalUrl = absoluteUrl(canonicalPath);
+  const slPath = getCustomerStoryPath(story.slug, "sl");
+  const enPath = getCustomerStoryPath(story.slug, "en");
+  const customerId = `${canonicalUrl}#customer`;
+
+  const customerOrganization = {
+    "@type": "Organization",
+    "@id": customerId,
+    name: story.name,
+    url: story.websiteUrl,
+    logo: {
+      "@type": "ImageObject",
+      url: absoluteUrl(story.logo.src),
+      width: story.logo.width,
+      height: story.logo.height,
+    },
+  };
+
+  const breadcrumbs = {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
+      { "@type": "ListItem", position: 2, name: language === "sl" ? "Zgodbe strank" : "Customer stories", item: absoluteUrl(canonicalRoutes.customerStories[language]) },
+      { "@type": "ListItem", position: 3, name: story.name, item: canonicalUrl },
+    ],
+  };
+
+  return {
+    storySlug: story.slug,
+    language,
+    title: `${content.title} | Calendra`,
+    description: content.description,
+    ogTitle: content.title,
+    ogDescription: content.description,
+    ogImage: absoluteUrl(story.logo.src),
+    canonicalUrl,
+    alternateUrls: { sl: absoluteUrl(slPath), en: absoluteUrl(enPath), xDefault: absoluteUrl(slPath) },
+    noindex: false,
+    storyLastModified: story.lastModified,
+    structuredData: {
+      "@context": "https://schema.org",
+      "@graph": [
+        organizationSchema,
+        websiteSchema(language),
+        customerOrganization,
+        {
+          "@type": "WebPage",
+          "@id": `${canonicalUrl}#webpage`,
+          url: canonicalUrl,
+          name: content.title,
+          description: content.description,
+          inLanguage: language === "sl" ? "sl-SI" : "en",
+          isPartOf: { "@id": `${SITE_URL}/#website` },
+          about: { "@id": customerId },
+          dateModified: story.lastModified,
+        },
+        {
+          "@type": "Article",
+          "@id": `${canonicalUrl}#case-study`,
+          mainEntityOfPage: { "@id": `${canonicalUrl}#webpage` },
+          headline: content.title,
+          description: content.description,
+          inLanguage: language === "sl" ? "sl-SI" : "en",
+          datePublished: story.lastModified,
+          dateModified: story.lastModified,
+          author: { "@id": `${SITE_URL}/#organization` },
+          publisher: { "@id": `${SITE_URL}/#organization` },
+          about: { "@id": customerId },
+        },
+        breadcrumbs,
+      ],
+    },
+  };
+};
+
 export const getSeoForPathname = (pathname: string) => {
   const language = getLanguageFromPathname(pathname);
   const profileSeo = getProfileSeo(pathname, language);
   if (profileSeo) return profileSeo;
+
+  const storySeo = getCustomerStorySeo(pathname, language);
+  if (storySeo) return storySeo;
 
   const articleSeo = getArticleSeo(pathname);
   if (articleSeo) return articleSeo;

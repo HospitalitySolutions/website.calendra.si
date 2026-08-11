@@ -16,6 +16,7 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
     pricing: "Cenik in paketi",
     booking: "Spletno naročanje",
     businesses: "Podjetja",
+    customerStories: "Zgodbe strank",
     demo: "Rezervirajte predstavitev",
     calendar: "Koledar terminov",
     invoicing: "Računi in plačila",
@@ -47,6 +48,7 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
     pricing: "Pricing and plans",
     booking: "Online booking",
     businesses: "Businesses",
+    customerStories: "Customer stories",
     demo: "Book a demo",
     calendar: "Appointment calendar",
     invoicing: "Invoicing and payments",
@@ -83,8 +85,8 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
  */
 const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>> = {
   pricing: ["booking", "calendar", "reminders", "invoicing", "blog"],
-  booking: ["businesses", "calendar", "reminders", "connect", "integrations", "pricing"],
-  businesses: ["booking", "connect", "pricing"],
+  booking: ["businesses", "customerStories", "calendar", "reminders", "connect", "pricing"],
+  businesses: ["booking", "customerStories", "connect", "pricing"],
   demo: ["pricing", "booking", "calendar"],
 
   calendar: ["booking", "reminders", "clientManagement", "beautyHair", "healthWellbeing", "pricing"],
@@ -93,15 +95,16 @@ const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>>
   reminders: ["calendar", "booking", "clientManagement", "beautyHair", "fitnessGroups", "pricing"],
   integrations: ["zoom", "calendar", "invoicing", "consultantsEducators", "booking", "pricing"],
 
-  beautyHair: ["calendar", "reminders", "clientManagement", "invoicing", "booking", "pricing"],
+  beautyHair: ["customerStories", "calendar", "reminders", "clientManagement", "invoicing", "booking"],
   consultantsEducators: ["calendar", "integrations", "zoom", "invoicing", "booking", "pricing"],
-  healthWellbeing: ["calendar", "clientManagement", "reminders", "invoicing", "booking", "pricing"],
+  healthWellbeing: ["customerStories", "calendar", "clientManagement", "reminders", "invoicing", "booking"],
   fitnessGroups: ["calendar", "reminders", "clientManagement", "booking", "connect", "pricing"],
 
   connect: ["booking", "reminders", "calendar", "support"],
   zoom: ["integrations", "calendar", "consultantsEducators", "booking"],
 
-  blog: ["booking", "reminders", "invoicing", "pricing", "author"],
+  blog: ["customerStories", "booking", "reminders", "invoicing", "pricing", "author"],
+  customerStories: ["beautyHair", "healthWellbeing", "booking", "clientManagement", "reminders", "pricing"],
   author: ["blog", "itServices", "booking", "contact"],
 
   itServices: [...IT_SERVICE_ROUTE_KEYS],

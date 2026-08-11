@@ -181,6 +181,11 @@ const Navbar = () => {
       activePaths: [getRoutePath("pricing", "sl"), getRoutePath("pricing", "en")],
     },
     {
+      label: language === "sl" ? "Zgodbe strank" : "Customer stories",
+      href: getRoutePath("customerStories", language),
+      activePaths: [getRoutePath("customerStories", "sl"), getRoutePath("customerStories", "en")],
+    },
+    {
       label: copy.nav.blog,
       href: getRoutePath("blog", language),
       activePaths: [getRoutePath("blog", "sl"), getRoutePath("blog", "en")],

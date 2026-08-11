@@ -12,6 +12,7 @@ import {
 } from "@/lib/industry-pages";
 import { getRouteKeyFromPathname, getRoutePath } from "@/lib/localized-routes";
 import { MARKETING_IMAGES } from "@/lib/marketing-images";
+import { getCustomerStoryPath } from "@/lib/customer-stories";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage } from "@/lib/site-language";
 import {
@@ -66,6 +67,7 @@ const IndustryDetailPage = () => {
         name: "Urška Grmek",
         role: language === "sl" ? "Lastnik, Depilacije UG" : "Owner, Depilacije UG",
         href: "https://www.depilacijeug.si/",
+        storyHref: getCustomerStoryPath("depilacije-ug", language),
         translated: language === "en",
       }
     : routeKey === "healthWellbeing"
@@ -76,6 +78,7 @@ const IndustryDetailPage = () => {
           name: "Nina Piberčnik",
           role: language === "sl" ? "Direktor, Inštitut Avisensa" : "Director, Inštitut Avisensa",
           href: "https://avisensa.com/",
+          storyHref: getCustomerStoryPath("institut-avisensa", language),
           translated: language === "en",
         }
       : null;
@@ -288,6 +291,10 @@ const IndustryDetailPage = () => {
                   <a href={customerProof.href} target="_blank" rel="noreferrer noopener" className="w-fit font-bold text-foreground transition hover:text-primary">{customerProof.name}</a>
                   <span>{customerProof.role}</span>
                   {customerProof.translated ? <span className="text-xs">Translated from Slovenian.</span> : null}
+                  <a href={customerProof.storyHref} className="mt-3 inline-flex w-fit items-center gap-2 font-semibold text-primary">
+                    {language === "sl" ? "Preberite celotno zgodbo stranke" : "Read the full customer story"}
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </a>
                 </figcaption>
               </figure>
             </div>

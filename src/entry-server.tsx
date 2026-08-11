@@ -8,6 +8,7 @@ import { DEFAULT_OG_IMAGE, getSeoForPathname } from "@/lib/seo";
 import { HERO_IMAGE } from "@/lib/hero-media";
 import { buildLlmsFullTxt, buildLlmsTxt } from "@/lib/llms-txt";
 import { getPublicCompanyProfilePath, indexablePublicCompanyProfiles } from "@/lib/public-company-profiles";
+import { customerStories, customerStoryPathnames } from "@/lib/customer-stories";
 import {
   PRICING_CATALOG_SCRIPT_ID,
   PUBLIC_PRICING_ENDPOINT,
@@ -23,6 +24,7 @@ const publicProfilePathnames = indexablePublicCompanyProfiles.flatMap((profile) 
 export const routesToPrerender = [
   ...canonicalPathnames,
   ...publicProfilePathnames,
+  ...customerStoryPathnames,
   ...blogArticlePathnames,
 ];
 export {
@@ -88,6 +90,19 @@ export const getSitemapEntries = () =>
           changeFrequency: "weekly" as const,
           priority: seo.language === "sl" ? 0.7 : 0.6,
           lastModified: getSitemapLastModified(profile?.lastModified),
+        };
+      }
+
+      if ("storySlug" in seo && seo.storySlug) {
+        const story = customerStories.find((item) => item.slug === seo.storySlug);
+        return {
+          pathname,
+          location: seo.canonicalUrl,
+          language: seo.language,
+          alternateUrls: seo.alternateUrls,
+          changeFrequency: "monthly" as const,
+          priority: seo.language === "sl" ? 0.75 : 0.65,
+          lastModified: getSitemapLastModified(story?.lastModified),
         };
       }
 

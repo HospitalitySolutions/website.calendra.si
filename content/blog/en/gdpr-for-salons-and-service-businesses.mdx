@@ -1,76 +1,84 @@
 ---
 title: "GDPR for salons and service businesses"
-description: "Which client data you may keep, for how long, when you actually need consent, and what the data processing agreement with your software vendor must cover."
-answer: "You do not need consent to manage appointments and issue invoices, because that processing rests on contract and legal obligation. You do need consent for marketing messages and for health data. With your software vendor you need a signed data processing agreement and a known list of subprocessors."
+description: "A practical guide to lawful bases, sensitive data, direct marketing, retention and processor agreements for appointment-based businesses."
+answer: "Consent is not automatically required for every appointment-processing activity. Depending on the purpose, contract, legal obligation or another Article 6 GDPR basis may apply. Health data also needs an Article 9 condition, while email and SMS direct marketing in Slovenia is subject to specific electronic-communications rules in addition to GDPR."
 translationKey: gdpr-for-service-businesses
 category: "Privacy and compliance"
 tags: ["GDPR", "privacy", "consent", "data retention"]
 datePublished: "2026-07-26"
+dateModified: "2026-08-11"
 heroImageAlt: "A locked client record drawer in a salon, illustrating personal data protection"
 ---
 
-A salon, massage studio or clinic processes personal data all day long: a name and phone number for the appointment, a service history, sometimes health information as well. GDPR does not forbid any of this. It only requires that for each kind of processing, you know which legal basis you are relying on.
+A salon, massage studio or other appointment-based business processes personal data throughout the day: a name and phone number for a booking, appointment history and, in some activities, health information. GDPR does not prohibit this processing. It requires you to know the purpose and lawful basis, collect only what you need, and explain the processing clearly to the individual.
 
-This article is not legal advice. It is a practical framework that will let you ask your software vendor and your lawyer the right questions.
+This article is not legal advice. It is a practical framework for conversations with your lawyer, accountant and software provider, with Slovenian businesses in mind.
 
-## You do not need consent for appointments
+## Consent is not the default basis for an appointment
 
-The most common mistake is collecting consent for something where consent is the wrong basis. When a customer books an appointment, you enter into a contractual relationship. Processing their name, phone number and chosen service is necessary to perform that contract, so no separate consent is needed. Asking for it would in fact be misleading, because consent can be withdrawn at any time and you cannot deliver the appointment without the data.
+When a client books a service, you need certain information in order to provide that booking. GDPR provides several lawful bases; consent is only one of them. Depending on the workflow, processing ordinary booking data may be necessary to perform a contract or take steps before entering into one. Invoice processing and retention may instead be required by law.
 
-The same applies to invoices. You keep those because the law requires it, not because someone consented.
+The useful rule is not “add a consent checkbox to everything.” It is “identify the purpose, choose the appropriate lawful basis, and tell the individual what you are doing.” The European Data Protection Board provides a practical SME guide for making that assessment.
 
-## When you genuinely need consent
+## Health data needs an additional Article 9 condition
 
-Consent is the right basis in three cases:
+Information about allergies, diagnoses, pregnancy or injuries can be health data, which is a special category of personal data under Article 9 GDPR. For this kind of data, an Article 6 lawful basis alone is not enough; one of the additional Article 9 conditions must also apply.
 
-- **Marketing messages.** A promotion or an invitation to book again is not part of delivering an existing booking. That requires separate, freely given consent that can also be withdrawn.
-- **Health and other sensitive data.** Allergies, diagnoses, pregnancy, injuries. You may keep these where you have explicit consent or another appropriate basis for healthcare activity.
-- **Photographs of the client.** Before-and-after pictures are personal data. Publishing them on social media needs its own consent, separate from consent to store them.
+Explicit consent is one possible condition, but it is not the only one. Certain health-related activities may rely on another condition provided by EU or national law. That is why “health data always requires consent” is too broad a rule.
 
-The important part is that these consents are separate. One combined checkbox covering everything is not valid.
+The same purpose-by-purpose approach applies to client photographs. A photo is personal data, and storing it in a client record is a different purpose from publishing it publicly on social media.
 
-## Where a reminder ends and an advert begins
+## An appointment reminder is not the same as a marketing campaign
 
-The line is usefully simple: a message about an appointment that already exists is part of delivering the service. A message trying to create a new appointment is marketing.
+Separate messages about an existing booking from messages whose purpose is to sell another service.
 
-| Message | Basis |
+| Example | Purpose |
 | --- | --- |
-| Booking confirmation | Contract |
-| Reminder 24 hours before | Contract |
-| Reschedule or cancellation notice | Contract |
-| "It has been a while, shall we book you in?" | Consent |
-| Promotion or discount | Consent |
+| Confirmation of an existing booking | Delivering the booking |
+| Reminder for an existing appointment | Delivering the booking |
+| Reschedule or cancellation notice | Delivering the booking |
+| Promotion, discount or invitation to book again | Direct marketing |
 
-This is why it matters that your software separates transactional messages from campaigns. If everything goes out from one list, your first marketing message will breach the rules by accident. The [Appointment reminders](/en/appointment-reminders) page describes how ours are designed.
+In Slovenia, direct marketing by email and SMS is governed not only by GDPR but also by electronic-communications rules, including ZEKom-2. Prior consent is the general rule, with a limited existing-customer exception for email marketing of similar products or services where a clear and easy opt-out is provided. The exact rule depends on the channel and circumstances, so do not treat a booking checkbox as blanket marketing permission.
 
-## How long to keep data
+See [Appointment reminders](/en/appointment-reminders) for how Calendra separates operational notifications from other communication.
 
-GDPR does not name a number of years; it states a principle. Keep data only as long as you need it. In practice that means three different periods:
+## Retention: define a purpose and period for each category
 
-1. **Invoices and tax records.** The retention period comes from tax law rather than GDPR, and it is considerably longer than the others.
-2. **Appointment history and client notes.** As long as it is genuinely useful for treating that client. Healthcare activities have their own prescribed periods.
-3. **Marketing list.** Until consent is withdrawn, or after a reasonable period of inactivity.
+GDPR uses the storage-limitation principle: keep personal data no longer than necessary for the purpose for which it is processed. That does not mean one retention period applies to everything.
 
-Write these periods down. A retention policy that exists only in the owner's head does not count during an inspection.
+1. **Invoices and tax records.** Retention comes from accounting and tax rules.
+2. **Appointment history and client notes.** The period should be justified by the operational or professional purpose; regulated activities can have additional requirements.
+3. **Marketing data.** Consider the lawful basis, the right to object or withdrawal of consent, and the rules that apply to the communication channel.
 
-## What to require from your software vendor
+A written retention schedule by category is easier to apply consistently than an informal rule that exists only in someone's memory.
 
-The moment you enter client data into hosted software, that vendor becomes your processor while you remain the controller and stay accountable. So check five things before you commit:
+## What to check with a hosted software provider
 
-1. **A data processing agreement.** Signed, not merely mentioned on a page.
-2. **A list of subprocessors.** Who else sees the data: the hosting provider, the SMS gateway, the payment provider.
-3. **The hosting region.** Where the servers physically sit and whether data leaves the EU.
-4. **Export and deletion.** Whether you can export and erase a client's data without raising a support request.
-5. **Breach notification.** Within what period the vendor commits to telling you about a security incident.
+Where a software provider processes personal data on your behalf, it will generally be a processor for that processing. Article 28 GDPR requires a contract or other legal act with specific safeguards. Before choosing a platform, check:
 
-Calendra publishes its [data processing agreement](/en/data-processing-agreement) and [subprocessor list](/en/subprocessors) openly, with no login. That is a useful benchmark for any vendor: if you cannot find the documents yourself, note how long it took to get them.
+1. **Data processing agreement (DPA).** What the processor may do with data and under whose instructions.
+2. **Subprocessors.** Which other providers support hosting, messaging or other parts of the service.
+3. **Data location and transfers.** Whether personal data leaves the EEA and on what transfer mechanism.
+4. **Security measures.** How access, backups, transfers and incidents are handled.
+5. **Support for data-subject rights.** How you locate, export, correct or erase data when a request applies.
 
-## Client rights you must be able to honour
+Calendra publishes its [data processing agreement](/en/data-processing-agreement) and [subprocessor list](/en/subprocessors) openly. The same transparency is a useful benchmark when comparing vendors.
 
-A client has the right to access their data, correct it, erase it and take it with them. In practice that means being able to produce everything you hold about one person within a reasonable time. If the data lives in a paper diary, three spreadsheets and WhatsApp, you cannot. Beyond the time saved, that is one of the more serious arguments for keeping everything in one system.
+## Client rights go beyond erasure
 
-There is more on how requests work with us on the [Data rights](/en/data-rights) page.
+GDPR gives individuals rights including information, access, rectification and, in certain circumstances, erasure, restriction, portability and objection. Not every right applies in the same way under every lawful basis.
 
-## Three things to do this week
+Operationally, you should be able to identify what information you hold about one person and why. That is much harder if records are split across a paper diary, phone, email and several spreadsheets. See [Data rights](/en/data-rights) for the process used with Calendra.
 
-First, check that marketing messages rest on a separate consent rather than a general checkbox. Second, write down retention periods for invoices, client records and marketing. Third, go and find the data processing agreement for the software you use today. If you cannot locate it in five minutes, start there.
+## Three checks to make this week
+
+First, list the data you need for a booking and the lawful basis used for each purpose. Second, separate operational booking messages from direct marketing and check the Slovenian rules for your email or SMS channel. Third, locate your current provider's DPA, subprocessor list and international-transfer information.
+
+## Sources and further reading
+
+- [EDPB: Process personal data lawfully](https://www.edpb.europa.eu/sme/be-compliant/process-personal-data-lawfully_en)
+- [EDPB: Respect individuals' rights](https://www.edpb.europa.eu/sme/be-compliant/respect-individuals-rights_en)
+- [EDPB: Data controller or data processor](https://www.edpb.europa.eu/sme/learn-the-basics/data-controller-or-data-processor_en)
+- [Slovenian Information Commissioner: spam and direct marketing](https://www.ip-rs.si/mnenja-zvop-2/prijava-kr%C5%A1itev-spam-1741333122)
+- [Slovenian Information Commissioner: controller obligations and ZEKom-2](https://www.ip-rs.si/mnenja-zvop-2/obveznosti-upravljavca-glede-varstva-osebnih-podatkov-1680775733)

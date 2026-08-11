@@ -9,6 +9,7 @@ import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import { ExternalLink, Star } from "lucide-react";
 import { motion } from "framer-motion";
 import { GOOGLE_BUSINESS_PROFILE_URL } from "@/lib/external-profiles";
+import { getCustomerStoryPath } from "@/lib/customer-stories";
 
 type Review = {
   name: string;
@@ -21,6 +22,7 @@ type Review = {
   sourceUrl?: string;
   sourceLabel?: string;
   sourceKind?: "google" | "customer";
+  storySlug?: string;
 };
 
 type TestimonialsCopy = {
@@ -34,6 +36,7 @@ type TestimonialsCopy = {
   permissionNote: string;
   previous: string;
   next: string;
+  readStory: string;
   reviews: Review[];
 };
 
@@ -49,6 +52,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
     permissionNote: "Mnenja so objavljena z dovoljenjem avtorjev.",
     previous: "Prejšnje mnenje",
     next: "Naslednje mnenje",
+    readStory: "Preberite zgodbo stranke",
     reviews: [
       {
         name: "Latanya Powell",
@@ -70,6 +74,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         sourceUrl: "https://avisensa.com/",
         sourceLabel: "Inštitut Avisensa",
         sourceKind: "customer",
+        storySlug: "institut-avisensa",
       },
       {
         name: "Urška Grmek",
@@ -81,6 +86,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         sourceUrl: "https://www.depilacijeug.si/",
         sourceLabel: "Depilacije UG",
         sourceKind: "customer",
+        storySlug: "depilacije-ug",
       },
       {
         name: "Andrej Novak",
@@ -104,6 +110,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
     permissionNote: "Reviews are republished with the authors’ permission.",
     previous: "Previous review",
     next: "Next review",
+    readStory: "Read the customer story",
     reviews: [
       {
         name: "Latanya Powell",
@@ -125,6 +132,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         sourceUrl: "https://avisensa.com/",
         sourceLabel: "Inštitut Avisensa",
         sourceKind: "customer",
+        storySlug: "institut-avisensa",
       },
       {
         name: "Urška Grmek",
@@ -137,6 +145,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         sourceUrl: "https://www.depilacijeug.si/",
         sourceLabel: "Depilacije UG",
         sourceKind: "customer",
+        storySlug: "depilacije-ug",
       },
       {
         name: "Andrej Novak",
@@ -257,6 +266,14 @@ const Testimonials = () => {
                       <p className="font-semibold text-foreground">{review.name}</p>
                       <p className="text-sm text-muted-foreground">{review.context}</p>
                       {review.translated && <p className="mt-0.5 text-xs text-muted-foreground">{copy.translated}</p>}
+                      {review.storySlug ? (
+                        <a
+                          href={getCustomerStoryPath(review.storySlug, language)}
+                          className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
+                        >
+                          {copy.readStory}
+                        </a>
+                      ) : null}
                     </div>
                   </div>
                 </motion.article>

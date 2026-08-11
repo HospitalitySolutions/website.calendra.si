@@ -1,12 +1,14 @@
 import type { SiteLanguage } from "@/lib/site-language";
 import { getArticleAlternates, getArticleFromPathname, getBlogArticlePath } from "@/lib/blog";
 import { getPublicCompanyProfileFromPathname, getPublicCompanyProfilePath } from "@/lib/public-company-profiles";
+import { getCustomerStoryFromPathname, getCustomerStoryPath } from "@/lib/customer-stories";
 
 export type CanonicalRouteKey =
   | "home"
   | "pricing"
   | "booking"
   | "businesses"
+  | "customerStories"
   | "demo"
   | "calendar"
   | "invoicing"
@@ -46,6 +48,7 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   pricing: { sl: "/cenik", en: "/en/pricing" },
   booking: { sl: "/narocanje", en: "/en/booking" },
   businesses: { sl: "/podjetja", en: "/en/businesses" },
+  customerStories: { sl: "/zgodbe-strank", en: "/en/customer-stories" },
   demo: { sl: "/predstavitev", en: "/en/demo" },
   calendar: { sl: "/koledar-terminov", en: "/en/appointment-calendar" },
   invoicing: { sl: "/racuni-in-placila", en: "/en/invoicing-and-payments" },
@@ -106,6 +109,7 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   pricing: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-07-15" },
   booking: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-08-11" },
   businesses: { changeFrequency: "weekly", priority: { sl: 0.75, en: 0.65 }, contentLastModified: "2026-08-11" },
+  customerStories: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-11" },
   demo: { changeFrequency: "weekly", priority: { sl: 0.8, en: 0.75 }, contentLastModified: "2026-07-22" },
   calendar: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-11" },
   invoicing: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-11" },
@@ -196,6 +200,9 @@ export const getCanonicalPathname = (pathname: string) => {
   const profile = getPublicCompanyProfileFromPathname(normalized);
   if (profile) return getPublicCompanyProfilePath(profile.slug, getLanguageFromPathname(normalized));
 
+  const story = getCustomerStoryFromPathname(normalized);
+  if (story) return getCustomerStoryPath(story.slug, getLanguageFromPathname(normalized));
+
   const article = getArticleFromPathname(normalized);
   if (article) return getBlogArticlePath(article.slug, article.language);
 
@@ -212,6 +219,9 @@ export const getCanonicalPathname = (pathname: string) => {
 export const getLocalizedPathname = (pathname: string, language: SiteLanguage) => {
   const profile = getPublicCompanyProfileFromPathname(pathname);
   if (profile) return getPublicCompanyProfilePath(profile.slug, language);
+
+  const story = getCustomerStoryFromPathname(pathname);
+  if (story) return getCustomerStoryPath(story.slug, language);
 
   const article = getArticleFromPathname(pathname);
   if (article) return getArticleAlternates(article)[language];

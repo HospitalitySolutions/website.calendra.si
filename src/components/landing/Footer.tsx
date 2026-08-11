@@ -21,6 +21,7 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
     product: [
       { key: "booking", label: "Spletno naročanje" },
       { key: "businesses", label: "Podjetja" },
+      { key: "customerStories", label: "Zgodbe strank" },
       { key: "connect", label: "Calendra Connect" },
       { key: "pricing", label: "Cenik" },
     ],
@@ -54,6 +55,7 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
     product: [
       { key: "booking", label: "Online booking" },
       { key: "businesses", label: "Businesses" },
+      { key: "customerStories", label: "Customer stories" },
       { key: "connect", label: "Calendra Connect" },
       { key: "pricing", label: "Pricing" },
     ],
