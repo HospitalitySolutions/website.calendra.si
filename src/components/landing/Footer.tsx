@@ -32,6 +32,7 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
       { key: "reminders", label: "SMS in e-poštni opomniki" },
       { key: "invoicing", label: "Računi in plačila" },
       { key: "integrations", label: "Integracije" },
+      { key: "materialManagement", label: "Materialno poslovanje" },
     ],
     support: [
       { key: "blog", label: "Nasveti in vodniki" },
@@ -66,6 +67,7 @@ const footerLinks: Record<"sl" | "en", { product: FooterLink[]; features: Footer
       { key: "reminders", label: "SMS and email reminders" },
       { key: "invoicing", label: "Invoicing and payments" },
       { key: "integrations", label: "Integrations" },
+      { key: "materialManagement", label: "Inventory management" },
     ],
     support: [
       { key: "blog", label: "Guides and advice" },

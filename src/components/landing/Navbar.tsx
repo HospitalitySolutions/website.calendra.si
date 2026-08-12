@@ -14,6 +14,7 @@ import {
   CreditCard,
   Globe,
   Menu,
+  Package,
   Receipt,
   Scissors,
   Sparkles,
@@ -41,6 +42,7 @@ const Navbar = () => {
   const clientManagementPath = getRoutePath("clientManagement", language);
   const remindersPath = getRoutePath("reminders", language);
   const invoicingPath = getRoutePath("invoicing", language);
+  const materialManagementPath = getRoutePath("materialManagement", language);
   const contactPath = getRoutePath("contact", language);
 
   const featurePaths = [
@@ -54,6 +56,8 @@ const Navbar = () => {
     getRoutePath("reminders", "en"),
     getRoutePath("integrations", "sl"),
     getRoutePath("integrations", "en"),
+    getRoutePath("materialManagement", "sl"),
+    getRoutePath("materialManagement", "en"),
   ];
   const industryPaths = INDUSTRY_ROUTE_KEYS.flatMap((key) => [getRoutePath(key, "sl"), getRoutePath(key, "en")]);
   const bookingPaths = [getRoutePath("booking", "sl"), getRoutePath("booking", "en")];
@@ -141,8 +145,17 @@ const Navbar = () => {
         href: bookingPath,
         icon: Globe,
       },
+      {
+        title: language === "sl" ? "Materialno poslovanje" : "Inventory management",
+        description:
+          language === "sl"
+            ? "Artikli, zaloga, nabava, inventura in poraba materiala na enem mestu."
+            : "Items, stock, purchasing, inventory counts and material usage in one place.",
+        href: materialManagementPath,
+        icon: Package,
+      },
     ],
-    [bookingPath, calendarPath, clientManagementPath, homePath, invoicingPath, language, remindersPath],
+    [bookingPath, calendarPath, clientManagementPath, homePath, invoicingPath, language, materialManagementPath, remindersPath],
   );
 
   const solutionMenuItems = useMemo(
@@ -259,13 +272,16 @@ const Navbar = () => {
                   </div>
 
                   <div className="grid gap-4 sm:grid-cols-2">
-                    {featureMenuItems.map((item) => {
+                    {featureMenuItems.map((item, index) => {
                       const Icon = item.icon;
+                      const isMaterialManagement = index === featureMenuItems.length - 1;
                       return (
                         <a
                           key={item.title}
                           href={item.href}
-                          className="group/item rounded-3xl border border-border/70 bg-background px-5 py-4 transition duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md"
+                          className={`group/item rounded-3xl border border-border/70 bg-background px-5 py-4 transition duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md ${
+                            isMaterialManagement ? "sm:col-span-2" : ""
+                          }`}
                         >
                           <div className="flex items-start gap-4">
                             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/[0.08] text-primary">
@@ -284,8 +300,8 @@ const Navbar = () => {
                   <div className="mt-4 rounded-2xl border border-primary/10 bg-primary/[0.04] px-4 py-3 text-sm text-muted-foreground">
                     <span className="font-semibold text-primary">Calendra</span>{" "}
                     {language === "sl"
-                      ? "združuje koledar, stranke, plačila, opomnike in analitiko na enem mestu."
-                      : "brings together scheduling, clients, payments, reminders and analytics in one place."}
+                      ? "združuje koledar, stranke, plačila, opomnike, analitiko in materialno poslovanje na enem mestu."
+                      : "brings together scheduling, clients, payments, reminders, analytics and inventory management in one place."}
                   </div>
                 </div>
 

@@ -4,7 +4,7 @@ import type { SiteLanguage } from "@/lib/site-language";
 
 export type FeatureRouteKey = Extract<
   CanonicalRouteKey,
-  "calendar" | "invoicing" | "clientManagement" | "reminders" | "integrations"
+  "calendar" | "invoicing" | "clientManagement" | "reminders" | "integrations" | "materialManagement"
 >;
 
 export const FEATURE_ROUTE_KEYS: FeatureRouteKey[] = [
@@ -13,6 +13,7 @@ export const FEATURE_ROUTE_KEYS: FeatureRouteKey[] = [
   "clientManagement",
   "reminders",
   "integrations",
+  "materialManagement",
 ];
 
 type TitledBody = {
@@ -1335,6 +1336,322 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
           question: "What happens if a client gives no phone number?",
           answer:
             "If no phone number is available, the notification is sent by email. Which fields are required at booking is configured in your booking settings.",
+        },
+      ],
+    },
+  },
+  materialManagement: {
+    sl: {
+      eyebrow: "Materialno poslovanje",
+      title: "Materialno poslovanje za storitvena podjetja",
+      intro:
+        "Calendra poveže artikle, zalogo, dobavitelje, nabavo, premike, inventuro in porabo materiala v en pregled, da veste, kaj imate na zalogi in kaj je treba pravočasno naročiti.",
+      heroPoints: [
+        "Artikli, kategorije in dobavitelji na enem mestu",
+        "Zaloga po poslovalnicah, premiki in minimalne zaloge",
+        "Inventura, poraba materiala in poročila brez ločenih preglednic",
+      ],
+      useCasesTitle: "Kje materialno poslovanje prihrani največ časa",
+      useCasesIntro:
+        "Modul je namenjen podjetjem, kjer se ob storitvah redno porabljajo izdelki, pripomočki ali drug material in je zato pomembno pravočasno spremljanje zaloge.",
+      useCases: [
+        {
+          title: "Kozmetični salon s potrošnim materialom",
+          body:
+            "Voske, kreme, rokavice, trakove in druge artikle vodite v isti evidenci. Pri vsakem artiklu vidite trenutno zalogo, minimalno zalogo in lokacijo, zato lahko hitro odkrijete, kaj bo treba naročiti pred naslednjim delovnim tednom.",
+        },
+        {
+          title: "Frizerski salon z barvami in nego",
+          body:
+            "Barve, oksidante, šampone in nego razvrstite po kategorijah ter jih povežete z dobavitelji. Nabave in porabo spremljate skozi premike zaloge, namesto da bi stanje popravljali v ločeni Excelovi tabeli.",
+        },
+        {
+          title: "Več poslovalnic z ločeno zalogo",
+          body:
+            "Zalogo spremljate po lokacijah in zabeležite premik materiala iz ene poslovalnice v drugo. Tako je razvidno, kje se artikel dejansko nahaja in kdo je izvedel spremembo.",
+        },
+        {
+          title: "Redna inventura in priprava naročila",
+          body:
+            "Ob inventuri primerjate dejansko in evidentirano stanje, pri artiklih z nizko zalogo pa dobite jasen pregled za pripravo naslednjega naročila dobavitelju.",
+        },
+      ],
+      benefitsTitle: "Kaj pridobite z urejeno evidenco materiala",
+      benefits: [
+        {
+          title: "Manj nepričakovanih zmanjkanj",
+          body:
+            "Minimalna zaloga in pregled artiklov z nizkim stanjem omogočata, da naročilo pripravite, preden material zmanjka med delovnim dnevom.",
+        },
+        {
+          title: "Jasna sled zaloge",
+          body:
+            "Nabave, porabo, premike med lokacijami in inventurne popravke vodite v isti evidenci, zato je lažje razložiti, zakaj se je stanje artikla spremenilo.",
+        },
+        {
+          title: "Manj ročnega dela",
+          body:
+            "Artikli, dobavitelji, zaloga in poročila niso več razpršeni med zvezek, preglednico in e-pošto, ampak so dostopni v istem poslovnem sistemu kot ostali procesi Calendre.",
+        },
+      ],
+      comparisonTitle: "Preglednica zaloge v primerjavi s Calendro",
+      comparisonIntro:
+        "Excel je dovolj za zelo majhen seznam artiklov, vendar hitro postane nepregleden, ko material uporablja več zaposlenih ali več poslovalnic.",
+      comparisonManualLabel: "Excel, zvezek ali ročna evidenca",
+      comparisonCalendraLabel: "Calendra",
+      comparisonRows: [
+        {
+          aspect: "Trenutna zaloga artikla",
+          manual: "Stanje je odvisno od tega, ali je nekdo ročno vpisal zadnjo spremembo.",
+          calendra: "Zaloga je prikazana ob artiklu in po izbrani lokaciji.",
+        },
+        {
+          aspect: "Artikel pod minimalno zalogo",
+          manual: "Opazite ga šele ob ročnem pregledu ali ko materiala zmanjka.",
+          calendra: "Nizka zaloga je zbrana v posebnem pregledu in pripravljena za ukrepanje.",
+        },
+        {
+          aspect: "Premik med poslovalnicami",
+          manual: "Sprememba v dveh tabelah ali opomba, ki jo je težko slediti.",
+          calendra: "Premik se zabeleži kot transakcija med izvorno in ciljno lokacijo.",
+        },
+        {
+          aspect: "Dobavitelji in nabava",
+          manual: "Kontakti, artikli in naročila so pogosto v različnih dokumentih.",
+          calendra: "Dobavitelji in nabava so del istega modula kot artikli in zaloga.",
+        },
+        {
+          aspect: "Inventura",
+          manual: "Ročno preračunavanje razlik in popravljanje preglednice.",
+          calendra: "Inventuro izvedete v modulu in evidentirate dejansko stanje.",
+        },
+        {
+          aspect: "Pregled porabe",
+          manual: "Porabo je treba seštevati iz več virov.",
+          calendra: "Premiki in poraba so zbrani v poročilih za izbrano obdobje.",
+        },
+      ],
+      processTitle: "Od artikla do urejene zaloge",
+      process: [
+        "Dodate artikle, kategorije, enote in po potrebi dobavitelje.",
+        "Določite začetno stanje, lokacijo in minimalno zalogo za pomembne artikle.",
+        "Nabave, porabo in premike med poslovalnicami sproti evidentirate v modulu.",
+        "Z inventuro in poročili preverite dejansko stanje, porabo ter artikle, ki jih je treba naročiti.",
+      ],
+      screenshot: {
+        ...MARKETING_IMAGES.materialManagement,
+        alt: "Pregled materialnega poslovanja v Calendri z zalogo, nizko zalogo, premiki, porabo in predlogi za naročilo",
+        caption: "Pregled materialnega poslovanja z zalogo, premiki, porabo in opozorili za nizko zalogo.",
+      },
+      detailsTitle: "Kako je materialno poslovanje organizirano",
+      details: [
+        {
+          title: "Artikli in kategorije",
+          body:
+            "Vsak artikel ima svoje osnovne podatke, kategorijo, mersko enoto in stanje. Z iskanjem in filtri lahko hitro zožite seznam na material, ki ga potrebujete.",
+        },
+        {
+          title: "Zaloga po lokacijah",
+          body:
+            "Če uporabljate več poslovalnic, se stanje vodi po lokacijah. Premik med poslovalnicami ustvari jasno sled, namesto da bi isto spremembo ročno vnašali na dveh mestih.",
+        },
+        {
+          title: "Nabava in dobavitelji",
+          body:
+            "Dobavitelje ter nabavne dogodke vodite skupaj z artikli. Pregled nizke zaloge pomaga pripraviti naslednje naročilo na podlagi dejanskega stanja.",
+        },
+        {
+          title: "Inventura, poraba in poročila",
+          body:
+            "Inventura omogoči uskladitev evidentiranega in dejanskega stanja, poročila pa pomagajo pregledati porabo in premike v izbranem obdobju.",
+        },
+      ],
+      faqTitle: "Pogosta vprašanja o materialnem poslovanju",
+      finalTitle: "Vodite termine in material v istem sistemu",
+      finalBody:
+        "Calendra vam omogoča, da ob koledarju, strankah in računih uredite tudi zalogo ter porabo materiala. Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice.",
+      faq: [
+        {
+          question: "Ali lahko zalogo vodim ločeno po poslovalnicah?",
+          answer:
+            "Da. Zalogo lahko spremljate po lokacijah in evidentirate premike materiala med poslovalnicami, tako da je razvidno, kje se artikel nahaja.",
+        },
+        {
+          question: "Ali Calendra pokaže artikle z nizko zalogo?",
+          answer:
+            "Da. Za artikle lahko določite minimalno zalogo, pregled materialnega poslovanja pa izpostavi artikle, ki so pod nastavljenim pragom.",
+        },
+        {
+          question: "Ali lahko vodim dobavitelje in nabavo?",
+          answer:
+            "Da. Modul vključuje dobavitelje in nabavo, zato so podatki o artiklih, nabavnih dogodkih in zalogi zbrani v isti evidenci.",
+        },
+        {
+          question: "Kako poteka inventura?",
+          answer:
+            "V inventuri preverite dejansko količino artiklov in jo uskladite z evidentiranim stanjem. Popravki ostanejo del zgodovine zaloge.",
+        },
+        {
+          question: "Ali lahko spremljam porabo materiala?",
+          answer:
+            "Da. Porabo in druge premike zaloge lahko evidentirate ter jih nato pregledate v poročilih za izbrano obdobje.",
+        },
+      ],
+    },
+    en: {
+      eyebrow: "Inventory management",
+      title: "Inventory and material management for service businesses",
+      intro:
+        "Calendra brings items, stock, suppliers, purchasing, stock movements, inventory counts and material usage into one overview, so you always know what is available and what needs to be ordered next.",
+      heroPoints: [
+        "Items, categories and suppliers in one place",
+        "Stock by location, transfers and minimum-stock levels",
+        "Inventory counts, material usage and reports without separate spreadsheets",
+      ],
+      useCasesTitle: "Where inventory management saves the most time",
+      useCasesIntro:
+        "The module is designed for businesses that regularly consume products, supplies or other materials while providing services and need a reliable view of stock.",
+      useCases: [
+        {
+          title: "Beauty salon with consumable supplies",
+          body:
+            "Track wax, creams, gloves, strips and other items in one inventory. For every item you can see current stock, minimum stock and location, making it easier to see what should be reordered before the next busy week.",
+        },
+        {
+          title: "Hair salon with colour and care products",
+          body:
+            "Organise colour, developer, shampoos and care products by category and supplier. Purchasing and usage can be followed through stock movements instead of manually adjusting a separate spreadsheet.",
+        },
+        {
+          title: "Multiple branches with separate stock",
+          body:
+            "Track inventory by location and record a transfer when material moves from one branch to another. This keeps the actual location of an item and the history of changes clear.",
+        },
+        {
+          title: "Regular stock counts and replenishment",
+          body:
+            "During an inventory count, compare actual quantities with recorded stock. Items below minimum stock are easy to identify when preparing the next supplier order.",
+        },
+      ],
+      benefitsTitle: "What an organised material inventory gives you",
+      benefits: [
+        {
+          title: "Fewer unexpected stock-outs",
+          body:
+            "Minimum-stock levels and a low-stock overview help you prepare an order before essential material runs out during the working day.",
+        },
+        {
+          title: "A clear stock trail",
+          body:
+            "Purchases, usage, transfers between locations and inventory adjustments live in the same record, making it easier to understand why stock changed.",
+        },
+        {
+          title: "Less manual administration",
+          body:
+            "Items, suppliers, stock and reports no longer need to be spread across notebooks, spreadsheets and email; they sit alongside the rest of your Calendra workflow.",
+        },
+      ],
+      comparisonTitle: "Spreadsheets compared with Calendra inventory management",
+      comparisonIntro:
+        "A spreadsheet works for a very small item list, but becomes difficult to maintain once several employees or locations use the same materials.",
+      comparisonManualLabel: "Spreadsheet, notebook or manual record",
+      comparisonCalendraLabel: "Calendra",
+      comparisonRows: [
+        {
+          aspect: "Current stock",
+          manual: "The number is only accurate if every recent change was entered manually.",
+          calendra: "Stock is shown directly for the item and selected location.",
+        },
+        {
+          aspect: "Item below minimum stock",
+          manual: "It is noticed during a manual check or when the item has already run out.",
+          calendra: "Low-stock items are collected in a dedicated overview for action.",
+        },
+        {
+          aspect: "Transfer between branches",
+          manual: "Two spreadsheet edits or a note that is difficult to trace later.",
+          calendra: "A transfer is recorded between the source and destination locations.",
+        },
+        {
+          aspect: "Suppliers and purchasing",
+          manual: "Contacts, items and purchase records are often stored in separate documents.",
+          calendra: "Suppliers and purchasing are part of the same module as items and stock.",
+        },
+        {
+          aspect: "Inventory count",
+          manual: "Differences are calculated and corrected manually in the spreadsheet.",
+          calendra: "Run an inventory count in the module and record the actual quantity.",
+        },
+        {
+          aspect: "Usage reporting",
+          manual: "Usage needs to be assembled from several sources.",
+          calendra: "Movements and material usage are available in reports for the selected period.",
+        },
+      ],
+      processTitle: "From an item record to organised stock",
+      process: [
+        "Add items, categories, units and suppliers where needed.",
+        "Set opening stock, location and minimum stock for important items.",
+        "Record purchasing, usage and transfers between locations as they happen.",
+        "Use inventory counts and reports to verify actual stock, usage and items that should be reordered.",
+      ],
+      screenshot: {
+        ...MARKETING_IMAGES.materialManagement,
+        alt: "Calendra inventory management overview showing stock, low-stock items, movements, usage and reorder suggestions",
+        caption: "Inventory management overview with stock, movements, usage and low-stock alerts.",
+      },
+      detailsTitle: "How inventory management is organised",
+      details: [
+        {
+          title: "Items and categories",
+          body:
+            "Each item has its own basic information, category, unit and stock level. Search and filters make it easy to narrow the list to the material you need.",
+        },
+        {
+          title: "Stock by location",
+          body:
+            "If you use several branches, stock is tracked by location. Transfers create a clear trail instead of requiring the same change to be entered manually in two places.",
+        },
+        {
+          title: "Purchasing and suppliers",
+          body:
+            "Keep suppliers and purchasing activity alongside the item catalogue. The low-stock view helps prepare the next order from the actual stock position.",
+        },
+        {
+          title: "Inventory counts, usage and reports",
+          body:
+            "Inventory counts reconcile recorded and actual quantities, while reports help review usage and stock movements over a selected period.",
+        },
+      ],
+      faqTitle: "Inventory management questions",
+      finalTitle: "Manage appointments and materials in the same system",
+      finalBody:
+        "Alongside calendars, clients and invoicing, Calendra can also organise stock and material usage. The free trial lasts 14 days and does not require a credit card.",
+      faq: [
+        {
+          question: "Can I track stock separately by location?",
+          answer:
+            "Yes. Stock can be tracked by location and material transfers between branches can be recorded, so it is clear where each item is held.",
+        },
+        {
+          question: "Does Calendra show low-stock items?",
+          answer:
+            "Yes. You can set a minimum stock level for an item, and the inventory overview highlights items that fall below that threshold.",
+        },
+        {
+          question: "Can I manage suppliers and purchasing?",
+          answer:
+            "Yes. The module includes suppliers and purchasing, keeping item, purchasing and stock information together in one record.",
+        },
+        {
+          question: "How do inventory counts work?",
+          answer:
+            "During an inventory count, you enter the actual quantity and reconcile it with the recorded stock. Adjustments remain part of the stock history.",
+        },
+        {
+          question: "Can I track material usage?",
+          answer:
+            "Yes. Material usage and other stock movements can be recorded and then reviewed in reports for the selected period.",
         },
       ],
     },

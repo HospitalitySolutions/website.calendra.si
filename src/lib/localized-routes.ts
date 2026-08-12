@@ -15,6 +15,7 @@ export type CanonicalRouteKey =
   | "clientManagement"
   | "reminders"
   | "integrations"
+  | "materialManagement"
   | "beautyHair"
   | "consultantsEducators"
   | "healthWellbeing"
@@ -55,6 +56,7 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   clientManagement: { sl: "/upravljanje-strank", en: "/en/client-management" },
   reminders: { sl: "/sms-opomniki", en: "/en/appointment-reminders" },
   integrations: { sl: "/integracije", en: "/en/integrations" },
+  materialManagement: { sl: "/materialno-poslovanje", en: "/en/inventory-management" },
   beautyHair: { sl: "/za-lepotne-in-frizerske-salone", en: "/en/for-beauty-and-hair-salons" },
   consultantsEducators: { sl: "/za-svetovalce-in-izobrazevalce", en: "/en/for-consultants-and-educators" },
   healthWellbeing: { sl: "/za-zdravje-in-dobro-pocutje", en: "/en/for-health-and-wellbeing" },
@@ -97,7 +99,7 @@ export type SitemapRouteMetadata = {
  * Keep this explicit rather than using the build date: sitemap <lastmod> should
  * only move when a page (or shared page output) changes meaningfully.
  */
-export const SHARED_SITE_LAST_MODIFIED = "2026-08-11";
+export const SHARED_SITE_LAST_MODIFIED = "2026-08-12";
 
 export const getSitemapLastModified = (contentLastModified?: string) => {
   if (!contentLastModified) return SHARED_SITE_LAST_MODIFIED;
@@ -116,6 +118,7 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   clientManagement: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-11" },
   reminders: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-11" },
   integrations: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
+  materialManagement: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-12" },
   beautyHair: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-08-11" },
   consultantsEducators: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },
   healthWellbeing: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },

@@ -152,6 +152,8 @@ const AppRoutes = () => (
       <Route path="/en/appointment-reminders" element={<FeatureDetailPage />} />
       <Route path="/integracije" element={<FeatureDetailPage />} />
       <Route path="/en/integrations" element={<FeatureDetailPage />} />
+      <Route path="/materialno-poslovanje" element={<FeatureDetailPage />} />
+      <Route path="/en/inventory-management" element={<FeatureDetailPage />} />
 
       <Route path="/za-lepotne-in-frizerske-salone" element={<IndustryDetailPage />} />
       <Route path="/en/for-beauty-and-hair-salons" element={<IndustryDetailPage />} />

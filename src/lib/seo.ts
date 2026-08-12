@@ -90,6 +90,10 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     sl: { title: "Integracije za naročanje: Google Koledar, Zoom in plačila | Calendra", description: "Povežite Calendro z Google Koledarjem, Zoomom, spletnimi plačili, e-pošto, SMS sporočili in spletnim vtičnikom." },
     en: { title: "Booking integrations: Google Calendar, Zoom and payments | Calendra", description: "Connect Calendra with Google Calendar, Zoom, online payments, email, SMS and a website booking widget." },
   },
+  materialManagement: {
+    sl: { title: "Materialno poslovanje in evidenca zaloge | Calendra", description: "Vodite artikle, zalogo po lokacijah, dobavitelje, nabavo, premike zaloge, inventuro in porabo materiala v Calendri." },
+    en: { title: "Inventory and material management for service businesses | Calendra", description: "Manage items, stock by location, suppliers, purchasing, stock movements, inventory counts and material usage in Calendra." },
+  },
   beautyHair: {
     sl: { title: "Program za kozmetični in frizerski salon | Calendra", description: "Spletno naročanje strank, urniki zaposlenih, različne storitve, prostori, opomniki, plačila in računi za kozmetični ali frizerski salon." },
     en: { title: "Booking software for beauty, hair and cosmetic salons | Calendra", description: "Online booking, employee schedules, flexible services, rooms, reminders, payments and invoices for beauty, hair and cosmetic salons." },
@@ -263,8 +267,8 @@ const softwareSchema = (language: SiteLanguage) => ({
   url: SITE_URL,
   inLanguage: language === "sl" ? "sl-SI" : "en",
   description: language === "sl"
-    ? "Slovenska platforma za spletno naročanje, koledar terminov, opomnike, račune, plačila, analitiko in upravljanje strank."
-    : "A booking and appointment management platform for service businesses, including reminders, invoicing, payments, analytics and client management.",
+    ? "Slovenska platforma za spletno naročanje, koledar terminov, opomnike, račune, plačila, analitiko, upravljanje strank in materialno poslovanje."
+    : "A booking and appointment management platform for service businesses, including reminders, invoicing, payments, analytics, client management and inventory management.",
   offers: {
     "@type": "Offer",
     price: formatPrice(cheapestPlan().monthlyGross),

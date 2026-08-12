@@ -42,6 +42,10 @@ const answers: Partial<Record<CanonicalRouteKey, Record<SiteLanguage, string>>> 
     sl: "Calendra se poveže z Google Koledarjem za dvosmerno sinhronizacijo, z Zoomom za samodejno ustvarjanje povezav do video srečanj in s Stripom za spletna plačila ter predplačila. Na svojo obstoječo spletno stran lahko dodate rezervacijski vtičnik brez programiranja.",
     en: "Calendra connects to Google Calendar for two-way sync, to Zoom for automatically generated video meeting links and to Stripe for online payments and deposits. You can add the booking widget to your existing website without writing any code.",
   },
+  materialManagement: {
+    sl: "Materialno poslovanje v Calendri združi artikle, zalogo, dobavitelje, nabavo, premike, inventuro in porabo materiala na enem mestu. Zalogo lahko spremljate po poslovalnicah, hitro opazite artikle pod minimalno zalogo ter pregledate premike in porabo brez ločenih preglednic.",
+    en: "Inventory management in Calendra brings items, stock, suppliers, purchasing, movements, inventory counts and material usage into one place. Track stock by location, spot items below minimum stock quickly and review movements and usage without separate spreadsheets.",
+  },
   connect: {
     sl: "Calendra Connect je brezplačna mobilna aplikacija za stranke, na voljo za iOS in Android. V njej rezervirate, prestavite ali odpoveste termin, prejemate obvestila ter na enem mestu spremljate termine pri vseh ponudnikih, ki uporabljajo Calendro.",
     en: "Calendra Connect is a free mobile app for customers, available for iOS and Android. Use it to book, reschedule or cancel appointments, receive notifications and follow appointments with every provider that uses Calendra from one place.",
