@@ -1,0 +1,5 @@
+Delete this obsolete file from the website source after applying the update:
+src/pages/BusinessDirectoryPage.tsx
+
+The /ponudniki and /en/providers list routes now redirect to /za-stranke and /en/for-customers.
+Provider detail routes such as /ponudniki/:slug remain in use.

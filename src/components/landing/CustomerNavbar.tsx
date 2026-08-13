@@ -34,9 +34,7 @@ const CustomerNavbar = () => {
   const nextPath = `${pathname}${search}`;
   const loginPath = `${CUSTOMER_LOGIN_ROUTE}?next=${encodeURIComponent(nextPath)}`;
 
-  const links = [
-    { label: "Calendra Connect", href: connectPath },
-  ];
+  const downloadLabel = "Download the app";
 
   const accountLinks = [
     { label: language === "sl" ? "Moj profil" : "My profile", href: "/racun/profil", icon: UserRound },
@@ -71,7 +69,7 @@ const CustomerNavbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/35 bg-background/90 backdrop-blur-xl">
-      <div className="container mx-auto flex h-20 items-center justify-between gap-4 px-4 lg:px-8">
+      <div className="container relative mx-auto flex h-20 items-center justify-between gap-4 px-4 lg:px-8">
         <div className="flex items-center gap-4">
           <a href={customerPath} className="flex items-center">
             <img src={WORDMARK.src} alt="Calendra" width={WORDMARK.width} height={WORDMARK.height} className="h-8 w-auto md:h-9" />
@@ -92,24 +90,22 @@ const CustomerNavbar = () => {
           </div>
         </div>
 
-        <div className="hidden items-center gap-7 xl:flex">
-          {links.map((link) => (
-            <a key={link.href} href={link.href} className="text-sm font-medium text-muted-foreground transition hover:text-foreground">
-              {link.label}
-            </a>
-          ))}
+        <div className="absolute left-1/2 hidden -translate-x-1/2 items-center justify-center xl:flex">
+          <Button variant="hero" className="rounded-xl" asChild>
+            <a href={customerPath}><CalendarDays className="h-4 w-4" />{language === "sl" ? "Poišči termin" : "Find an appointment"}</a>
+          </Button>
         </div>
 
         <div className="hidden items-center gap-3 xl:flex">
+          <Button variant="ghost" className="rounded-xl font-medium" asChild>
+            <a href={connectPath}>{downloadLabel}</a>
+          </Button>
+
           <Button variant="outline" className="rounded-xl bg-transparent" asChild>
             <a href={getRoutePath("home", language)}>
               <Briefcase className="h-4 w-4 text-primary" />
               {language === "sl" ? "Za podjetje" : "For business"}
             </a>
-          </Button>
-
-          <Button variant="hero" className="rounded-xl" asChild>
-            <a href={customerPath}><CalendarDays className="h-4 w-4" />{language === "sl" ? "Poišči termin" : "Find an appointment"}</a>
           </Button>
 
           {isAuthenticated ? (
@@ -183,21 +179,19 @@ const CustomerNavbar = () => {
               <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             </div>
 
+            <Button variant="hero" size="lg" className="rounded-xl" asChild>
+              <a href={customerPath} onClick={() => setOpen(false)}><CalendarDays className="h-4 w-4" />{language === "sl" ? "Poišči termin" : "Find an appointment"}</a>
+            </Button>
+
+            <Button variant="ghost" size="lg" className="rounded-xl" asChild>
+              <a href={connectPath} onClick={() => setOpen(false)}>{downloadLabel}</a>
+            </Button>
+
             <Button variant="outline" size="lg" className="rounded-xl bg-transparent" asChild>
               <a href={getRoutePath("home", language)} onClick={() => setOpen(false)}>
                 <Briefcase className="h-4 w-4 text-primary" />
                 {language === "sl" ? "Za podjetje" : "For business"}
               </a>
-            </Button>
-
-            {links.map((link) => (
-              <a key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-xl px-3 py-2.5 font-medium text-foreground hover:bg-secondary/70">
-                {link.label}
-              </a>
-            ))}
-
-            <Button variant="hero" size="lg" className="rounded-xl" asChild>
-              <a href={customerPath}><CalendarDays className="h-4 w-4" />{language === "sl" ? "Poišči termin" : "Find an appointment"}</a>
             </Button>
 
             {isAuthenticated ? (

@@ -1,11 +1,10 @@
 import { lazy, Suspense } from "react";
-import { Navigate, Route, Routes, useParams } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useParams } from "react-router-dom";
 import IndexSsr from "./pages/Index.tsx";
 import PrivacyPolicySsr from "./pages/PrivacyPolicy.tsx";
 import TermsOfServiceSsr from "./pages/TermsOfService.tsx";
 import PricingPageSsr from "./pages/PricingPage.tsx";
 import ClientsPageSsr from "./pages/ClientsPage.tsx";
-import BusinessDirectoryPageSsr from "./pages/BusinessDirectoryPage.tsx";
 import PublicCompanyProfilePageSsr from "./pages/PublicCompanyProfilePage.tsx";
 import FeatureDetailPageSsr from "./pages/FeatureDetailPage.tsx";
 import IndustryDetailPageSsr from "./pages/IndustryDetailPage.tsx";
@@ -33,6 +32,7 @@ import CustomerStoryDetailPageSsr from "./pages/CustomerStoryDetailPage.tsx";
 import CustomerLandingPageSsr from "./pages/CustomerLandingPage.tsx";
 import LoginChooserPageSsr from "./pages/LoginChooserPage.tsx";
 import { getPublicCompanyProfilePath } from "./lib/public-company-profiles.ts";
+import { getRoutePath } from "./lib/localized-routes.ts";
 import type { SiteLanguage } from "./lib/site-language.ts";
 
 const Index = IndexSsr;
@@ -40,9 +40,6 @@ const PrivacyPolicy = import.meta.env.SSR ? PrivacyPolicySsr : lazy(() => import
 const TermsOfService = import.meta.env.SSR ? TermsOfServiceSsr : lazy(() => import("./pages/TermsOfService.tsx"));
 const PricingPage = import.meta.env.SSR ? PricingPageSsr : lazy(() => import("./pages/PricingPage.tsx"));
 const ClientsPage = import.meta.env.SSR ? ClientsPageSsr : lazy(() => import("./pages/ClientsPage.tsx"));
-const BusinessDirectoryPage = import.meta.env.SSR
-  ? BusinessDirectoryPageSsr
-  : lazy(() => import("./pages/BusinessDirectoryPage.tsx"));
 const PublicCompanyProfilePage = import.meta.env.SSR
   ? PublicCompanyProfilePageSsr
   : lazy(() => import("./pages/PublicCompanyProfilePage.tsx"));
@@ -87,6 +84,12 @@ const CustomerLandingPage = import.meta.env.SSR ? CustomerLandingPageSsr : lazy(
 const LoginChooserPage = import.meta.env.SSR ? LoginChooserPageSsr : lazy(() => import("./pages/LoginChooserPage.tsx"));
 
 const RouteFallback = () => <div className="min-h-screen bg-background" aria-hidden="true" />;
+
+
+const LegacyDirectoryRedirect = ({ language }: { language: SiteLanguage }) => {
+  const { search, hash } = useLocation();
+  return <Navigate to={`${getRoutePath("customers", language)}${search}${hash}`} replace />;
+};
 
 const LegacyProviderRedirect = ({ language }: { language: SiteLanguage }) => {
   const { slug = "" } = useParams();
@@ -146,21 +149,21 @@ const AppRoutes = () => (
       <Route path="/en/for-business" element={<Navigate to="/en" replace />} />
       <Route path="/prijava" element={<LoginChooserPage />} />
       <Route path="/en/login" element={<LoginChooserPage />} />
-      <Route path="/ponudniki" element={<BusinessDirectoryPage />} />
-      <Route path="/en/providers" element={<BusinessDirectoryPage />} />
+      <Route path="/ponudniki" element={<LegacyDirectoryRedirect language="sl" />} />
+      <Route path="/en/providers" element={<LegacyDirectoryRedirect language="en" />} />
       <Route path="/ponudniki/:slug" element={<PublicCompanyProfilePage />} />
       <Route path="/en/providers/:slug" element={<PublicCompanyProfilePage />} />
-      <Route path="/podjetja" element={<Navigate to="/ponudniki" replace />} />
-      <Route path="/en/businesses" element={<Navigate to="/en/providers" replace />} />
+      <Route path="/podjetja" element={<LegacyDirectoryRedirect language="sl" />} />
+      <Route path="/en/businesses" element={<LegacyDirectoryRedirect language="en" />} />
       <Route path="/podjetja/:slug" element={<LegacyProviderRedirect language="sl" />} />
       <Route path="/en/businesses/:slug" element={<LegacyProviderRedirect language="en" />} />
       <Route path="/zgodbe-strank" element={<CustomerStoriesPage />} />
       <Route path="/en/customer-stories" element={<CustomerStoriesPage />} />
       <Route path="/zgodbe-strank/:slug" element={<CustomerStoryDetailPage />} />
       <Route path="/en/customer-stories/:slug" element={<CustomerStoryDetailPage />} />
-      <Route path="/stranke" element={<Navigate to="/ponudniki" replace />} />
-      <Route path="/en/clients" element={<Navigate to="/en/providers" replace />} />
-      <Route path="/clients" element={<Navigate to="/en/providers" replace />} />
+      <Route path="/stranke" element={<LegacyDirectoryRedirect language="sl" />} />
+      <Route path="/en/clients" element={<LegacyDirectoryRedirect language="en" />} />
+      <Route path="/clients" element={<LegacyDirectoryRedirect language="en" />} />
       <Route path="/booking" element={<Navigate to="/en/booking" replace />} />
 
       <Route path="/koledar-terminov" element={<FeatureDetailPage />} />

@@ -719,8 +719,7 @@ const getProfileSeo = (pathname: string, language: SiteLanguage) => {
     itemListElement: [
       { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
       { "@type": "ListItem", position: 2, name: language === "sl" ? "Za stranke" : "For customers", item: absoluteUrl(canonicalRoutes.customers[language]) },
-      { "@type": "ListItem", position: 3, name: language === "sl" ? "Ponudniki" : "Providers", item: absoluteUrl(canonicalRoutes.businesses[language]) },
-      { "@type": "ListItem", position: 4, name: profile.name, item: absoluteUrl(canonicalPath) },
+      { "@type": "ListItem", position: 3, name: profile.name, item: absoluteUrl(canonicalPath) },
     ],
   };
 

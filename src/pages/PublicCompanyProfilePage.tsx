@@ -308,8 +308,6 @@ const PublicCompanyProfilePage = () => {
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
               <a href={getRoutePath("customers", language)} className="font-medium transition hover:text-primary">{text.customers}</a>
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
-              <a href={getRoutePath("businesses", language)} className="font-medium transition hover:text-primary">{text.directory}</a>
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
               <span className="font-semibold text-foreground" aria-current="page">{client.name}</span>
             </nav>
             <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start">

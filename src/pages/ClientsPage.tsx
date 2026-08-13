@@ -129,7 +129,7 @@ const workflowIcons = [Sparkles, Users, CalendarDays, ShieldCheck] as const;
 const ClientsPage = () => {
   const { language } = useSiteLanguage();
   const text = copy[language];
-  const businessesPath = getRoutePath("businesses", language);
+  const customerSearchPath = getRoutePath("customers", language);
 
   return (
     <div className="min-h-screen overflow-hidden bg-background">
@@ -147,7 +147,7 @@ const ClientsPage = () => {
               <AnswerSummary routeKey="booking" className="mt-6" />
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button variant="hero" size="lg" className="rounded-xl" asChild><a href={TRIAL_SIGNUP_ROUTE}>{text.heroPrimary}<ArrowRight className="h-4 w-4" /></a></Button>
-                <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={businessesPath}>{text.heroSecondary}</a></Button>
+                <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={customerSearchPath}>{text.heroSecondary}</a></Button>
               </div>
             </div>
             <div className="relative rounded-[1.75rem] border border-white/80 bg-white/75 p-3 shadow-[0_30px_80px_-35px_hsl(var(--primary)/0.45)]">
@@ -229,7 +229,7 @@ const ClientsPage = () => {
               <h2 className="mt-3 font-display text-3xl font-extrabold text-foreground">{text.directoryTitle}</h2>
               <p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{text.directoryBody}</p>
             </div>
-            <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={businessesPath}><Search className="h-4 w-4" />{text.directoryButton}</a></Button>
+            <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={customerSearchPath}><Search className="h-4 w-4" />{text.directoryButton}</a></Button>
           </div>
         </section>
 

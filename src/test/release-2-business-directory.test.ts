@@ -4,17 +4,17 @@ import { getSeoForPathname } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 import { indexablePublicCompanyProfiles } from "@/lib/public-company-profiles";
 
-describe("Release 2 business directory split", () => {
-  it("gives the directory its own reciprocal canonical routes", () => {
+describe("Customer search consolidation", () => {
+  it("keeps old directory URLs available while consolidating legacy aliases onto the customer page", () => {
     expect(getRouteKeyFromPathname("/ponudniki")).toBe("businesses");
     expect(getRouteKeyFromPathname("/en/providers")).toBe("businesses");
-    expect(getRouteKeyFromPathname("/podjetja")).toBe("businesses");
+    expect(getRouteKeyFromPathname("/podjetja")).toBe("customers");
     expect(getLocalizedPathname("/ponudniki", "en")).toBe("/en/providers");
     expect(getLocalizedPathname("/en/providers", "sl")).toBe("/ponudniki");
-    expect(getLegacyRedirectTarget("/podjetja")).toBe("/ponudniki");
-    expect(getLegacyRedirectTarget("/stranke")).toBe("/ponudniki");
-    expect(getLegacyRedirectTarget("/clients")).toBe("/en/providers");
-    expect(getLegacyRedirectTarget("/en/clients")).toBe("/en/providers");
+    expect(getLegacyRedirectTarget("/podjetja")).toBe("/za-stranke");
+    expect(getLegacyRedirectTarget("/stranke")).toBe("/za-stranke");
+    expect(getLegacyRedirectTarget("/clients")).toBe("/en/for-customers");
+    expect(getLegacyRedirectTarget("/en/clients")).toBe("/en/for-customers");
   });
 
   it("keeps the booking page focused on the product instead of the directory", () => {
@@ -26,7 +26,7 @@ describe("Release 2 business directory split", () => {
     expect(enBooking.canonicalUrl).toBe(`${SITE_URL}/en/booking`);
   });
 
-  it("uses the directory as the parent breadcrumb for public business profiles", () => {
+  it("uses the customer search page as the parent breadcrumb for public business profiles", () => {
     const profile = indexablePublicCompanyProfiles[0];
     expect(profile).toBeDefined();
 
@@ -40,8 +40,8 @@ describe("Release 2 business directory split", () => {
 
       expect(breadcrumb).toBeDefined();
       expect(breadcrumb?.itemListElement[1]?.item).toBe(`${SITE_URL}${canonicalRoutes.customers[language]}`);
-      expect(breadcrumb?.itemListElement[2]?.item).toBe(`${SITE_URL}${canonicalRoutes.businesses[language]}`);
-      expect(breadcrumb?.itemListElement[3]?.item).toBe(`${SITE_URL}${pathname}`);
+      expect(breadcrumb?.itemListElement[2]?.item).toBe(`${SITE_URL}${pathname}`);
+      expect(breadcrumb?.itemListElement).toHaveLength(3);
     }
   });
 });

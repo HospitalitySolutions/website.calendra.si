@@ -89,8 +89,8 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
  */
 const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>> = {
   pricing: ["booking", "calendar", "reminders", "invoicing", "blog"],
-  booking: ["businesses", "customerStories", "calendar", "reminders", "connect", "pricing"],
-  customers: ["businesses", "connect"],
+  booking: ["customers", "customerStories", "calendar", "reminders", "connect", "pricing"],
+  customers: ["connect", "booking"],
   businesses: ["customers", "connect", "booking", "customerStories"],
   demo: ["pricing", "booking", "calendar"],
 

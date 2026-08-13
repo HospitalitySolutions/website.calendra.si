@@ -2,7 +2,7 @@ import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import AppRoutes from "./AppRoutes.tsx";
 import { allBlogArticles, blogArticlePathnames } from "@/lib/blog";
-import { canonicalPathnames, getLanguageFromPathname, getSitemapLastModified, sitemapRouteMetadata } from "@/lib/localized-routes";
+import { canonicalPathnames, canonicalRoutes, getLanguageFromPathname, getSitemapLastModified, sitemapRouteMetadata } from "@/lib/localized-routes";
 import { SiteLanguageProvider } from "@/lib/site-language";
 import { DEFAULT_OG_IMAGE, getSeoForPathname } from "@/lib/seo";
 import { HERO_IMAGE } from "@/lib/hero-media";
@@ -21,8 +21,10 @@ const publicProfilePathnames = indexablePublicCompanyProfiles.flatMap((profile) 
   getPublicCompanyProfilePath(profile.slug, "en"),
 ]);
 
+const removedDirectoryPathnames = new Set([canonicalRoutes.businesses.sl, canonicalRoutes.businesses.en]);
+
 export const routesToPrerender = [
-  ...canonicalPathnames,
+  ...canonicalPathnames.filter((pathname) => !removedDirectoryPathnames.has(pathname)),
   ...publicProfilePathnames,
   ...customerStoryPathnames,
   ...blogArticlePathnames,

@@ -14,11 +14,13 @@ const required = [
   "query tenant=*",
   "/narocanje/{http.request.uri.query.tenant}?locationId={http.request.uri.query.locationId}",
   "/narocanje/{http.request.uri.query.tenant} 308",
-  "redir /podjetja /ponudniki 308",
-  "redir /en/businesses /en/providers 308",
-  "redir /stranke /ponudniki 308",
-  "redir /en/clients /en/providers 308",
-  "redir /clients /en/providers 308",
+  "redir /ponudniki /za-stranke 308",
+  "redir /en/providers /en/for-customers 308",
+  "redir /podjetja /za-stranke 308",
+  "redir /en/businesses /en/for-customers 308",
+  "redir /stranke /za-stranke 308",
+  "redir /en/clients /en/for-customers 308",
+  "redir /clients /en/for-customers 308",
 ];
 
 for (const token of required) {

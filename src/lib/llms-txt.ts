@@ -22,7 +22,7 @@ type RouteGroup = {
 const routeGroups: RouteGroup[] = [
   {
     heading: { sl: "Glavne strani", en: "Core pages" },
-    routeKeys: ["home", "pricing", "booking", "customers", "businesses", "customerStories", "demo", "contact", "support"],
+    routeKeys: ["home", "pricing", "booking", "customers", "customerStories", "demo", "contact", "support"],
   },
   {
     heading: { sl: "Funkcionalnosti", en: "Product features" },
@@ -61,7 +61,7 @@ const routeGroups: RouteGroup[] = [
   },
 ];
 
-const allRouteKeys = Object.keys(canonicalRoutes) as CanonicalRouteKey[];
+const allRouteKeys = (Object.keys(canonicalRoutes) as CanonicalRouteKey[]).filter((key) => key !== "businesses");
 
 const assertRouteCoverage = () => {
   const grouped = routeGroups.flatMap((group) => group.routeKeys);

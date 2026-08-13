@@ -200,7 +200,7 @@ const CalendraConnectPage = () => {
               <h2 className="mt-6 font-display text-2xl font-bold text-foreground">{copy.preview.heading}</h2>
               <p className="mt-4 leading-7 text-muted-foreground">{copy.preview.body}</p>
               <Button variant="outline" className="mt-7 rounded-xl" asChild>
-                <a href={getRoutePath("businesses", language)}>{language === "sl" ? "Poiščite ponudnike v Calendri" : "Find providers on Calendra"}<ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                <a href={getRoutePath("customers", language)}>{language === "sl" ? "Poiščite ponudnike v Calendri" : "Find providers on Calendra"}<ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
               </Button>
             </div>
           </div>
