@@ -276,7 +276,7 @@ const PublicCompanyProfilePage = () => {
   const giftCards = (storefront?.products ?? []).filter((product) => product.productType === "GIFT_CARD");
   const team = storefront?.team ?? [];
   const connectProviderSlug = storefront?.location?.slug || client.slug;
-  const connectPurchaseUrl = (productId: string) => `${CUSTOMER_APP_BASE_URL}/providers/${encodeURIComponent(connectProviderSlug)}/buy/${encodeURIComponent(productId)}`;
+  const connectPurchaseUrl = (productId: string) => `${CUSTOMER_APP_BASE_URL}/ponudniki/${encodeURIComponent(connectProviderSlug)}/kupi/${encodeURIComponent(productId)}`;
 
   const trackBooking = (source: string, serviceId?: number) => {
     trackMarketingEvent("public_booking_started", {

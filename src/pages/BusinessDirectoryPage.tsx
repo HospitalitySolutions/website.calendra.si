@@ -123,6 +123,7 @@ const BusinessDirectoryPage = () => {
   const { language } = useSiteLanguage();
   const text = copy[language];
   const [searchParams] = useSearchParams();
+  const searchParamString = searchParams.toString();
   const requestedCategory = searchParams.get("category");
   const initialCategory: ClientCategory | "all" = ["salon", "fitness", "wellness", "health", "consulting"].includes(requestedCategory || "")
     ? requestedCategory as ClientCategory
@@ -132,24 +133,47 @@ const BusinessDirectoryPage = () => {
   const [activeCategory, setActiveCategory] = useState<ClientCategory | "all">(initialCategory);
   const [apiClients, setApiClients] = useState<DirectoryClient[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [locationResolved, setLocationResolved] = useState(false);
+  const [locationError, setLocationError] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
+    const currentParams = new URLSearchParams(searchParamString);
+    const initialLocation = currentParams.get("location")?.trim() || "";
     setRefreshing(true);
-    fetch(`${APP_BASE_URL}/api/public/location-directory`, { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error(`Directory request failed: ${response.status}`);
+    setLocationError("");
+    const endpoint = initialLocation
+      ? `/api/public/location-directory/nearby?${new URLSearchParams({ address: initialLocation, limit: "100" }).toString()}`
+      : "/api/public/location-directory";
+    fetch(endpoint, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) {
+          const payload = await response.json().catch(() => null) as { message?: string } | null;
+          throw new Error(payload?.message || `Directory request failed: ${response.status}`);
+        }
         return response.json();
       })
-      .then((data) => setApiClients(normalizeDirectoryClients(data, APP_BASE_URL)))
+      .then((data) => {
+        const payload = initialLocation && data && typeof data === "object" && Array.isArray((data as { items?: unknown[] }).items)
+          ? (data as { items: Array<{ location?: unknown }> }).items.map((item) => item.location).filter(Boolean)
+          : data;
+        setApiClients(normalizeDirectoryClients(payload, APP_BASE_URL));
+        setLocationResolved(Boolean(initialLocation));
+      })
       .catch((error) => {
-        if (error?.name !== "AbortError") console.warn("Public directory could not be refreshed.", error);
+        if (error?.name !== "AbortError") {
+          console.warn("Public directory could not be refreshed.", error);
+          setLocationError(error instanceof Error ? error.message : "Lokacije ni bilo mogoče najti.");
+        }
       })
       .finally(() => setRefreshing(false));
     return () => controller.abort();
-  }, []);
+  }, [searchParamString]);
 
-  const directoryClients = useMemo(() => mergeClients(language, apiClients), [apiClients, language]);
+  const directoryClients = useMemo(
+    () => locationResolved ? apiClients : mergeClients(language, apiClients),
+    [apiClients, language, locationResolved],
+  );
 
   const filteredClients = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -160,9 +184,17 @@ const BusinessDirectoryPage = () => {
       const locationText = client.address.toLowerCase();
       return matchesFilter
         && (!normalizedQuery || searchableText.includes(normalizedQuery))
-        && (!normalizedLocation || locationText.includes(normalizedLocation));
+        && (locationResolved || !normalizedLocation || locationText.includes(normalizedLocation));
     });
-  }, [activeCategory, directoryClients, language, locationQuery, query]);
+  }, [activeCategory, directoryClients, language, locationQuery, locationResolved, query]);
+
+  const applyLocationSearch = () => {
+    const params = new URLSearchParams(searchParams);
+    const value = locationQuery.trim();
+    if (value) params.set("location", value); else params.delete("location");
+    if (query.trim()) params.set("q", query.trim()); else params.delete("q");
+    window.location.assign(`${getRoutePath("businesses", language)}${params.toString() ? `?${params.toString()}` : ""}`);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -184,10 +216,10 @@ const BusinessDirectoryPage = () => {
           <div id="kategorije" className="scroll-mt-28 rounded-3xl border border-border/70 bg-card p-4 shadow-soft md:p-5">
             <div className="grid gap-3 lg:grid-cols-2">
               <div className="relative w-full"><Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={text.searchPlaceholder} className="h-14 rounded-2xl border-border bg-background pl-12 text-base shadow-sm" /></div>
-              <div className="relative w-full"><MapPin className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" /><Input value={locationQuery} onChange={(event) => setLocationQuery(event.target.value)} placeholder={text.locationPlaceholder} className="h-14 rounded-2xl border-border bg-background pl-12 text-base shadow-sm" /></div>
+              <div className="relative w-full"><MapPin className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" /><Input value={locationQuery} onChange={(event) => { setLocationQuery(event.target.value); setLocationResolved(false); }} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); applyLocationSearch(); } }} placeholder={text.locationPlaceholder} className="h-14 rounded-2xl border-border bg-background pl-12 pr-28 text-base shadow-sm" /><button type="button" onClick={applyLocationSearch} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-primary-foreground">{language === "sl" ? "V bližini" : "Nearby"}</button></div>
             </div>
             <div className="mt-4 flex flex-wrap gap-2">{text.filters.map((filter) => { const filterCategory = filterCategoryMap[language][filter] ?? "all"; const isActive = activeCategory === filterCategory; return <button key={filter} type="button" onClick={() => setActiveCategory(filterCategory)} className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${isActive ? "border-primary/20 bg-primary/[0.10] text-primary shadow-sm" : "border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground"}`}>{filter}</button>; })}</div>
-            {refreshing ? <p className="mt-3 text-xs text-muted-foreground">{text.loading}</p> : null}
+            {refreshing ? <p className="mt-3 text-xs text-muted-foreground">{text.loading}</p> : null}{locationError ? <p className="mt-3 text-xs font-medium text-destructive">{locationError}</p> : null}
           </div>
 
           {filteredClients.length > 0 ? (

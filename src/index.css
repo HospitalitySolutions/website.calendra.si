@@ -129,3 +129,19 @@ All colors MUST be HSL.
     box-shadow: 0 0 40px -8px hsl(var(--primary) / 0.3);
   }
 }
+
+@layer components {
+  /*
+   * Customer-facing pages use one continuous canvas. Card/popover tokens are
+   * intentionally aligned with the page background so headers, footers and
+   * content sections do not read as separate colour blocks.
+   */
+  .customer-surface {
+    --background: 216 45% 98%;
+    --card: 216 45% 98%;
+    --popover: 216 45% 98%;
+    --secondary: 216 28% 95%;
+    --muted: 216 22% 94%;
+    --border: 216 22% 87%;
+  }
+}

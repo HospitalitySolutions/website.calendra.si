@@ -1,4 +1,4 @@
-import { APP_BASE_URL, CUSTOMER_APP_BASE_URL } from "@/lib/site";
+import { APP_BASE_URL } from "@/lib/site";
 
 /**
  * Central route & URL configuration for CTA buttons.
@@ -11,8 +11,9 @@ import { APP_BASE_URL, CUSTOMER_APP_BASE_URL } from "@/lib/site";
  */
 
 export const BUSINESS_LOGIN_ROUTE = `${APP_BASE_URL}/login`;
-export const CUSTOMER_LOGIN_ROUTE = `${CUSTOMER_APP_BASE_URL}/login`;
-export const CUSTOMER_REGISTER_ROUTE = `${CUSTOMER_APP_BASE_URL}/register`;
+export const CUSTOMER_ACCOUNT_ROUTE = "/racun";
+export const CUSTOMER_LOGIN_ROUTE = `${CUSTOMER_ACCOUNT_ROUTE}/prijava`;
+export const CUSTOMER_REGISTER_ROUTE = `${CUSTOMER_ACCOUNT_ROUTE}/registracija`;
 
 /** @deprecated Prefer BUSINESS_LOGIN_ROUTE or CUSTOMER_LOGIN_ROUTE for audience-specific CTAs. */
 export const LOGIN_ROUTE = BUSINESS_LOGIN_ROUTE;
