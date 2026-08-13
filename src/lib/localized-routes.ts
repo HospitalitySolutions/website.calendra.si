@@ -1,12 +1,13 @@
 import type { SiteLanguage } from "@/lib/site-language";
 import { getArticleAlternates, getArticleFromPathname, getBlogArticlePath } from "@/lib/blog";
-import { getPublicCompanyProfileFromPathname, getPublicCompanyProfilePath } from "@/lib/public-company-profiles";
+import { getPublicCompanyProfilePath, getPublicProviderSlugFromPathname } from "@/lib/public-company-profiles";
 import { getCustomerStoryFromPathname, getCustomerStoryPath } from "@/lib/customer-stories";
 
 export type CanonicalRouteKey =
   | "home"
   | "pricing"
   | "booking"
+  | "customers"
   | "businesses"
   | "customerStories"
   | "demo"
@@ -48,7 +49,8 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   home: { sl: "/", en: "/en" },
   pricing: { sl: "/cenik", en: "/en/pricing" },
   booking: { sl: "/narocanje", en: "/en/booking" },
-  businesses: { sl: "/podjetja", en: "/en/businesses" },
+  customers: { sl: "/za-stranke", en: "/en/for-customers" },
+  businesses: { sl: "/ponudniki", en: "/en/providers" },
   customerStories: { sl: "/zgodbe-strank", en: "/en/customer-stories" },
   demo: { sl: "/predstavitev", en: "/en/demo" },
   calendar: { sl: "/koledar-terminov", en: "/en/appointment-calendar" },
@@ -99,7 +101,7 @@ export type SitemapRouteMetadata = {
  * Keep this explicit rather than using the build date: sitemap <lastmod> should
  * only move when a page (or shared page output) changes meaningfully.
  */
-export const SHARED_SITE_LAST_MODIFIED = "2026-08-12";
+export const SHARED_SITE_LAST_MODIFIED = "2026-08-13";
 
 export const getSitemapLastModified = (contentLastModified?: string) => {
   if (!contentLastModified) return SHARED_SITE_LAST_MODIFIED;
@@ -110,6 +112,7 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   home: { changeFrequency: "weekly", priority: { sl: 1, en: 0.9 }, contentLastModified: "2026-07-15" },
   pricing: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-07-15" },
   booking: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-08-11" },
+  customers: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-08-13" },
   businesses: { changeFrequency: "weekly", priority: { sl: 0.75, en: 0.65 }, contentLastModified: "2026-08-11" },
   customerStories: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-11" },
   demo: { changeFrequency: "weekly", priority: { sl: 0.8, en: 0.75 }, contentLastModified: "2026-07-22" },
@@ -155,6 +158,8 @@ const legacyAliases: Record<string, string> = {
   "/mobilna-aplikacija": canonicalRoutes.connect.sl,
   "/mobile-app": canonicalRoutes.connect.en,
   "/en/mobile-app": canonicalRoutes.connect.en,
+  "/podjetja": canonicalRoutes.businesses.sl,
+  "/en/businesses": canonicalRoutes.businesses.en,
   "/stranke": canonicalRoutes.businesses.sl,
   "/clients": canonicalRoutes.businesses.en,
   "/en/clients": canonicalRoutes.businesses.en,
@@ -200,8 +205,8 @@ export const getRouteKeyFromPathname = (pathname: string): CanonicalRouteKey | u
 
 export const getCanonicalPathname = (pathname: string) => {
   const normalized = normalizePathname(pathname);
-  const profile = getPublicCompanyProfileFromPathname(normalized);
-  if (profile) return getPublicCompanyProfilePath(profile.slug, getLanguageFromPathname(normalized));
+  const providerSlug = getPublicProviderSlugFromPathname(normalized);
+  if (providerSlug) return getPublicCompanyProfilePath(providerSlug, getLanguageFromPathname(normalized));
 
   const story = getCustomerStoryFromPathname(normalized);
   if (story) return getCustomerStoryPath(story.slug, getLanguageFromPathname(normalized));
@@ -220,8 +225,8 @@ export const getCanonicalPathname = (pathname: string) => {
 };
 
 export const getLocalizedPathname = (pathname: string, language: SiteLanguage) => {
-  const profile = getPublicCompanyProfileFromPathname(pathname);
-  if (profile) return getPublicCompanyProfilePath(profile.slug, language);
+  const providerSlug = getPublicProviderSlugFromPathname(pathname);
+  if (providerSlug) return getPublicCompanyProfilePath(providerSlug, language);
 
   const story = getCustomerStoryFromPathname(pathname);
   if (story) return getCustomerStoryPath(story.slug, language);

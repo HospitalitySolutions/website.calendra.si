@@ -31,6 +31,7 @@ import { getCustomerStoryFromPathname, getCustomerStoryPath } from "@/lib/custom
 import {
   getPublicCompanyProfileFromPathname,
   getPublicCompanyProfilePath,
+  getPublicProviderSlugFromPathname,
   isIndexablePublicProfile,
 } from "@/lib/public-company-profiles";
 
@@ -58,9 +59,13 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     sl: { title: "Spletno naročanje strank in terminov | Calendra", description: "Omogočite spletno naročanje 24 ur na dan z izbiro storitve, zaposlenega in prostega termina, plačili, potrditvami ter SMS in e-poštnimi opomniki." },
     en: { title: "Online customer and appointment booking | Calendra", description: "Offer online booking 24 hours a day with service, employee and time-slot selection, payments, confirmations plus SMS and email reminders." },
   },
+  customers: {
+    sl: { title: "Rezervirajte termin pri ponudnikih | Calendra", description: "Poiščite ponudnika, izberite lokacijo in rezervirajte termin prek Calendre. S Calendra Connect lahko spremljate termine, pakete, članstva in bone na enem mestu." },
+    en: { title: "Find providers and book appointments | Calendra", description: "Find a provider, choose a location and book an appointment with Calendra. Calendra Connect keeps appointments, packages, memberships and gift cards in one place." },
+  },
   businesses: {
-    sl: { title: "Podjetja za spletno naročanje | Calendra", description: "Poiščite javno objavljena podjetja, ki uporabljajo Calendro, preglejte njihove profile, lokacije in področja storitev ter odprite neposredno rezervacijo termina." },
-    en: { title: "Businesses offering online booking | Calendra", description: "Find publicly listed businesses that use Calendra, review their profiles, locations and service categories, then open their direct appointment booking flow." },
+    sl: { title: "Ponudniki za spletno naročanje | Calendra", description: "Poiščite javno objavljene ponudnike, ki uporabljajo Calendro, preglejte njihove lokacije in področja storitev ter odprite neposredno rezervacijo termina." },
+    en: { title: "Providers offering online booking | Calendra", description: "Find publicly listed providers that use Calendra, review their locations and service categories, then open their direct appointment booking flow." },
   },
   customerStories: {
     sl: { title: "Zgodbe strank in primeri uporabe | Calendra", description: "Preberite, kako resnična storitvena podjetja uporabljajo Calendro za termine, stranke, spletno naročanje, opomnike, račune in plačila." },
@@ -484,6 +489,7 @@ const webPageSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage, cano
  * than from an index page, so they stay one level below home.
  */
 export const breadcrumbParentByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey>> = {
+  businesses: "customers",
   itSupport: "itServices",
   websiteDesign: "itServices",
   websiteMaintenance: "itServices",
@@ -643,8 +649,33 @@ const getArticleSeo = (pathname: string) => {
 };
 
 const getProfileSeo = (pathname: string, language: SiteLanguage) => {
+  const providerSlug = getPublicProviderSlugFromPathname(pathname);
+  if (!providerSlug) return undefined;
+
   const profile = getPublicCompanyProfileFromPathname(pathname);
-  if (!profile) return undefined;
+  if (!profile) {
+    const canonicalPath = getPublicCompanyProfilePath(providerSlug, language);
+    const slPath = getPublicCompanyProfilePath(providerSlug, "sl");
+    const enPath = getPublicCompanyProfilePath(providerSlug, "en");
+    const title = language === "sl" ? "Ponudnik v Calendri" : "Provider on Calendra";
+    const description = language === "sl"
+      ? "Javni profil ponudnika v Calendri z lokacijo in neposredno povezavo do spletnega naročanja."
+      : "A public Calendra provider profile with location information and a direct link to online booking.";
+    return {
+      language,
+      title,
+      description,
+      ogTitle: title,
+      ogDescription: description,
+      ogImage: DEFAULT_OG_IMAGE,
+      canonicalUrl: absoluteUrl(canonicalPath),
+      alternateUrls: { sl: absoluteUrl(slPath), en: absoluteUrl(enPath), xDefault: absoluteUrl(slPath) },
+      // Live location profiles are resolved from the API at runtime. Keep them out
+      // of the index until we can server-render their provider-specific metadata.
+      noindex: true,
+      structuredData: undefined,
+    };
+  }
 
   const canonicalPath = getPublicCompanyProfilePath(profile.slug, language);
   const slPath = getPublicCompanyProfilePath(profile.slug, "sl");
@@ -687,8 +718,9 @@ const getProfileSeo = (pathname: string, language: SiteLanguage) => {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: language === "sl" ? "Domov" : "Home", item: absoluteUrl(canonicalRoutes.home[language]) },
-      { "@type": "ListItem", position: 2, name: language === "sl" ? "Podjetja" : "Businesses", item: absoluteUrl(canonicalRoutes.businesses[language]) },
-      { "@type": "ListItem", position: 3, name: profile.name, item: absoluteUrl(canonicalPath) },
+      { "@type": "ListItem", position: 2, name: language === "sl" ? "Za stranke" : "For customers", item: absoluteUrl(canonicalRoutes.customers[language]) },
+      { "@type": "ListItem", position: 3, name: language === "sl" ? "Ponudniki" : "Providers", item: absoluteUrl(canonicalRoutes.businesses[language]) },
+      { "@type": "ListItem", position: 4, name: profile.name, item: absoluteUrl(canonicalPath) },
     ],
   };
 
@@ -857,7 +889,7 @@ export const getSeoForPathname = (pathname: string) => {
                   ? [softwareSchema(language), pricingProductSchema(language)]
                   : routeKey === "zoom"
                     ? [softwareSchema(language), zoomHowToSchema(language)]
-                    : routeKey === "contact" || routeKey === "businesses"
+                    : routeKey === "contact" || routeKey === "businesses" || routeKey === "customers"
                       ? []
                       : [softwareSchema(language)]),
         personSchema(language),

@@ -1,4 +1,4 @@
-import { APP_BASE_URL } from "@/lib/site";
+import { APP_BASE_URL, CUSTOMER_APP_BASE_URL } from "@/lib/site";
 
 /**
  * Central route & URL configuration for CTA buttons.
@@ -10,7 +10,12 @@ import { APP_BASE_URL } from "@/lib/site";
  * You can override APP_BASE_URL during Docker build with VITE_APP_BASE_URL.
  */
 
-export const LOGIN_ROUTE = `${APP_BASE_URL}/login`;
+export const BUSINESS_LOGIN_ROUTE = `${APP_BASE_URL}/login`;
+export const CUSTOMER_LOGIN_ROUTE = `${CUSTOMER_APP_BASE_URL}/login`;
+export const CUSTOMER_REGISTER_ROUTE = `${CUSTOMER_APP_BASE_URL}/register`;
+
+/** @deprecated Prefer BUSINESS_LOGIN_ROUTE or CUSTOMER_LOGIN_ROUTE for audience-specific CTAs. */
+export const LOGIN_ROUTE = BUSINESS_LOGIN_ROUTE;
 export const REGISTER_ROUTE = `${APP_BASE_URL}/signup`;
 export const TRIAL_SIGNUP_ROUTE = `${REGISTER_ROUTE}?flow=trial`;
 

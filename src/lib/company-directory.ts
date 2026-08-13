@@ -312,6 +312,10 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
     }];
   });
 
+
+export const normalizeDirectoryClient = (payload: unknown, appBaseUrl: string): DirectoryClient | null =>
+  normalizeDirectoryClients(Array.isArray(payload) ? payload : [payload], appBaseUrl)[0] ?? null;
+
 export const isDirectoryClientBookingEnabled = (
   client: Pick<DirectoryClient, "publicBookingEnabled">,
 ): boolean => client.publicBookingEnabled !== false;

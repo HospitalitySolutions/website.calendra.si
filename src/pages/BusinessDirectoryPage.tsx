@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnswerSummary from "@/components/seo/AnswerSummary";
@@ -47,23 +48,24 @@ const categoryClasses: Record<ClientCategory, string> = {
 
 const copy = {
   sl: {
-    badge: "Javni imenik Calendra",
-    title: "Poiščite podjetje in rezervirajte termin",
+    badge: "Ponudniki v Calendri",
+    title: "Poiščite ponudnika in rezervirajte termin",
     intro:
-      "V imeniku so podjetja, ki uporabljajo Calendro in so omogočila javni prikaz. Poiščite ponudnika po imenu, lokaciji ali dejavnosti, odprite njegov javni profil in nadaljujte neposredno v rezervacijo termina.",
-    searchPlaceholder: "Išči po imenu, storitvi ali lokaciji …",
+      "Poiščite javno objavljene ponudnike in njihove lokacije. Iščete lahko po imenu, storitvi ali dejavnosti, nato pa nadaljujete neposredno v rezervacijo termina na izbrani lokaciji.",
+    searchPlaceholder: "Storitev ali ponudnik …",
+    locationPlaceholder: "Mesto ali lokacija …",
     filters: ["Vse", "Salon", "Fitnes", "Wellness", "Zdravje", "Svetovanje"],
     primaryCta: "Rezerviraj termin",
     profileCta: "Poglej profil",
-    loading: "Osvežujem seznam podjetij …",
+    loading: "Osvežujem seznam ponudnikov …",
     emptyTitle: "Ni zadetkov",
     emptyBody: "Poskusite z drugim iskalnim izrazom ali filtrom.",
     howEyebrow: "Kako deluje imenik",
     howTitle: "Od iskanja do rezervacije v nekaj korakih",
     howItems: [
-      { title: "Poiščite ponudnika", body: "Uporabite iskanje in filtre, da hitro zožite javno objavljena podjetja glede na dejavnost, ime ali lokacijo." },
-      { title: "Preglejte javni profil", body: "Pri podjetjih z javnim profilom lahko preverite opis, področja storitev, lokacijo in druge objavljene informacije." },
-      { title: "Rezervirajte neposredno", body: "Gumb za naročanje vas odpelje v rezervacijski tok izbranega podjetja, kjer izberete storitev, izvajalca in prost termin." },
+      { title: "Poiščite ponudnika", body: "Uporabite iskanje in filtre, da hitro zožite ponudnike glede na dejavnost, storitev, ime ali lokacijo." },
+      { title: "Preglejte lokacijo", body: "Preverite javni opis, lokacijo, kategorijo in druge informacije, ki jih je ponudnik objavil v Calendri." },
+      { title: "Rezervirajte neposredno", body: "Gumb za naročanje vas odpelje v rezervacijski tok izbrane lokacije, kjer izberete storitev, izvajalca in prost termin." },
     ],
     businessEyebrow: "Za storitvena podjetja",
     businessTitle: "Želite svoje spletno naročanje?",
@@ -71,23 +73,24 @@ const copy = {
     businessCta: "Spoznajte spletno naročanje",
   },
   en: {
-    badge: "Calendra public directory",
-    title: "Find a business and book an appointment",
+    badge: "Providers on Calendra",
+    title: "Find a provider and book an appointment",
     intro:
-      "The directory lists businesses that use Calendra and have enabled public visibility. Search by business name, location or category, open a public profile and continue directly to that provider's appointment booking flow.",
-    searchPlaceholder: "Search by name, service or location …",
+      "Find publicly listed providers and their locations. Search by provider, service or category, then continue directly to appointment booking at the selected location.",
+    searchPlaceholder: "Service or provider …",
+    locationPlaceholder: "City or location …",
     filters: ["All", "Salon", "Fitness", "Wellness", "Health", "Consulting"],
     primaryCta: "Book an appointment",
     profileCta: "View profile",
-    loading: "Refreshing businesses …",
+    loading: "Refreshing providers …",
     emptyTitle: "No results",
     emptyBody: "Try a different search term or filter.",
     howEyebrow: "How the directory works",
     howTitle: "From discovery to booking in a few steps",
     howItems: [
-      { title: "Find a provider", body: "Use search and category filters to narrow the public businesses by activity, business name or location." },
-      { title: "Review the public profile", body: "Where a public profile is available, review the business description, service categories, location and other published information." },
-      { title: "Book directly", body: "The booking button opens that business's booking flow, where you choose a service, provider and available appointment time." },
+      { title: "Find a provider", body: "Use search and category filters to narrow providers by activity, service, name or location." },
+      { title: "Review the location", body: "Check the public description, location, category and other information the provider has published in Calendra." },
+      { title: "Book directly", body: "The booking button opens that location's booking flow, where you choose a service, provider and available appointment time." },
     ],
     businessEyebrow: "For service businesses",
     businessTitle: "Want to offer your own online booking?",
@@ -119,8 +122,14 @@ const howIcons = [Search, Building2, CalendarDays] as const;
 const BusinessDirectoryPage = () => {
   const { language } = useSiteLanguage();
   const text = copy[language];
-  const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState<ClientCategory | "all">("all");
+  const [searchParams] = useSearchParams();
+  const requestedCategory = searchParams.get("category");
+  const initialCategory: ClientCategory | "all" = ["salon", "fitness", "wellness", "health", "consulting"].includes(requestedCategory || "")
+    ? requestedCategory as ClientCategory
+    : "all";
+  const [query, setQuery] = useState(searchParams.get("q") || "");
+  const [locationQuery, setLocationQuery] = useState(searchParams.get("location") || "");
+  const [activeCategory, setActiveCategory] = useState<ClientCategory | "all">(initialCategory);
   const [apiClients, setApiClients] = useState<DirectoryClient[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
@@ -144,12 +153,16 @@ const BusinessDirectoryPage = () => {
 
   const filteredClients = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
+    const normalizedLocation = locationQuery.trim().toLowerCase();
     return directoryClients.filter((client) => {
       const matchesFilter = activeCategory === "all" || client.category === activeCategory;
-      const searchableText = [client.name, client.address, client.category ? categoryLabels[client.category][language] : "", client.description].join(" ").toLowerCase();
-      return matchesFilter && (!normalizedQuery || searchableText.includes(normalizedQuery));
+      const searchableText = [client.name, client.category ? categoryLabels[client.category][language] : "", client.description].join(" ").toLowerCase();
+      const locationText = client.address.toLowerCase();
+      return matchesFilter
+        && (!normalizedQuery || searchableText.includes(normalizedQuery))
+        && (!normalizedLocation || locationText.includes(normalizedLocation));
     });
-  }, [activeCategory, directoryClients, language, query]);
+  }, [activeCategory, directoryClients, language, locationQuery, query]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -157,7 +170,7 @@ const BusinessDirectoryPage = () => {
       <main>
         <section className="border-b border-border/50 bg-gradient-to-br from-background via-card to-primary/[0.05] py-14 md:py-20">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-            <PageBreadcrumbs routeKey="businesses" />
+            <PageBreadcrumbs routeKey="businesses" parentRouteKey="customers" />
             <div className="max-w-4xl">
               <div className="inline-flex items-center gap-2 rounded-full bg-primary/[0.08] px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-primary"><Building2 className="h-4 w-4" />{text.badge}</div>
               <h1 className="mt-6 font-display text-4xl font-extrabold leading-tight tracking-tight text-foreground md:text-6xl">{text.title}</h1>
@@ -168,18 +181,19 @@ const BusinessDirectoryPage = () => {
         </section>
 
         <section className="container mx-auto max-w-7xl px-4 py-14 lg:px-8 md:py-20">
-          <div className="rounded-3xl border border-border/70 bg-card p-4 shadow-soft md:p-5">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="relative w-full lg:max-w-lg"><Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={text.searchPlaceholder} className="h-14 rounded-2xl border-border bg-background pl-12 text-base shadow-sm" /></div>
-              <div className="flex flex-wrap gap-2">{text.filters.map((filter) => { const filterCategory = filterCategoryMap[language][filter] ?? "all"; const isActive = activeCategory === filterCategory; return <button key={filter} type="button" onClick={() => setActiveCategory(filterCategory)} className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${isActive ? "border-primary/20 bg-primary/[0.10] text-primary shadow-sm" : "border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground"}`}>{filter}</button>; })}</div>
+          <div id="kategorije" className="scroll-mt-28 rounded-3xl border border-border/70 bg-card p-4 shadow-soft md:p-5">
+            <div className="grid gap-3 lg:grid-cols-2">
+              <div className="relative w-full"><Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={text.searchPlaceholder} className="h-14 rounded-2xl border-border bg-background pl-12 text-base shadow-sm" /></div>
+              <div className="relative w-full"><MapPin className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" /><Input value={locationQuery} onChange={(event) => setLocationQuery(event.target.value)} placeholder={text.locationPlaceholder} className="h-14 rounded-2xl border-border bg-background pl-12 text-base shadow-sm" /></div>
             </div>
+            <div className="mt-4 flex flex-wrap gap-2">{text.filters.map((filter) => { const filterCategory = filterCategoryMap[language][filter] ?? "all"; const isActive = activeCategory === filterCategory; return <button key={filter} type="button" onClick={() => setActiveCategory(filterCategory)} className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${isActive ? "border-primary/20 bg-primary/[0.10] text-primary shadow-sm" : "border-border bg-background text-muted-foreground hover:border-primary/30 hover:text-foreground"}`}>{filter}</button>; })}</div>
             {refreshing ? <p className="mt-3 text-xs text-muted-foreground">{text.loading}</p> : null}
           </div>
 
           {filteredClients.length > 0 ? (
             <div className="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {filteredClients.map((client) => {
-                const profilePath = client.profileSlug ? getPublicCompanyProfilePath(client.profileSlug, language) : null;
+                const profilePath = client.slug ? getPublicCompanyProfilePath(client.slug, language) : null;
                 const bookingEnabled = isDirectoryClientBookingEnabled(client);
                 const bookingPath = getDirectoryClientBookingPath(client);
 

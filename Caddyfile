@@ -33,14 +33,23 @@
     redir @legacyTenantBookingWithLocation /narocanje/{http.request.uri.query.tenant}?locationId={http.request.uri.query.locationId} 308
     redir @legacyTenantBooking /narocanje/{http.request.uri.query.tenant} 308
 
+    @legacySlProviderProfile path_regexp legacySlProviderProfile ^/podjetja/(.+)$
+    @legacyEnProviderProfile path_regexp legacyEnProviderProfile ^/en/businesses/(.+)$
+    redir @legacySlProviderProfile /ponudniki/{re.legacySlProviderProfile.1} 308
+    redir @legacyEnProviderProfile /en/providers/{re.legacyEnProviderProfile.1} 308
+
     # Canonical language-specific URLs. Legacy English aliases redirect to /en/*.
     redir /pricing /en/pricing 308
+    redir /za-podjetja / 308
+    redir /en/for-business /en 308
     redir /mobilna-aplikacija /calendra-connect 308
     redir /mobile-app /en/calendra-connect 308
     redir /en/mobile-app /en/calendra-connect 308
-    redir /stranke /podjetja 308
-    redir /en/clients /en/businesses 308
-    redir /clients /en/businesses 308
+    redir /podjetja /ponudniki 308
+    redir /en/businesses /en/providers 308
+    redir /stranke /ponudniki 308
+    redir /en/clients /en/providers 308
+    redir /clients /en/providers 308
     redir /booking /en/booking 308
     redir /support /en/support 308
     redir /privacy-policy /en/privacy-policy 308

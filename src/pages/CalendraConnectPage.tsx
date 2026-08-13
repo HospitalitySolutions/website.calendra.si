@@ -26,8 +26,6 @@ import {
   UserRoundSearch,
   WalletCards,
 } from "lucide-react";
-import { useRef } from "react";
-import StickySalesCtaBar from "@/components/landing/StickySalesCtaBar";
 
 const previewIcons = [CalendarClock, CalendarCheck2, WalletCards] as const;
 const featureIcons = [CalendarCheck2, RefreshCw, BellRing, CreditCard, TicketCheck, UserRoundSearch] as const;
@@ -70,7 +68,6 @@ const PhonePreview = ({ screen, index }: { screen: { label: string; title: strin
 const CalendraConnectPage = () => {
   const { language } = useSiteLanguage();
   const copy = getCalendraConnectCopy(language);
-  const heroCtaRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <div className="min-h-screen bg-background">
@@ -96,7 +93,7 @@ const CalendraConnectPage = () => {
                 <Check className="h-5 w-5 text-primary" aria-hidden="true" />
                 {copy.hero.free}
               </div>
-              <div ref={heroCtaRef}>
+              <div>
                 <StoreButtons className="mt-8" />
               </div>
             </div>
@@ -203,7 +200,7 @@ const CalendraConnectPage = () => {
               <h2 className="mt-6 font-display text-2xl font-bold text-foreground">{copy.preview.heading}</h2>
               <p className="mt-4 leading-7 text-muted-foreground">{copy.preview.body}</p>
               <Button variant="outline" className="mt-7 rounded-xl" asChild>
-                <a href={getRoutePath("booking", language)}>{language === "sl" ? "Poiščite ponudnike v Calendri" : "Find providers on Calendra"}<ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                <a href={getRoutePath("businesses", language)}>{language === "sl" ? "Poiščite ponudnike v Calendri" : "Find providers on Calendra"}<ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
               </Button>
             </div>
           </div>
@@ -233,7 +230,7 @@ const CalendraConnectPage = () => {
                 <span className="text-sm font-bold uppercase tracking-[0.18em] text-accent">{copy.download.eyebrow}</span>
                 <h2 className="mt-3 max-w-3xl font-display text-3xl font-bold tracking-tight sm:text-4xl">{copy.download.title}</h2>
                 <p className="mt-5 max-w-3xl text-lg leading-8 text-background/70">{copy.download.body}</p>
-                <div ref={heroCtaRef}>
+                <div>
                 <StoreButtons className="mt-8" />
               </div>
               </div>
@@ -245,7 +242,6 @@ const CalendraConnectPage = () => {
         </section>
       </main>
       <Footer />
-      <StickySalesCtaBar anchorRef={heroCtaRef} placement="connect" />
     </div>
   );
 };

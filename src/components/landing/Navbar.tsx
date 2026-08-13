@@ -25,6 +25,8 @@ import { useLocation } from "react-router-dom";
 import { WORDMARK } from "@/lib/brand-assets";
 import { languageNames, getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
+import AudienceSwitch from "./AudienceSwitch";
+import CustomerNavbar from "./CustomerNavbar";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -33,6 +35,14 @@ const Navbar = () => {
   const { language, setLanguage } = useSiteLanguage();
   const { pathname } = useLocation();
   const copy = getSiteCopy(language);
+  const customerMode = pathname === getRoutePath("customers", "sl")
+    || pathname === getRoutePath("customers", "en")
+    || pathname === getRoutePath("connect", "sl")
+    || pathname === getRoutePath("connect", "en")
+    || pathname === getRoutePath("businesses", "sl")
+    || pathname === getRoutePath("businesses", "en")
+    || pathname.startsWith(`${getRoutePath("businesses", "sl")}/`)
+    || pathname.startsWith(`${getRoutePath("businesses", "en")}/`);
 
   const homePath = getRoutePath("home", language);
   const bookingPath = getRoutePath("booking", language);
@@ -233,6 +243,8 @@ const Navbar = () => {
   const isLinkActive = (activePaths: string[]) =>
     activePaths.some((activePath) => pathname === activePath || pathname.startsWith(`${activePath}/`));
 
+  if (customerMode) return <CustomerNavbar />;
+
   return (
     <nav className="sticky top-0 z-50 border-b border-border/40 bg-card/70 backdrop-blur-xl">
       <div className="container mx-auto flex h-20 items-center justify-between gap-3 px-4 lg:px-8">
@@ -247,6 +259,7 @@ const Navbar = () => {
         </a>
 
         <div className="hidden items-center gap-5 xl:flex">
+          <AudienceSwitch language={language} audience="business" className="hidden xl:inline-flex" />
           <div className="group relative">
             <a
               href={homePath}
@@ -430,6 +443,7 @@ const Navbar = () => {
       {open && (
         <div className="border-t border-border bg-card px-4 pb-6 pt-4 xl:hidden">
           <div className="flex flex-col gap-3">
+            <AudienceSwitch language={language} audience="business" className="w-full justify-center" />
             <div className="relative">
               <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
               <select
