@@ -13,6 +13,7 @@ import {
   type DirectoryClient,
 } from "@/lib/company-directory";
 import { getRoutePath } from "@/lib/localized-routes";
+import { CUSTOMER_APP_BASE_URL } from "@/lib/site";
 import { getPublicCompanyProfile, publicCompanyProfiles, type PublicCompanyProfile } from "@/lib/public-company-profiles";
 import { normalizePublicStorefront, type PublicStorefront, type StorefrontProduct, type StorefrontService } from "@/lib/public-storefront";
 import { useSiteLanguage } from "@/lib/site-language";
@@ -221,6 +222,7 @@ const PublicCompanyProfilePage = () => {
     packagesIntro: "Ponudba, ki jo lahko uporabljate in spremljate v svoji Calendra denarnici.",
     giftCards: "Darilni boni",
     connectOnly: "Na voljo v Calendra Connect",
+    buyInConnect: "Kupi v Calendra Connect",
     team: "Ekipa",
     teamIntro: "Izvajalci, ki jih lahko izberete pri spletnem naročanju na tej lokaciji.",
     location: "Lokacija",
@@ -247,6 +249,7 @@ const PublicCompanyProfilePage = () => {
     packagesIntro: "Offers you can use and track in your Calendra wallet.",
     giftCards: "Gift cards",
     connectOnly: "Available in Calendra Connect",
+    buyInConnect: "Buy in Calendra Connect",
     team: "Team",
     teamIntro: "Professionals you can select when booking online at this location.",
     location: "Location",
@@ -272,6 +275,8 @@ const PublicCompanyProfilePage = () => {
   const packages = (storefront?.products ?? []).filter((product) => product.productType === "PACK" || product.productType === "MEMBERSHIP");
   const giftCards = (storefront?.products ?? []).filter((product) => product.productType === "GIFT_CARD");
   const team = storefront?.team ?? [];
+  const connectProviderSlug = storefront?.location?.slug || client.slug;
+  const connectPurchaseUrl = (productId: string) => `${CUSTOMER_APP_BASE_URL}/providers/${encodeURIComponent(connectProviderSlug)}/buy/${encodeURIComponent(productId)}`;
 
   const trackBooking = (source: string, serviceId?: number) => {
     trackMarketingEvent("public_booking_started", {
@@ -407,7 +412,7 @@ const PublicCompanyProfilePage = () => {
                     {product.description ? <p className="mt-2 text-sm leading-6 text-muted-foreground">{product.description}</p> : null}
                     {productMeta(product, language) ? <p className="mt-4 text-xs font-semibold text-muted-foreground">{productMeta(product, language)}</p> : null}
                     <p className="mt-5 text-2xl font-extrabold text-foreground">{formatMoney(product.priceGross, product.currency, language)}</p>
-                    <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground"><ShieldCheck className="h-3.5 w-3.5" />{text.connectOnly}</div>
+                    <div className="mt-5 flex flex-col gap-3"><div className="inline-flex w-fit items-center gap-2 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground"><ShieldCheck className="h-3.5 w-3.5" />{text.connectOnly}</div><Button variant="outline" className="w-full rounded-xl" asChild><a href={connectPurchaseUrl(product.productId)}>{text.buyInConnect}<ArrowRight className="h-4 w-4" /></a></Button></div>
                   </article>
                 ))}
               </div>
@@ -428,7 +433,7 @@ const PublicCompanyProfilePage = () => {
                   {product.description ? <p className="mt-2 text-sm leading-6 text-muted-foreground">{product.description}</p> : null}
                   {product.voucherSessionTypeNames.length > 0 ? <p className="mt-4 text-xs leading-5 text-muted-foreground">{product.voucherSessionTypeNames.join(" · ")}</p> : null}
                   <p className="mt-5 text-2xl font-extrabold text-foreground">{formatMoney(product.priceGross, product.currency, language)}</p>
-                  <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground"><ShieldCheck className="h-3.5 w-3.5" />{text.connectOnly}</div>
+                  <div className="mt-5 flex flex-col gap-3"><div className="inline-flex w-fit items-center gap-2 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground"><ShieldCheck className="h-3.5 w-3.5" />{text.connectOnly}</div><Button variant="outline" className="w-full rounded-xl" asChild><a href={connectPurchaseUrl(product.productId)}>{text.buyInConnect}<ArrowRight className="h-4 w-4" /></a></Button></div>
                 </article>
               ))}
             </div>
