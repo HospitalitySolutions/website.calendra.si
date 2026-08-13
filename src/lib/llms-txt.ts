@@ -22,7 +22,7 @@ type RouteGroup = {
 const routeGroups: RouteGroup[] = [
   {
     heading: { sl: "Glavne strani", en: "Core pages" },
-    routeKeys: ["home", "pricing", "booking", "businesses", "customerStories", "demo", "contact", "support"],
+    routeKeys: ["home", "pricing", "booking", "customers", "businesses", "customerStories", "demo", "contact", "support"],
   },
   {
     heading: { sl: "Funkcionalnosti", en: "Product features" },
