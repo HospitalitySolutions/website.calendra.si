@@ -11,7 +11,6 @@ import {
   AudienceSection,
   HomeFaq,
   PricingOverview,
-  ProblemsAndOutcomes,
 } from "@/components/landing/HomepageSections";
 
 /**
@@ -40,7 +39,6 @@ const Index = () => (
   <div className="min-h-screen">
     <Navbar />
     <Hero />
-    <ProblemsAndOutcomes />
     <AudienceSection />
     <PricingOverview />
     <Suspense fallback={<SectionFallback minHeight={640} />}>

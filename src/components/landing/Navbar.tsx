@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LOGIN_ROUTE, TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { LOGIN_ROUTE } from "@/lib/routes";
 import { getRoutePath } from "@/lib/localized-routes";
 import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import {
@@ -25,7 +25,6 @@ import { useLocation } from "react-router-dom";
 import { WORDMARK } from "@/lib/brand-assets";
 import { languageNames, getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
-import AudienceSwitch from "./AudienceSwitch";
 import CustomerNavbar from "./CustomerNavbar";
 
 const Navbar = () => {
@@ -46,7 +45,7 @@ const Navbar = () => {
 
   const homePath = getRoutePath("home", language);
   const bookingPath = getRoutePath("booking", language);
-  const connectPath = getRoutePath("connect", language);
+  const customerPath = getRoutePath("customers", language);
   const pricingPath = getRoutePath("pricing", language);
   const calendarPath = getRoutePath("calendar", language);
   const clientManagementPath = getRoutePath("clientManagement", language);
@@ -206,11 +205,6 @@ const Navbar = () => {
 
   const topLevelLinks = [
     {
-      label: copy.nav.connect,
-      href: connectPath,
-      activePaths: [getRoutePath("connect", "sl"), getRoutePath("connect", "en")],
-    },
-    {
       label: copy.nav.pricing,
       href: pricingPath,
       activePaths: [getRoutePath("pricing", "sl"), getRoutePath("pricing", "en")],
@@ -248,18 +242,33 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 border-b border-border/40 bg-card/70 backdrop-blur-xl">
       <div className="container mx-auto flex h-20 items-center justify-between gap-3 px-4 lg:px-8">
-        <a href={homePath} className="flex items-center">
-          <img
-            src={WORDMARK.src}
-            alt="Calendra"
-            width={WORDMARK.width}
-            height={WORDMARK.height}
-            className="h-8 w-auto md:h-9"
-          />
-        </a>
+        <div className="flex items-center gap-4">
+          <a href={homePath} className="flex items-center">
+            <img
+              src={WORDMARK.src}
+              alt="Calendra"
+              width={WORDMARK.width}
+              height={WORDMARK.height}
+              className="h-8 w-auto md:h-9"
+            />
+          </a>
+
+          <div className="relative hidden min-w-[145px] xl:block">
+            <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
+            <select
+              value={language}
+              onChange={(event) => setLanguage(event.target.value as SiteLanguage)}
+              className="w-full appearance-none rounded-xl border border-border/80 bg-transparent px-9 py-2.5 pr-9 text-sm font-medium text-foreground outline-none transition focus:border-primary"
+              aria-label={copy.nav.language}
+            >
+              <option value="sl">{languageNames[language].sl}</option>
+              <option value="en">{languageNames[language].en}</option>
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          </div>
+        </div>
 
         <div className="hidden items-center gap-5 xl:flex">
-          <AudienceSwitch language={language} audience="business" className="hidden xl:inline-flex" />
           <div className="group relative">
             <a
               href={homePath}
@@ -413,25 +422,14 @@ const Navbar = () => {
         </div>
 
         <div className="hidden items-center gap-3 xl:flex">
-          <div className="relative min-w-[145px] xl:min-w-[165px]">
-            <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
-            <select
-              value={language}
-              onChange={(event) => setLanguage(event.target.value as SiteLanguage)}
-              className="w-full appearance-none rounded-xl border border-border bg-background px-9 py-2.5 pr-9 text-sm font-medium text-foreground shadow-sm outline-none transition focus:border-primary"
-              aria-label={copy.nav.language}
-            >
-              <option value="sl">{languageNames[language].sl}</option>
-              <option value="en">{languageNames[language].en}</option>
-            </select>
-            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          </div>
-
+          <Button variant="outline" className="rounded-xl bg-transparent" asChild>
+            <a href={customerPath}>
+              <Users className="h-4 w-4 text-primary" />
+              {language === "sl" ? "Za stranke" : "For customers"}
+            </a>
+          </Button>
           <Button variant="ghost" size="default" className="font-medium" asChild>
             <a href={LOGIN_ROUTE}>{copy.nav.login}</a>
-          </Button>
-          <Button variant="hero" size="default" className="rounded-xl px-4 xl:px-5" asChild>
-            <a href={TRIAL_SIGNUP_ROUTE}>{copy.nav.trial}</a>
           </Button>
         </div>
 
@@ -443,7 +441,6 @@ const Navbar = () => {
       {open && (
         <div className="border-t border-border bg-card px-4 pb-6 pt-4 xl:hidden">
           <div className="flex flex-col gap-3">
-            <AudienceSwitch language={language} audience="business" className="w-full justify-center" />
             <div className="relative">
               <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
               <select
@@ -457,6 +454,13 @@ const Navbar = () => {
               </select>
               <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             </div>
+
+            <Button variant="outline" size="lg" className="rounded-xl bg-transparent" asChild>
+              <a href={customerPath} onClick={() => setOpen(false)}>
+                <Users className="h-4 w-4 text-primary" />
+                {language === "sl" ? "Za stranke" : "For customers"}
+              </a>
+            </Button>
 
             <div className="rounded-2xl border border-border/60 bg-background p-2">
               <button
@@ -571,9 +575,6 @@ const Navbar = () => {
               )}
             </div>
 
-            <Button variant="hero" size="lg" className="rounded-xl" asChild>
-              <a href={TRIAL_SIGNUP_ROUTE}>{copy.nav.trial}</a>
-            </Button>
             <Button variant="ghost" size="lg" asChild>
               <a href={LOGIN_ROUTE}>{copy.nav.login}</a>
             </Button>

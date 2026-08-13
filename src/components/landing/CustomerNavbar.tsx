@@ -5,7 +5,6 @@ import { WORDMARK } from "@/lib/brand-assets";
 import { customerInitials, useCustomerSession } from "@/lib/customer-session";
 import { getRoutePath } from "@/lib/localized-routes";
 import { CUSTOMER_LOGIN_ROUTE } from "@/lib/routes";
-import { APP_BASE_URL } from "@/lib/site";
 import { languageNames } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
@@ -31,14 +30,11 @@ const CustomerNavbar = () => {
   const { language, setLanguage } = useSiteLanguage();
   const { user, isAuthenticated, logout } = useCustomerSession();
   const customerPath = getRoutePath("customers", language);
-  const providersPath = getRoutePath("businesses", language);
   const connectPath = getRoutePath("connect", language);
   const nextPath = `${pathname}${search}`;
   const loginPath = `${CUSTOMER_LOGIN_ROUTE}?next=${encodeURIComponent(nextPath)}`;
 
   const links = [
-    { label: language === "sl" ? "Poišči ponudnika" : "Find a provider", href: providersPath },
-    { label: language === "sl" ? "Storitve" : "Services", href: `${providersPath}#kategorije` },
     { label: "Calendra Connect", href: connectPath },
   ];
 
@@ -106,10 +102,14 @@ const CustomerNavbar = () => {
 
         <div className="hidden items-center gap-3 xl:flex">
           <Button variant="outline" className="rounded-xl bg-transparent" asChild>
-            <a href={APP_BASE_URL}>
+            <a href={getRoutePath("home", language)}>
               <Briefcase className="h-4 w-4 text-primary" />
               {language === "sl" ? "Za podjetje" : "For business"}
             </a>
+          </Button>
+
+          <Button variant="hero" className="rounded-xl" asChild>
+            <a href={customerPath}><CalendarDays className="h-4 w-4" />{language === "sl" ? "Poišči termin" : "Find an appointment"}</a>
           </Button>
 
           {isAuthenticated ? (
@@ -148,7 +148,7 @@ const CustomerNavbar = () => {
                     {language === "sl" ? "Odjava" : "Log out"}
                   </button>
                   <div className="mt-1 h-px bg-border/70" />
-                  <a href={APP_BASE_URL} className="mt-1 flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-foreground transition hover:bg-secondary/60" role="menuitem">
+                  <a href={getRoutePath("home", language)} className="mt-1 flex items-center justify-between rounded-xl px-3 py-2.5 text-sm font-semibold text-foreground transition hover:bg-secondary/60" role="menuitem">
                     <span className="inline-flex items-center gap-3"><Briefcase className="h-4 w-4 text-muted-foreground" />{language === "sl" ? "Za podjetje" : "For business"}</span>
                     <span aria-hidden>→</span>
                   </a>
@@ -159,9 +159,6 @@ const CustomerNavbar = () => {
             <Button variant="ghost" asChild><a href={loginPath}>{language === "sl" ? "Prijava" : "Login"}</a></Button>
           )}
 
-          <Button variant="hero" className="rounded-xl" asChild>
-            <a href={providersPath}><CalendarDays className="h-4 w-4" />{language === "sl" ? "Poišči termin" : "Find an appointment"}</a>
-          </Button>
         </div>
 
         <button className="xl:hidden" onClick={() => setOpen((value) => !value)} aria-label={language === "sl" ? "Meni" : "Menu"}>
@@ -187,7 +184,7 @@ const CustomerNavbar = () => {
             </div>
 
             <Button variant="outline" size="lg" className="rounded-xl bg-transparent" asChild>
-              <a href={APP_BASE_URL} onClick={() => setOpen(false)}>
+              <a href={getRoutePath("home", language)} onClick={() => setOpen(false)}>
                 <Briefcase className="h-4 w-4 text-primary" />
                 {language === "sl" ? "Za podjetje" : "For business"}
               </a>
@@ -198,6 +195,10 @@ const CustomerNavbar = () => {
                 {link.label}
               </a>
             ))}
+
+            <Button variant="hero" size="lg" className="rounded-xl" asChild>
+              <a href={customerPath}><CalendarDays className="h-4 w-4" />{language === "sl" ? "Poišči termin" : "Find an appointment"}</a>
+            </Button>
 
             {isAuthenticated ? (
               <div className="rounded-2xl border border-border/70 p-2">
@@ -213,10 +214,6 @@ const CustomerNavbar = () => {
             ) : (
               <Button variant="ghost" size="lg" asChild><a href={loginPath}>{language === "sl" ? "Prijava" : "Login"}</a></Button>
             )}
-
-            <Button variant="hero" size="lg" className="rounded-xl" asChild>
-              <a href={providersPath}><CalendarDays className="h-4 w-4" />{language === "sl" ? "Poišči termin" : "Find an appointment"}</a>
-            </Button>
           </div>
         </div>
       ) : null}
