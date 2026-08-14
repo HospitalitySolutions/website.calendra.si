@@ -4,6 +4,7 @@ import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import NotFound from "@/pages/NotFound";
 import { Button } from "@/components/ui/button";
+import { CUSTOMER_TOKEN_KEY, useCustomerSession } from "@/lib/customer-session";
 import { APP_BASE_URL } from "@/lib/site";
 import {
   getDirectoryClientBookingPath,
@@ -22,16 +23,17 @@ import { trackMarketingEvent } from "@/lib/marketing-events";
 import {
   ArrowRight,
   CalendarDays,
-  CheckCircle2,
   ChevronRight,
   Clock3,
+  ExternalLink,
   Gift,
+  Heart,
+  Loader2,
   MapPin,
   Package,
-  ShieldCheck,
+  Share2,
+  Sparkles,
   Star,
-  UserRound,
-  UsersRound,
 } from "lucide-react";
 
 const initialsFor = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]?.toUpperCase() || "").join("") || "C";
@@ -105,10 +107,14 @@ const PublicCompanyProfilePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { language } = useSiteLanguage();
+  const { isAuthenticated } = useCustomerSession();
   const initialProfile = getPublicCompanyProfile(slug);
   const [apiClient, setApiClient] = useState<DirectoryClient | null>(null);
   const [storefront, setStorefront] = useState<PublicStorefront | null>(null);
   const [loading, setLoading] = useState(!initialProfile);
+  const [activeServiceGroup, setActiveServiceGroup] = useState<string>("");
+  const [bookingLaunching, setBookingLaunching] = useState<string | null>(null);
+  const [favourite, setFavourite] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -196,6 +202,16 @@ const PublicCompanyProfilePage = () => {
     if (!location.pathname.startsWith(`${base}/`)) return;
     navigate(`${base}/${encodeURIComponent(identifier)}${location.search}${location.hash}`, { replace: true });
   }, [apiClient, language, location.hash, location.pathname, location.search, navigate, slug]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const saved = JSON.parse(window.localStorage.getItem("calendra.customer.favourites") || "[]") as string[];
+      setFavourite(saved.includes(slug));
+    } catch {
+      setFavourite(false);
+    }
+  }, [slug]);
 
   const curatedProfile = useMemo(() => findCuratedProfile(slug, apiClient), [apiClient, slug]);
   const client = useMemo<DirectoryClient | null>(() => {
@@ -313,207 +329,289 @@ const PublicCompanyProfilePage = () => {
     });
   };
 
-  const openStandaloneBooking = (event: MouseEvent<HTMLAnchorElement>) => {
+  const categoryNames = serviceGroups.map(([name]) => name).filter(Boolean);
+  const visibleServices = activeServiceGroup
+    ? services.filter((service) => service.serviceGroupName === activeServiceGroup)
+    : services;
+  const primaryCategory = categoryNames[0] || fallbackServiceItems[0] || categoryLabel(client.category, language);
+
+  const launchBooking = async (
+    event: MouseEvent<HTMLAnchorElement>,
+    source: string,
+    fallbackPath: string,
+    serviceId?: number,
+  ) => {
     event.preventDefault();
     event.stopPropagation();
-    trackBooking("profile");
-    window.location.assign(bookingPath);
+    trackBooking(source, serviceId);
+
+    const launchKey = serviceId ? `service-${serviceId}` : "profile";
+    if (!isAuthenticated || !client.locationId) {
+      window.location.assign(fallbackPath);
+      return;
+    }
+
+    const customerToken = window.localStorage.getItem(CUSTOMER_TOKEN_KEY);
+    if (!customerToken) {
+      window.location.assign(fallbackPath);
+      return;
+    }
+
+    setBookingLaunching(launchKey);
+    try {
+      const response = await fetch("/api/customer/v1/booking-handoffs", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${customerToken}`,
+        },
+        body: JSON.stringify({
+          locationId: String(client.locationId),
+          sessionTypeId: serviceId == null ? null : String(serviceId),
+        }),
+      });
+
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+          window.localStorage.removeItem(CUSTOMER_TOKEN_KEY);
+          window.dispatchEvent(new Event("calendra:customer-session-changed"));
+        }
+        throw new Error(`Booking handoff failed (${response.status})`);
+      }
+
+      const payload = await response.json() as { bookingUrl?: string; handoffToken?: string };
+      if (!payload.bookingUrl || !payload.handoffToken) throw new Error("Booking handoff is incomplete.");
+      const destination = new URL(payload.bookingUrl, window.location.origin);
+      destination.hash = new URLSearchParams({ customerHandoff: payload.handoffToken }).toString();
+      window.location.assign(destination.toString());
+    } catch (error) {
+      console.warn("Customer booking handoff failed; continuing with the public booking flow.", error);
+      window.location.assign(fallbackPath);
+    } finally {
+      setBookingLaunching(null);
+    }
   };
 
+  const toggleFavourite = () => {
+    if (typeof window === "undefined") return;
+    let saved: string[] = [];
+    try {
+      saved = JSON.parse(window.localStorage.getItem("calendra.customer.favourites") || "[]") as string[];
+    } catch {
+      saved = [];
+    }
+    const next = saved.includes(slug) ? saved.filter((item) => item !== slug) : [...saved, slug];
+    window.localStorage.setItem("calendra.customer.favourites", JSON.stringify(next));
+    setFavourite(next.includes(slug));
+  };
+
+  const shareProfile = async () => {
+    if (typeof window === "undefined") return;
+    const shareData = { title: client.name, url: window.location.href };
+    try {
+      if (navigator.share) await navigator.share(shareData);
+      else await navigator.clipboard?.writeText(window.location.href);
+    } catch {
+      // The user can dismiss the native share sheet; no error state is required.
+    }
+  };
+
+  const allServicesLabel = language === "sl" ? "Vse storitve" : "All services";
+  const chooseTimeLabel = language === "sl" ? "Izberi termin" : "Choose time";
+  const seeAllServicesLabel = language === "sl" ? "Poglej vse storitve" : "See all services";
+  const aboutLocationLabel = language === "sl" ? "O lokaciji" : "About the location";
+  const reviewsLabel = language === "sl" ? "Mnenja" : "Reviews";
+  const onePersonLabel = language === "sl" ? "1 oseba" : "1 person";
+  const onlineBookingLabel = language === "sl" ? "Spletno naročanje" : "Online booking";
+
   return (
-    <div className="marketing-page min-h-screen bg-background">
+    <div className="marketing-page min-h-screen bg-[#fbfcfe]">
       <Navbar />
-      <main>
-        <section id="o-ponudniku" className="border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.05] py-14 md:py-20">
-          <div className="container mx-auto max-w-6xl px-4 lg:px-8">
-            <nav aria-label={language === "sl" ? "Drobtinice" : "Breadcrumb"} className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+      <main className="pb-20">
+        <section id="o-ponudniku" className="bg-background pt-5 md:pt-7">
+          <div className="mx-auto max-w-[1160px] px-4 lg:px-6">
+            <nav aria-label={language === "sl" ? "Drobtinice" : "Breadcrumb"} className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
               <a href={getRoutePath("home", language)} className="font-medium transition hover:text-primary">{text.home}</a>
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
               <a href={getRoutePath("customers", language)} className="font-medium transition hover:text-primary">{text.customers}</a>
-              <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
               <span className="font-semibold text-foreground" aria-current="page">{client.name}</span>
             </nav>
-            <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_auto] lg:items-start">
-              <div className="flex items-start gap-5">
-                <div className="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-3xl border border-border/70 bg-card text-2xl font-black text-primary shadow-soft">
+
+            <div className="mt-5 flex items-start justify-between gap-5">
+              <div className="flex min-w-0 items-start gap-4">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border/70 bg-background text-xl font-black text-primary shadow-[0_4px_14px_rgba(15,23,42,0.07)] md:h-20 md:w-20">
                   {client.logoUrl ? <img src={client.logoUrl} alt={client.name} width="80" height="80" decoding="async" className="h-full w-full object-contain p-2" /> : initialsFor(client.name)}
                 </div>
-                <div>
-                  <div className="inline-flex items-center gap-2 rounded-full bg-primary/[0.08] px-3 py-1.5 text-xs font-bold uppercase tracking-[0.15em] text-primary"><CheckCircle2 className="h-4 w-4" />{text.verified}</div>
-                  <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-foreground md:text-6xl">{client.name}</h1>
-                  {description ? <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">{description}</p> : null}
-                  <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-                    {client.address ? <span className="inline-flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" />{client.address}</span> : null}
-                    {client.googleRating ? <span className="inline-flex items-center gap-2"><Star className="h-4 w-4 fill-amber-400 text-amber-400" />{client.googleRating.toFixed(1)}{client.googleReviewCount ? ` (${client.googleReviewCount})` : ""}</span> : null}
+                <div className="min-w-0 pt-0.5">
+                  <span className="inline-flex items-center rounded-full bg-primary/[0.08] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.11em] text-primary">{primaryCategory}</span>
+                  <h1 className="mt-2 font-display text-3xl font-extrabold tracking-[-0.035em] text-foreground md:text-[42px] md:leading-none">{client.name}</h1>
+                  <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-muted-foreground">
+                    {client.googleRating ? <span className="inline-flex items-center gap-1 font-semibold text-foreground"><Star className="h-4 w-4 fill-amber-400 text-amber-400" />{client.googleRating.toFixed(1)}{client.googleReviewCount ? <span className="font-normal text-muted-foreground">({client.googleReviewCount})</span> : null}</span> : null}
+                    {client.address ? <><span className="hidden h-1 w-1 rounded-full bg-muted-foreground/50 sm:block" /><span>{client.address}</span></> : null}
                   </div>
                 </div>
               </div>
-              {bookingEnabled ? <Button variant="hero" size="lg" className="rounded-xl" asChild><a href={bookingPath} onClick={openStandaloneBooking}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></a></Button> : null}
+
+              <div className="flex shrink-0 items-center gap-2 pt-1">
+                <button type="button" onClick={shareProfile} className="grid h-10 w-10 place-items-center rounded-full border border-border/70 bg-background text-foreground shadow-sm transition hover:border-primary/30 hover:text-primary" aria-label={language === "sl" ? "Deli" : "Share"}><Share2 className="h-[18px] w-[18px]" /></button>
+                <button type="button" onClick={toggleFavourite} className="grid h-10 w-10 place-items-center rounded-full border border-border/70 bg-background text-foreground shadow-sm transition hover:border-primary/30 hover:text-primary" aria-label={language === "sl" ? "Shrani med priljubljene" : "Save as favourite"}><Heart className={`h-[19px] w-[19px] ${favourite ? "fill-primary text-primary" : ""}`} /></button>
+              </div>
+            </div>
+
+            <div className="mt-6 grid h-[280px] gap-2.5 overflow-hidden rounded-[18px] md:h-[360px] md:grid-cols-[1.62fr_1fr]">
+              <div className="group relative overflow-hidden rounded-[18px] border border-border/50 bg-gradient-to-br from-primary/[0.08] via-background to-primary/[0.16]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(15,107,255,0.14),transparent_38%),radial-gradient(circle_at_80%_85%,rgba(251,146,60,0.11),transparent_40%)]" />
+                <div className="absolute inset-0 flex items-center justify-center p-8">
+                  {client.logoUrl ? <img src={client.logoUrl} alt="" className="max-h-[52%] max-w-[52%] object-contain opacity-95 transition duration-500 group-hover:scale-[1.03]" /> : <div className="grid h-28 w-28 place-items-center rounded-full border border-primary/15 bg-background/80 text-4xl font-black text-primary shadow-xl">{initialsFor(client.name)}</div>}
+                </div>
+                <div className="absolute bottom-5 left-5 rounded-full bg-background/90 px-3 py-1.5 text-xs font-bold text-foreground shadow-sm backdrop-blur"><Sparkles className="mr-1.5 inline h-3.5 w-3.5 text-primary" />{primaryCategory}</div>
+              </div>
+              <div className="hidden gap-2.5 md:grid md:grid-rows-2">
+                <div className="relative overflow-hidden rounded-[18px] border border-border/50 bg-gradient-to-br from-[#eef5ff] to-[#f8fbff]">
+                  <div className="absolute inset-0 flex items-center justify-center"><CalendarDays className="h-14 w-14 text-primary/25" /></div>
+                  <div className="absolute bottom-4 left-4 right-4"><p className="text-xs font-bold uppercase tracking-[0.08em] text-primary">{onlineBookingLabel}</p><p className="mt-1 text-sm font-semibold text-foreground">{language === "sl" ? "Izberite storitev in prost termin." : "Choose a service and an available time."}</p></div>
+                </div>
+                <div className="relative overflow-hidden rounded-[18px] border border-border/50 bg-gradient-to-br from-[#fff8f2] to-background">
+                  <div className="absolute inset-0 flex items-center justify-center"><MapPin className="h-14 w-14 text-orange-400/25" /></div>
+                  <div className="absolute bottom-4 left-4 right-4"><p className="line-clamp-2 text-sm font-semibold text-foreground">{client.address || (language === "sl" ? "Lokacija ponudnika" : "Provider location")}</p></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-1 flex items-center gap-8 overflow-x-auto border-b border-border/70 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <a href="#storitve" className="border-b-2 border-primary px-1 py-4 text-sm font-bold text-primary">{text.services}</a>
+              <a href="#o-lokaciji" className="border-b-2 border-transparent px-1 py-4 text-sm font-semibold text-muted-foreground transition hover:text-foreground">{aboutLocationLabel}</a>
+              {team.length > 0 ? <a href="#ekipa" className="border-b-2 border-transparent px-1 py-4 text-sm font-semibold text-muted-foreground transition hover:text-foreground">{text.team}</a> : null}
+              {(review || client.googleRating) ? <a href="#mnenja" className="border-b-2 border-transparent px-1 py-4 text-sm font-semibold text-muted-foreground transition hover:text-foreground">{reviewsLabel}</a> : null}
             </div>
           </div>
         </section>
 
-        <div className="sticky top-20 z-20 border-b border-border/60 bg-background/95 backdrop-blur">
-          <div className="container mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 py-2 lg:px-8">
-            <a href="#o-ponudniku" className="whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground">{text.about}</a>
-            <a href="#storitve" className="whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground">{text.services}</a>
-            {packages.length > 0 ? <a href="#paketi" className="whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground">{text.packages}</a> : null}
-            {giftCards.length > 0 ? <a href="#darilni-boni" className="whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground">{text.giftCards}</a> : null}
-            {team.length > 0 ? <a href="#ekipa" className="whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground">{text.team}</a> : null}
-            <a href="#lokacija" className="whitespace-nowrap rounded-xl px-4 py-2 text-sm font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground">{text.location}</a>
-          </div>
-        </div>
+        <section className="mx-auto grid max-w-[1160px] gap-8 px-4 pt-7 lg:grid-cols-[minmax(0,1fr)_330px] lg:px-6">
+          <div className="min-w-0">
+            <div id="storitve" className="scroll-mt-28">
+              <h2 className="font-display text-2xl font-extrabold tracking-tight text-foreground">{text.services}</h2>
+              {categoryNames.length > 0 ? (
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <button type="button" onClick={() => setActiveServiceGroup("")} className={`rounded-full border px-4 py-2 text-xs font-bold transition ${!activeServiceGroup ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-border/70 bg-background text-foreground hover:border-primary/30"}`}>{allServicesLabel}</button>
+                  {categoryNames.map((name) => <button key={name} type="button" onClick={() => setActiveServiceGroup(name)} className={`rounded-full border px-4 py-2 text-xs font-bold transition ${activeServiceGroup === name ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-border/70 bg-background text-foreground hover:border-primary/30"}`}>{name}</button>)}
+                </div>
+              ) : null}
 
-        <section className="container mx-auto max-w-6xl px-4 py-14 lg:px-8 md:py-20">
-          {services.length > 0 ? (
-            <div id="storitve" className="scroll-mt-16">
-              <div className="max-w-3xl">
-                <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">{text.services}</h2>
-                <p className="mt-3 text-lg leading-8 text-muted-foreground">{text.servicesIntro}</p>
-              </div>
-              <div className="mt-8 grid gap-8">
-                {serviceGroups.map(([groupName, items]) => (
-                  <div key={groupName || "services"}>
-                    {groupName ? <h3 className="mb-4 text-lg font-bold text-foreground">{groupName}</h3> : null}
-                    <div className="grid gap-4 md:grid-cols-2">
-                      {items.map((service) => {
-                        const serviceBookingPath = addBookingService(bookingPath, service.id);
-                        return (
-                          <article key={service.id} className="flex min-h-44 flex-col rounded-3xl border border-border/60 bg-card p-6 shadow-soft">
-                            <div className="flex items-start justify-between gap-4">
-                              <div>
-                                <h4 className="text-lg font-bold text-foreground">{service.name}</h4>
-                                {service.description ? <p className="mt-2 line-clamp-3 text-sm leading-6 text-muted-foreground">{service.description}</p> : null}
-                              </div>
-                              {service.priceLabel ? <span className="shrink-0 text-base font-extrabold text-foreground">{service.priceLabel}</span> : null}
-                            </div>
-                            <div className="mt-4 flex flex-wrap gap-3 text-xs font-medium text-muted-foreground">
-                              {service.durationMinutes ? <span className="inline-flex items-center gap-1.5"><Clock3 className="h-3.5 w-3.5 text-primary" />{service.durationMinutes} {text.duration}</span> : null}
-                              {service.groupBooking ? <span className="inline-flex items-center gap-1.5"><UsersRound className="h-3.5 w-3.5 text-primary" />{text.group}{service.maxParticipantsPerSession ? ` · ${text.upTo} ${service.maxParticipantsPerSession} ${text.participants}` : ""}</span> : null}
-                            </div>
-                            {bookingEnabled ? (
-                              <div className="mt-auto pt-5">
-                                <Button variant="outline" className="w-full rounded-xl" asChild>
-                                  <a href={serviceBookingPath} onClick={() => trackBooking("profile_service", service.id)}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></a>
-                                </Button>
-                              </div>
-                            ) : null}
-                          </article>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ) : (
-            <article className="rounded-3xl border border-border/60 bg-card p-7 shadow-soft">
-              <CalendarDays className="h-7 w-7 text-primary" />
-              <h2 className="mt-5 text-xl font-bold text-foreground">{text.fallbackServices}</h2>
-              <ul className="mt-4 grid gap-3">{fallbackServiceItems.map((service) => <li key={service} className="flex items-center gap-3 text-sm text-muted-foreground"><CheckCircle2 className="h-4 w-4 text-primary" />{service}</li>)}</ul>
-            </article>
-          )}
-        </section>
-
-        {packages.length > 0 ? (
-          <section id="paketi" className="scroll-mt-16 border-y border-border/60 bg-card py-14 md:py-20">
-            <div className="container mx-auto max-w-6xl px-4 lg:px-8">
-              <div className="max-w-3xl">
-                <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">{text.packages}</h2>
-                <p className="mt-3 text-lg leading-8 text-muted-foreground">{text.packagesIntro}</p>
-              </div>
-              <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {packages.map((product) => (
-                  <article key={product.productId} className="rounded-3xl border border-border/60 bg-background p-6 shadow-soft">
-                    <div className="flex items-start justify-between gap-4">
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Package className="h-5 w-5" /></span>
-                      {product.promoText ? <span className="rounded-full bg-primary/[0.08] px-3 py-1 text-xs font-bold text-primary">{product.promoText}</span> : null}
-                    </div>
-                    <h3 className="mt-5 text-lg font-bold text-foreground">{product.name}</h3>
-                    {product.description ? <p className="mt-2 text-sm leading-6 text-muted-foreground">{product.description}</p> : null}
-                    {productMeta(product, language) ? <p className="mt-4 text-xs font-semibold text-muted-foreground">{productMeta(product, language)}</p> : null}
-                    <p className="mt-5 text-2xl font-extrabold text-foreground">{formatMoney(product.priceGross, product.currency, language)}</p>
-                    <div className="mt-5 flex flex-col gap-3"><div className="inline-flex w-fit items-center gap-2 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground"><ShieldCheck className="h-3.5 w-3.5" />{text.connectOnly}</div><Button variant="outline" className="w-full rounded-xl" asChild><a href={connectPurchaseUrl(product.productId)}>{text.buyInConnect}<ArrowRight className="h-4 w-4" /></a></Button></div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </section>
-        ) : null}
-
-        {giftCards.length > 0 ? (
-          <section id="darilni-boni" className="container mx-auto max-w-6xl scroll-mt-16 px-4 py-14 lg:px-8 md:py-20">
-            <div className="max-w-3xl">
-              <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">{text.giftCards}</h2>
-            </div>
-            <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {giftCards.map((product) => (
-                <article key={product.productId} className="rounded-3xl border border-border/60 bg-card p-6 shadow-soft">
-                  <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Gift className="h-5 w-5" /></span>
-                  <h3 className="mt-5 text-lg font-bold text-foreground">{product.name}</h3>
-                  {product.description ? <p className="mt-2 text-sm leading-6 text-muted-foreground">{product.description}</p> : null}
-                  {product.voucherSessionTypeNames.length > 0 ? <p className="mt-4 text-xs leading-5 text-muted-foreground">{product.voucherSessionTypeNames.join(" · ")}</p> : null}
-                  <p className="mt-5 text-2xl font-extrabold text-foreground">{formatMoney(product.priceGross, product.currency, language)}</p>
-                  <div className="mt-5 flex flex-col gap-3"><div className="inline-flex w-fit items-center gap-2 rounded-full bg-muted px-3 py-1.5 text-xs font-semibold text-muted-foreground"><ShieldCheck className="h-3.5 w-3.5" />{text.connectOnly}</div><Button variant="outline" className="w-full rounded-xl" asChild><a href={connectPurchaseUrl(product.productId)}>{text.buyInConnect}<ArrowRight className="h-4 w-4" /></a></Button></div>
+              {services.length > 0 ? (
+                <div className="mt-4 overflow-hidden rounded-[18px] border border-border/70 bg-background shadow-[0_4px_18px_rgba(15,23,42,0.04)]">
+                  {visibleServices.map((service, index) => {
+                    const serviceBookingPath = addBookingService(bookingPath, service.id);
+                    const launchKey = `service-${service.id}`;
+                    return (
+                      <article key={service.id} className={`flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5 ${index > 0 ? "border-t border-border/60" : ""}`}>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="text-sm font-extrabold text-foreground sm:text-[15px]">{service.name}</h3>
+                          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                            {service.durationMinutes ? <span>{service.durationMinutes} {text.duration}</span> : null}
+                            {(service.durationMinutes && (service.groupBooking || !service.groupBooking)) ? <span>•</span> : null}
+                            <span>{service.groupBooking && service.maxParticipantsPerSession ? `${text.upTo} ${service.maxParticipantsPerSession} ${text.participants}` : onePersonLabel}</span>
+                          </div>
+                          {service.description ? <p className="mt-1.5 line-clamp-2 max-w-2xl text-xs leading-5 text-muted-foreground">{service.description}</p> : null}
+                        </div>
+                        <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
+                          {service.priceLabel ? <span className="min-w-[64px] text-right text-sm font-extrabold text-foreground">{service.priceLabel}</span> : null}
+                          {bookingEnabled ? <Button variant="outline" size="sm" className="h-9 rounded-lg border-primary/40 px-4 text-xs font-bold text-primary hover:bg-primary/[0.05]" asChild><a href={serviceBookingPath} onClick={(event) => launchBooking(event, "profile_service", serviceBookingPath, service.id)}>{bookingLaunching === launchKey ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}{chooseTimeLabel}</a></Button> : null}
+                        </div>
+                      </article>
+                    );
+                  })}
+                  {activeServiceGroup ? <div className="border-t border-border/60 p-3 text-center"><button type="button" onClick={() => setActiveServiceGroup("")} className="rounded-lg border border-primary/35 px-4 py-2 text-xs font-bold text-primary transition hover:bg-primary/[0.05]">{seeAllServicesLabel}</button></div> : null}
+                </div>
+              ) : (
+                <article className="mt-4 rounded-[18px] border border-border/70 bg-background p-6 shadow-sm">
+                  <CalendarDays className="h-6 w-6 text-primary" />
+                  <h3 className="mt-4 font-bold text-foreground">{text.fallbackServices}</h3>
+                  <ul className="mt-3 flex flex-wrap gap-2">{fallbackServiceItems.map((service) => <li key={service} className="rounded-full bg-secondary/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">{service}</li>)}</ul>
                 </article>
-              ))}
+              )}
             </div>
-          </section>
-        ) : null}
 
-        {team.length > 0 ? (
-          <section id="ekipa" className="scroll-mt-16 border-y border-border/60 bg-card py-14 md:py-20">
-            <div className="container mx-auto max-w-6xl px-4 lg:px-8">
-              <div className="max-w-3xl">
-                <h2 className="font-display text-3xl font-bold text-foreground md:text-4xl">{text.team}</h2>
-                <p className="mt-3 text-lg leading-8 text-muted-foreground">{text.teamIntro}</p>
+            {team.length > 0 ? (
+              <section id="ekipa" className="scroll-mt-28 pt-9">
+                <div className="flex items-center justify-between"><h2 className="font-display text-xl font-extrabold tracking-tight text-foreground">{text.team}</h2><span className="text-xs font-bold text-primary">{language === "sl" ? "Poglej vse" : "See all"}</span></div>
+                <div className="mt-5 flex flex-wrap gap-x-7 gap-y-5">
+                  {team.map((member) => (
+                    <div key={member.id} className="w-[66px] text-center">
+                      <span className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-primary/10 bg-gradient-to-br from-primary/[0.12] to-primary/[0.03] text-sm font-extrabold text-primary shadow-sm">{initialsFor(member.name)}</span>
+                      <span className="mt-2 block truncate text-xs font-semibold text-foreground">{member.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            ) : null}
+
+            <section id="o-lokaciji" className="scroll-mt-28 pt-9">
+              <h2 className="font-display text-xl font-extrabold tracking-tight text-foreground">{aboutLocationLabel}</h2>
+              <div className="mt-4 rounded-[18px] border border-border/70 bg-background p-5 shadow-[0_4px_18px_rgba(15,23,42,0.04)]">
+                {description ? <p className="text-sm leading-6 text-muted-foreground">{description}</p> : <p className="text-sm text-muted-foreground">{language === "sl" ? "Več informacij o lokaciji trenutno ni na voljo." : "More information about this location is not available yet."}</p>}
+                {client.address ? <a href={client.googleMapsUrl} target="_blank" rel="noreferrer noopener" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-primary"><MapPin className="h-4 w-4" />{client.address}<ExternalLink className="h-3.5 w-3.5" /></a> : null}
               </div>
-              <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {team.map((member) => (
-                  <article key={member.id} className="flex items-center gap-4 rounded-3xl border border-border/60 bg-background p-5 shadow-soft">
-                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-primary/[0.08] font-extrabold text-primary">{initialsFor(member.name)}</span>
-                    <div><UserRound className="mb-1 h-4 w-4 text-primary" /><h3 className="font-bold text-foreground">{member.name}</h3></div>
-                  </article>
-                ))}
+            </section>
+
+            {(review || client.googleRating) ? (
+              <section id="mnenja" className="scroll-mt-28 pt-9">
+                <h2 className="font-display text-xl font-extrabold tracking-tight text-foreground">{reviewsLabel}</h2>
+                <div className="mt-4 rounded-[18px] border border-border/70 bg-background p-5 shadow-[0_4px_18px_rgba(15,23,42,0.04)]">
+                  <div className="flex items-center gap-2"><Star className="h-5 w-5 fill-amber-400 text-amber-400" /><strong className="text-xl text-foreground">{(review?.rating ?? client.googleRating ?? 0).toFixed(1)} / 5</strong></div>
+                  {review ? <><blockquote className="mt-4 text-sm leading-6 text-muted-foreground">“{review.text[language]}”</blockquote><p className="mt-3 text-xs font-bold text-foreground">{review.author} · {review.source}</p></> : client.googleReviewCount ? <p className="mt-2 text-xs text-muted-foreground">{client.googleReviewCount} Google</p> : null}
+                </div>
+              </section>
+            ) : null}
+
+            {packages.length > 0 ? (
+              <section id="paketi" className="scroll-mt-28 pt-9">
+                <h2 className="font-display text-xl font-extrabold tracking-tight text-foreground">{text.packages}</h2>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {packages.map((product) => <article key={product.productId} className="rounded-[18px] border border-border/70 bg-background p-5 shadow-sm"><div className="flex items-start justify-between gap-3"><Package className="h-5 w-5 text-primary" /><strong className="text-lg text-foreground">{formatMoney(product.priceGross, product.currency, language)}</strong></div><h3 className="mt-3 font-bold text-foreground">{product.name}</h3>{product.description ? <p className="mt-2 text-xs leading-5 text-muted-foreground">{product.description}</p> : null}{productMeta(product, language) ? <p className="mt-3 text-xs font-semibold text-muted-foreground">{productMeta(product, language)}</p> : null}<Button variant="outline" className="mt-4 w-full rounded-xl" asChild><a href={connectPurchaseUrl(product.productId)}>{text.buyInConnect}<ArrowRight className="h-4 w-4" /></a></Button></article>)}
+                </div>
+              </section>
+            ) : null}
+
+            {giftCards.length > 0 ? (
+              <section id="darilni-boni" className="scroll-mt-28 pt-9">
+                <h2 className="font-display text-xl font-extrabold tracking-tight text-foreground">{text.giftCards}</h2>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  {giftCards.map((product) => <article key={product.productId} className="rounded-[18px] border border-border/70 bg-background p-5 shadow-sm"><Gift className="h-5 w-5 text-primary" /><h3 className="mt-3 font-bold text-foreground">{product.name}</h3><p className="mt-3 text-lg font-extrabold text-foreground">{formatMoney(product.priceGross, product.currency, language)}</p><Button variant="outline" className="mt-4 w-full rounded-xl" asChild><a href={connectPurchaseUrl(product.productId)}>{text.buyInConnect}<ArrowRight className="h-4 w-4" /></a></Button></article>)}
+                </div>
+              </section>
+            ) : null}
+          </div>
+
+          <aside className="lg:sticky lg:top-[92px] lg:self-start">
+            <div className="overflow-hidden rounded-[18px] border border-border/70 bg-background shadow-[0_8px_28px_rgba(15,23,42,0.07)]">
+              <div className="p-4">
+                {bookingEnabled ? <Button variant="hero" className="h-11 w-full rounded-xl font-bold shadow-[0_7px_18px_rgba(15,107,255,0.20)]" asChild><a href={bookingPath} onClick={(event) => launchBooking(event, "profile", bookingPath)}>{bookingLaunching === "profile" ? <Loader2 className="h-4 w-4 animate-spin" /> : null}{text.bookingButton}</a></Button> : null}
+              </div>
+              <div className="border-t border-border/60 px-4 py-2">
+                <div className="flex items-center gap-3 py-3 text-sm text-foreground"><CalendarDays className="h-4 w-4 text-muted-foreground" /><span className="font-medium">{onlineBookingLabel}</span><ChevronRight className="ml-auto h-4 w-4 text-muted-foreground" /></div>
+                {client.address ? <a href={client.googleMapsUrl} target="_blank" rel="noreferrer noopener" className="flex items-center gap-3 border-t border-border/50 py-3 text-sm text-foreground transition hover:text-primary"><MapPin className="h-4 w-4 text-muted-foreground" /><span className="line-clamp-2 font-medium">{client.address}</span><ChevronRight className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" /></a> : null}
               </div>
             </div>
-          </section>
-        ) : null}
 
-        <section id="lokacija" className="container mx-auto grid max-w-6xl scroll-mt-16 gap-6 px-4 py-14 lg:grid-cols-2 lg:px-8 md:py-20">
-          <article className="rounded-3xl border border-border/60 bg-card p-7 shadow-soft">
-            <MapPin className="h-7 w-7 text-primary" />
-            <h2 className="mt-5 text-xl font-bold text-foreground">{text.location}</h2>
-            {client.address ? <a href={client.googleMapsUrl} target="_blank" rel="noreferrer noopener" className="mt-4 block leading-7 text-muted-foreground transition hover:text-primary">{client.address}</a> : <p className="mt-4 text-muted-foreground">—</p>}
-          </article>
-          {review ? (
-            <article className="rounded-3xl border border-border/60 bg-card p-7 shadow-soft">
-              <div className="flex gap-0.5" role="img" aria-label={`${review.rating} / 5`}>{Array.from({ length: review.rating }).map((_, index) => <Star key={index} className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />)}</div>
-              <h2 className="mt-5 text-xl font-bold text-foreground">{text.review}</h2>
-              <blockquote className="mt-4 leading-7 text-muted-foreground">“{review.text[language]}”</blockquote>
-              <p className="mt-4 text-sm font-semibold text-foreground">{review.author} · {review.source}</p>
-            </article>
-          ) : client.googleRating ? (
-            <article className="rounded-3xl border border-border/60 bg-card p-7 shadow-soft">
-              <Star className="h-7 w-7 fill-amber-400 text-amber-400" />
-              <h2 className="mt-5 text-xl font-bold text-foreground">{text.rating}</h2>
-              <p className="mt-4 text-3xl font-extrabold text-foreground">{client.googleRating.toFixed(1)} / 5</p>
-              {client.googleReviewCount !== null && client.googleReviewCount !== undefined ? <p className="mt-2 text-sm text-muted-foreground">{client.googleReviewCount} Google</p> : null}
-            </article>
-          ) : null}
+            <div className="mt-4 rounded-[18px] border border-border/70 bg-background p-5 shadow-[0_5px_20px_rgba(15,23,42,0.05)]">
+              <h3 className="font-display text-base font-extrabold text-foreground">{aboutLocationLabel}</h3>
+              {description ? <p className="mt-3 line-clamp-5 text-xs leading-5 text-muted-foreground">{description}</p> : null}
+              <a href="#o-lokaciji" className="mt-3 inline-block text-xs font-bold text-primary">{language === "sl" ? "Preberi več" : "Read more"}</a>
+            </div>
+
+            {client.googleRating ? (
+              <div className="mt-4 rounded-[18px] border border-border/70 bg-background p-5 shadow-[0_5px_20px_rgba(15,23,42,0.05)]">
+                <h3 className="font-display text-base font-extrabold text-foreground">{language === "sl" ? "Mnenja strank" : "Customer reviews"}</h3>
+                <div className="mt-4 flex items-center gap-2"><Star className="h-5 w-5 fill-amber-400 text-amber-400" /><strong className="text-xl text-foreground">{client.googleRating.toFixed(1)} / 5</strong></div>
+                {client.googleReviewCount ? <p className="mt-1 text-xs text-muted-foreground">{language === "sl" ? `Na podlagi ${client.googleReviewCount} mnenj` : `Based on ${client.googleReviewCount} reviews`}</p> : null}
+                <a href="#mnenja" className="mt-3 inline-block text-xs font-bold text-primary">{language === "sl" ? "Poglej vsa mnenja" : "See all reviews"}</a>
+              </div>
+            ) : null}
+          </aside>
         </section>
-
-        {bookingEnabled ? (
-          <section id="rezervacija" className="bg-card py-16 md:py-24">
-            <div className="container mx-auto max-w-5xl px-4 text-center lg:px-8">
-              <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><CalendarDays className="h-7 w-7" /></span>
-              <h2 className="mt-6 font-display text-3xl font-bold text-foreground md:text-4xl">{text.bookingTitle}</h2>
-              <p className="mx-auto mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{text.bookingBody}</p>
-              <Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild><a href={bookingPath} onClick={openStandaloneBooking}>{text.bookingButton}<ArrowRight className="h-4 w-4" /></a></Button>
-              <p className="mx-auto mt-5 inline-flex items-center gap-2 text-sm text-muted-foreground"><ShieldCheck className="h-4 w-4 text-primary" />{text.security}</p>
-            </div>
-          </section>
-        ) : null}
       </main>
       <Footer />
     </div>

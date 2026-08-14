@@ -36,6 +36,8 @@ const Navbar = () => {
   const copy = getSiteCopy(language);
   const customerMode = pathname === getRoutePath("customers", "sl")
     || pathname === getRoutePath("customers", "en")
+    || pathname.startsWith(`${getRoutePath("customers", "sl")}/`)
+    || pathname.startsWith(`${getRoutePath("customers", "en")}/`)
     || pathname === getRoutePath("connect", "sl")
     || pathname === getRoutePath("connect", "en")
     || pathname === getRoutePath("businesses", "sl")
