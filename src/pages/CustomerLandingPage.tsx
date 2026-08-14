@@ -165,7 +165,7 @@ const CustomerLandingPage = () => {
 
   const [query, setQuery] = useState(searchParams.get("q") || "");
   const [locationQuery, setLocationQuery] = useState(searchParams.get("location") || "");
-  const [appointmentDate, setAppointmentDate] = useState("");
+  const [appointmentDate, setAppointmentDate] = useState(searchParams.get("date") || "");
   const [activeCategory, setActiveCategory] = useState<ClientCategory | "all">(normalizeCategory(searchParams.get("category")));
   const [apiClients, setApiClients] = useState<DirectoryClient[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -240,6 +240,7 @@ const CustomerLandingPage = () => {
     const currentParams = new URLSearchParams(searchParamString);
     setQuery(currentParams.get("q") || "");
     setLocationQuery(currentParams.get("location") || "");
+    setAppointmentDate(currentParams.get("date") || "");
     setActiveCategory(normalizeCategory(currentParams.get("category")));
   }, [searchParamString]);
 
@@ -304,7 +305,7 @@ const CustomerLandingPage = () => {
     });
   }, [activeCategory, directoryClients, language, locationQuery, locationResolved, query]);
 
-  const isFilteredView = Boolean(searchParams.get("q") || searchParams.get("location") || searchParams.get("category"));
+  const isFilteredView = Boolean(searchParams.get("q") || searchParams.get("location") || searchParams.get("date") || searchParams.get("category"));
 
   const recentClients = useMemo(() => directoryClients.slice(0, 10), [directoryClients]);
   const recommendedClients = useMemo(
@@ -324,6 +325,7 @@ const CustomerLandingPage = () => {
     const normalizedLocation = locationQuery.trim().replace(/\s+/g, " ");
     if (normalizedQuery) params.set("q", normalizedQuery);
     if (normalizedLocation) params.set("location", normalizedLocation);
+    if (appointmentDate) params.set("date", appointmentDate);
     if (activeCategory !== "all") params.set("category", activeCategory);
     setSearchParams(params);
     scrollToResults();
@@ -338,6 +340,7 @@ const CustomerLandingPage = () => {
     const normalizedLocation = locationQuery.trim().replace(/\s+/g, " ");
     if (normalizedQuery) params.set("q", normalizedQuery);
     if (normalizedLocation) params.set("location", normalizedLocation);
+    if (appointmentDate) params.set("date", appointmentDate);
     if (nextCategory !== "all") params.set("category", nextCategory);
     setSearchParams(params);
     scrollToResults();
