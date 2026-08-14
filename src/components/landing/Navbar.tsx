@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CUSTOMER_LOGIN_ROUTE } from "@/lib/routes";
+import { BUSINESS_LOGIN_ROUTE } from "@/lib/routes";
 import { getRoutePath } from "@/lib/localized-routes";
 import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import {
@@ -32,7 +32,7 @@ const Navbar = () => {
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
   const { language, setLanguage } = useSiteLanguage();
-  const { pathname, search } = useLocation();
+  const { pathname } = useLocation();
   const copy = getSiteCopy(language);
   const customerMode = pathname === getRoutePath("customers", "sl")
     || pathname === getRoutePath("customers", "en")
@@ -46,7 +46,7 @@ const Navbar = () => {
   const homePath = getRoutePath("home", language);
   const bookingPath = getRoutePath("booking", language);
   const customerPath = getRoutePath("customers", language);
-  const customerLoginPath = `${CUSTOMER_LOGIN_ROUTE}?next=${encodeURIComponent(`${pathname}${search}`)}`;
+  const businessLoginPath = BUSINESS_LOGIN_ROUTE;
   const pricingPath = getRoutePath("pricing", language);
   const calendarPath = getRoutePath("calendar", language);
   const clientManagementPath = getRoutePath("clientManagement", language);
@@ -262,7 +262,7 @@ const Navbar = () => {
             <select
               value={language}
               onChange={(event) => setLanguage(event.target.value as SiteLanguage)}
-              className="w-full appearance-none rounded-full border border-border/85 bg-white/85 px-9 py-2.5 pr-9 text-sm font-medium text-foreground shadow-sm outline-none transition focus:border-primary"
+              className="w-full appearance-none rounded-xl border border-border/70 bg-background px-9 py-2.5 pr-9 text-sm font-medium text-foreground outline-none transition focus:border-primary"
               aria-label={copy.nav.language}
             >
               <option value="sl">{languageNames[language].sl}</option>
@@ -433,7 +433,7 @@ const Navbar = () => {
             </a>
           </Button>
           <Button variant="hero" className="rounded-xl" asChild>
-            <a href={customerLoginPath}>{language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}</a>
+            <a href={businessLoginPath}>{language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}</a>
           </Button>
         </div>
 
@@ -445,12 +445,12 @@ const Navbar = () => {
       {open && (
         <div className="border-t border-border/70 bg-background/95 px-4 pb-6 pt-4 backdrop-blur-xl xl:hidden">
           <div className="flex flex-col gap-3">
-            <div className="relative">
+            <div className="relative w-full">
               <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
               <select
                 value={language}
                 onChange={(event) => setLanguage(event.target.value as SiteLanguage)}
-                className="w-full appearance-none rounded-2xl border border-border bg-white px-10 py-3 pr-10 text-sm font-medium text-foreground shadow-sm outline-none transition focus:border-primary"
+                className="w-full appearance-none rounded-xl border border-border/70 bg-background px-9 py-3 pr-9 text-sm font-medium text-foreground outline-none transition focus:border-primary"
                 aria-label={copy.nav.language}
               >
                 <option value="sl">{languageNames[language].sl}</option>
@@ -580,7 +580,7 @@ const Navbar = () => {
             </div>
 
             <Button variant="hero" size="lg" className="rounded-xl" asChild>
-              <a href={customerLoginPath} onClick={() => setOpen(false)}>{language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}</a>
+              <a href={businessLoginPath} onClick={() => setOpen(false)}>{language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}</a>
             </Button>
           </div>
         </div>
