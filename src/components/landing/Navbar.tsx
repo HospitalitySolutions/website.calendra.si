@@ -26,6 +26,7 @@ import { WORDMARK } from "@/lib/brand-assets";
 import { languageNames, getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import CustomerNavbar from "./CustomerNavbar";
+import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -428,12 +429,14 @@ const Navbar = () => {
         </div>
 
         <div className="hidden items-center gap-2.5 xl:flex">
-          <Button variant="outline" className="rounded-full border-border/85 bg-white/85 px-5 shadow-sm" asChild>
-            <a href={customerPath}>
-              <Users className="h-4 w-4 text-primary" />
-              {language === "sl" ? "Za stranke" : "For customers"}
-            </a>
-          </Button>
+          {CUSTOMER_MARKETPLACE_PUBLIC && (
+            <Button variant="outline" className="rounded-full border-border/85 bg-white/85 px-5 shadow-sm" asChild>
+              <a href={customerPath}>
+                <Users className="h-4 w-4 text-primary" />
+                {language === "sl" ? "Za stranke" : "For customers"}
+              </a>
+            </Button>
+          )}
           <Button variant="hero" className="rounded-xl" asChild>
             <a href={businessLoginPath}>{language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}</a>
           </Button>
@@ -461,12 +464,14 @@ const Navbar = () => {
               <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             </div>
 
-            <Button variant="outline" size="lg" className="rounded-2xl border-border/80 bg-white shadow-sm" asChild>
-              <a href={customerPath} onClick={() => setOpen(false)}>
-                <Users className="h-4 w-4 text-primary" />
-                {language === "sl" ? "Za stranke" : "For customers"}
-              </a>
-            </Button>
+            {CUSTOMER_MARKETPLACE_PUBLIC && (
+              <Button variant="outline" size="lg" className="rounded-2xl border-border/80 bg-white shadow-sm" asChild>
+                <a href={customerPath} onClick={() => setOpen(false)}>
+                  <Users className="h-4 w-4 text-primary" />
+                  {language === "sl" ? "Za stranke" : "For customers"}
+                </a>
+              </Button>
+            )}
 
             <div className="rounded-3xl border border-border/70 bg-white/90 p-2 shadow-sm">
               <button

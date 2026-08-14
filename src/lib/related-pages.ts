@@ -4,6 +4,7 @@ import { IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import { canonicalRoutes, type CanonicalRouteKey } from "@/lib/localized-routes";
 import { pageSeo } from "@/lib/seo";
 import type { SiteLanguage } from "@/lib/site-language";
+import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 
 /**
  * Short link labels, kept separate from `pageSeo` titles because a title reads
@@ -138,6 +139,7 @@ export const getRelatedPages = (
 
   return (relatedByRouteKey[routeKey] ?? [])
     .filter((relatedKey) => relatedKey !== routeKey)
+    .filter((relatedKey) => CUSTOMER_MARKETPLACE_PUBLIC || (relatedKey !== "customers" && relatedKey !== "businesses"))
     .slice(0, limit)
     .map((relatedKey) => ({
       routeKey: relatedKey,

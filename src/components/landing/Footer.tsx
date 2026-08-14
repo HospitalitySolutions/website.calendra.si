@@ -11,6 +11,7 @@ import {
 } from "@/lib/external-profiles";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
 import { OPEN_COOKIE_SETTINGS_EVENT } from "@/lib/google-analytics";
+import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 
 type FooterLink = {
   key: CanonicalRouteKey;
@@ -94,7 +95,7 @@ const FooterColumn = ({ title, links, language }: { title: string; links: Footer
   <nav aria-label={title}>
     <p className="text-sm font-semibold text-foreground">{title}</p>
     <div className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
-      {links.map((link) => (
+      {links.filter((link) => CUSTOMER_MARKETPLACE_PUBLIC || link.key !== "customers").map((link) => (
         <a key={link.key} href={getRoutePath(link.key, language)} className="transition-colors hover:text-foreground">
           {link.label}
         </a>

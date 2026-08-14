@@ -7,6 +7,7 @@ import ResponsiveScreenshot from "@/components/marketing/ResponsiveScreenshot";
 import { Button } from "@/components/ui/button";
 import { getFaqForRoute } from "@/lib/faq";
 import { getRoutePath } from "@/lib/localized-routes";
+import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 import { MARKETING_IMAGES } from "@/lib/marketing-images";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage } from "@/lib/site-language";
@@ -147,7 +148,9 @@ const ClientsPage = () => {
               <AnswerSummary routeKey="booking" className="mt-6" />
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Button variant="hero" size="lg" className="rounded-xl" asChild><a href={TRIAL_SIGNUP_ROUTE}>{text.heroPrimary}<ArrowRight className="h-4 w-4" /></a></Button>
-                <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={customerSearchPath}>{text.heroSecondary}</a></Button>
+                {CUSTOMER_MARKETPLACE_PUBLIC && (
+                  <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={customerSearchPath}>{text.heroSecondary}</a></Button>
+                )}
               </div>
             </div>
             <div className="relative rounded-[1.75rem] border border-white/80 bg-white/75 p-3 shadow-[0_30px_80px_-35px_hsl(var(--primary)/0.45)]">

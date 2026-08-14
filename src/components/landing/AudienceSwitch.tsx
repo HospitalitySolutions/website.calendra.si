@@ -1,6 +1,7 @@
 import { getRoutePath } from "@/lib/localized-routes";
 import type { SiteLanguage } from "@/lib/site-language";
 import { cn } from "@/lib/utils";
+import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 
 type AudienceSwitchProps = {
   language: SiteLanguage;
@@ -14,15 +15,17 @@ const AudienceSwitch = ({ language, audience, className }: AudienceSwitchProps) 
 
   return (
     <div className={cn("inline-flex rounded-xl border border-border/70 bg-background p-1 shadow-sm", className)}>
-      <a
-        href={customerPath}
-        className={cn(
-          "rounded-lg px-3 py-1.5 text-xs font-semibold transition",
-          audience === "customers" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
-        )}
-      >
-        {language === "sl" ? "Za stranke" : "For customers"}
-      </a>
+      {CUSTOMER_MARKETPLACE_PUBLIC && (
+        <a
+          href={customerPath}
+          className={cn(
+            "rounded-lg px-3 py-1.5 text-xs font-semibold transition",
+            audience === "customers" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
+          )}
+        >
+          {language === "sl" ? "Za stranke" : "For customers"}
+        </a>
+      )}
       <a
         href={businessPath}
         className={cn(

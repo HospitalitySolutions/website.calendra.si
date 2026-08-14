@@ -6,6 +6,7 @@ services:
       args:
         VITE_SITE_URL: https://calendra.si
         VITE_APP_BASE_URL: ${VITE_APP_BASE_URL:-https://app.calendra.si}
+        VITE_CUSTOMER_MARKETPLACE_PUBLIC: ${CUSTOMER_MARKETPLACE_PUBLIC:-false}
         VITE_LINKEDIN_URL: ${VITE_LINKEDIN_URL:-}
         VITE_YOUTUBE_URL: ${VITE_YOUTUBE_URL:-}
         VITE_GOOGLE_PLAY_URL: ${VITE_GOOGLE_PLAY_URL:-}
@@ -22,6 +23,8 @@ services:
         VITE_COMPANY_REGISTRATION_NUMBER: ${VITE_COMPANY_REGISTRATION_NUMBER:-}
         VITE_WIKIDATA_ENTITY_ID: ${VITE_WIKIDATA_ENTITY_ID:-}
         INDEXNOW_KEY: ${INDEXNOW_KEY:-}
+    environment:
+      CUSTOMER_MARKETPLACE_PUBLIC: ${CUSTOMER_MARKETPLACE_PUBLIC:-false}
     ports:
       - "${WEBSITE_PORT:-8080}:80"
     restart: unless-stopped

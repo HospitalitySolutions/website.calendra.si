@@ -70,6 +70,15 @@
     redir /account-deletion /en/account-deletion 308
   }
 
+  # Keep the consumer marketplace private until launch. Build-time code uses
+  # the same switch to remove navigation and sitemap entries. Direct booking
+  # URLs under /narocanje/* remain public and are intentionally not matched.
+  @privateMarketplace {
+    path /za-stranke /za-stranke/* /en/for-customers /en/for-customers/*
+    expression `"{$CUSTOMER_MARKETPLACE_PUBLIC:false}" != "true"`
+  }
+  respond @privateMarketplace 404
+
   # Cookieless analytics served first-party. Content blockers match on known
   # third-party analytics hostnames, so proxying the tracker and its collect
   # endpoint through our own domain is what keeps the data usable.

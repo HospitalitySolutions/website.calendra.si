@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { StepWatermark } from "@/components/ui/step-watermark";
 import { getCalendraConnectCopy } from "@/lib/calendra-connect";
 import { getRoutePath } from "@/lib/localized-routes";
+import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage } from "@/lib/site-language";
 import {
@@ -199,9 +200,11 @@ const CalendraConnectPage = () => {
               <MapPin className="h-9 w-9 text-accent" aria-hidden="true" />
               <h2 className="mt-6 font-display text-2xl font-bold text-foreground">{copy.preview.heading}</h2>
               <p className="mt-4 leading-7 text-muted-foreground">{copy.preview.body}</p>
-              <Button variant="outline" className="mt-7 rounded-xl" asChild>
-                <a href={getRoutePath("customers", language)}>{language === "sl" ? "Poiščite ponudnike v Calendri" : "Find providers on Calendra"}<ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
-              </Button>
+              {CUSTOMER_MARKETPLACE_PUBLIC && (
+                <Button variant="outline" className="mt-7 rounded-xl" asChild>
+                  <a href={getRoutePath("customers", language)}>{language === "sl" ? "Poiščite ponudnike v Calendri" : "Find providers on Calendra"}<ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                </Button>
+              )}
             </div>
           </div>
         </section>

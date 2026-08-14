@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BUSINESS_LOGIN_ROUTE, CUSTOMER_LOGIN_ROUTE } from "@/lib/routes";
 import { useSiteLanguage } from "@/lib/site-language";
 import { ArrowRight, Building2, UserRound } from "lucide-react";
+import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 
 const LoginChooserPage = () => {
   const { language } = useSiteLanguage();
@@ -33,15 +34,17 @@ const LoginChooserPage = () => {
       <main className="container mx-auto max-w-5xl px-4 py-16 lg:px-8 md:py-24">
         <div className="mx-auto max-w-3xl text-center">
           <h1 className="font-display text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">{text.title}</h1>
-          <p className="mt-4 text-lg leading-8 text-muted-foreground">{text.intro}</p>
+          <p className="mt-4 text-lg leading-8 text-muted-foreground">{CUSTOMER_MARKETPLACE_PUBLIC ? text.intro : (language === "sl" ? "Prijavite se v poslovno aplikacijo Calendra." : "Log in to the Calendra business app.")}</p>
         </div>
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          <article className="flex flex-col rounded-[2rem] border border-primary/20 bg-gradient-to-br from-primary/[0.10] via-card to-card p-8 shadow-soft">
+        <div className={`mt-10 grid gap-6 ${CUSTOMER_MARKETPLACE_PUBLIC ? "md:grid-cols-2" : "mx-auto max-w-xl"}`}>
+          {CUSTOMER_MARKETPLACE_PUBLIC && (
+            <article className="flex flex-col rounded-[2rem] border border-primary/20 bg-gradient-to-br from-primary/[0.10] via-card to-card p-8 shadow-soft">
             <span className="grid h-14 w-14 place-items-center rounded-2xl bg-primary text-primary-foreground"><UserRound className="h-7 w-7" /></span>
             <h2 className="mt-6 font-display text-2xl font-extrabold text-foreground">{text.customerTitle}</h2>
             <p className="mt-3 flex-1 leading-7 text-muted-foreground">{text.customerBody}</p>
             <Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild><a href={CUSTOMER_LOGIN_ROUTE}>{text.customerCta}<ArrowRight className="h-4 w-4" /></a></Button>
-          </article>
+            </article>
+          )}
           <article className="flex flex-col rounded-[2rem] border border-border/70 bg-card p-8 shadow-soft">
             <span className="grid h-14 w-14 place-items-center rounded-2xl bg-secondary text-foreground"><Building2 className="h-7 w-7" /></span>
             <h2 className="mt-6 font-display text-2xl font-extrabold text-foreground">{text.businessTitle}</h2>

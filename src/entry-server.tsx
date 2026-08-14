@@ -9,6 +9,7 @@ import { HERO_IMAGE } from "@/lib/hero-media";
 import { buildLlmsFullTxt, buildLlmsTxt } from "@/lib/llms-txt";
 import { getPublicCompanyProfilePath, indexablePublicCompanyProfiles } from "@/lib/public-company-profiles";
 import { customerStories, customerStoryPathnames } from "@/lib/customer-stories";
+import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 import {
   PRICING_CATALOG_SCRIPT_ID,
   PUBLIC_PRICING_ENDPOINT,
@@ -16,15 +17,21 @@ import {
   setPrerenderedPricingCatalog,
 } from "@/lib/public-pricing";
 
-const publicProfilePathnames = indexablePublicCompanyProfiles.flatMap((profile) => [
-  getPublicCompanyProfilePath(profile.slug, "sl"),
-  getPublicCompanyProfilePath(profile.slug, "en"),
+const publicProfilePathnames = CUSTOMER_MARKETPLACE_PUBLIC
+  ? indexablePublicCompanyProfiles.flatMap((profile) => [
+      getPublicCompanyProfilePath(profile.slug, "sl"),
+      getPublicCompanyProfilePath(profile.slug, "en"),
+    ])
+  : [];
+
+const excludedMarketplacePathnames = new Set([
+  canonicalRoutes.businesses.sl,
+  canonicalRoutes.businesses.en,
+  ...(CUSTOMER_MARKETPLACE_PUBLIC ? [] : [canonicalRoutes.customers.sl, canonicalRoutes.customers.en]),
 ]);
 
-const removedDirectoryPathnames = new Set([canonicalRoutes.businesses.sl, canonicalRoutes.businesses.en]);
-
 export const routesToPrerender = [
-  ...canonicalPathnames.filter((pathname) => !removedDirectoryPathnames.has(pathname)),
+  ...canonicalPathnames.filter((pathname) => !excludedMarketplacePathnames.has(pathname)),
   ...publicProfilePathnames,
   ...customerStoryPathnames,
   ...blogArticlePathnames,

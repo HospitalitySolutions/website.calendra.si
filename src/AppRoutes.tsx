@@ -34,6 +34,7 @@ import LoginChooserPageSsr from "./pages/LoginChooserPage.tsx";
 import { getPublicCompanyProfilePath } from "./lib/public-company-profiles.ts";
 import { getRoutePath } from "./lib/localized-routes.ts";
 import type { SiteLanguage } from "./lib/site-language.ts";
+import { CUSTOMER_MARKETPLACE_PUBLIC } from "./lib/customer-marketplace.ts";
 
 const Index = IndexSsr;
 const PrivacyPolicy = import.meta.env.SSR ? PrivacyPolicySsr : lazy(() => import("./pages/PrivacyPolicy.tsx"));
@@ -143,29 +144,29 @@ const AppRoutes = () => (
 
       <Route path="/narocanje" element={<ClientsPage />} />
       <Route path="/en/booking" element={<ClientsPage />} />
-      <Route path="/za-stranke" element={<CustomerLandingPage />} />
-      <Route path="/en/for-customers" element={<CustomerLandingPage />} />
-      <Route path="/za-stranke/:slug" element={<PublicCompanyProfilePage />} />
-      <Route path="/en/for-customers/:slug" element={<PublicCompanyProfilePage />} />
+      <Route path="/za-stranke" element={CUSTOMER_MARKETPLACE_PUBLIC ? <CustomerLandingPage /> : <NotFound />} />
+      <Route path="/en/for-customers" element={CUSTOMER_MARKETPLACE_PUBLIC ? <CustomerLandingPage /> : <NotFound />} />
+      <Route path="/za-stranke/:slug" element={CUSTOMER_MARKETPLACE_PUBLIC ? <PublicCompanyProfilePage /> : <NotFound />} />
+      <Route path="/en/for-customers/:slug" element={CUSTOMER_MARKETPLACE_PUBLIC ? <PublicCompanyProfilePage /> : <NotFound />} />
       <Route path="/za-podjetja" element={<Navigate to="/" replace />} />
       <Route path="/en/for-business" element={<Navigate to="/en" replace />} />
       <Route path="/prijava" element={<LoginChooserPage />} />
       <Route path="/en/login" element={<LoginChooserPage />} />
-      <Route path="/ponudniki" element={<LegacyDirectoryRedirect language="sl" />} />
-      <Route path="/en/providers" element={<LegacyDirectoryRedirect language="en" />} />
-      <Route path="/ponudniki/:slug" element={<LegacyProviderRedirect language="sl" />} />
-      <Route path="/en/providers/:slug" element={<LegacyProviderRedirect language="en" />} />
-      <Route path="/podjetja" element={<LegacyDirectoryRedirect language="sl" />} />
-      <Route path="/en/businesses" element={<LegacyDirectoryRedirect language="en" />} />
-      <Route path="/podjetja/:slug" element={<LegacyProviderRedirect language="sl" />} />
-      <Route path="/en/businesses/:slug" element={<LegacyProviderRedirect language="en" />} />
+      <Route path="/ponudniki" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyDirectoryRedirect language="sl" /> : <NotFound />} />
+      <Route path="/en/providers" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyDirectoryRedirect language="en" /> : <NotFound />} />
+      <Route path="/ponudniki/:slug" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyProviderRedirect language="sl" /> : <NotFound />} />
+      <Route path="/en/providers/:slug" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyProviderRedirect language="en" /> : <NotFound />} />
+      <Route path="/podjetja" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyDirectoryRedirect language="sl" /> : <NotFound />} />
+      <Route path="/en/businesses" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyDirectoryRedirect language="en" /> : <NotFound />} />
+      <Route path="/podjetja/:slug" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyProviderRedirect language="sl" /> : <NotFound />} />
+      <Route path="/en/businesses/:slug" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyProviderRedirect language="en" /> : <NotFound />} />
       <Route path="/zgodbe-strank" element={<CustomerStoriesPage />} />
       <Route path="/en/customer-stories" element={<CustomerStoriesPage />} />
       <Route path="/zgodbe-strank/:slug" element={<CustomerStoryDetailPage />} />
       <Route path="/en/customer-stories/:slug" element={<CustomerStoryDetailPage />} />
-      <Route path="/stranke" element={<LegacyDirectoryRedirect language="sl" />} />
-      <Route path="/en/clients" element={<LegacyDirectoryRedirect language="en" />} />
-      <Route path="/clients" element={<LegacyDirectoryRedirect language="en" />} />
+      <Route path="/stranke" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyDirectoryRedirect language="sl" /> : <NotFound />} />
+      <Route path="/en/clients" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyDirectoryRedirect language="en" /> : <NotFound />} />
+      <Route path="/clients" element={CUSTOMER_MARKETPLACE_PUBLIC ? <LegacyDirectoryRedirect language="en" /> : <NotFound />} />
       <Route path="/booking" element={<Navigate to="/en/booking" replace />} />
 
       <Route path="/koledar-terminov" element={<FeatureDetailPage />} />
