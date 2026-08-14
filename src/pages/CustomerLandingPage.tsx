@@ -158,7 +158,7 @@ const ProviderCard = ({ client, language }: { client: DirectoryClient; language:
 
 const CustomerLandingPage = () => {
   const { language } = useSiteLanguage();
-  const { isAuthenticated } = useCustomerSession();
+  const { loading: sessionLoading, isAuthenticated } = useCustomerSession();
   const [searchParams, setSearchParams] = useSearchParams();
   const searchParamString = searchParams.toString();
   const connectPath = getRoutePath("connect", language);
@@ -543,16 +543,25 @@ const CustomerLandingPage = () => {
               </div>
 
               <div className="flex min-w-[190px] flex-col gap-2.5">
-                {!isAuthenticated ? (
-                  <Button variant="hero" className="rounded-xl" asChild><a href={CUSTOMER_REGISTER_ROUTE}>{text.register}</a></Button>
+                {sessionLoading ? (
+                  <>
+                    <div className="h-10 animate-pulse rounded-xl bg-primary/10" />
+                    <div className="h-10 animate-pulse rounded-xl border border-border/70 bg-background" />
+                  </>
                 ) : (
-                  <Button variant="hero" className="rounded-xl" asChild><a href="/racun">{language === "sl" ? "Odpri moj račun" : "Open my account"}</a></Button>
+                  <>
+                    {!isAuthenticated ? (
+                      <Button variant="hero" className="rounded-xl" asChild><a href={CUSTOMER_REGISTER_ROUTE}>{text.register}</a></Button>
+                    ) : (
+                      <Button variant="hero" className="rounded-xl" asChild><a href="/racun">{language === "sl" ? "Odpri moj račun" : "Open my account"}</a></Button>
+                    )}
+                    <Button variant="outline" className="rounded-xl bg-background" asChild>
+                      <a href={isAuthenticated ? connectPath : `${CUSTOMER_LOGIN_ROUTE}?next=${encodeURIComponent(getRoutePath("customers", language))}`}>
+                        {isAuthenticated ? "Calendra Connect" : text.login}
+                      </a>
+                    </Button>
+                  </>
                 )}
-                <Button variant="outline" className="rounded-xl bg-background" asChild>
-                  <a href={isAuthenticated ? connectPath : `${CUSTOMER_LOGIN_ROUTE}?next=${encodeURIComponent(getRoutePath("customers", language))}`}>
-                    {isAuthenticated ? "Calendra Connect" : text.login}
-                  </a>
-                </Button>
               </div>
             </div>
           </div>

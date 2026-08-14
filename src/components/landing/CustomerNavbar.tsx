@@ -14,10 +14,10 @@ import {
   ChevronDown,
   Download,
   Globe,
+  House,
   LogOut,
   Menu,
   MessageCircle,
-  Settings,
   UserRound,
   WalletCards,
   X,
@@ -29,7 +29,7 @@ const CustomerNavbar = () => {
   const accountMenuRef = useRef<HTMLDivElement>(null);
   const { pathname, search } = useLocation();
   const { language, setLanguage } = useSiteLanguage();
-  const { user, isAuthenticated, logout } = useCustomerSession();
+  const { user, loading: sessionLoading, isAuthenticated, logout } = useCustomerSession();
   const customerPath = getRoutePath("customers", language);
   const connectPath = getRoutePath("connect", language);
   const nextPath = `${pathname}${search}`;
@@ -40,34 +40,34 @@ const CustomerNavbar = () => {
     business: "Za ponudnike",
     auth: "Prijava / Ustvari račun",
     menu: "Meni",
+    overview: "Pregled",
     profile: "Moj profil",
     appointments: "Moji termini",
     wallet: "Denarnica",
     messages: "Sporočila",
     notifications: "Obvestila",
-    settings: "Nastavitve",
     logout: "Odjava",
   } : {
     download: "Download the app",
     business: "For providers",
     auth: "Login / Create account",
     menu: "Menu",
+    overview: "Overview",
     profile: "My profile",
     appointments: "My appointments",
     wallet: "Wallet",
     messages: "Messages",
     notifications: "Notifications",
-    settings: "Settings",
     logout: "Log out",
   };
 
   const accountLinks = [
-    { label: labels.profile, href: "/racun/profil", icon: UserRound },
+    { label: labels.overview, href: "/racun", icon: House },
     { label: labels.appointments, href: "/racun/termini", icon: CalendarDays },
     { label: labels.wallet, href: "/racun/denarnica", icon: WalletCards },
     { label: labels.messages, href: "/racun/sporocila", icon: MessageCircle },
     { label: labels.notifications, href: "/racun/obvestila", icon: Bell },
-    { label: labels.settings, href: "/racun/profil#nastavitve", icon: Settings },
+    { label: labels.profile, href: "/racun/profil", icon: UserRound },
   ];
 
   useEffect(() => {
@@ -111,16 +111,19 @@ const CustomerNavbar = () => {
   return (
     <nav className="sticky top-0 z-50 border-b border-border/35 bg-background/90 backdrop-blur-xl">
       <div className="container mx-auto flex h-[72px] items-center justify-between gap-4 px-4 lg:px-8">
-        <a href={customerPath} className="flex items-center">
-          <img src={WORDMARK.src} alt="Calendra" width={WORDMARK.width} height={WORDMARK.height} className="h-8 w-auto md:h-9" />
-        </a>
+        <div className="flex items-center gap-3">
+          <a href={customerPath} className="flex items-center">
+            <img src={WORDMARK.src} alt="Calendra" width={WORDMARK.width} height={WORDMARK.height} className="h-8 w-auto md:h-9" />
+          </a>
+          <div className="hidden xl:block">
+            <LanguageSelect />
+          </div>
+        </div>
 
         <div className="hidden items-center gap-2.5 xl:flex">
           <Button variant="ghost" className="rounded-xl px-3 font-medium" asChild>
             <a href={connectPath}><Download className="h-4 w-4 text-primary" />{labels.download}</a>
           </Button>
-
-          <LanguageSelect />
 
           <Button variant="outline" className="rounded-xl bg-background" asChild>
             <a href={getRoutePath("home", language)}>
@@ -129,7 +132,9 @@ const CustomerNavbar = () => {
             </a>
           </Button>
 
-          {isAuthenticated ? (
+          {sessionLoading ? (
+            <div className="h-10 w-[92px] animate-pulse rounded-xl border border-border/70 bg-secondary/45" aria-label={language === "sl" ? "Preverjam prijavo" : "Checking sign-in"} />
+          ) : isAuthenticated ? (
             <div className="relative" ref={accountMenuRef}>
               <button
                 type="button"
@@ -190,7 +195,9 @@ const CustomerNavbar = () => {
               </a>
             </Button>
 
-            {isAuthenticated ? (
+            {sessionLoading ? (
+              <div className="h-12 animate-pulse rounded-xl border border-border/70 bg-secondary/45" aria-label={language === "sl" ? "Preverjam prijavo" : "Checking sign-in"} />
+            ) : isAuthenticated ? (
               <div className="rounded-2xl border border-border/70 p-2">
                 <div className="flex items-center gap-3 px-3 py-2">
                   <span className="grid h-9 w-9 place-items-center rounded-full bg-primary/[0.10] text-sm font-extrabold text-primary">{customerInitials(user)}</span>
