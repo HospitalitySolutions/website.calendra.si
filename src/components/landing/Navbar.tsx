@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { LOGIN_ROUTE } from "@/lib/routes";
+import { CUSTOMER_LOGIN_ROUTE } from "@/lib/routes";
 import { getRoutePath } from "@/lib/localized-routes";
 import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import {
@@ -32,7 +32,7 @@ const Navbar = () => {
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
   const { language, setLanguage } = useSiteLanguage();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const copy = getSiteCopy(language);
   const customerMode = pathname === getRoutePath("customers", "sl")
     || pathname === getRoutePath("customers", "en")
@@ -46,6 +46,7 @@ const Navbar = () => {
   const homePath = getRoutePath("home", language);
   const bookingPath = getRoutePath("booking", language);
   const customerPath = getRoutePath("customers", language);
+  const customerLoginPath = `${CUSTOMER_LOGIN_ROUTE}?next=${encodeURIComponent(`${pathname}${search}`)}`;
   const pricingPath = getRoutePath("pricing", language);
   const calendarPath = getRoutePath("calendar", language);
   const clientManagementPath = getRoutePath("clientManagement", language);
@@ -240,8 +241,11 @@ const Navbar = () => {
   if (customerMode) return <CustomerNavbar />;
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/55 bg-background/82 backdrop-blur-xl supports-[backdrop-filter]:bg-background/74">
-      <div className="container mx-auto flex h-[78px] max-w-[1480px] items-center justify-between gap-4 px-4 lg:px-8">
+    <nav
+      className="sticky top-0 isolate border-b border-border/55 bg-background/82 backdrop-blur-xl supports-[backdrop-filter]:bg-background/74"
+      style={{ zIndex: 1000 }}
+    >
+      <div className="container mx-auto flex h-[72px] items-center justify-between gap-4 px-4 lg:px-8">
         <div className="flex items-center gap-4">
           <a href={homePath} className="flex items-center">
             <img
@@ -281,7 +285,7 @@ const Navbar = () => {
               {aboutAppActive && <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-primary" aria-hidden="true" />}
             </a>
 
-            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-50 w-[980px] -translate-x-1/2 translate-y-2 rounded-[28px] border border-border/70 bg-white/96 p-8 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] backdrop-blur-xl transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-[1010] w-[980px] -translate-x-1/2 translate-y-2 rounded-[28px] border border-border/70 bg-white p-8 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] backdrop-blur-xl transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
               <div className="grid gap-8 lg:grid-cols-[1.45fr_0.95fr]">
                 <div>
                   <div className="mb-5">
@@ -401,7 +405,7 @@ const Navbar = () => {
               {resourcesActive && <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-primary" aria-hidden="true" />}
             </button>
 
-            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-50 w-[390px] -translate-x-1/2 translate-y-2 rounded-[24px] border border-border/70 bg-white/96 p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] backdrop-blur-xl transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-[1010] w-[390px] -translate-x-1/2 translate-y-2 rounded-[24px] border border-border/70 bg-white p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] backdrop-blur-xl transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
               <div className="grid gap-2">
                 {resourceMenuItems.map((item) => (
                   <a
@@ -421,15 +425,15 @@ const Navbar = () => {
           </div>
         </div>
 
-        <div className="hidden items-center gap-3 xl:flex">
+        <div className="hidden items-center gap-2.5 xl:flex">
           <Button variant="outline" className="rounded-full border-border/85 bg-white/85 px-5 shadow-sm" asChild>
             <a href={customerPath}>
               <Users className="h-4 w-4 text-primary" />
               {language === "sl" ? "Za stranke" : "For customers"}
             </a>
           </Button>
-          <Button variant="ghost" size="default" className="rounded-full border border-border/80 bg-white/75 px-5 font-medium shadow-sm hover:bg-white" asChild>
-            <a href={LOGIN_ROUTE}>{copy.nav.login}</a>
+          <Button variant="hero" className="rounded-xl" asChild>
+            <a href={customerLoginPath}>{language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}</a>
           </Button>
         </div>
 
@@ -575,8 +579,8 @@ const Navbar = () => {
               )}
             </div>
 
-            <Button variant="ghost" size="lg" asChild>
-              <a href={LOGIN_ROUTE}>{copy.nav.login}</a>
+            <Button variant="hero" size="lg" className="rounded-xl" asChild>
+              <a href={customerLoginPath} onClick={() => setOpen(false)}>{language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}</a>
             </Button>
           </div>
         </div>
