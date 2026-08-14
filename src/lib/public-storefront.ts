@@ -15,7 +15,7 @@ export type StorefrontService = {
   serviceSortOrder: number;
 };
 
-export type StorefrontProductType = "PACK" | "MEMBERSHIP" | "GIFT_CARD";
+export type StorefrontProductType = "PACK" | "MEMBERSHIP" | "GIFT_CARD" | "COURSE";
 
 export type StorefrontProduct = {
   productId: string;
@@ -93,7 +93,7 @@ const normalizeProduct = (value: unknown): StorefrontProduct | null => {
   const productId = stringValue(row.productId);
   const name = stringValue(row.name);
   const rawType = stringValue(row.productType).toUpperCase();
-  if (!productId || !name || !["PACK", "MEMBERSHIP", "GIFT_CARD"].includes(rawType)) return null;
+  if (!productId || !name || !["PACK", "MEMBERSHIP", "GIFT_CARD", "COURSE"].includes(rawType)) return null;
   return {
     productId,
     name,

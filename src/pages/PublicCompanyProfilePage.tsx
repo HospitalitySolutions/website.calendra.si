@@ -21,16 +21,13 @@ import { normalizePublicStorefront, type PublicStorefront, type StorefrontProduc
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import {
-  ArrowRight,
   CalendarDays,
   ChevronRight,
   Clock3,
   ExternalLink,
-  Gift,
   Heart,
   Loader2,
   MapPin,
-  Package,
   Share2,
   Sparkles,
   Star,
@@ -92,6 +89,25 @@ const groupServices = (services: StorefrontService[]) => {
   return Array.from(groups.entries());
 };
 
+const BENEFIT_TYPE_ORDER: StorefrontProduct["productType"][] = ["MEMBERSHIP", "PACK", "GIFT_CARD", "COURSE"];
+
+const benefitTypeLabel = (productType: StorefrontProduct["productType"], language: "sl" | "en") => {
+  const labels = language === "sl"
+    ? {
+        MEMBERSHIP: "Članarina",
+        PACK: "Paket obiskov",
+        GIFT_CARD: "Bon",
+        COURSE: "Dostop do tečaja",
+      }
+    : {
+        MEMBERSHIP: "Membership",
+        PACK: "Visit package",
+        GIFT_CARD: "Voucher",
+        COURSE: "Course access",
+      };
+  return labels[productType];
+};
+
 const productMeta = (product: StorefrontProduct, language: "sl" | "en") => {
   const parts: string[] = [];
   if (product.usageLimit) parts.push(language === "sl" ? `${product.usageLimit} obiskov` : `${product.usageLimit} visits`);
@@ -112,7 +128,9 @@ const PublicCompanyProfilePage = () => {
   const [apiClient, setApiClient] = useState<DirectoryClient | null>(null);
   const [storefront, setStorefront] = useState<PublicStorefront | null>(null);
   const [loading, setLoading] = useState(!initialProfile);
+  const [activeProfileTab, setActiveProfileTab] = useState<"services" | "benefits">("services");
   const [activeServiceGroup, setActiveServiceGroup] = useState<string>("");
+  const [activeBenefitType, setActiveBenefitType] = useState<StorefrontProduct["productType"] | "">("");
   const [bookingLaunching, setBookingLaunching] = useState<string | null>(null);
   const [favourite, setFavourite] = useState(false);
 
@@ -254,6 +272,8 @@ const PublicCompanyProfilePage = () => {
     directory: "Ponudniki",
     verified: "Lokacija v Calendri",
     services: "Storitve",
+    benefits: "Ugodnosti",
+    benefitsEmpty: "Ta lokacija trenutno nima objavljenih ugodnosti.",
     about: "O ponudniku",
     servicesIntro: "Izberite storitev in nadaljujte neposredno v rezervacijo termina.",
     fallbackServices: "Storitve in področja",
@@ -281,6 +301,8 @@ const PublicCompanyProfilePage = () => {
     directory: "Providers",
     verified: "Location on Calendra",
     services: "Services",
+    benefits: "Benefits",
+    benefitsEmpty: "This location currently has no published benefits.",
     about: "About",
     servicesIntro: "Choose a service and continue directly to appointment booking.",
     fallbackServices: "Services and categories",
@@ -311,8 +333,11 @@ const PublicCompanyProfilePage = () => {
   const description = client.description || curatedProfile?.localizedDescription[language] || "";
   const services = storefront?.services ?? [];
   const serviceGroups = groupServices(services);
-  const packages = (storefront?.products ?? []).filter((product) => product.productType === "PACK" || product.productType === "MEMBERSHIP");
-  const giftCards = (storefront?.products ?? []).filter((product) => product.productType === "GIFT_CARD");
+  const benefits = storefront?.products ?? [];
+  const benefitTypes = BENEFIT_TYPE_ORDER.filter((type) => benefits.some((product) => product.productType === type));
+  const visibleBenefits = activeBenefitType
+    ? benefits.filter((product) => product.productType === activeBenefitType)
+    : benefits;
   const team = storefront?.team ?? [];
   const connectProviderSlug = storefront?.location?.slug || client.slug;
   const connectPurchaseUrl = (productId: string) => `${CUSTOMER_APP_BASE_URL}/ponudniki/${encodeURIComponent(connectProviderSlug)}/kupi/${encodeURIComponent(productId)}`;
@@ -418,8 +443,11 @@ const PublicCompanyProfilePage = () => {
   };
 
   const allServicesLabel = language === "sl" ? "Vse storitve" : "All services";
+  const allBenefitsLabel = language === "sl" ? "Vse ugodnosti" : "All benefits";
   const chooseTimeLabel = language === "sl" ? "Izberi termin" : "Choose time";
+  const buyBenefitLabel = language === "sl" ? "Kupi" : "Buy";
   const seeAllServicesLabel = language === "sl" ? "Poglej vse storitve" : "See all services";
+  const seeAllBenefitsLabel = language === "sl" ? "Poglej vse ugodnosti" : "See all benefits";
   const aboutLocationLabel = language === "sl" ? "O lokaciji" : "About the location";
   const reviewsLabel = language === "sl" ? "Mnenja" : "Reviews";
   const onePersonLabel = language === "sl" ? "1 oseba" : "1 person";
@@ -481,7 +509,8 @@ const PublicCompanyProfilePage = () => {
             </div>
 
             <div className="mt-1 flex items-center gap-8 overflow-x-auto border-b border-border/70 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              <a href="#storitve" className="border-b-2 border-primary px-1 py-4 text-sm font-bold text-primary">{text.services}</a>
+              <button type="button" onClick={() => setActiveProfileTab("services")} className={`border-b-2 px-1 py-4 text-sm transition ${activeProfileTab === "services" ? "border-primary font-bold text-primary" : "border-transparent font-semibold text-muted-foreground hover:text-foreground"}`}>{text.services}</button>
+              <button type="button" onClick={() => setActiveProfileTab("benefits")} className={`border-b-2 px-1 py-4 text-sm transition ${activeProfileTab === "benefits" ? "border-primary font-bold text-primary" : "border-transparent font-semibold text-muted-foreground hover:text-foreground"}`}>{text.benefits}</button>
               <a href="#o-lokaciji" className="border-b-2 border-transparent px-1 py-4 text-sm font-semibold text-muted-foreground transition hover:text-foreground">{aboutLocationLabel}</a>
               {team.length > 0 ? <a href="#ekipa" className="border-b-2 border-transparent px-1 py-4 text-sm font-semibold text-muted-foreground transition hover:text-foreground">{text.team}</a> : null}
               {(review || client.googleRating) ? <a href="#mnenja" className="border-b-2 border-transparent px-1 py-4 text-sm font-semibold text-muted-foreground transition hover:text-foreground">{reviewsLabel}</a> : null}
@@ -492,45 +521,91 @@ const PublicCompanyProfilePage = () => {
         <section className="mx-auto grid max-w-[1160px] gap-8 px-4 pt-7 lg:grid-cols-[minmax(0,1fr)_330px] lg:px-6">
           <div className="min-w-0">
             <div id="storitve" className="scroll-mt-28">
-              <h2 className="font-display text-2xl font-extrabold tracking-tight text-foreground">{text.services}</h2>
-              {categoryNames.length > 0 ? (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <button type="button" onClick={() => setActiveServiceGroup("")} className={`rounded-full border px-4 py-2 text-xs font-bold transition ${!activeServiceGroup ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-border/70 bg-background text-foreground hover:border-primary/30"}`}>{allServicesLabel}</button>
-                  {categoryNames.map((name) => <button key={name} type="button" onClick={() => setActiveServiceGroup(name)} className={`rounded-full border px-4 py-2 text-xs font-bold transition ${activeServiceGroup === name ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-border/70 bg-background text-foreground hover:border-primary/30"}`}>{name}</button>)}
-                </div>
-              ) : null}
+              {activeProfileTab === "services" ? (
+                <>
+                  <h2 className="font-display text-2xl font-extrabold tracking-tight text-foreground">{text.services}</h2>
+                  {categoryNames.length > 0 ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <button type="button" onClick={() => setActiveServiceGroup("")} className={`rounded-full border px-4 py-2 text-xs font-bold transition ${!activeServiceGroup ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-border/70 bg-background text-foreground hover:border-primary/30"}`}>{allServicesLabel}</button>
+                      {categoryNames.map((name) => <button key={name} type="button" onClick={() => setActiveServiceGroup(name)} className={`rounded-full border px-4 py-2 text-xs font-bold transition ${activeServiceGroup === name ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-border/70 bg-background text-foreground hover:border-primary/30"}`}>{name}</button>)}
+                    </div>
+                  ) : null}
 
-              {services.length > 0 ? (
-                <div className="mt-4 overflow-hidden rounded-[18px] border border-border/70 bg-background shadow-[0_4px_18px_rgba(15,23,42,0.04)]">
-                  {visibleServices.map((service, index) => {
-                    const serviceBookingPath = addBookingService(bookingPath, service.id);
-                    const launchKey = `service-${service.id}`;
-                    return (
-                      <article key={service.id} className={`flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5 ${index > 0 ? "border-t border-border/60" : ""}`}>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="text-sm font-extrabold text-foreground sm:text-[15px]">{service.name}</h3>
-                          <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-                            {service.durationMinutes ? <span>{service.durationMinutes} {text.duration}</span> : null}
-                            {(service.durationMinutes && (service.groupBooking || !service.groupBooking)) ? <span>•</span> : null}
-                            <span>{service.groupBooking && service.maxParticipantsPerSession ? `${text.upTo} ${service.maxParticipantsPerSession} ${text.participants}` : onePersonLabel}</span>
-                          </div>
-                          {service.description ? <p className="mt-1.5 line-clamp-2 max-w-2xl text-xs leading-5 text-muted-foreground">{service.description}</p> : null}
-                        </div>
-                        <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
-                          {service.priceLabel ? <span className="min-w-[64px] text-right text-sm font-extrabold text-foreground">{service.priceLabel}</span> : null}
-                          {bookingEnabled ? <Button variant="outline" size="sm" className="h-9 rounded-lg border-primary/40 px-4 text-xs font-bold text-primary hover:bg-primary/[0.05]" asChild><a href={serviceBookingPath} onClick={(event) => launchBooking(event, "profile_service", serviceBookingPath, service.id)}>{bookingLaunching === launchKey ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}{chooseTimeLabel}</a></Button> : null}
-                        </div>
-                      </article>
-                    );
-                  })}
-                  {activeServiceGroup ? <div className="border-t border-border/60 p-3 text-center"><button type="button" onClick={() => setActiveServiceGroup("")} className="rounded-lg border border-primary/35 px-4 py-2 text-xs font-bold text-primary transition hover:bg-primary/[0.05]">{seeAllServicesLabel}</button></div> : null}
-                </div>
+                  {services.length > 0 ? (
+                    <div className="mt-4 overflow-hidden rounded-[18px] border border-border/70 bg-background shadow-[0_4px_18px_rgba(15,23,42,0.04)]">
+                      {visibleServices.map((service, index) => {
+                        const serviceBookingPath = addBookingService(bookingPath, service.id);
+                        const launchKey = `service-${service.id}`;
+                        return (
+                          <article key={service.id} className={`flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5 ${index > 0 ? "border-t border-border/60" : ""}`}>
+                            <div className="min-w-0 flex-1">
+                              <h3 className="text-sm font-extrabold text-foreground sm:text-[15px]">{service.name}</h3>
+                              <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                                {service.durationMinutes ? <span>{service.durationMinutes} {text.duration}</span> : null}
+                                {(service.durationMinutes && (service.groupBooking || !service.groupBooking)) ? <span>•</span> : null}
+                                <span>{service.groupBooking && service.maxParticipantsPerSession ? `${text.upTo} ${service.maxParticipantsPerSession} ${text.participants}` : onePersonLabel}</span>
+                              </div>
+                              {service.description ? <p className="mt-1.5 line-clamp-2 max-w-2xl text-xs leading-5 text-muted-foreground">{service.description}</p> : null}
+                            </div>
+                            <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
+                              {service.priceLabel ? <span className="min-w-[64px] text-right text-sm font-extrabold text-foreground">{service.priceLabel}</span> : null}
+                              {bookingEnabled ? <Button variant="outline" size="sm" className="h-9 rounded-lg border-primary/40 px-4 text-xs font-bold text-primary hover:bg-primary/[0.05]" asChild><a href={serviceBookingPath} onClick={(event) => launchBooking(event, "profile_service", serviceBookingPath, service.id)}>{bookingLaunching === launchKey ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}{chooseTimeLabel}</a></Button> : null}
+                            </div>
+                          </article>
+                        );
+                      })}
+                      {activeServiceGroup ? <div className="border-t border-border/60 p-3 text-center"><button type="button" onClick={() => setActiveServiceGroup("")} className="rounded-lg border border-primary/35 px-4 py-2 text-xs font-bold text-primary transition hover:bg-primary/[0.05]">{seeAllServicesLabel}</button></div> : null}
+                    </div>
+                  ) : (
+                    <article className="mt-4 rounded-[18px] border border-border/70 bg-background p-6 shadow-sm">
+                      <CalendarDays className="h-6 w-6 text-primary" />
+                      <h3 className="mt-4 font-bold text-foreground">{text.fallbackServices}</h3>
+                      <ul className="mt-3 flex flex-wrap gap-2">{fallbackServiceItems.map((service) => <li key={service} className="rounded-full bg-secondary/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">{service}</li>)}</ul>
+                    </article>
+                  )}
+                </>
               ) : (
-                <article className="mt-4 rounded-[18px] border border-border/70 bg-background p-6 shadow-sm">
-                  <CalendarDays className="h-6 w-6 text-primary" />
-                  <h3 className="mt-4 font-bold text-foreground">{text.fallbackServices}</h3>
-                  <ul className="mt-3 flex flex-wrap gap-2">{fallbackServiceItems.map((service) => <li key={service} className="rounded-full bg-secondary/70 px-3 py-1.5 text-xs font-semibold text-muted-foreground">{service}</li>)}</ul>
-                </article>
+                <>
+                  <h2 className="font-display text-2xl font-extrabold tracking-tight text-foreground">{text.benefits}</h2>
+                  {benefitTypes.length > 0 ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <button type="button" onClick={() => setActiveBenefitType("")} className={`rounded-full border px-4 py-2 text-xs font-bold transition ${!activeBenefitType ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-border/70 bg-background text-foreground hover:border-primary/30"}`}>{allBenefitsLabel}</button>
+                      {benefitTypes.map((type) => <button key={type} type="button" onClick={() => setActiveBenefitType(type)} className={`rounded-full border px-4 py-2 text-xs font-bold transition ${activeBenefitType === type ? "border-primary bg-primary text-primary-foreground shadow-sm" : "border-border/70 bg-background text-foreground hover:border-primary/30"}`}>{benefitTypeLabel(type, language)}</button>)}
+                    </div>
+                  ) : null}
+
+                  {benefits.length > 0 ? (
+                    <div className="mt-4 overflow-hidden rounded-[18px] border border-border/70 bg-background shadow-[0_4px_18px_rgba(15,23,42,0.04)]">
+                      {visibleBenefits.map((product, index) => {
+                        const meta = productMeta(product, language);
+                        return (
+                          <article key={product.productId} className={`flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5 ${index > 0 ? "border-t border-border/60" : ""}`}>
+                            <div className="min-w-0 flex-1">
+                              <h3 className="text-sm font-extrabold text-foreground sm:text-[15px]">{product.name}</h3>
+                              <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+                                <span>{benefitTypeLabel(product.productType, language)}</span>
+                                {meta ? <><span>•</span><span>{meta}</span></> : null}
+                              </div>
+                              {product.description ? <p className="mt-1.5 line-clamp-2 max-w-2xl text-xs leading-5 text-muted-foreground">{product.description}</p> : null}
+                              {product.promoText ? <p className="mt-1.5 text-xs font-bold text-primary">{product.promoText}</p> : null}
+                            </div>
+                            <div className="flex shrink-0 items-center justify-between gap-4 sm:justify-end">
+                              <span className="min-w-[64px] text-right text-sm font-extrabold text-foreground">{formatMoney(product.priceGross, product.currency, language)}</span>
+                              <Button variant="outline" size="sm" className="h-9 rounded-lg border-primary/40 px-4 text-xs font-bold text-primary hover:bg-primary/[0.05]" asChild><a href={connectPurchaseUrl(product.productId)}>{buyBenefitLabel}</a></Button>
+                            </div>
+                          </article>
+                        );
+                      })}
+                      {activeBenefitType ? <div className="border-t border-border/60 p-3 text-center"><button type="button" onClick={() => setActiveBenefitType("")} className="rounded-lg border border-primary/35 px-4 py-2 text-xs font-bold text-primary transition hover:bg-primary/[0.05]">{seeAllBenefitsLabel}</button></div> : null}
+                    </div>
+                  ) : (
+                    <article className="mt-4 rounded-[18px] border border-border/70 bg-background p-6 shadow-sm">
+                      <Sparkles className="h-6 w-6 text-primary" />
+                      <h3 className="mt-4 font-bold text-foreground">{text.benefits}</h3>
+                      <p className="mt-2 text-sm text-muted-foreground">{text.benefitsEmpty}</p>
+                    </article>
+                  )}
+                </>
               )}
             </div>
 
@@ -566,23 +641,6 @@ const PublicCompanyProfilePage = () => {
               </section>
             ) : null}
 
-            {packages.length > 0 ? (
-              <section id="paketi" className="scroll-mt-28 pt-9">
-                <h2 className="font-display text-xl font-extrabold tracking-tight text-foreground">{text.packages}</h2>
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {packages.map((product) => <article key={product.productId} className="rounded-[18px] border border-border/70 bg-background p-5 shadow-sm"><div className="flex items-start justify-between gap-3"><Package className="h-5 w-5 text-primary" /><strong className="text-lg text-foreground">{formatMoney(product.priceGross, product.currency, language)}</strong></div><h3 className="mt-3 font-bold text-foreground">{product.name}</h3>{product.description ? <p className="mt-2 text-xs leading-5 text-muted-foreground">{product.description}</p> : null}{productMeta(product, language) ? <p className="mt-3 text-xs font-semibold text-muted-foreground">{productMeta(product, language)}</p> : null}<Button variant="outline" className="mt-4 w-full rounded-xl" asChild><a href={connectPurchaseUrl(product.productId)}>{text.buyInConnect}<ArrowRight className="h-4 w-4" /></a></Button></article>)}
-                </div>
-              </section>
-            ) : null}
-
-            {giftCards.length > 0 ? (
-              <section id="darilni-boni" className="scroll-mt-28 pt-9">
-                <h2 className="font-display text-xl font-extrabold tracking-tight text-foreground">{text.giftCards}</h2>
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {giftCards.map((product) => <article key={product.productId} className="rounded-[18px] border border-border/70 bg-background p-5 shadow-sm"><Gift className="h-5 w-5 text-primary" /><h3 className="mt-3 font-bold text-foreground">{product.name}</h3><p className="mt-3 text-lg font-extrabold text-foreground">{formatMoney(product.priceGross, product.currency, language)}</p><Button variant="outline" className="mt-4 w-full rounded-xl" asChild><a href={connectPurchaseUrl(product.productId)}>{text.buyInConnect}<ArrowRight className="h-4 w-4" /></a></Button></article>)}
-                </div>
-              </section>
-            ) : null}
           </div>
 
           <aside className="lg:sticky lg:top-[92px] lg:self-start">
