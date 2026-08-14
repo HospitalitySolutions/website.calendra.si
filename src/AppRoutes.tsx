@@ -145,14 +145,16 @@ const AppRoutes = () => (
       <Route path="/en/booking" element={<ClientsPage />} />
       <Route path="/za-stranke" element={<CustomerLandingPage />} />
       <Route path="/en/for-customers" element={<CustomerLandingPage />} />
+      <Route path="/za-stranke/:slug" element={<PublicCompanyProfilePage />} />
+      <Route path="/en/for-customers/:slug" element={<PublicCompanyProfilePage />} />
       <Route path="/za-podjetja" element={<Navigate to="/" replace />} />
       <Route path="/en/for-business" element={<Navigate to="/en" replace />} />
       <Route path="/prijava" element={<LoginChooserPage />} />
       <Route path="/en/login" element={<LoginChooserPage />} />
       <Route path="/ponudniki" element={<LegacyDirectoryRedirect language="sl" />} />
       <Route path="/en/providers" element={<LegacyDirectoryRedirect language="en" />} />
-      <Route path="/ponudniki/:slug" element={<PublicCompanyProfilePage />} />
-      <Route path="/en/providers/:slug" element={<PublicCompanyProfilePage />} />
+      <Route path="/ponudniki/:slug" element={<LegacyProviderRedirect language="sl" />} />
+      <Route path="/en/providers/:slug" element={<LegacyProviderRedirect language="en" />} />
       <Route path="/podjetja" element={<LegacyDirectoryRedirect language="sl" />} />
       <Route path="/en/businesses" element={<LegacyDirectoryRedirect language="en" />} />
       <Route path="/podjetja/:slug" element={<LegacyProviderRedirect language="sl" />} />

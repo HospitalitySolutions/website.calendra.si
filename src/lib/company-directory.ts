@@ -5,6 +5,7 @@ export type DirectoryClient = {
   tenantCode?: string;
   tenantSlug: string;
   locationId?: number;
+  locationCode?: string;
   bookingUrl?: string;
   publicBookingEnabled?: boolean;
   profileSlug?: string;
@@ -218,10 +219,23 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
     const description = firstString(record.publicDescription, record.javniOpis, record.description);
     const address = buildAddress(record);
     const tenant = asRecord(record.tenant);
+    const location = asRecord(record.location);
+    const locationCode = firstString(
+      record.locationCode,
+      record.location_code,
+      record.publicLocationCode,
+      record.public_location_code,
+      record.locationPublicCode,
+      record.location_public_code,
+      record.kodaLokacije,
+      record.koda_lokacije,
+      location?.code,
+      // Some compatible public APIs expose the location code simply as `code`.
+      record.code,
+    );
     const tenantCode = firstString(
       record.tenantCode,
       record.tenant_code,
-      record.code,
       tenant?.code,
       tenant?.tenantCode,
       tenant?.tenant_code,
@@ -230,6 +244,8 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
       record.tenantSlug,
       record.tenant_slug,
       typeof record.tenant === "string" ? record.tenant : undefined,
+      // Backwards-compatible fallback for older directory payloads.
+      record.code,
     );
     const tenantSlug = firstString(
       record.tenantSlug,
@@ -299,6 +315,7 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
       tenantCode: tenantCode || undefined,
       tenantSlug,
       locationId,
+      locationCode: locationCode || undefined,
       bookingUrl: bookingUrl || undefined,
       publicBookingEnabled: publicBookingEnabled ?? undefined,
       name,
@@ -315,6 +332,10 @@ export const normalizeDirectoryClients = (payload: unknown, appBaseUrl: string):
 
 export const normalizeDirectoryClient = (payload: unknown, appBaseUrl: string): DirectoryClient | null =>
   normalizeDirectoryClients(Array.isArray(payload) ? payload : [payload], appBaseUrl)[0] ?? null;
+
+export const getDirectoryClientProfileIdentifier = (
+  client: Pick<DirectoryClient, "locationCode" | "slug" | "profileSlug">,
+): string => client.locationCode || client.slug || client.profileSlug || "";
 
 export const isDirectoryClientBookingEnabled = (
   client: Pick<DirectoryClient, "publicBookingEnabled">,

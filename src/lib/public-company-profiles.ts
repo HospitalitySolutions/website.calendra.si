@@ -105,12 +105,12 @@ export const indexablePublicCompanyProfiles = publicCompanyProfiles.filter(isInd
 export const getPublicCompanyProfile = (slug: string) =>
   publicCompanyProfiles.find((profile) => profile.slug === slug);
 
-export const getPublicCompanyProfilePath = (slug: string, language: SiteLanguage) =>
-  language === "sl" ? `/ponudniki/${slug}` : `/en/providers/${slug}`;
+export const getPublicCompanyProfilePath = (identifier: string, language: SiteLanguage) =>
+  language === "sl" ? `/za-stranke/${identifier}` : `/en/for-customers/${identifier}`;
 
 export const getPublicProviderSlugFromPathname = (pathname: string) => {
   const normalized = pathname.split(/[?#]/)[0].replace(/\/+$/, "") || "/";
-  const match = normalized.match(/^\/(?:ponudniki|podjetja|en\/providers|en\/businesses)\/([^/]+)$/);
+  const match = normalized.match(/^\/(?:za-stranke|ponudniki|podjetja|en\/for-customers|en\/providers|en\/businesses)\/([^/]+)$/);
   return match ? decodeURIComponent(match[1]) : undefined;
 };
 

@@ -33,10 +33,10 @@
     redir @legacyTenantBookingWithLocation /narocanje/{http.request.uri.query.tenant}?locationId={http.request.uri.query.locationId} 308
     redir @legacyTenantBooking /narocanje/{http.request.uri.query.tenant} 308
 
-    @legacySlProviderProfile path_regexp legacySlProviderProfile ^/podjetja/(.+)$
-    @legacyEnProviderProfile path_regexp legacyEnProviderProfile ^/en/businesses/(.+)$
-    redir @legacySlProviderProfile /ponudniki/{re.legacySlProviderProfile.1} 308
-    redir @legacyEnProviderProfile /en/providers/{re.legacyEnProviderProfile.1} 308
+    @legacySlProviderProfile path_regexp legacySlProviderProfile ^/(?:ponudniki|podjetja)/(.+)$
+    @legacyEnProviderProfile path_regexp legacyEnProviderProfile ^/en/(?:providers|businesses)/(.+)$
+    redir @legacySlProviderProfile /za-stranke/{re.legacySlProviderProfile.1} 308
+    redir @legacyEnProviderProfile /en/for-customers/{re.legacyEnProviderProfile.1} 308
 
     # Canonical language-specific URLs. Legacy English aliases redirect to /en/*.
     redir /pricing /en/pricing 308
@@ -103,6 +103,22 @@
   # sitemap or llms.txt is worse than a slightly slower fetch.
   @crawlerFiles path /sitemap.xml /robots.txt /llms.txt /llms-full.txt
   header @crawlerFiles Cache-Control "public, max-age=3600"
+
+  # Public location profiles are created from live directory data, so not every
+  # /za-stranke/{locationCode} URL exists at build time. Prefer a real prerendered
+  # profile when one exists; otherwise serve the matching language-specific
+  # profile shell and let the client resolve the location code from the API.
+  @slCustomerProfile path /za-stranke/*
+  handle @slCustomerProfile {
+    try_files {path}/index.html /_dynamic-location-profile-sl.html
+    file_server
+  }
+
+  @enCustomerProfile path /en/for-customers/*
+  handle @enCustomerProfile {
+    try_files {path}/index.html /_dynamic-location-profile-en.html
+    file_server
+  }
 
   # Serve any route that was actually prerendered by the build. Unknown paths
   # remain unknown and are returned as 404 by file_server—there is no second

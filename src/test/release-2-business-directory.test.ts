@@ -31,7 +31,7 @@ describe("Customer search consolidation", () => {
     expect(profile).toBeDefined();
 
     for (const language of ["sl", "en"] as const) {
-      const pathname = language === "sl" ? `/ponudniki/${profile.slug}` : `/en/providers/${profile.slug}`;
+      const pathname = language === "sl" ? `/za-stranke/${profile.slug}` : `/en/for-customers/${profile.slug}`;
       const seo = getSeoForPathname(pathname);
       const graph = seo.structuredData?.["@graph"] ?? [];
       const breadcrumb = graph.find((node: { "@type"?: string }) => node["@type"] === "BreadcrumbList") as

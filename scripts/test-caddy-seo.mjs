@@ -21,6 +21,12 @@ const required = [
   "redir /stranke /za-stranke 308",
   "redir /en/clients /en/for-customers 308",
   "redir /clients /en/for-customers 308",
+  "redir @legacySlProviderProfile /za-stranke/{re.legacySlProviderProfile.1} 308",
+  "redir @legacyEnProviderProfile /en/for-customers/{re.legacyEnProviderProfile.1} 308",
+  "@slCustomerProfile path /za-stranke/*",
+  "try_files {path}/index.html /_dynamic-location-profile-sl.html",
+  "@enCustomerProfile path /en/for-customers/*",
+  "try_files {path}/index.html /_dynamic-location-profile-en.html",
 ];
 
 for (const token of required) {

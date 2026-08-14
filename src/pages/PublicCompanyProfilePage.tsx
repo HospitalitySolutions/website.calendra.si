@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type MouseEvent } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import NotFound from "@/pages/NotFound";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { APP_BASE_URL } from "@/lib/site";
 import {
   getDirectoryClientBookingPath,
+  getDirectoryClientProfileIdentifier,
   isDirectoryClientBookingEnabled,
   normalizeDirectoryClient,
   normalizeDirectoryClients,
@@ -101,6 +102,8 @@ const productMeta = (product: StorefrontProduct, language: "sl" | "en") => {
 
 const PublicCompanyProfilePage = () => {
   const { slug = "" } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { language } = useSiteLanguage();
   const initialProfile = getPublicCompanyProfile(slug);
   const [apiClient, setApiClient] = useState<DirectoryClient | null>(null);
@@ -140,25 +143,35 @@ const PublicCompanyProfilePage = () => {
         const directLocation = await fetchLocation(slug);
         if (directLocation) {
           if (!cancelled) setApiClient(directLocation);
-          return;
-        }
-
-        // Curated profiles created before location-first directory slugs are kept as
-        // backwards-compatible URLs. Resolve the live branch first, then load the same
-        // storefront endpoint used by canonical location profiles.
-        if (initialProfile) {
-          const listResponse = await fetch(`${APP_BASE_URL}/api/public/location-directory`, { signal: controller.signal });
-          if (!listResponse.ok) return;
-          const clients = normalizeDirectoryClients(await listResponse.json(), APP_BASE_URL);
-          const match = clients.find((candidate) => sameTenant(initialProfile, candidate) || candidate.name.toLowerCase() === initialProfile.name.toLowerCase());
-          if (!match) return;
-          if (!cancelled) setApiClient(match);
           try {
-            const matchedStorefront = await fetchStorefront(match.slug);
-            if (!cancelled && matchedStorefront) setStorefront(matchedStorefront);
+            const resolvedStorefront = await fetchStorefront(directLocation.slug);
+            if (!cancelled && resolvedStorefront) setStorefront(resolvedStorefront);
           } catch (error: any) {
             if (error?.name !== "AbortError") console.warn("Public storefront catalog could not be loaded.", error);
           }
+          return;
+        }
+
+        // The public customer URL uses the location code. The backend may still expose
+        // the storefront by its generated directory slug, so resolve the location first
+        // and then load the storefront using that canonical API identifier.
+        const listResponse = await fetch(`${APP_BASE_URL}/api/public/location-directory`, { signal: controller.signal });
+        if (!listResponse.ok) return;
+        const clients = normalizeDirectoryClients(await listResponse.json(), APP_BASE_URL);
+        const normalizedSlug = slug.trim().toLowerCase();
+        const match = clients.find((candidate) =>
+          candidate.locationCode?.trim().toLowerCase() === normalizedSlug ||
+          candidate.slug.trim().toLowerCase() === normalizedSlug ||
+          candidate.profileSlug?.trim().toLowerCase() === normalizedSlug ||
+          (initialProfile && (sameTenant(initialProfile, candidate) || candidate.name.toLowerCase() === initialProfile.name.toLowerCase()))
+        );
+        if (!match) return;
+        if (!cancelled) setApiClient(match);
+        try {
+          const matchedStorefront = await fetchStorefront(match.slug);
+          if (!cancelled && matchedStorefront) setStorefront(matchedStorefront);
+        } catch (error: any) {
+          if (error?.name !== "AbortError") console.warn("Public storefront catalog could not be loaded.", error);
         }
       } catch (error: any) {
         if (error?.name !== "AbortError") console.warn("Public provider profile could not be refreshed.", error);
@@ -173,6 +186,16 @@ const PublicCompanyProfilePage = () => {
       controller.abort();
     };
   }, [initialProfile, slug]);
+
+  useEffect(() => {
+    if (!apiClient) return;
+    const identifier = getDirectoryClientProfileIdentifier(apiClient);
+    if (!identifier || identifier.toLowerCase() === slug.toLowerCase()) return;
+
+    const base = language === "sl" ? "/za-stranke" : "/en/for-customers";
+    if (!location.pathname.startsWith(`${base}/`)) return;
+    navigate(`${base}/${encodeURIComponent(identifier)}${location.search}${location.hash}`, { replace: true });
+  }, [apiClient, language, location.hash, location.pathname, location.search, navigate, slug]);
 
   const curatedProfile = useMemo(() => findCuratedProfile(slug, apiClient), [apiClient, slug]);
   const client = useMemo<DirectoryClient | null>(() => {

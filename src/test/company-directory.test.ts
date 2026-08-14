@@ -12,6 +12,7 @@ describe("normalizeDirectoryClients", () => {
     const clients = normalizeDirectoryClients([
       {
         locationId: 31,
+        locationCode: "LUX-LJ",
         slug: "studio-lux-31",
         tenantSlug: "STUDIO-LUX",
         publiclyDiscoverable: true,
@@ -34,6 +35,7 @@ describe("normalizeDirectoryClients", () => {
     expect(clients).toEqual([
       expect.objectContaining({
         locationId: 31,
+        locationCode: "LUX-LJ",
         slug: "studio-lux-31",
         tenantCode: "STUDIO-LUX",
         tenantSlug: "STUDIO-LUX",
@@ -92,6 +94,20 @@ describe("normalizeDirectoryClients", () => {
 
     expect(client.tenantCode).toBe("avisensa-si");
     expect(getDirectoryClientBookingPath(client)).toBe("/narocanje/avisensa-si");
+  });
+
+  it("keeps the public location code for customer profile URLs", () => {
+    const [client] = normalizeDirectoryClients([
+      {
+        locationId: 3,
+        code: "3DAV",
+        slug: "3dav-3",
+        publiclyDiscoverable: true,
+        publicName: "UG depilation",
+      },
+    ], "https://app.calendra.si");
+
+    expect(client.locationCode).toBe("3DAV");
   });
 
   it("does not expose locations explicitly marked as not publicly discoverable", () => {

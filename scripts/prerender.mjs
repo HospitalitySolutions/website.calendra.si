@@ -240,6 +240,27 @@ if (!seoBlockPattern.test(template)) {
   throw new Error('SEO marker block was not found in dist/index.html.');
 }
 
+const writeDynamicLocationProfileShell = async (language) => {
+  const routePath = language === 'sl'
+    ? '/za-stranke/__dynamic-location-profile__'
+    : '/en/for-customers/__dynamic-location-profile__';
+  const { appHtml, seo } = renderPage(routePath);
+  const head = buildSeoHead(seo, DEFAULT_OG_IMAGE, routePath);
+  const output = template
+    .replace('<html lang="sl">', `<html lang="${language}">`)
+    .replace(routePreloadsPattern, buildRoutePreloads(routePath))
+    .replace(analyticsBlockPattern, analyticsBlock)
+    .replace(pricingBlockPattern, pricingBlock)
+    .replace(seoBlockPattern, head)
+    .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+
+  await fs.writeFile(path.join(distDir, `_dynamic-location-profile-${language}.html`), output);
+};
+
+await writeDynamicLocationProfileShell('sl');
+await writeDynamicLocationProfileShell('en');
+console.log('Generated dynamic customer location profile shells');
+
 for (const routePath of routesToPrerender) {
   const { appHtml, seo } = renderPage(routePath);
   const head = buildSeoHead(seo, DEFAULT_OG_IMAGE, routePath);

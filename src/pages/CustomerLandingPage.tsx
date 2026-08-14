@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   getDirectoryClientBookingPath,
+  getDirectoryClientProfileIdentifier,
   isDirectoryClientBookingEnabled,
   mergeDirectoryClients,
   normalizeDirectoryClients,
@@ -84,8 +85,8 @@ const cityLabel = (address: string, language: SiteLanguage) => {
 };
 
 const ProviderCard = ({ client, language }: { client: DirectoryClient; language: SiteLanguage }) => {
-  const profileSlug = client.profileSlug || client.slug;
-  const profilePath = profileSlug ? getPublicCompanyProfilePath(profileSlug, language) : null;
+  const profileIdentifier = getDirectoryClientProfileIdentifier(client);
+  const profilePath = profileIdentifier ? getPublicCompanyProfilePath(profileIdentifier, language) : null;
   const bookingEnabled = isDirectoryClientBookingEnabled(client);
   const bookingPath = bookingEnabled ? getDirectoryClientBookingPath(client) : null;
   const destination = profilePath || bookingPath;
