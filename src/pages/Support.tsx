@@ -24,7 +24,7 @@ const Support = () => {
   const mailtoHref = `mailto:${LEGAL.supportEmail}?subject=${encodeURIComponent(copy.mailtoSubject)}&body=${encodeURIComponent(copy.mailtoBody)}`;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="marketing-page min-h-screen bg-background">
       <Navbar />
 
       <main className="py-16 md:py-20">

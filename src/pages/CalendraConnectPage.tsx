@@ -70,7 +70,7 @@ const CalendraConnectPage = () => {
   const copy = getCalendraConnectCopy(language);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="marketing-page min-h-screen bg-background">
       <Navbar />
       <main>
         <section className="relative overflow-hidden border-b border-border/50 bg-gradient-to-br from-primary/[0.08] via-background to-accent/[0.08] py-20 md:py-28">

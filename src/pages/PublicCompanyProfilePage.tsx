@@ -197,7 +197,7 @@ const PublicCompanyProfilePage = () => {
 
   if (loading && !client) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="marketing-page min-h-screen bg-background">
         <Navbar />
         <main className="container mx-auto max-w-6xl px-4 py-24 lg:px-8">
           <div className="h-48 animate-pulse rounded-3xl border border-border/60 bg-card" aria-hidden="true" />
@@ -298,7 +298,7 @@ const PublicCompanyProfilePage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="marketing-page min-h-screen bg-background">
       <Navbar />
       <main>
         <section id="o-ponudniku" className="border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.05] py-14 md:py-20">

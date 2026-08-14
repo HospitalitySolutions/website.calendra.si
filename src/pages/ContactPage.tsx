@@ -254,7 +254,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="marketing-page min-h-screen bg-background">
       <Navbar />
       <main className="py-16 md:py-20">
         <div className="container mx-auto px-4 lg:px-8">

@@ -240,8 +240,8 @@ const Navbar = () => {
   if (customerMode) return <CustomerNavbar />;
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/40 bg-card/70 backdrop-blur-xl">
-      <div className="container mx-auto flex h-20 items-center justify-between gap-3 px-4 lg:px-8">
+    <nav className="sticky top-0 z-50 border-b border-border/55 bg-background/82 backdrop-blur-xl supports-[backdrop-filter]:bg-background/74">
+      <div className="container mx-auto flex h-[78px] max-w-[1480px] items-center justify-between gap-4 px-4 lg:px-8">
         <div className="flex items-center gap-4">
           <a href={homePath} className="flex items-center">
             <img
@@ -258,7 +258,7 @@ const Navbar = () => {
             <select
               value={language}
               onChange={(event) => setLanguage(event.target.value as SiteLanguage)}
-              className="w-full appearance-none rounded-xl border border-border/80 bg-transparent px-9 py-2.5 pr-9 text-sm font-medium text-foreground outline-none transition focus:border-primary"
+              className="w-full appearance-none rounded-full border border-border/85 bg-white/85 px-9 py-2.5 pr-9 text-sm font-medium text-foreground shadow-sm outline-none transition focus:border-primary"
               aria-label={copy.nav.language}
             >
               <option value="sl">{languageNames[language].sl}</option>
@@ -268,7 +268,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        <div className="hidden items-center gap-5 xl:flex">
+        <div className="hidden items-center gap-7 xl:flex">
           <div className="group relative">
             <a
               href={homePath}
@@ -281,7 +281,7 @@ const Navbar = () => {
               {aboutAppActive && <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-primary" aria-hidden="true" />}
             </a>
 
-            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-50 w-[980px] -translate-x-1/2 translate-y-2 rounded-[28px] border border-border/70 bg-background p-8 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-50 w-[980px] -translate-x-1/2 translate-y-2 rounded-[28px] border border-border/70 bg-white/96 p-8 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] backdrop-blur-xl transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
               <div className="grid gap-8 lg:grid-cols-[1.45fr_0.95fr]">
                 <div>
                   <div className="mb-5">
@@ -401,7 +401,7 @@ const Navbar = () => {
               {resourcesActive && <span className="absolute bottom-0 left-0 h-0.5 w-full rounded-full bg-primary" aria-hidden="true" />}
             </button>
 
-            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-50 w-[390px] -translate-x-1/2 translate-y-2 rounded-[24px] border border-border/70 bg-background p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
+            <div className="invisible absolute left-1/2 top-[calc(100%-4px)] z-50 w-[390px] -translate-x-1/2 translate-y-2 rounded-[24px] border border-border/70 bg-white/96 p-3 opacity-0 shadow-[0_24px_70px_rgba(15,23,42,0.12)] backdrop-blur-xl transition duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
               <div className="grid gap-2">
                 {resourceMenuItems.map((item) => (
                   <a
@@ -422,13 +422,13 @@ const Navbar = () => {
         </div>
 
         <div className="hidden items-center gap-3 xl:flex">
-          <Button variant="outline" className="rounded-xl bg-transparent" asChild>
+          <Button variant="outline" className="rounded-full border-border/85 bg-white/85 px-5 shadow-sm" asChild>
             <a href={customerPath}>
               <Users className="h-4 w-4 text-primary" />
               {language === "sl" ? "Za stranke" : "For customers"}
             </a>
           </Button>
-          <Button variant="ghost" size="default" className="font-medium" asChild>
+          <Button variant="ghost" size="default" className="rounded-full border border-border/80 bg-white/75 px-5 font-medium shadow-sm hover:bg-white" asChild>
             <a href={LOGIN_ROUTE}>{copy.nav.login}</a>
           </Button>
         </div>
@@ -439,14 +439,14 @@ const Navbar = () => {
       </div>
 
       {open && (
-        <div className="border-t border-border bg-card px-4 pb-6 pt-4 xl:hidden">
+        <div className="border-t border-border/70 bg-background/95 px-4 pb-6 pt-4 backdrop-blur-xl xl:hidden">
           <div className="flex flex-col gap-3">
             <div className="relative">
               <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
               <select
                 value={language}
                 onChange={(event) => setLanguage(event.target.value as SiteLanguage)}
-                className="w-full appearance-none rounded-xl border border-border bg-background px-10 py-3 pr-10 text-sm font-medium text-foreground outline-none transition focus:border-primary"
+                className="w-full appearance-none rounded-2xl border border-border bg-white px-10 py-3 pr-10 text-sm font-medium text-foreground shadow-sm outline-none transition focus:border-primary"
                 aria-label={copy.nav.language}
               >
                 <option value="sl">{languageNames[language].sl}</option>
@@ -455,14 +455,14 @@ const Navbar = () => {
               <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             </div>
 
-            <Button variant="outline" size="lg" className="rounded-xl bg-transparent" asChild>
+            <Button variant="outline" size="lg" className="rounded-2xl border-border/80 bg-white shadow-sm" asChild>
               <a href={customerPath} onClick={() => setOpen(false)}>
                 <Users className="h-4 w-4 text-primary" />
                 {language === "sl" ? "Za stranke" : "For customers"}
               </a>
             </Button>
 
-            <div className="rounded-2xl border border-border/60 bg-background p-2">
+            <div className="rounded-3xl border border-border/70 bg-white/90 p-2 shadow-sm">
               <button
                 type="button"
                 onClick={() => setMobileAboutOpen((current) => !current)}
@@ -543,7 +543,7 @@ const Navbar = () => {
               );
             })}
 
-            <div className="rounded-2xl border border-border/60 bg-background p-2">
+            <div className="rounded-3xl border border-border/70 bg-white/90 p-2 shadow-sm">
               <button
                 type="button"
                 onClick={() => setMobileResourcesOpen((current) => !current)}

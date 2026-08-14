@@ -25,7 +25,7 @@ const PricingPage = () => {
       };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="marketing-page min-h-screen bg-background">
       <Navbar />
       <main className="pb-16 pt-8 md:pb-20 md:pt-10">
         <Pricing standalone />

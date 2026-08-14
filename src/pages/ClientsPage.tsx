@@ -132,7 +132,7 @@ const ClientsPage = () => {
   const customerSearchPath = getRoutePath("customers", language);
 
   return (
-    <div className="min-h-screen overflow-hidden bg-background">
+    <div className="marketing-page min-h-screen overflow-hidden bg-background">
       <Navbar />
       <main>
         <section className="relative border-b border-border/50 bg-gradient-to-br from-background via-card to-primary/[0.05] py-16 md:py-24">

@@ -67,7 +67,7 @@ const ItServiceDetailPage = () => {
   const service = getItServiceContent(routeKey, language);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="marketing-page min-h-screen bg-background">
       <Navbar />
       <main>
         <section className="relative overflow-hidden border-b border-border/50 bg-gradient-to-br from-background via-card to-primary/[0.07] py-20 md:py-28">

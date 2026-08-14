@@ -136,9 +136,10 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="border-t border-border/60 bg-background py-12">
+    <footer className="bg-transparent py-12 md:py-16">
       <div className="container mx-auto px-4 lg:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.1fr_0.7fr_1fr_1.1fr_1fr_0.8fr_1.2fr]">
+        <div className="marketing-panel rounded-[2rem] px-6 py-10 md:px-8 lg:px-10">
+          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.1fr_0.7fr_1fr_1.1fr_1fr_0.8fr_1.2fr]">
           <div>
             <a href={homePath} className="inline-flex items-center">
               <img
@@ -162,7 +163,7 @@ const Footer = () => {
                   rel="noreferrer noopener"
                   aria-label={`${label} – Calendra`}
                   title={`${label} – Calendra`}
-                  className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-card text-muted-foreground transition hover:border-primary/30 hover:text-primary"
+                  className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-white text-muted-foreground shadow-sm transition hover:border-primary/30 hover:text-primary"
                 >
                   <Icon className="h-4 w-4" aria-hidden="true" />
                 </a>
@@ -194,6 +195,7 @@ const Footer = () => {
           </nav>
           <FooterColumn title={language === "sl" ? "Kontakt in podpora" : "Contact & support"} links={links.support} language={language} />
           <FooterLegalColumn links={links.legal} language={language} />
+          </div>
         </div>
       </div>
     </footer>
