@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { StepWatermark } from "@/components/ui/step-watermark";
 import { getRoutePath } from "@/lib/localized-routes";
-import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import { getFaqForRoute } from "@/lib/faq";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
@@ -12,25 +11,32 @@ import {
 } from "@/lib/public-pricing";
 import { useEffect, useMemo, useState } from "react";
 import {
+  Activity,
   ArrowRight,
   BadgeEuro,
   BellRing,
+  Brain,
   CalendarCheck2,
   Check,
   Clock3,
   Dumbbell,
   FileText,
+  Flower2,
   GraduationCap,
   Headphones,
   HeartPulse,
+  LayoutGrid,
   MailCheck,
   MonitorSmartphone,
+  PawPrint,
+  PenTool,
   PhoneCall,
   PlugZap,
   RefreshCw,
   Scissors,
   ShieldCheck,
   Sparkles,
+  Waves,
 } from "lucide-react";
 
 const copy = {
@@ -49,12 +55,20 @@ const copy = {
     audience: {
       eyebrow: "Storitvena podjetja",
       title: "Za koga je Calendra?",
-      intro: "Calendra je primerna za samostojne izvajalce in ekipe z več zaposlenimi, lokacijami, prostori ali načini plačila.",
+      intro: "Calendra je primerna za storitvena podjetja vseh velikosti in različnih panog. Ne glede na vaše delovne procese vam pomaga prihraniti čas in navdušiti stranke.",
       items: [
-        { title: "Lepotni in frizerski saloni", body: "Pregleden urnik zaposlenih, storitev in prostorov." },
-        { title: "Svetovalci in izobraževalci", body: "Osebni in spletni termini, dokumenti ter komunikacija." },
-        { title: "Zdravje in dobro počutje", body: "Zanesljivo naročanje, opomniki in urejena evidenca strank." },
-        { title: "Fitnes in skupinske storitve", body: "Posamezni in skupinski termini z omejitvami kapacitete." },
+        { title: "Frizerski salon", body: "Upravljajte termine, stiliste in storitve na enem mestu.", cta: "Calendra za frizerske salone" },
+        { title: "Kozmetični salon", body: "Organizirajte tretmaje, kozmetičarke in stranke.", cta: "Calendra za kozmetične salone" },
+        { title: "Masaža", body: "Poenostavite rezervacije masaž in upravljanje terapevtov.", cta: "Calendra za masažne salone" },
+        { title: "Spa & savna", body: "Upravljajte rezervacije, termine in kapacitete brez zapletov.", cta: "Calendra za spa & savne" },
+        { title: "Tetoviranje & piercing", body: "Vodite termine, umetnike in naročila pregledno.", cta: "Calendra za tetoviranje & piercing" },
+        { title: "Fitnes & osebno trenerstvo", body: "Upravljajte vadbe, trenerje in člane učinkovito.", cta: "Calendra za fitnes centre" },
+        { title: "Fizioterapija", body: "Organizirajte terapije, paciente in obravnave.", cta: "Calendra za fizioterapijo" },
+        { title: "Psihologija & svetovanje", body: "Zaupni termini, opombe in urejena evidenca strank.", cta: "Calendra za svetovanje" },
+        { title: "Joga & pilates", body: "Organizirajte vadbe, inštruktorje in udeležence.", cta: "Calendra za jogo & pilates" },
+        { title: "Storitve za hišne ljubljenčke", body: "Upravljajte termine, nego in storitve za ljubljenčke.", cta: "Calendra za storitve za ljubljenčke" },
+        { title: "Izobraževanje & coaching", body: "Upravljajte tečaje, mentorje in udeležence.", cta: "Calendra za izobraževanje" },
+        { title: "Drugo", body: "Prilagodljivo za vse vrste storitev in delovnih procesov.", cta: "Calendra za druge storitve" },
       ],
     },
     how: {
@@ -103,12 +117,20 @@ const copy = {
     audience: {
       eyebrow: "Service businesses",
       title: "Who is Calendra for?",
-      intro: "Calendra works for independent professionals and teams with multiple employees, locations, rooms or payment methods.",
+      intro: "Calendra is built for service businesses of every size and across different industries. Whatever your workflow, it helps you save time and deliver a better customer experience.",
       items: [
-        { title: "Beauty and hair salons", body: "A clear schedule for employees, services and rooms." },
-        { title: "Consultants and educators", body: "In-person and online appointments, documents and communication." },
-        { title: "Health and wellbeing", body: "Reliable booking, reminders and organised client records." },
-        { title: "Fitness and group services", body: "Individual and group appointments with capacity limits." },
+        { title: "Hair salon", body: "Manage appointments, stylists and services in one place.", cta: "Calendra for hair salons" },
+        { title: "Beauty salon", body: "Organise treatments, beauticians and customers.", cta: "Calendra for beauty salons" },
+        { title: "Massage", body: "Simplify massage bookings and therapist schedules.", cta: "Calendra for massage" },
+        { title: "Spa & sauna", body: "Manage bookings, appointments and capacity with ease.", cta: "Calendra for spa & sauna" },
+        { title: "Tattooing & piercing", body: "Keep artists, appointments and bookings organised.", cta: "Calendra for tattoo & piercing" },
+        { title: "Fitness & personal training", body: "Manage sessions, trainers and members efficiently.", cta: "Calendra for fitness" },
+        { title: "Physiotherapy", body: "Organise treatments, clients and appointments.", cta: "Calendra for physiotherapy" },
+        { title: "Psychology & counselling", body: "Keep appointments, notes and client records organised.", cta: "Calendra for counselling" },
+        { title: "Yoga & pilates", body: "Organise classes, instructors and participants.", cta: "Calendra for yoga & pilates" },
+        { title: "Pet services", body: "Manage appointments, care and services for pets.", cta: "Calendra for pet services" },
+        { title: "Education & coaching", body: "Manage courses, mentors and participants.", cta: "Calendra for education" },
+        { title: "Other", body: "Flexible for many service types and workflows.", cta: "Calendra for other services" },
       ],
     },
     how: {
@@ -144,18 +166,49 @@ const copy = {
   },
 } as const satisfies Record<SiteLanguage, unknown>;
 
-const audienceIcons = [Scissors, GraduationCap, HeartPulse, Dumbbell] as const;
-const audienceCardBackgrounds = [
-  "/industries/beauty-salon-bg.png",
-  "/industries/consulting-education-bg.png",
-  "/industries/wellbeing-bg.png",
-  "/industries/fitness-groups-bg.png",
+const audienceIcons = [
+  Scissors,
+  Sparkles,
+  HeartPulse,
+  Waves,
+  PenTool,
+  Dumbbell,
+  Activity,
+  Brain,
+  Flower2,
+  PawPrint,
+  GraduationCap,
+  LayoutGrid,
 ] as const;
-const audienceCardImagePositions = [
-  "78% center",
-  "76% center",
-  "74% center",
-  "78% center",
+
+const audienceCardBackgrounds = [
+  "/industries/audience/hair-salon.webp",
+  "/industries/audience/beauty-salon.webp",
+  "/industries/audience/massage.webp",
+  "/industries/audience/spa-sauna.webp",
+  "/industries/audience/tattoo-piercing.webp",
+  "/industries/audience/fitness-personal-training.webp",
+  "/industries/audience/physiotherapy.webp",
+  "/industries/audience/psychology-counselling.webp",
+  "/industries/audience/yoga-pilates.webp",
+  "/industries/audience/pet-services.webp",
+  "/industries/audience/education-coaching.webp",
+  "/industries/audience/other-services.webp",
+] as const;
+
+const audienceRoutes = [
+  "beautyHair",
+  "beautyHair",
+  "healthWellbeing",
+  "healthWellbeing",
+  "beautyHair",
+  "fitnessGroups",
+  "healthWellbeing",
+  "healthWellbeing",
+  "fitnessGroups",
+  "booking",
+  "consultantsEducators",
+  "booking",
 ] as const;
 const problemIcons = [PhoneCall, CalendarCheck2, BellRing, FileText] as const;
 const howIcons = [Clock3, CalendarCheck2, MailCheck] as const;
@@ -228,58 +281,55 @@ export const AudienceSection = () => {
 
   return (
     <section id="za-koga" className="relative overflow-hidden bg-[#fbfaf8] py-16 md:py-20 lg:py-24">
-      <div className="pointer-events-none absolute -right-40 top-12 h-96 w-96 rounded-full bg-primary/[0.055] blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute -right-40 top-12 h-96 w-96 rounded-full bg-primary/[0.045] blur-3xl" aria-hidden="true" />
       <div className="container relative mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
           <span className="text-xs font-bold uppercase tracking-[0.24em] text-primary sm:text-sm">{section.eyebrow}</span>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-[-0.025em] text-foreground sm:text-4xl">{section.title}</h2>
-          <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">{section.intro}</p>
+          <h2 className="mt-3 font-display text-3xl font-bold tracking-[-0.025em] text-foreground sm:text-4xl lg:text-[2.65rem]">{section.title}</h2>
+          <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg">{section.intro}</p>
         </div>
 
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-9 grid gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-[18px]">
           {section.items.map((item, index) => {
             const Icon = audienceIcons[index];
-            const routeKey = INDUSTRY_ROUTE_KEYS[index];
-            const industry = getIndustryContent(routeKey, language);
             const imageSrc = audienceCardBackgrounds[index];
-            const imagePosition = audienceCardImagePositions[index];
+            const routeKey = audienceRoutes[index];
 
             return (
               <a
                 key={item.title}
                 href={getRoutePath(routeKey, language)}
-                className="group relative flex min-h-[330px] overflow-hidden rounded-[28px] border border-border/60 bg-background shadow-[0_20px_46px_-36px_hsl(220_25%_10%/0.35)] transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_26px_60px_-34px_hsl(var(--primary)/0.26)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                className="group relative flex min-h-[238px] overflow-hidden rounded-[22px] border border-[#dfe5ee] bg-white shadow-[0_18px_42px_-36px_hsl(220_25%_10%/0.32)] transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_26px_56px_-36px_hsl(var(--primary)/0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:min-h-[250px]"
               >
-                <div className="absolute inset-0">
+                <div className="absolute inset-y-0 right-0 w-[57%] overflow-hidden" aria-hidden="true">
                   <img
                     src={imageSrc}
                     alt=""
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-                    style={{ objectPosition: imagePosition }}
-                    aria-hidden="true"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.035]"
                     loading="lazy"
-                  />
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      background:
-                        "linear-gradient(90deg, rgba(255,255,255,0.985) 0%, rgba(255,255,255,0.965) 44%, rgba(255,255,255,0.82) 60%, rgba(255,255,255,0.28) 100%)",
-                    }}
-                    aria-hidden="true"
+                    decoding="async"
                   />
                 </div>
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0.99) 43%, rgba(255,255,255,0.91) 56%, rgba(255,255,255,0.42) 73%, rgba(255,255,255,0.08) 100%)",
+                  }}
+                  aria-hidden="true"
+                />
 
-                <div className="relative z-10 flex w-full flex-col p-6 sm:p-7">
-                  <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.07] text-primary shadow-sm backdrop-blur-sm">
-                    <Icon className="h-6 w-6" aria-hidden="true" />
+                <div className="relative z-10 flex w-full flex-col p-5 sm:p-6">
+                  <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary/[0.075] text-primary shadow-sm backdrop-blur-sm">
+                    <Icon className="h-[22px] w-[22px]" aria-hidden="true" />
                   </span>
-                  <div className="max-w-[58%] sm:max-w-[56%] xl:max-w-[54%]">
-                    <h3 className="mt-6 text-[1.05rem] font-bold leading-[1.45] tracking-[-0.01em] text-foreground sm:text-[1.12rem]">{item.title}</h3>
-                    <p className="mt-3 text-[0.98rem] leading-8 text-muted-foreground">{item.body}</p>
+                  <div className="max-w-[67%] sm:max-w-[64%] xl:max-w-[62%]">
+                    <h3 className="mt-4 text-[1rem] font-bold leading-[1.35] tracking-[-0.01em] text-foreground sm:text-[1.05rem]">{item.title}</h3>
+                    <p className="mt-2 text-[0.84rem] leading-6 text-muted-foreground sm:text-[0.88rem]">{item.body}</p>
                   </div>
-                  <span className="mt-auto flex items-center gap-2 pt-6 text-base font-semibold text-primary">
-                    {industry.cardCta}
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                  <span className="mt-auto flex max-w-[76%] items-center gap-1.5 pt-4 text-[0.82rem] font-semibold leading-5 text-primary sm:text-sm">
+                    {item.cta}
+                    <ArrowRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                   </span>
                 </div>
               </a>
@@ -287,7 +337,7 @@ export const AudienceSection = () => {
           })}
         </div>
 
-        <div className="mt-10 grid gap-5 border-t border-border/55 pt-7 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-8 grid gap-5 border-t border-border/55 pt-7 sm:grid-cols-2 lg:grid-cols-4">
           {trustItems.map(({ title, body, icon: Icon }) => (
             <div key={title} className="flex items-start gap-3">
               <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/[0.07] text-primary">
@@ -304,7 +354,6 @@ export const AudienceSection = () => {
     </section>
   );
 };
-
 
 export const HowItWorksSection = () => {
   const { language } = useSiteLanguage();
