@@ -1,6 +1,6 @@
 import { calendraConnectCopy } from "@/lib/calendra-connect";
 import { FEATURE_ROUTE_KEYS, getFeatureContent } from "@/lib/feature-pages";
-import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
+import { ALL_INDUSTRY_ROUTE_KEYS, getIndustryContent } from "@/lib/industry-pages";
 import { itServicesCopy, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import type { CanonicalRouteKey } from "@/lib/localized-routes";
 import type { SiteLanguage } from "@/lib/site-language";
@@ -95,7 +95,7 @@ const buildRegistry = (): Partial<Record<CanonicalRouteKey, LocalizedFaq>> => {
     };
   }
 
-  for (const routeKey of INDUSTRY_ROUTE_KEYS) {
+  for (const routeKey of ALL_INDUSTRY_ROUTE_KEYS) {
     registry[routeKey] = {
       sl: getIndustryContent(routeKey, "sl").faq,
       en: getIndustryContent(routeKey, "en").faq,

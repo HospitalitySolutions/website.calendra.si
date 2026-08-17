@@ -21,6 +21,18 @@ export type CanonicalRouteKey =
   | "consultantsEducators"
   | "healthWellbeing"
   | "fitnessGroups"
+  | "hairSalons"
+  | "beautySalons"
+  | "massage"
+  | "spaSauna"
+  | "tattooPiercing"
+  | "fitnessPersonalTraining"
+  | "physiotherapy"
+  | "psychologyCounselling"
+  | "yogaPilates"
+  | "petServices"
+  | "educationCoaching"
+  | "otherServices"
   | "connect"
   | "itServices"
   | "itSupport"
@@ -63,6 +75,18 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   consultantsEducators: { sl: "/za-svetovalce-in-izobrazevalce", en: "/en/for-consultants-and-educators" },
   healthWellbeing: { sl: "/za-zdravje-in-dobro-pocutje", en: "/en/for-health-and-wellbeing" },
   fitnessGroups: { sl: "/za-fitnes-in-skupinske-storitve", en: "/en/for-fitness-and-group-services" },
+  hairSalons: { sl: "/za-frizerske-salone", en: "/en/for-hair-salons" },
+  beautySalons: { sl: "/za-kozmeticne-salone", en: "/en/for-beauty-salons" },
+  massage: { sl: "/za-masazne-salone", en: "/en/for-massage-businesses" },
+  spaSauna: { sl: "/za-spa-in-savne", en: "/en/for-spas-and-saunas" },
+  tattooPiercing: { sl: "/za-tetoviranje-in-piercing", en: "/en/for-tattoo-and-piercing-studios" },
+  fitnessPersonalTraining: { sl: "/za-fitnes-in-osebno-trenerstvo", en: "/en/for-fitness-and-personal-training" },
+  physiotherapy: { sl: "/za-fizioterapijo", en: "/en/for-physiotherapy" },
+  psychologyCounselling: { sl: "/za-psihologijo-in-svetovanje", en: "/en/for-psychology-and-counselling" },
+  yogaPilates: { sl: "/za-jogo-in-pilates", en: "/en/for-yoga-and-pilates" },
+  petServices: { sl: "/za-storitve-za-hisne-ljubljencke", en: "/en/for-pet-services" },
+  educationCoaching: { sl: "/za-izobrazevanje-in-coaching", en: "/en/for-education-and-coaching" },
+  otherServices: { sl: "/za-druge-storitve", en: "/en/for-other-service-businesses" },
   connect: { sl: "/calendra-connect", en: "/en/calendra-connect" },
   itServices: { sl: "/it-storitve", en: "/en/it-services" },
   itSupport: { sl: "/it-podpora-malim-podjetjem", en: "/en/small-business-it-support" },
@@ -126,6 +150,18 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   consultantsEducators: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },
   healthWellbeing: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },
   fitnessGroups: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-08-11" },
+  hairSalons: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-08-17" },
+  beautySalons: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-08-17" },
+  massage: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-08-17" },
+  spaSauna: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-08-17" },
+  tattooPiercing: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-08-17" },
+  fitnessPersonalTraining: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-08-17" },
+  physiotherapy: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-08-17" },
+  psychologyCounselling: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-08-17" },
+  yogaPilates: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-08-17" },
+  petServices: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-17" },
+  educationCoaching: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-08-17" },
+  otherServices: { changeFrequency: "monthly", priority: { sl: 0.72, en: 0.62 }, contentLastModified: "2026-08-17" },
   connect: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
   itServices: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
   itSupport: { changeFrequency: "monthly", priority: { sl: 0.75, en: 0.65 }, contentLastModified: "2026-07-15" },

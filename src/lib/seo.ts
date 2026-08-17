@@ -100,20 +100,68 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     en: { title: "Inventory and material management for service businesses | Calendra", description: "Manage items, stock by location, suppliers, purchasing, stock movements, inventory counts and material usage in Calendra." },
   },
   beautyHair: {
-    sl: { title: "Program za kozmetični in frizerski salon | Calendra", description: "Spletno naročanje strank, urniki zaposlenih, različne storitve, prostori, opomniki, plačila in računi za kozmetični ali frizerski salon." },
-    en: { title: "Booking software for beauty, hair and cosmetic salons | Calendra", description: "Online booking, employee schedules, flexible services, rooms, reminders, payments and invoices for beauty, hair and cosmetic salons." },
+    sl: { title: "Rešitve za lepotne in frizerske dejavnosti | Calendra", description: "Pregled rešitev Calendra za frizerske, kozmetične in druge lepotne dejavnosti z naročanjem, urniki, prostori, opomniki, plačili in računi." },
+    en: { title: "Solutions for beauty and hair businesses | Calendra", description: "Overview of Calendra solutions for hair, beauty and related service businesses with booking, schedules, rooms, reminders, payments and invoices." },
   },
   consultantsEducators: {
-    sl: { title: "Naročanje za svetovalce in izobraževalce | Calendra", description: "Osebni in spletni termini, ponavljajoča se srečanja, Zoom, dokumenti, paketi obiskov, komunikacija, plačila in računi na enem mestu." },
-    en: { title: "Booking for consultants and educators | Calendra", description: "Manage in-person and online appointments, recurring meetings, Zoom, documents, packages, communication, payments and invoices." },
+    sl: { title: "Rešitve za svetovanje, coaching in izobraževanje | Calendra", description: "Pregled rešitev za individualne in skupinske termine, spletna srečanja, ponovitve, komunikacijo, pakete in plačila za svetovalce ter izobraževalce." },
+    en: { title: "Solutions for consulting, coaching and education | Calendra", description: "Overview of solutions for individual and group appointments, online meetings, recurrence, communication, packages and payments for consultants and educators." },
   },
   healthWellbeing: {
-    sl: { title: "Sistem za naročanje za zdravje in dobro počutje | Calendra", description: "Zanesljivo naročanje, opomniki, izvajalci, prostori, ponavljajoči se obiski, profil stranke ter nadzor dostopa za storitve dobrega počutja." },
-    en: { title: "Booking for health and wellbeing providers | Calendra", description: "Reliable booking, reminders, providers, rooms, recurring visits, customer profiles and access control for wellbeing services." },
+    sl: { title: "Rešitve za zdravje in dobro počutje | Calendra", description: "Pregled rešitev za naročanje, izvajalce, prostore, ponavljajoče obiske, opomnike, poslovne podatke o strankah, plačila in račune." },
+    en: { title: "Solutions for health and wellbeing providers | Calendra", description: "Overview of solutions for booking, providers, rooms, recurring visits, reminders, business client information, payments and invoices." },
   },
   fitnessGroups: {
-    sl: { title: "Program za fitnes in skupinske vadbe | Calendra", description: "Spletne prijave na vadbe, kapaciteta, čakalna vrsta, članstva, paketi obiskov, evidenca obiskov in obvestila za fitnes ali studio." },
-    en: { title: "Fitness and group class booking software | Calendra", description: "Online class registration, capacity, waiting lists, memberships, visit packages, attendance tracking and notifications for fitness studios." },
+    sl: { title: "Rešitve za fitnes in skupinske programe | Calendra", description: "Pregled rešitev za fitnes, jogo, pilates in skupinske programe s prijavami, kapaciteto, čakalno vrsto, članstvi in paketi obiskov." },
+    en: { title: "Solutions for fitness and group programmes | Calendra", description: "Overview of Calendra solutions for fitness, yoga, pilates and group programmes with registration, capacity, waiting lists, memberships and visit packages." },
+  },
+  hairSalons: {
+    sl: { title: "Program za frizerski salon in naročanje strank | Calendra", description: "Spletno naročanje, urniki frizerjev, storitve različnih trajanj, delovna mesta, opomniki, paketi, plačila in računi za frizerske salone." },
+    en: { title: "Hair salon and barbershop booking software | Calendra", description: "Online booking, stylist schedules, flexible service durations, workstations, reminders, packages, payments and invoices for hair salons." },
+  },
+  beautySalons: {
+    sl: { title: "Program za kozmetični salon in naročanje | Calendra", description: "Tretmaji, kozmetičarke, kabine, naprave, spletno naročanje, opomniki, paketi, plačila in računi za kozmetične in lepotne salone." },
+    en: { title: "Beauty and cosmetic salon booking software | Calendra", description: "Treatments, beauticians, rooms, devices, online booking, reminders, packages, payments and invoices for beauty and cosmetic salons." },
+  },
+  massage: {
+    sl: { title: "Program za masažni salon in naročanje | Calendra", description: "Termini masaž, terapevti, sobe, spletno naročanje, opomniki, paketi obiskov, predplačila in računi za masažne salone." },
+    en: { title: "Massage salon and therapist booking software | Calendra", description: "Massage appointments, therapists, rooms, online booking, reminders, visit packages, prepayments and invoices for massage businesses." },
+  },
+  spaSauna: {
+    sl: { title: "Rezervacijski sistem za spa, savne in wellness | Calendra", description: "Rezervacije po prostorih in kapacitetah, spletno naročanje, obvestila, paketi, članstva, boni in plačila za spa in wellness centre." },
+    en: { title: "Spa, sauna and wellness reservation software | Calendra", description: "Room and capacity reservations, online booking, notifications, packages, memberships, vouchers and payments for spas and wellness centres." },
+  },
+  tattooPiercing: {
+    sl: { title: "Program za tattoo in piercing studio | Calendra", description: "Termini umetnikov, posveti, različna trajanja, opomniki, predplačila, opombe in zgodovina strank za tattoo in piercing studie." },
+    en: { title: "Tattoo and piercing studio booking software | Calendra", description: "Artist schedules, consultations, flexible durations, reminders, prepayments, notes and client history for tattoo and piercing studios." },
+  },
+  fitnessPersonalTraining: {
+    sl: { title: "Program za fitnes in osebne trenerje | Calendra", description: "Individualni treningi, skupinske vadbe, kapaciteta, čakalna vrsta, članstva, paketi obiskov in evidenca udeležbe za fitnes in trenerje." },
+    en: { title: "Fitness and personal trainer booking software | Calendra", description: "Personal training, group classes, capacity, waiting lists, memberships, visit packages and attendance tracking for fitness businesses." },
+  },
+  physiotherapy: {
+    sl: { title: "Program za naročanje za fizioterapijo | Calendra", description: "Termini fizioterapevtov, prostori, ponavljajoči obiski, spletno naročanje, opomniki, plačila, računi in nadzor dostopov." },
+    en: { title: "Physiotherapy booking and appointment software | Calendra", description: "Physiotherapist schedules, rooms, recurring visits, online booking, reminders, payments, invoices and role-based access." },
+  },
+  psychologyCounselling: {
+    sl: { title: "Program za naročanje za psihologe in svetovalce | Calendra", description: "Individualni in spletni termini, ponavljajoči obiski, opomniki, Zoom, profili strank, plačila, računi ter vloge in dovoljenja." },
+    en: { title: "Psychology and counselling booking software | Calendra", description: "Individual and online appointments, recurrence, reminders, Zoom, client profiles, payments, invoices, roles and permissions." },
+  },
+  yogaPilates: {
+    sl: { title: "Program za jogo in pilates | Calendra", description: "Ponavljajoče vadbe, kapaciteta, spletne prijave, čakalna vrsta, članstva, paketi obiskov in evidenca udeležbe za joga in pilates studie." },
+    en: { title: "Yoga and pilates class booking software | Calendra", description: "Recurring classes, capacity, online registration, waiting lists, memberships, visit packages and attendance tracking for yoga and pilates studios." },
+  },
+  petServices: {
+    sl: { title: "Program za pasji salon in pet storitve | Calendra", description: "Termini za nego, striženje, trening ali druge pet storitve, spletno naročanje, opomniki, zgodovina obiskov, plačila in računi." },
+    en: { title: "Pet grooming and pet-service booking software | Calendra", description: "Appointments for grooming, training and other pet services with online booking, reminders, visit history, payments and invoices." },
+  },
+  educationCoaching: {
+    sl: { title: "Program za coaching, tečaje in izobraževanje | Calendra", description: "Individualni termini, tečaji, skupine, Zoom, ponovitve, kapaciteta, paketi, plačila in evidenca udeležencev za coaching in izobraževanje." },
+    en: { title: "Coaching, courses and education booking software | Calendra", description: "Individual sessions, courses, groups, Zoom, recurrence, capacity, packages, payments and participant records for coaching and education." },
+  },
+  otherServices: {
+    sl: { title: "Program za naročanje za storitvena podjetja | Calendra", description: "Prilagodljivi termini, zaposleni, lokacije, prostori, spletno naročanje, opomniki, plačila in računi za druge storitvene dejavnosti." },
+    en: { title: "Booking software for other service businesses | Calendra", description: "Flexible appointments, employees, locations, rooms, online booking, reminders, payments and invoices for other service businesses." },
   },
   connect: {
     sl: { title: "Calendra Connect | Aplikacija za rezervacijo terminov", description: "Calendra Connect je brezplačna mobilna aplikacija za rezervacijo, prestavljanje in odpoved terminov, obvestila, plačila, ugodnosti in vstopnice.", ogImage: `${SITE_URL}/connect/og-calendra-connect.png` },

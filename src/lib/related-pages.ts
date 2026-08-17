@@ -1,5 +1,5 @@
 import { FEATURE_ROUTE_KEYS } from "@/lib/feature-pages";
-import { INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
+import { ALL_INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import { IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import { canonicalRoutes, type CanonicalRouteKey } from "@/lib/localized-routes";
 import { pageSeo } from "@/lib/seo";
@@ -30,6 +30,18 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
     consultantsEducators: "Za svetovalce in izobraževalce",
     healthWellbeing: "Za zdravje in dobro počutje",
     fitnessGroups: "Za fitnes in skupinske vadbe",
+    hairSalons: "Za frizerske salone",
+    beautySalons: "Za kozmetične salone",
+    massage: "Za masažne salone",
+    spaSauna: "Za spa in savne",
+    tattooPiercing: "Za tattoo in piercing studie",
+    fitnessPersonalTraining: "Za fitnes in osebne trenerje",
+    physiotherapy: "Za fizioterapijo",
+    psychologyCounselling: "Za psihologijo in svetovanje",
+    yogaPilates: "Za jogo in pilates",
+    petServices: "Za storitve za hišne ljubljenčke",
+    educationCoaching: "Za izobraževanje in coaching",
+    otherServices: "Za druge storitvene dejavnosti",
     connect: "Calendra Connect",
     zoom: "Zoom integracija",
     itServices: "IT storitve",
@@ -64,6 +76,18 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
     consultantsEducators: "For consultants and educators",
     healthWellbeing: "For health and wellbeing",
     fitnessGroups: "For fitness and group classes",
+    hairSalons: "For hair salons",
+    beautySalons: "For beauty salons",
+    massage: "For massage businesses",
+    spaSauna: "For spas and saunas",
+    tattooPiercing: "For tattoo and piercing studios",
+    fitnessPersonalTraining: "For fitness and personal training",
+    physiotherapy: "For physiotherapy",
+    psychologyCounselling: "For psychology and counselling",
+    yogaPilates: "For yoga and pilates",
+    petServices: "For pet services",
+    educationCoaching: "For education and coaching",
+    otherServices: "For other service businesses",
     connect: "Calendra Connect",
     zoom: "Zoom integration",
     itServices: "IT services",
@@ -106,6 +130,19 @@ const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>>
   consultantsEducators: ["calendar", "integrations", "zoom", "invoicing", "booking", "pricing"],
   healthWellbeing: ["customerStories", "calendar", "clientManagement", "reminders", "invoicing", "booking"],
   fitnessGroups: ["calendar", "reminders", "clientManagement", "booking", "connect", "pricing"],
+
+  hairSalons: ["beautySalons", "calendar", "booking", "reminders", "materialManagement", "pricing"],
+  beautySalons: ["hairSalons", "massage", "calendar", "booking", "materialManagement", "pricing"],
+  massage: ["spaSauna", "physiotherapy", "calendar", "booking", "reminders", "pricing"],
+  spaSauna: ["massage", "yogaPilates", "calendar", "booking", "fitnessPersonalTraining", "pricing"],
+  tattooPiercing: ["hairSalons", "beautySalons", "calendar", "booking", "reminders", "pricing"],
+  fitnessPersonalTraining: ["yogaPilates", "calendar", "booking", "reminders", "clientManagement", "pricing"],
+  physiotherapy: ["massage", "psychologyCounselling", "calendar", "clientManagement", "reminders", "pricing"],
+  psychologyCounselling: ["educationCoaching", "physiotherapy", "calendar", "booking", "integrations", "pricing"],
+  yogaPilates: ["fitnessPersonalTraining", "educationCoaching", "calendar", "booking", "reminders", "pricing"],
+  petServices: ["calendar", "booking", "clientManagement", "reminders", "invoicing", "pricing"],
+  educationCoaching: ["psychologyCounselling", "yogaPilates", "calendar", "integrations", "zoom", "pricing"],
+  otherServices: ["booking", "calendar", "clientManagement", "invoicing", "integrations", "pricing"],
 
   connect: ["booking", "reminders", "calendar", "support"],
   zoom: ["integrations", "calendar", "consultantsEducators", "booking"],
@@ -153,4 +190,4 @@ export const getRouteLinkLabel = (routeKey: CanonicalRouteKey, language: SiteLan
   linkLabels[language][routeKey] ?? pageSeo[routeKey][language].title.split("|")[0].trim();
 
 export const FEATURE_LINK_KEYS = FEATURE_ROUTE_KEYS;
-export const INDUSTRY_LINK_KEYS = INDUSTRY_ROUTE_KEYS;
+export const INDUSTRY_LINK_KEYS = ALL_INDUSTRY_ROUTE_KEYS;

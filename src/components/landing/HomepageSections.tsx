@@ -197,18 +197,18 @@ const audienceCardBackgrounds = [
 ] as const;
 
 const audienceRoutes = [
-  "beautyHair",
-  "beautyHair",
-  "healthWellbeing",
-  "healthWellbeing",
-  "beautyHair",
-  "fitnessGroups",
-  "healthWellbeing",
-  "healthWellbeing",
-  "fitnessGroups",
-  "booking",
-  "consultantsEducators",
-  "booking",
+  "hairSalons",
+  "beautySalons",
+  "massage",
+  "spaSauna",
+  "tattooPiercing",
+  "fitnessPersonalTraining",
+  "physiotherapy",
+  "psychologyCounselling",
+  "yogaPilates",
+  "petServices",
+  "educationCoaching",
+  "otherServices",
 ] as const;
 const problemIcons = [PhoneCall, CalendarCheck2, BellRing, FileText] as const;
 const howIcons = [Clock3, CalendarCheck2, MailCheck] as const;

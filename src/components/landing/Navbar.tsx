@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BUSINESS_LOGIN_ROUTE } from "@/lib/routes";
 import { getRoutePath } from "@/lib/localized-routes";
-import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
+import { ALL_INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import {
   BarChart3,
   Bell,
@@ -72,7 +72,7 @@ const Navbar = () => {
     getRoutePath("materialManagement", "sl"),
     getRoutePath("materialManagement", "en"),
   ];
-  const industryPaths = INDUSTRY_ROUTE_KEYS.flatMap((key) => [getRoutePath(key, "sl"), getRoutePath(key, "en")]);
+  const industryPaths = ALL_INDUSTRY_ROUTE_KEYS.flatMap((key) => [getRoutePath(key, "sl"), getRoutePath(key, "en")]);
   const bookingPaths = [getRoutePath("booking", "sl"), getRoutePath("booking", "en")];
   const aboutAppActive = [getRoutePath("home", "sl"), getRoutePath("home", "en"), ...featurePaths, ...industryPaths, ...bookingPaths].includes(pathname);
   const customerStoriesPaths = [getRoutePath("customerStories", "sl"), getRoutePath("customerStories", "en")];
@@ -175,27 +175,27 @@ const Navbar = () => {
     () => [
       {
         title: language === "sl" ? "Kozmetični saloni" : "Beauty salons",
-        href: getRoutePath("beautyHair", language),
+        href: getRoutePath("beautySalons", language),
         icon: Sparkles,
       },
       {
         title: language === "sl" ? "Frizerski saloni" : "Hair salons",
-        href: getRoutePath("beautyHair", language),
+        href: getRoutePath("hairSalons", language),
         icon: Scissors,
       },
       {
         title: language === "sl" ? "Brivnice" : "Barbershops",
-        href: getRoutePath("beautyHair", language),
+        href: getRoutePath("hairSalons", language),
         icon: Scissors,
       },
       {
         title: "Wellness",
-        href: getRoutePath("healthWellbeing", language),
+        href: getRoutePath("spaSauna", language),
         icon: Sparkles,
       },
       {
         title: language === "sl" ? "Vadbe & trenerji" : "Classes & trainers",
-        href: getRoutePath("fitnessGroups", language),
+        href: getRoutePath("fitnessPersonalTraining", language),
         icon: BarChart3,
       },
       {

@@ -1,6 +1,6 @@
 import { getArticlesForLanguage, getBlogArticlePath } from "@/lib/blog";
 import { getFaqForRoute } from "@/lib/faq";
-import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
+import { ALL_INDUSTRY_ROUTE_KEYS, getIndustryContent } from "@/lib/industry-pages";
 import { getItServiceContent, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import { LEGAL, LEGAL_FULL_ADDRESS } from "@/lib/legal";
 import { canonicalRoutes, type CanonicalRouteKey } from "@/lib/localized-routes";
@@ -30,7 +30,7 @@ const routeGroups: RouteGroup[] = [
   },
   {
     heading: { sl: "Rešitve po dejavnostih", en: "Solutions by industry" },
-    routeKeys: [...INDUSTRY_ROUTE_KEYS],
+    routeKeys: [...ALL_INDUSTRY_ROUTE_KEYS],
   },
   {
     heading: { sl: "Mobilna aplikacija za stranke", en: "Customer mobile app" },
@@ -202,7 +202,7 @@ export const buildLlmsTxt = () => {
 };
 
 const industrySection = (language: SiteLanguage) =>
-  INDUSTRY_ROUTE_KEYS.map((routeKey) => {
+  ALL_INDUSTRY_ROUTE_KEYS.map((routeKey) => {
     const industry = getIndustryContent(routeKey, language);
     return [
       `### ${industry.title}`,

@@ -46,20 +46,43 @@ const IndustryDetailPage = () => {
   if (!isIndustryRouteKey(routeKey)) return null;
 
   const page = getIndustryContent(routeKey, language);
-  const otherIndustries = INDUSTRY_ROUTE_KEYS.filter((key) => key !== routeKey);
+  const legacyChildren: Partial<Record<IndustryRouteKey, IndustryRouteKey[]>> = {
+    beautyHair: ["hairSalons", "beautySalons", "tattooPiercing"],
+    consultantsEducators: ["psychologyCounselling", "educationCoaching", "otherServices"],
+    healthWellbeing: ["massage", "physiotherapy", "psychologyCounselling"],
+    fitnessGroups: ["fitnessPersonalTraining", "yogaPilates", "educationCoaching"],
+  };
+  const relatedIndustryCards: Partial<Record<IndustryRouteKey, IndustryRouteKey[]>> = {
+    hairSalons: ["beautySalons", "tattooPiercing", "otherServices"],
+    beautySalons: ["hairSalons", "massage", "spaSauna"],
+    massage: ["spaSauna", "physiotherapy", "beautySalons"],
+    spaSauna: ["massage", "beautySalons", "yogaPilates"],
+    tattooPiercing: ["hairSalons", "beautySalons", "otherServices"],
+    fitnessPersonalTraining: ["yogaPilates", "physiotherapy", "educationCoaching"],
+    physiotherapy: ["massage", "psychologyCounselling", "fitnessPersonalTraining"],
+    psychologyCounselling: ["educationCoaching", "physiotherapy", "otherServices"],
+    yogaPilates: ["fitnessPersonalTraining", "educationCoaching", "spaSauna"],
+    petServices: ["otherServices", "educationCoaching", "beautySalons"],
+    educationCoaching: ["psychologyCounselling", "yogaPilates", "otherServices"],
+    otherServices: ["petServices", "educationCoaching", "hairSalons"],
+  };
+  const otherIndustries = relatedIndustryCards[routeKey]
+    ?? legacyChildren[routeKey]
+    ?? INDUSTRY_ROUTE_KEYS.filter((key) => key !== routeKey);
   const primaryLabel = language === "sl" ? "Preizkusite brezplačno" : "Try it free";
   const featuresLabel = language === "sl" ? "Oglejte si funkcionalnosti" : "Explore features";
   const pricingLabel = language === "sl" ? "Oglejte si cenik" : "View pricing";
   const otherSolutionsLabel = language === "sl" ? "Druge rešitve Calendra" : "Other Calendra solutions";
-  const heroImage = routeKey === "fitnessGroups" ? MARKETING_IMAGES.bookingTime : MARKETING_IMAGES.calendar;
-  const heroImageAlt = routeKey === "fitnessGroups"
+  const groupCentric = ["fitnessGroups", "fitnessPersonalTraining", "yogaPilates", "educationCoaching"].includes(routeKey);
+  const heroImage = groupCentric ? MARKETING_IMAGES.bookingTime : MARKETING_IMAGES.calendar;
+  const heroImageAlt = groupCentric
     ? language === "sl"
       ? "Spletna prijava na skupinsko vadbo v Calendri z izbiro datuma, ure in prikazom prostih mest"
       : "Online group-class booking in Calendra with date, time and remaining-place selection"
     : language === "sl"
       ? "Tedenski koledar terminov v aplikaciji Calendra z individualnimi in skupinskimi storitvami"
       : "Weekly Calendra appointment calendar with individual and group services";
-  const customerProof = routeKey === "beautyHair"
+  const customerProof = routeKey === "beautyHair" || routeKey === "beautySalons"
     ? {
         quote: language === "sl"
           ? "S Calendro je organizacija terminov precej enostavnejša. Stranke se lahko naročijo same, mi pa imamo ves čas jasen pregled nad urnikom in manj usklajevanja po telefonu ali sporočilih."
@@ -70,7 +93,7 @@ const IndustryDetailPage = () => {
         storyHref: getCustomerStoryPath("depilacije-ug", language),
         translated: language === "en",
       }
-    : routeKey === "healthWellbeing"
+    : routeKey === "healthWellbeing" || routeKey === "psychologyCounselling"
       ? {
           quote: language === "sl"
             ? "Calendra nam omogoča, da imamo termine, stranke in organizacijo dela pregledno na enem mestu. Posebej nam je pomembno, da je sistem enostaven za uporabo tako za našo ekipo kot za stranke, ki se naročajo na termine."
@@ -208,7 +231,7 @@ const IndustryDetailPage = () => {
           </div>
         </section>
 
-        {routeKey === "fitnessGroups" ? (
+        {groupCentric ? (
           <section className="bg-card py-20 md:py-28">
             <div className="container mx-auto max-w-7xl px-4 lg:px-8">
               <div className="mx-auto max-w-3xl text-center">

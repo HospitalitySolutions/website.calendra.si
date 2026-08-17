@@ -191,6 +191,31 @@ const AppRoutes = () => (
       <Route path="/za-fitnes-in-skupinske-storitve" element={<IndustryDetailPage />} />
       <Route path="/en/for-fitness-and-group-services" element={<IndustryDetailPage />} />
 
+      <Route path="/za-frizerske-salone" element={<IndustryDetailPage />} />
+      <Route path="/en/for-hair-salons" element={<IndustryDetailPage />} />
+      <Route path="/za-kozmeticne-salone" element={<IndustryDetailPage />} />
+      <Route path="/en/for-beauty-salons" element={<IndustryDetailPage />} />
+      <Route path="/za-masazne-salone" element={<IndustryDetailPage />} />
+      <Route path="/en/for-massage-businesses" element={<IndustryDetailPage />} />
+      <Route path="/za-spa-in-savne" element={<IndustryDetailPage />} />
+      <Route path="/en/for-spas-and-saunas" element={<IndustryDetailPage />} />
+      <Route path="/za-tetoviranje-in-piercing" element={<IndustryDetailPage />} />
+      <Route path="/en/for-tattoo-and-piercing-studios" element={<IndustryDetailPage />} />
+      <Route path="/za-fitnes-in-osebno-trenerstvo" element={<IndustryDetailPage />} />
+      <Route path="/en/for-fitness-and-personal-training" element={<IndustryDetailPage />} />
+      <Route path="/za-fizioterapijo" element={<IndustryDetailPage />} />
+      <Route path="/en/for-physiotherapy" element={<IndustryDetailPage />} />
+      <Route path="/za-psihologijo-in-svetovanje" element={<IndustryDetailPage />} />
+      <Route path="/en/for-psychology-and-counselling" element={<IndustryDetailPage />} />
+      <Route path="/za-jogo-in-pilates" element={<IndustryDetailPage />} />
+      <Route path="/en/for-yoga-and-pilates" element={<IndustryDetailPage />} />
+      <Route path="/za-storitve-za-hisne-ljubljencke" element={<IndustryDetailPage />} />
+      <Route path="/en/for-pet-services" element={<IndustryDetailPage />} />
+      <Route path="/za-izobrazevanje-in-coaching" element={<IndustryDetailPage />} />
+      <Route path="/en/for-education-and-coaching" element={<IndustryDetailPage />} />
+      <Route path="/za-druge-storitve" element={<IndustryDetailPage />} />
+      <Route path="/en/for-other-service-businesses" element={<IndustryDetailPage />} />
+
       <Route path="/calendra-connect" element={<CalendraConnectPage />} />
       <Route path="/en/calendra-connect" element={<CalendraConnectPage />} />
       <Route path="/mobilna-aplikacija" element={<Navigate to="/calendra-connect" replace />} />
