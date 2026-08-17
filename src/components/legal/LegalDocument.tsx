@@ -13,16 +13,16 @@ type LegalDocumentProps = {
 };
 
 export const LegalDocument = ({ badge, title, intro, lastUpdated, children, className }: LegalDocumentProps) => (
-  <div className="min-h-screen bg-background">
+  <div className="marketing-page marketing-redesign min-h-screen bg-background">
     <Navbar />
     <main className="py-16 md:py-20">
-      <div className={cn("container mx-auto max-w-4xl px-4 lg:px-8", className)}>
-        <section className="rounded-3xl border border-border/60 bg-card p-8 shadow-soft md:p-12">
+      <div className={cn("container mx-auto max-w-5xl px-4 sm:px-6 lg:px-8", className)}>
+        <section className="marketing-panel rounded-[30px] p-8 md:p-12">
           <div className="max-w-3xl">
-            <span className="inline-flex rounded-full border border-primary/20 bg-primary/[0.06] px-4 py-1.5 text-sm font-semibold text-primary">
+            <span className="marketing-pill inline-flex px-4 py-1.5 text-sm font-semibold text-primary">
               {badge}
             </span>
-            <h1 className="mt-5 font-display text-4xl font-extrabold tracking-tight sm:text-5xl" style={{ color: "hsl(var(--text-heading))" }}>
+            <h1 className="marketing-section-title mt-5 text-4xl sm:text-5xl" style={{ color: "hsl(var(--text-heading))" }}>
               {title}
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{intro}</p>
@@ -54,7 +54,7 @@ export const LegalSection = ({ id, title, children, tone = "default" }: LegalSec
         : "border-border/60 bg-card";
 
   return (
-    <section id={id} className={cn("rounded-3xl border p-8 shadow-soft md:p-10", toneClass)}>
+    <section id={id} className={cn("rounded-[24px] border p-8 shadow-soft md:p-10", toneClass)}>
       <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">{title}</h2>
       <div className="mt-5 space-y-4 text-base leading-7 text-muted-foreground">{children}</div>
     </section>

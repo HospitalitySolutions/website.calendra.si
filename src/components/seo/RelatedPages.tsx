@@ -27,8 +27,8 @@ const RelatedPages = ({ routeKey, title, limit = 6, className, variant = "cards"
   const heading = title ?? (language === "sl" ? "Povezane strani" : "Related pages");
 
   return (
-    <section className={cn("border-t border-border/60 bg-background py-14 md:py-20", className)} aria-labelledby={`related-${routeKey}`}>
-      <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+    <section className={cn("border-t border-border/45 bg-transparent py-14 md:py-20", className)} aria-labelledby={`related-${routeKey}`}>
+      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
         <h2 id={`related-${routeKey}`} className="font-display text-2xl font-bold text-foreground">
           {heading}
         </h2>
@@ -39,7 +39,7 @@ const RelatedPages = ({ routeKey, title, limit = 6, className, variant = "cards"
               <a
                 key={link.routeKey}
                 href={link.href}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-semibold text-foreground transition hover:border-primary/30 hover:text-primary"
+                className="marketing-card inline-flex items-center gap-2 rounded-full bg-white/92 px-5 py-3 text-sm font-semibold text-foreground transition hover:border-primary/30 hover:text-primary"
               >
                 {link.label}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -52,7 +52,7 @@ const RelatedPages = ({ routeKey, title, limit = 6, className, variant = "cards"
               <a
                 key={link.routeKey}
                 href={link.href}
-                className="group flex flex-col rounded-2xl border border-border/60 bg-card p-5 shadow-soft transition hover:border-primary/30"
+                className="marketing-card marketing-card-hover group flex flex-col rounded-[20px] bg-white/92 p-5"
               >
                 <span className="flex items-center gap-2 font-semibold text-foreground group-hover:text-primary">
                   {link.label}

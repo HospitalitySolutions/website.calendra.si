@@ -55,11 +55,11 @@ const StickySalesCtaBar = ({ anchorRef, placement, threshold = 420 }: StickySale
       exit={{ opacity: 0, y: 24 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="mx-auto grid max-w-[720px] gap-2 rounded-2xl border border-border/70 bg-background/95 p-2.5 shadow-[0_24px_70px_-24px_hsl(220_35%_10%/0.45)] backdrop-blur-xl sm:grid-cols-2">
+      <div className="mx-auto grid max-w-[720px] gap-2 rounded-[20px] border border-white/80 bg-white/92 p-2.5 shadow-[0_24px_70px_-24px_rgba(15,23,42,0.38)] backdrop-blur-xl sm:grid-cols-2">
         <Button
           variant="hero"
           size="lg"
-          className="h-12 w-full rounded-xl px-5 text-sm font-semibold shadow-lg shadow-primary/20 sm:text-base"
+          className="h-12 w-full rounded-[13px] px-5 text-sm font-semibold shadow-lg shadow-primary/20 sm:text-base"
           asChild
         >
           <a
@@ -74,7 +74,7 @@ const StickySalesCtaBar = ({ anchorRef, placement, threshold = 420 }: StickySale
         <Button
           variant="outline"
           size="lg"
-          className="h-12 w-full rounded-xl border-border/80 bg-card px-5 text-sm font-semibold text-primary shadow-sm hover:border-primary/30 hover:bg-card hover:text-primary sm:text-base"
+          className="h-12 w-full rounded-[13px] border-primary/25 bg-white px-5 text-sm font-semibold text-primary shadow-sm hover:border-primary/30 hover:bg-card hover:text-primary sm:text-base"
           asChild
         >
           <a

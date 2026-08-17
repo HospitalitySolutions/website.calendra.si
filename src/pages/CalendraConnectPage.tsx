@@ -71,7 +71,7 @@ const CalendraConnectPage = () => {
   const copy = getCalendraConnectCopy(language);
 
   return (
-    <div className="marketing-page min-h-screen bg-background">
+    <div className="marketing-page marketing-redesign min-h-screen bg-background">
       <Navbar />
       <main>
         <section className="relative overflow-hidden border-b border-border/50 bg-gradient-to-br from-primary/[0.08] via-background to-accent/[0.08] py-20 md:py-28">
@@ -110,7 +110,7 @@ const CalendraConnectPage = () => {
         <section className="bg-card py-20 md:py-28">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.features.eyebrow}</span>
+              <span className="marketing-eyebrow">{copy.features.eyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.features.title}</h2>
               <p className="mt-4 text-lg leading-8 text-muted-foreground">{copy.features.intro}</p>
             </div>
@@ -132,7 +132,7 @@ const CalendraConnectPage = () => {
         <section className="bg-background py-20 md:py-28">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.steps.eyebrow}</span>
+              <span className="marketing-eyebrow">{copy.steps.eyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.steps.title}</h2>
             </div>
             <div className="mt-12 grid gap-6 lg:grid-cols-3">
@@ -156,7 +156,7 @@ const CalendraConnectPage = () => {
             <div className="overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.09] via-background to-accent/[0.09] p-8 shadow-soft md:p-12">
               <div className="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
                 <div>
-                  <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.business.eyebrow}</span>
+                  <span className="marketing-eyebrow">{copy.business.eyebrow}</span>
                   <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.business.title}</h2>
                   <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">{copy.business.body}</p>
                   <div className="mt-8 flex flex-wrap gap-3">
@@ -212,7 +212,7 @@ const CalendraConnectPage = () => {
         <section className="bg-card py-20 md:py-28">
           <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
             <div>
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.faq.eyebrow}</span>
+              <span className="marketing-eyebrow">{copy.faq.eyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.faq.title}</h2>
             </div>
             <div className="grid gap-3">

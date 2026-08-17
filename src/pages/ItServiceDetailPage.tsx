@@ -67,7 +67,7 @@ const ItServiceDetailPage = () => {
   const service = getItServiceContent(routeKey, language);
 
   return (
-    <div className="marketing-page min-h-screen bg-background">
+    <div className="marketing-page marketing-redesign min-h-screen bg-background">
       <Navbar />
       <main>
         <section className="relative overflow-hidden border-b border-border/50 bg-gradient-to-br from-background via-card to-primary/[0.07] py-20 md:py-28">
@@ -75,7 +75,7 @@ const ItServiceDetailPage = () => {
           <div className="container relative mx-auto px-4 lg:px-8">
             <div className="max-w-4xl">
               <PageBreadcrumbs routeKey={routeKey} parentRouteKey="itServices" />
-              <span className="block text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.badge}</span>
+              <span className="block marketing-eyebrow">{copy.badge}</span>
               <h1 className="mt-3 font-display text-4xl font-extrabold leading-tight tracking-[-0.03em] text-foreground sm:text-5xl lg:text-6xl">{service.title}</h1>
               <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl">{service.intro}</p>
               <Button variant="hero" size="lg" className="mt-8 rounded-xl" asChild>
@@ -107,7 +107,7 @@ const ItServiceDetailPage = () => {
         <section className="bg-card py-20 md:py-28">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="max-w-3xl">
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.includesEyebrow}</span>
+              <span className="marketing-eyebrow">{copy.includesEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.includesTitle}</h2>
             </div>
             <div className="mt-10 grid gap-4 md:grid-cols-2">
@@ -124,7 +124,7 @@ const ItServiceDetailPage = () => {
         <section className="bg-background py-20 md:py-28">
           <div className="container mx-auto grid gap-14 px-4 lg:grid-cols-2 lg:px-8">
             <div>
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.processEyebrow}</span>
+              <span className="marketing-eyebrow">{copy.processEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.processTitle}</h2>
               <div className="mt-8 grid gap-4">
                 {service.process.map((item, index) => (
@@ -138,7 +138,7 @@ const ItServiceDetailPage = () => {
               </div>
             </div>
             <div>
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.outcomesEyebrow}</span>
+              <span className="marketing-eyebrow">{copy.outcomesEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.outcomesTitle}</h2>
               <div className="mt-8 grid gap-4">
                 {service.outcomes.map((item) => (
@@ -157,7 +157,7 @@ const ItServiceDetailPage = () => {
         <section className="bg-background py-20 md:py-28">
           <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
             <div>
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.faqEyebrow}</span>
+              <span className="marketing-eyebrow">{copy.faqEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.faqTitle}</h2>
               <CircleHelp className="mt-6 h-8 w-8 text-primary" aria-hidden="true" />
             </div>

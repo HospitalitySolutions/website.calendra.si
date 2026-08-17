@@ -71,7 +71,7 @@ const BlogArticlePage = () => {
   const tocHeadings = article.headings.filter((heading) => heading.depth === 2);
 
   return (
-    <div className="marketing-page min-h-screen bg-background">
+    <div className="marketing-page marketing-redesign min-h-screen bg-background">
       <Navbar />
       <main>
         <article>

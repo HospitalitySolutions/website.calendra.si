@@ -107,14 +107,14 @@ const IndustryDetailPage = () => {
       : null;
 
   return (
-    <div className="marketing-page min-h-screen bg-background">
+    <div className="marketing-page marketing-redesign min-h-screen bg-background">
       <Navbar />
       <main>
         <section className="overflow-hidden border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.07] py-14 md:py-20 lg:py-24">
           <div className="container mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:px-8">
             <div>
               <PageBreadcrumbs routeKey={routeKey} />
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.eyebrow}</span>
+              <span className="marketing-eyebrow">{page.eyebrow}</span>
               <h1 className="mt-4 max-w-4xl font-display text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                 {page.title}
               </h1>
@@ -168,7 +168,7 @@ const IndustryDetailPage = () => {
         <section className="bg-background py-20 md:py-28">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">
             <div className="max-w-3xl">
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.problemsEyebrow}</span>
+              <span className="marketing-eyebrow">{page.problemsEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.problemsTitle}</h2>
               <p className="mt-4 text-lg leading-8 text-muted-foreground">{page.problemsIntro}</p>
             </div>
@@ -192,7 +192,7 @@ const IndustryDetailPage = () => {
         <section id="funkcionalnosti-panoge" className="scroll-mt-24 bg-card py-20 md:py-28">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.featuresEyebrow}</span>
+              <span className="marketing-eyebrow">{page.featuresEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.featuresTitle}</h2>
               <p className="mt-4 text-lg leading-8 text-muted-foreground">{page.featuresIntro}</p>
             </div>
@@ -216,7 +216,7 @@ const IndustryDetailPage = () => {
         <section className="bg-background py-20 md:py-28">
           <div className="container mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:px-8">
             <div className="lg:sticky lg:top-28">
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.workflowEyebrow}</span>
+              <span className="marketing-eyebrow">{page.workflowEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.workflowTitle}</h2>
               <Link2 className="mt-7 h-9 w-9 text-primary" aria-hidden="true" />
             </div>
@@ -235,7 +235,7 @@ const IndustryDetailPage = () => {
           <section className="bg-card py-20 md:py-28">
             <div className="container mx-auto max-w-7xl px-4 lg:px-8">
               <div className="mx-auto max-w-3xl text-center">
-                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.screenshotEyebrow}</span>
+                <span className="marketing-eyebrow">{page.screenshotEyebrow}</span>
                 <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.screenshotTitle}</h2>
                 <p className="mt-5 text-lg leading-8 text-muted-foreground">{page.screenshotDescription}</p>
               </div>
@@ -274,7 +274,7 @@ const IndustryDetailPage = () => {
                 caption={language === "sl" ? "Tedenski pogled poveže različne storitve, odsotnosti in skupinske termine." : "The weekly view combines services, absences and group appointments."}
               />
               <div>
-                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.screenshotEyebrow}</span>
+                <span className="marketing-eyebrow">{page.screenshotEyebrow}</span>
                 <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.screenshotTitle}</h2>
                 <p className="mt-5 text-lg leading-8 text-muted-foreground">{page.screenshotDescription}</p>
                 <Button variant="outline" size="lg" className="mt-7 rounded-xl" asChild>
@@ -289,7 +289,7 @@ const IndustryDetailPage = () => {
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">
             <div className="overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.07] via-card to-accent/[0.06] p-8 shadow-soft md:p-12">
               <div className="max-w-3xl">
-                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.audienceEyebrow}</span>
+                <span className="marketing-eyebrow">{page.audienceEyebrow}</span>
                 <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.audienceTitle}</h2>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -308,7 +308,7 @@ const IndustryDetailPage = () => {
           <section className="bg-background py-16 md:py-20">
             <div className="container mx-auto max-w-5xl px-4 lg:px-8">
               <figure className="rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.07] via-card to-accent/[0.05] p-8 shadow-soft md:p-10">
-                <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{language === "sl" ? "Izkušnja uporabnika" : "Customer experience"}</p>
+                <p className="marketing-eyebrow">{language === "sl" ? "Izkušnja uporabnika" : "Customer experience"}</p>
                 <blockquote className="mt-5 font-display text-2xl font-semibold leading-relaxed text-foreground md:text-3xl">“{customerProof.quote}”</blockquote>
                 <figcaption className="mt-7 flex flex-col gap-1 text-sm text-muted-foreground">
                   <a href={customerProof.href} target="_blank" rel="noreferrer noopener" className="w-fit font-bold text-foreground transition hover:text-primary">{customerProof.name}</a>
@@ -327,7 +327,7 @@ const IndustryDetailPage = () => {
         <section className="bg-card py-20 md:py-28">
           <div className="container mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-[0.72fr_1.28fr] lg:px-8">
             <div>
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{page.faqEyebrow}</span>
+              <span className="marketing-eyebrow">{page.faqEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.faqTitle}</h2>
               <Sparkles className="mt-7 h-9 w-9 text-primary" aria-hidden="true" />
             </div>

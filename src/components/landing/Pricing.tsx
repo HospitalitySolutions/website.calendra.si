@@ -775,12 +775,12 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   return (
     <section
       id={standalone ? undefined : "cenik"}
-      className={`${standalone ? "pt-0 pb-36 md:pb-40" : "scroll-mt-20"} bg-card py-20 md:py-28`}
+      className={`${standalone ? "pt-0 pb-36 md:pb-40" : "scroll-mt-20"} bg-transparent py-16 md:py-20 lg:py-24`}
     >
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
         <div className="mb-10 text-center md:text-left">
-          <span className="text-sm font-semibold uppercase tracking-widest text-primary">{content.sectionEyebrow}</span>
-          <HeadingTag className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl" style={{ color: "hsl(var(--text-heading))" }}>
+          <span className="marketing-eyebrow">{content.sectionEyebrow}</span>
+          <HeadingTag className="marketing-section-title mt-3 text-3xl sm:text-4xl lg:text-[2.8rem]" style={{ color: "hsl(var(--text-heading))" }}>
             {standalone ? content.standaloneTitle : content.sectionTitle}
           </HeadingTag>
           <p className="mt-4 text-lg text-muted-foreground">{content.sectionDescription}</p>
@@ -823,7 +823,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             return (
               <motion.div
                 key={tier.name}
-                className={`relative flex flex-col overflow-hidden rounded-2xl border p-7 transition-all ${
+                className={`relative flex flex-col overflow-hidden rounded-[24px] border p-7 transition-all ${
                   tier.accent ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border-border/50 bg-background"
                 } ${isSelected ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
                 initial={false}
@@ -881,7 +881,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
         </div>
 
         {enterpriseTier && (
-          <section className="mt-6 rounded-3xl border border-primary/20 bg-primary/[0.035] p-5 shadow-sm md:p-6" aria-label={enterpriseTier.name}>
+          <section className="marketing-panel mt-6 rounded-[24px] p-5 md:p-6" aria-label={enterpriseTier.name}>
             <div className="grid gap-5 lg:grid-cols-[1.25fr_2.2fr_auto] lg:items-center">
               <div className="flex items-start gap-4">
                 <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-primary/15 bg-primary/[0.08] text-primary">
@@ -921,7 +921,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           <h3 className="mb-8 text-center font-display text-2xl font-bold" style={{ color: "hsl(var(--text-heading))" }}>
             {content.comparisonTitle}
           </h3>
-          <div className="overflow-x-auto rounded-2xl border border-border/50">
+          <div className="overflow-x-auto rounded-[22px] border border-border/70 bg-white/90 shadow-soft">
             <table className="min-w-[640px] w-full text-sm">
               <thead>
                 <tr className="border-b border-border/50 bg-muted/40">
@@ -976,7 +976,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             <motion.div
               id="pricing-configurator"
               ref={configuratorRef}
-              className="mt-20 rounded-3xl border border-border/50 bg-background p-6 shadow-sm md:p-8"
+              className="marketing-panel mt-20 rounded-[28px] p-6 md:p-8"
               initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -1085,7 +1085,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             <motion.div
               id="contact-form"
               ref={contactRef}
-              className="mt-20 rounded-3xl border border-border/50 bg-background p-6 shadow-sm md:p-8"
+              className="marketing-panel mt-20 rounded-[28px] p-6 md:p-8"
               initial={false}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

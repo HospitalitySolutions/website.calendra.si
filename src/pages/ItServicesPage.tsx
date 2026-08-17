@@ -109,7 +109,7 @@ const ItServicesPage = () => {
   const copy = pageCopy[language];
 
   return (
-    <div className="marketing-page min-h-screen bg-background">
+    <div className="marketing-page marketing-redesign min-h-screen bg-background">
       <Navbar />
       <main>
         <section className="relative overflow-hidden border-b border-border/50 bg-gradient-to-br from-background via-card to-primary/[0.07] py-20 md:py-28">
@@ -149,7 +149,7 @@ const ItServicesPage = () => {
         <section id="it-storitve-seznam" className="scroll-mt-24 bg-card py-20 md:py-28">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="max-w-3xl">
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.servicesEyebrow}</span>
+              <span className="marketing-eyebrow">{copy.servicesEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.servicesTitle}</h2>
               <p className="mt-4 text-lg leading-8 text-muted-foreground">{copy.servicesIntro}</p>
             </div>
@@ -175,7 +175,7 @@ const ItServicesPage = () => {
         <section className="bg-background py-20 md:py-28">
           <div className="container mx-auto px-4 lg:px-8">
             <div className="mx-auto max-w-3xl text-center">
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.whyEyebrow}</span>
+              <span className="marketing-eyebrow">{copy.whyEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.whyTitle}</h2>
             </div>
             <div className="mt-12 grid gap-5 lg:grid-cols-3">
@@ -194,7 +194,7 @@ const ItServicesPage = () => {
           <div className="container mx-auto px-4 lg:px-8">
             <div className="grid gap-12 lg:grid-cols-2 lg:items-start">
               <div>
-                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.processEyebrow}</span>
+                <span className="marketing-eyebrow">{copy.processEyebrow}</span>
                 <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.processTitle}</h2>
                 <div className="mt-8 grid gap-4">
                   {copy.process.map((item) => (
@@ -206,7 +206,7 @@ const ItServicesPage = () => {
                 </div>
               </div>
               <div>
-                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.modelsEyebrow}</span>
+                <span className="marketing-eyebrow">{copy.modelsEyebrow}</span>
                 <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.modelsTitle}</h2>
                 <div className="mt-8 grid gap-4">
                   {copy.models.map((item) => (
@@ -224,7 +224,7 @@ const ItServicesPage = () => {
         <section className="bg-background py-20 md:py-28">
           <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
             <div>
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.faqEyebrow}</span>
+              <span className="marketing-eyebrow">{copy.faqEyebrow}</span>
               <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.faqTitle}</h2>
             </div>
             <div className="grid gap-3">

@@ -62,13 +62,13 @@ const BlogIndexPage = () => {
   const [lead, ...rest] = visible;
 
   return (
-    <div className="marketing-page min-h-screen bg-background">
+    <div className="marketing-page marketing-redesign min-h-screen bg-background">
       <Navbar />
       <main>
         <section className="border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.05] py-14 md:py-20">
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
             <PageBreadcrumbs routeKey="blog" />
-            <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{text.eyebrow}</span>
+            <span className="marketing-eyebrow">{text.eyebrow}</span>
             <h1 className="mt-4 max-w-4xl font-display text-4xl font-extrabold tracking-tight text-foreground md:text-5xl">
               {seo.title.split("|")[0].trim()}
             </h1>

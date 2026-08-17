@@ -312,7 +312,7 @@ const ZoomIntegration = () => {
   )}`;
 
   return (
-    <div className="marketing-page min-h-screen bg-background">
+    <div className="marketing-page marketing-redesign min-h-screen bg-background">
       <Navbar />
 
       <main className="py-16 md:py-20">

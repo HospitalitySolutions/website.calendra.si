@@ -245,10 +245,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className="sticky top-0 isolate border-b border-border/55 bg-background/82 backdrop-blur-xl supports-[backdrop-filter]:bg-background/74"
+      className="sticky top-0 isolate border-b border-border/45 bg-white/82 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.35)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/76"
       style={{ zIndex: 1000 }}
     >
-      <div className="container mx-auto flex h-[72px] items-center justify-between gap-4 px-4 lg:px-8">
+      <div className="container mx-auto flex h-[74px] max-w-[1500px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4">
           <a href={homePath} className="flex items-center">
             <img
@@ -265,7 +265,7 @@ const Navbar = () => {
             <select
               value={language}
               onChange={(event) => setLanguage(event.target.value as SiteLanguage)}
-              className="w-full appearance-none rounded-xl border border-border/70 bg-background px-9 py-2.5 pr-9 text-sm font-medium text-foreground outline-none transition focus:border-primary"
+              className="w-full appearance-none rounded-[13px] border border-border/70 bg-white/90 px-9 py-2.5 pr-9 text-sm font-medium text-foreground outline-none transition focus:border-primary"
               aria-label={copy.nav.language}
             >
               <option value="sl">{languageNames[language].sl}</option>

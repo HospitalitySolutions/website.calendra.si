@@ -36,7 +36,7 @@ const SectionFallback = ({ minHeight }: { minHeight: number }) => (
 );
 
 const Index = () => (
-  <div className="marketing-page min-h-screen">
+  <div className="marketing-page marketing-redesign min-h-screen">
     <Navbar />
     <Hero />
     <AudienceSection />

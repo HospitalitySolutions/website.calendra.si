@@ -53,7 +53,7 @@ const CustomerStoryDetailPage = () => {
   const text = copy[language];
 
   return (
-    <div className="marketing-page min-h-screen bg-background">
+    <div className="marketing-page marketing-redesign min-h-screen bg-background">
       <Navbar />
       <main>
         <section className="border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.07] py-12 md:py-18 lg:py-20">
@@ -70,7 +70,7 @@ const CustomerStoryDetailPage = () => {
 
             <div className="mt-10 grid gap-10 lg:grid-cols-[1fr_19rem] lg:items-center">
               <div>
-                <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{content.eyebrow}</p>
+                <p className="marketing-eyebrow">{content.eyebrow}</p>
                 <h1 className="mt-4 max-w-4xl font-display text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
                   {content.title}
                 </h1>

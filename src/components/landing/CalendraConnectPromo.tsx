@@ -33,14 +33,14 @@ const CalendraConnectPromo = () => {
   const copy = promoCopy[language];
 
   return (
-    <section className="overflow-hidden bg-background py-20 md:py-28">
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="relative overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-card to-accent/[0.08] p-8 shadow-soft md:p-12">
+    <section className="overflow-hidden bg-transparent py-16 md:py-20 lg:py-24">
+      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
+        <div className="marketing-panel relative overflow-hidden rounded-[30px] p-7 sm:p-9 md:p-12">
           <div className="absolute -right-24 -top-28 h-80 w-80 rounded-full bg-primary/[0.10] blur-3xl" aria-hidden="true" />
           <div className="relative grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
             <div>
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{copy.eyebrow}</span>
-              <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{copy.title}</h2>
+              <span className="marketing-eyebrow">{copy.eyebrow}</span>
+              <h2 className="marketing-section-title mt-3 text-3xl sm:text-4xl lg:text-[2.75rem]">{copy.title}</h2>
               <p className="mt-5 max-w-2xl text-lg leading-8 text-muted-foreground">{copy.body}</p>
               <ul className="mt-7 grid gap-3">
                 {copy.bullets.map((bullet, index) => {
@@ -58,7 +58,7 @@ const CalendraConnectPromo = () => {
               </Button>
             </div>
             <div className="relative mx-auto w-full max-w-md">
-              <div className="mx-auto w-[72%] rounded-[2.8rem] border-[8px] border-foreground bg-background p-3 shadow-2xl">
+              <div className="mx-auto w-[72%] rounded-[2.8rem] border-[8px] border-slate-900 bg-white p-3 shadow-[0_34px_70px_-32px_rgba(15,23,42,0.55)]">
                 <div className="rounded-[2rem] bg-card px-5 pb-6 pt-8">
                   <div className="flex items-center justify-between">
                     <img src="/connect/calendra-connect-icon.png" alt="Calendra Connect" width="64" height="64" className="h-12 w-12 rounded-2xl" loading="lazy" />

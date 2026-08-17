@@ -1,300 +1,48 @@
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Button } from "@/components/ui/button";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
-import { ExternalLink, Star } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowRight, CalendarClock, ExternalLink, Quote, Star } from "lucide-react";
 import { GOOGLE_BUSINESS_PROFILE_URL } from "@/lib/external-profiles";
 import { getCustomerStoryPath } from "@/lib/customer-stories";
+import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 
-type Review = {
-  name: string;
-  quote: string;
-  context: string;
-  initials: string;
-  avatar?: string;
-  avatarClassName?: string;
-  translated?: boolean;
-  sourceUrl?: string;
-  sourceLabel?: string;
-  sourceKind?: "google" | "customer";
-  storySlug?: string;
-};
-
-type TestimonialsCopy = {
-  eyebrow: string;
-  title: string;
-  description: string;
-  rating: string;
-  reviewSource: string;
-  translated: string;
-  viewAll: string;
-  permissionNote: string;
-  previous: string;
-  next: string;
-  readStory: string;
-  reviews: Review[];
-};
+type Review = { name: string; quote: string; context: string; initials: string; avatar?: string; avatarClassName?: string; translated?: boolean; sourceUrl?: string; sourceLabel?: string; sourceKind?: "google" | "customer"; storySlug?: string };
+type TestimonialsCopy = { eyebrow: string; title: string; description: string; rating: string; reviewSource: string; translated: string; viewAll: string; permissionNote: string; previous: string; next: string; readStory: string; primaryCta: string; secondaryCta: string; reviews: Review[] };
 
 const translations: Record<SiteLanguage, TestimonialsCopy> = {
-  sl: {
-    eyebrow: "Mnenja uporabnikov",
-    title: "Izkušnje uporabnikov Calendre",
-    description: "Izkušnje podjetij, ki Calendro uporabljajo pri vsakodnevnem naročanju strank.",
-    rating: "5,0 na Googlu",
-    reviewSource: "Google ocena",
-    translated: "Prevedeno iz angleščine",
-    viewAll: "Poglejte vse ocene na Googlu",
-    permissionNote: "Mnenja so objavljena z dovoljenjem avtorjev.",
-    previous: "Prejšnje mnenje",
-    next: "Naslednje mnenje",
-    readStory: "Preberite zgodbo stranke",
-    reviews: [
-      {
-        name: "Latanya Powell",
-        quote:
-          "Calendro uporabljam na Irskem in se mi zdi preprosta, zanesljiva ter enostavna za upravljanje terminov. Prihrani mi čas in poskrbi, da je vse dobro organizirano. Zelo priporočam.",
-        context: "Beauty Lounge",
-        initials: "LP",
-        avatar: "/reviews/latanya-powell.png",
-        translated: true,
-        sourceKind: "google",
-      },
-      {
-        name: "Nina Piberčnik",
-        quote:
-          "Calendra nam omogoča, da imamo termine, stranke in organizacijo dela pregledno na enem mestu. Posebej nam je pomembno, da je sistem enostaven za uporabo tako za našo ekipo kot za stranke, ki se naročajo na termine.",
-        context: "Direktor, Inštitut Avisensa",
-        initials: "NP",
-        avatarClassName: "bg-pink-500",
-        sourceUrl: "https://avisensa.com/",
-        sourceLabel: "Inštitut Avisensa",
-        sourceKind: "customer",
-        storySlug: "institut-avisensa",
-      },
-      {
-        name: "Urška Grmek",
-        quote:
-          "S Calendro je organizacija terminov precej enostavnejša. Stranke se lahko naročijo same, mi pa imamo ves čas jasen pregled nad urnikom in manj usklajevanja po telefonu ali sporočilih.",
-        context: "Lastnik, Depilacije UG",
-        initials: "UG",
-        avatarClassName: "bg-emerald-500",
-        sourceUrl: "https://www.depilacijeug.si/",
-        sourceLabel: "Depilacije UG",
-        sourceKind: "customer",
-        storySlug: "depilacije-ug",
-      },
-      {
-        name: "Andrej Novak",
-        quote:
-          "Uporabljamo aplikacijo že nekaj časa, stvar deluje odlično in se vedno nadgrajuje. Toplo priporočam!",
-        context: "Uporabnik Calendre",
-        initials: "A",
-        avatarClassName: "bg-violet-500",
-        sourceKind: "google",
-      },
-    ],
-  },
-  en: {
-    eyebrow: "Customer reviews",
-    title: "Calendra customer experiences",
-    description: "Experiences from businesses that use Calendra to manage appointments every day.",
-    rating: "5.0 on Google",
-    reviewSource: "Google review",
-    translated: "Translated from Slovenian",
-    viewAll: "See all reviews on Google",
-    permissionNote: "Reviews are republished with the authors’ permission.",
-    previous: "Previous review",
-    next: "Next review",
-    readStory: "Read the customer story",
-    reviews: [
-      {
-        name: "Latanya Powell",
-        quote:
-          "I’ve been using Calendra in Ireland and find it simple, reliable and easy to manage appointments with. It saves time and keeps everything organised. Highly recommended.",
-        context: "Beauty Lounge",
-        initials: "LP",
-        avatar: "/reviews/latanya-powell.png",
-        sourceKind: "google",
-      },
-      {
-        name: "Nina Piberčnik",
-        quote:
-          "Calendra lets us keep appointments, clients and work organisation clearly in one place. It is especially important to us that the system is easy to use both for our team and for clients booking appointments.",
-        context: "Director, Inštitut Avisensa",
-        initials: "NP",
-        avatarClassName: "bg-pink-500",
-        translated: true,
-        sourceUrl: "https://avisensa.com/",
-        sourceLabel: "Inštitut Avisensa",
-        sourceKind: "customer",
-        storySlug: "institut-avisensa",
-      },
-      {
-        name: "Urška Grmek",
-        quote:
-          "Calendra makes appointment organisation much simpler. Customers can book themselves, while we always have a clear view of the schedule and spend less time coordinating by phone or messages.",
-        context: "Owner, Depilacije UG",
-        initials: "UG",
-        avatarClassName: "bg-emerald-500",
-        translated: true,
-        sourceUrl: "https://www.depilacijeug.si/",
-        sourceLabel: "Depilacije UG",
-        sourceKind: "customer",
-        storySlug: "depilacije-ug",
-      },
-      {
-        name: "Andrej Novak",
-        quote:
-          "We have been using the app for some time. It works excellently and is continuously improving. Highly recommended!",
-        context: "Calendra user",
-        initials: "A",
-        avatarClassName: "bg-violet-500",
-        translated: true,
-        sourceKind: "google",
-      },
-    ],
-  },
+  sl: { eyebrow: "Mnenja uporabnikov", title: "Izkušnje uporabnikov Calendre", description: "Izkušnje podjetij, ki Calendro uporabljajo pri vsakodnevnem naročanju strank.", rating: "5,0 na Googlu", reviewSource: "Google ocena", translated: "Prevedeno iz angleščine", viewAll: "Poglejte vse ocene na Googlu", permissionNote: "Mnenja so objavljena z dovoljenjem avtorjev.", previous: "Prejšnje mnenje", next: "Naslednje mnenje", readStory: "Preberite zgodbo stranke", primaryCta: "Preizkusi brezplačno", secondaryCta: "Rezerviraj predstavitev", reviews: [
+    { name: "Latanya Powell", quote: "Calendro uporabljam na Irskem in se mi zdi preprosta, zanesljiva ter enostavna za upravljanje terminov. Prihrani mi čas in poskrbi, da je vse dobro organizirano. Zelo priporočam.", context: "Beauty Lounge", initials: "LP", avatar: "/reviews/latanya-powell.png", translated: true, sourceKind: "google" },
+    { name: "Nina Piberčnik", quote: "Calendra nam omogoča, da imamo termine, stranke in organizacijo dela pregledno na enem mestu. Posebej nam je pomembno, da je sistem enostaven za uporabo tako za našo ekipo kot za stranke, ki se naročajo na termine.", context: "Direktor, Inštitut Avisensa", initials: "NP", avatarClassName: "bg-pink-500", sourceUrl: "https://avisensa.com/", sourceLabel: "Inštitut Avisensa", sourceKind: "customer", storySlug: "institut-avisensa" },
+    { name: "Urška Grmek", quote: "S Calendro je organizacija terminov precej enostavnejša. Stranke se lahko naročijo same, mi pa imamo ves čas jasen pregled nad urnikom in manj usklajevanja po telefonu ali sporočilih.", context: "Lastnik, Depilacije UG", initials: "UG", avatarClassName: "bg-emerald-500", sourceUrl: "https://www.depilacijeug.si/", sourceLabel: "Depilacije UG", sourceKind: "customer", storySlug: "depilacije-ug" },
+    { name: "Andrej Novak", quote: "Uporabljamo aplikacijo že nekaj časa, stvar deluje odlično in se vedno nadgrajuje. Toplo priporočam!", context: "Uporabnik Calendre", initials: "A", avatarClassName: "bg-violet-500", sourceKind: "google" },
+  ]},
+  en: { eyebrow: "Customer reviews", title: "Calendra customer experiences", description: "Experiences from businesses that use Calendra to manage appointments every day.", rating: "5.0 on Google", reviewSource: "Google review", translated: "Translated from Slovenian", viewAll: "See all reviews on Google", permissionNote: "Reviews are republished with the authors’ permission.", previous: "Previous review", next: "Next review", readStory: "Read the customer story", primaryCta: "Try it free", secondaryCta: "Book a demo", reviews: [
+    { name: "Latanya Powell", quote: "I’ve been using Calendra in Ireland and find it simple, reliable and easy to manage appointments with. It saves time and keeps everything organised. Highly recommended.", context: "Beauty Lounge", initials: "LP", avatar: "/reviews/latanya-powell.png", sourceKind: "google" },
+    { name: "Nina Piberčnik", quote: "Calendra lets us keep appointments, clients and work organisation clearly in one place. It is especially important to us that the system is easy to use both for our team and for clients booking appointments.", context: "Director, Inštitut Avisensa", initials: "NP", avatarClassName: "bg-pink-500", translated: true, sourceUrl: "https://avisensa.com/", sourceLabel: "Inštitut Avisensa", sourceKind: "customer", storySlug: "institut-avisensa" },
+    { name: "Urška Grmek", quote: "Calendra makes appointment organisation much simpler. Customers can book themselves, while we always have a clear view of the schedule and spend less time coordinating by phone or messages.", context: "Owner, Depilacije UG", initials: "UG", avatarClassName: "bg-emerald-500", translated: true, sourceUrl: "https://www.depilacijeug.si/", sourceLabel: "Depilacije UG", sourceKind: "customer", storySlug: "depilacije-ug" },
+    { name: "Andrej Novak", quote: "We have been using the app for some time. It works excellently and is continuously improving. Highly recommended!", context: "Calendra user", initials: "A", avatarClassName: "bg-violet-500", translated: true, sourceKind: "google" },
+  ]},
 };
 
-const RatingStars = () => (
-  <div className="flex items-center gap-0.5" role="img" aria-label="5 out of 5 stars">
-    {Array.from({ length: 5 }).map((_, index) => (
-      <Star key={index} className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />
-    ))}
-  </div>
-);
+const RatingStars = () => <div className="flex items-center gap-0.5" role="img" aria-label="5 out of 5 stars">{Array.from({ length: 5 }).map((_, index) => <Star key={index} className="h-4 w-4 fill-amber-400 text-amber-400" aria-hidden="true" />)}</div>;
 
 const Testimonials = () => {
-  const { language } = useSiteLanguage();
-  const copy = translations[language];
-
+  const { language } = useSiteLanguage(); const copy = translations[language];
   return (
-    <section id="mnenja" className="overflow-hidden bg-background py-20 md:py-28">
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="mb-12 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-2xl">
-            <span className="text-sm font-semibold uppercase tracking-widest text-primary">{copy.eyebrow}</span>
-            <h2
-              className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl"
-              style={{ color: "hsl(var(--text-heading))" }}
-            >
-              {copy.title}
-            </h2>
-            <p className="mt-4 max-w-xl text-lg text-muted-foreground">{copy.description}</p>
-          </div>
-
-          <a
-            href={GOOGLE_BUSINESS_PROFILE_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="group inline-flex w-fit items-center gap-4 rounded-2xl border border-border/70 bg-card px-5 py-4 shadow-soft transition hover:-translate-y-0.5 hover:border-primary/30"
-          >
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-xl font-bold text-blue-600 shadow-sm">
-              G
-            </span>
-            <span>
-              <span className="flex items-center gap-2">
-                <RatingStars />
-                <span className="text-sm font-semibold text-foreground">{copy.rating}</span>
-              </span>
-              <span className="mt-1 flex items-center gap-1.5 text-sm font-medium text-primary">
-                {copy.viewAll}
-                <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-              </span>
-            </span>
-          </a>
+    <section id="mnenja" className="overflow-hidden bg-transparent py-16 md:py-20 lg:py-24">
+      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
+        <div className="mb-9 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-3xl"><span className="marketing-eyebrow">{copy.eyebrow}</span><h2 className="marketing-section-title mt-3 text-3xl sm:text-4xl lg:text-[2.8rem]">{copy.title}</h2><p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">{copy.description}</p></div>
+          <a href={GOOGLE_BUSINESS_PROFILE_URL} target="_blank" rel="noreferrer" className="marketing-card marketing-card-hover group inline-flex w-fit items-center gap-4 rounded-[18px] bg-white/94 px-5 py-4"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-lg font-extrabold text-blue-600 shadow-sm">G</span><span><span className="flex items-center gap-2"><RatingStars /><span className="text-sm font-semibold text-foreground">{copy.rating}</span></span><span className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-primary">{copy.viewAll}<ExternalLink className="h-3.5 w-3.5" /></span></span></a>
         </div>
-
-        <Carousel opts={{ align: "start", loop: true }} className="mx-auto max-w-6xl">
-          <CarouselContent className="items-stretch">
-            {copy.reviews.map((review, index) => (
-              <CarouselItem key={review.name} className="md:basis-1/2">
-                <motion.article
-                  className="flex h-full min-h-[330px] flex-col rounded-3xl border border-border/60 bg-card p-7 shadow-soft sm:p-8"
-                  initial={false}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.08 }}
-                >
-                  <div className="flex items-center justify-between gap-4">
-                    <RatingStars />
-                    <a
-                      href={review.sourceUrl ?? GOOGLE_BUSINESS_PROFILE_URL}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground transition hover:text-primary"
-                    >
-                      {review.sourceKind === "customer" ? (
-                        <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                      ) : (
-                        <span className="text-sm font-bold text-blue-600">G</span>
-                      )}
-                      {review.sourceLabel ?? copy.reviewSource}
-                    </a>
-                  </div>
-
-                  <blockquote className="mt-7 flex-1 font-display text-xl font-medium leading-relaxed text-foreground sm:text-[1.35rem]">
-                    “{review.quote}”
-                  </blockquote>
-
-                  <div className="mt-8 flex items-center gap-3 border-t border-border/60 pt-5">
-                    {review.avatar ? (
-                      <img
-                        src={review.avatar}
-                        alt=""
-                        aria-hidden="true"
-                        width="48"
-                        height="48"
-                        className="h-12 w-12 rounded-full object-cover ring-2 ring-background"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    ) : (
-                      <span
-                        className={`flex h-12 w-12 items-center justify-center rounded-full text-base font-semibold text-white ${review.avatarClassName ?? "bg-primary"}`}
-                        aria-hidden="true"
-                      >
-                        {review.initials}
-                      </span>
-                    )}
-                    <div className="min-w-0">
-                      <p className="font-semibold text-foreground">{review.name}</p>
-                      <p className="text-sm text-muted-foreground">{review.context}</p>
-                      {review.translated && <p className="mt-0.5 text-xs text-muted-foreground">{copy.translated}</p>}
-                      {review.storySlug ? (
-                        <a
-                          href={getCustomerStoryPath(review.storySlug, language)}
-                          className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
-                        >
-                          {copy.readStory}
-                        </a>
-                      ) : null}
-                    </div>
-                  </div>
-                </motion.article>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-
-          <CarouselPrevious
-            className="-bottom-16 left-auto right-12 top-auto h-10 w-10 translate-y-0 bg-card"
-            aria-label={copy.previous}
-          />
-          <CarouselNext
-            className="-bottom-16 right-0 top-auto h-10 w-10 translate-y-0 bg-card"
-            aria-label={copy.next}
-          />
+        <Carousel opts={{ align: "start", loop: true }} className="mx-auto max-w-[1280px] px-0 lg:px-5">
+          <CarouselContent className="items-stretch">{copy.reviews.map((review) => <CarouselItem key={review.name} className="md:basis-1/2"><article className="marketing-card relative flex h-full min-h-[340px] flex-col overflow-hidden rounded-[24px] bg-white/95 p-6 sm:p-8"><Quote className="absolute right-7 top-7 h-10 w-10 fill-primary/[0.08] text-primary/[0.14]" aria-hidden="true" /><div className="relative flex items-center justify-between gap-4 pr-12"><RatingStars /><a href={review.sourceUrl ?? GOOGLE_BUSINESS_PROFILE_URL} target="_blank" rel="noreferrer noopener" className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground transition hover:text-primary">{review.sourceKind === "customer" ? <ExternalLink className="h-3.5 w-3.5" /> : <span className="text-sm font-bold text-blue-600">G</span>}{review.sourceLabel ?? copy.reviewSource}</a></div><blockquote className="relative mt-7 flex-1 font-display text-[1.18rem] font-medium leading-[1.55] tracking-[-0.015em] text-foreground sm:text-[1.32rem]">“{review.quote}”</blockquote><div className="relative mt-7 flex items-center gap-3 border-t border-border/65 pt-5">{review.avatar ? <img src={review.avatar} alt="" aria-hidden="true" width="48" height="48" className="h-12 w-12 rounded-full object-cover ring-2 ring-white" loading="lazy" decoding="async" /> : <span className={`flex h-12 w-12 items-center justify-center rounded-full text-base font-semibold text-white ${review.avatarClassName ?? "bg-primary"}`} aria-hidden="true">{review.initials}</span>}<div className="min-w-0"><p className="font-semibold text-foreground">{review.name}</p><p className="text-sm text-muted-foreground">{review.context}</p>{review.translated && <p className="mt-0.5 text-xs text-muted-foreground">{copy.translated}</p>}{review.storySlug ? <a href={getCustomerStoryPath(review.storySlug, language)} className="mt-1.5 inline-flex text-xs font-semibold text-primary hover:underline">{copy.readStory}</a> : null}</div></div></article></CarouselItem>)}</CarouselContent>
+          <CarouselPrevious className="-left-1 top-1/2 hidden h-11 w-11 -translate-y-1/2 border-border/80 bg-white/95 shadow-sm lg:inline-flex" aria-label={copy.previous} /><CarouselNext className="-right-1 top-1/2 hidden h-11 w-11 -translate-y-1/2 border-border/80 bg-white/95 shadow-sm lg:inline-flex" aria-label={copy.next} />
         </Carousel>
-
-        <p className="mt-20 text-center text-xs text-muted-foreground">{copy.permissionNote}</p>
+        <div className="mx-auto mt-9 grid max-w-[620px] gap-2 rounded-[18px] border border-border/70 bg-white/90 p-2 shadow-[0_18px_48px_-32px_rgba(15,23,42,0.36)] sm:grid-cols-2"><Button variant="hero" className="h-12 rounded-[12px] font-semibold" asChild><a href={TRIAL_SIGNUP_ROUTE}>{copy.primaryCta}<ArrowRight className="ml-1 h-4 w-4" /></a></Button><Button variant="outline" className="h-12 rounded-[12px] border-primary/25 bg-white font-semibold text-primary" asChild><a href={language === "sl" ? "/predstavitev" : "/en/demo"}><CalendarClock className="mr-2 h-4 w-4" />{copy.secondaryCta}</a></Button></div>
+        <p className="mt-6 text-center text-xs text-muted-foreground">{copy.permissionNote}</p>
       </div>
     </section>
   );
 };
-
 export default Testimonials;

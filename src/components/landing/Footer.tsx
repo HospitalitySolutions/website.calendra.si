@@ -138,7 +138,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-transparent py-12 md:py-16">
-      <div className="container mx-auto px-4 lg:px-8">
+      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
         <div className="marketing-panel rounded-[2rem] px-6 py-10 md:px-8 lg:px-10">
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.1fr_0.7fr_1fr_1.1fr_1fr_0.8fr_1.2fr]">
           <div>

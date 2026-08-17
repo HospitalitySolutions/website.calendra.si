@@ -387,7 +387,7 @@ const DemoBookingPage = () => {
     </div>
   );
 
-  return <div className="marketing-page min-h-screen bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.08),transparent_36%),linear-gradient(to_bottom,hsl(var(--background)),hsl(var(--muted)/0.35))]">
+  return <div className="marketing-page marketing-redesign min-h-screen bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.08),transparent_36%),linear-gradient(to_bottom,hsl(var(--background)),hsl(var(--muted)/0.35))]">
     <Navbar />
     <main className={`container mx-auto max-w-6xl px-4 ${step === "confirmed" ? "py-5 md:py-16" : "py-12 md:py-16"} lg:px-8`}>
       {!token && step === "slots" && <header className="mx-auto mb-6 max-w-3xl text-center md:mb-10">

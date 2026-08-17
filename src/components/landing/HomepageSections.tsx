@@ -280,12 +280,12 @@ export const AudienceSection = () => {
       ];
 
   return (
-    <section id="za-koga" className="relative overflow-hidden bg-[#fbfaf8] py-16 md:py-20 lg:py-24">
+    <section id="za-koga" className="relative overflow-hidden bg-transparent py-16 md:py-20 lg:py-24">
       <div className="pointer-events-none absolute -right-40 top-12 h-96 w-96 rounded-full bg-primary/[0.045] blur-3xl" aria-hidden="true" />
       <div className="container relative mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          <span className="text-xs font-bold uppercase tracking-[0.24em] text-primary sm:text-sm">{section.eyebrow}</span>
-          <h2 className="mt-3 font-display text-3xl font-bold tracking-[-0.025em] text-foreground sm:text-4xl lg:text-[2.65rem]">{section.title}</h2>
+          <span className="marketing-eyebrow">{section.eyebrow}</span>
+          <h2 className="marketing-section-title mt-3 text-3xl sm:text-4xl lg:text-[2.8rem]">{section.title}</h2>
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg">{section.intro}</p>
         </div>
 
@@ -411,37 +411,43 @@ export const PricingOverview = () => {
   }, [language, pricingCatalog]);
 
   return (
-      <section id="cenik" className="scroll-mt-20 bg-background py-20 md:py-28">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-card to-accent/[0.07] p-8 shadow-soft md:p-12">
-            <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-              <div>
-                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span>
-                <h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2>
-                <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">
-                  {section.introPrefix} <strong className="font-semibold text-foreground">{basicMonthlyPrice}</strong> {section.introSuffix}
-                </p>
-                <Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild>
-                  <a href={getRoutePath("pricing", language)}>{section.cta}<ArrowRight className="h-4 w-4" /></a>
-                </Button>
+    <section id="cenik" className="scroll-mt-20 bg-transparent py-16 md:py-20 lg:py-24">
+      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
+        <div className="marketing-panel rounded-[30px] px-6 py-8 sm:px-8 md:px-10 md:py-10 lg:px-12 lg:py-12">
+          <div className="pointer-events-none absolute -bottom-20 -left-16 h-52 w-[32rem] rounded-[50%] bg-primary/[0.08] blur-2xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -bottom-20 -right-16 h-52 w-[30rem] rounded-[50%] bg-accent/[0.10] blur-2xl" aria-hidden="true" />
+          <div className="relative grid gap-9 lg:grid-cols-[1.18fr_0.82fr] lg:items-center lg:gap-14">
+            <div>
+              <span className="marketing-eyebrow">{section.eyebrow}</span>
+              <h2 className="marketing-section-title mt-3 text-3xl sm:text-4xl lg:text-[2.85rem]">{section.title}</h2>
+              <p className="mt-4 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+                {section.introPrefix} <strong className="font-semibold text-foreground">{basicMonthlyPrice}</strong> {section.introSuffix}
+              </p>
+              <Button variant="hero" size="lg" className="mt-7 h-12 rounded-[14px] px-7 shadow-[0_14px_32px_-15px_hsl(var(--primary)/0.55)]" asChild>
+                <a href={getRoutePath("pricing", language)}>{section.cta}<ArrowRight className="h-4 w-4" /></a>
+              </Button>
+              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-muted-foreground sm:text-sm">
+                {section.items.slice(0, 2).map((item) => (
+                  <span key={item} className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-primary" />{item}</span>
+                ))}
               </div>
-              <div className="rounded-3xl border border-border/70 bg-background p-7 shadow-soft">
-                <BadgeEuro className="h-8 w-8 text-primary" />
-                <p className="mt-5 font-display text-3xl font-extrabold text-foreground">
-                  {section.fromPrefix} {basicMonthlyPrice} {section.perMonth}
-                </p>
-                <ul className="mt-6 grid gap-3">
-                  {section.items.map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-sm font-medium text-foreground">
-                      <Check className="h-4 w-4 text-primary" />{item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            </div>
+            <div className="marketing-card rounded-[24px] bg-white/95 p-6 sm:p-7 lg:p-8">
+              <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><BadgeEuro className="h-6 w-6" aria-hidden="true" /></span>
+              <p className="mt-5 font-display text-2xl font-extrabold tracking-[-0.025em] text-foreground sm:text-3xl">
+                {section.fromPrefix} <span className="text-primary">{basicMonthlyPrice}</span> <span className="text-lg">{section.perMonth}</span>
+              </p>
+              <div className="mt-5 h-px bg-border/70" />
+              <ul className="mt-5 grid gap-4">
+                {section.items.map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm font-medium text-foreground sm:text-base"><span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-primary text-white"><Check className="h-3.5 w-3.5" /></span>{item}</li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
   );
 };
 
@@ -450,12 +456,14 @@ export const HomeFaq = () => {
   const section = copy[language].faq;
   const items = getFaqForRoute("home", language) ?? [];
   return (
-      <section className="bg-card py-20 md:py-28">
-        <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[0.75fr_1.25fr] lg:px-8">
-          <div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><Sparkles className="mt-6 h-9 w-9 text-primary" /></div>
-          <div className="grid gap-3">{items.map((item) => <details key={item.question} className="group rounded-2xl border border-border/60 bg-background p-5"><summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden"><h3 className="inline text-base font-semibold">{item.question}</h3></summary><p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p></details>)}</div>
+    <section className="bg-transparent py-16 md:py-20 lg:py-24">
+      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
+        <div className="marketing-panel grid gap-10 rounded-[30px] p-7 sm:p-9 lg:grid-cols-[0.72fr_1.28fr] lg:p-12">
+          <div><span className="marketing-eyebrow">{section.eyebrow}</span><h2 className="marketing-section-title mt-3 text-3xl sm:text-4xl">{section.title}</h2><span className="mt-7 grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Sparkles className="h-6 w-6" /></span></div>
+          <div className="grid gap-3">{items.map((item) => <details key={item.question} className="group marketing-card rounded-[18px] bg-white/90 p-5 open:border-primary/20"><summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden"><h3 className="inline text-base font-semibold">{item.question}</h3></summary><p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p></details>)}</div>
         </div>
-      </section>
+      </div>
+    </section>
   );
 };
 
