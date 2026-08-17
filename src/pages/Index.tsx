@@ -6,7 +6,6 @@ import TestimonialsSsr from "@/components/landing/Testimonials";
 import FinalCta from "@/components/landing/FinalCta";
 import Footer from "@/components/landing/Footer";
 import CalendraConnectPromoSsr from "@/components/landing/CalendraConnectPromo";
-import ItServicesPromoSsr from "@/components/landing/ItServicesPromo";
 import {
   AudienceSection,
   HomeFaq,
@@ -26,9 +25,6 @@ const Testimonials = import.meta.env.SSR
 const CalendraConnectPromo = import.meta.env.SSR
   ? CalendraConnectPromoSsr
   : lazy(() => import("@/components/landing/CalendraConnectPromo"));
-const ItServicesPromo = import.meta.env.SSR
-  ? ItServicesPromoSsr
-  : lazy(() => import("@/components/landing/ItServicesPromo"));
 
 /** Height-reserving placeholder, so a lazy section cannot shift what is below it. */
 const SectionFallback = ({ minHeight }: { minHeight: number }) => (
@@ -47,9 +43,6 @@ const Index = () => (
     <Features />
     <Suspense fallback={<SectionFallback minHeight={520} />}>
       <CalendraConnectPromo />
-    </Suspense>
-    <Suspense fallback={<SectionFallback minHeight={520} />}>
-      <ItServicesPromo />
     </Suspense>
     <HomeFaq />
     <FinalCta />

@@ -283,3 +283,82 @@ All colors MUST be HSL.
     padding-right: 1rem;
   }
 }
+
+/* Fresha-inspired marketing refresh: one continuous canvas, with product UI
+ * elements providing the visual structure instead of large enclosing panels. */
+@layer components {
+  .marketing-page.marketing-redesign {
+    background:
+      radial-gradient(circle at 74% 3%, hsl(var(--primary) / 0.045), transparent 34rem),
+      radial-gradient(circle at 92% 18%, hsl(265 90% 66% / 0.035), transparent 28rem),
+      hsl(0 0% 100%);
+  }
+
+  .marketing-redesign .marketing-panel {
+    overflow: visible !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .marketing-redesign main > section,
+  .marketing-redesign main > section[class*="bg-card"],
+  .marketing-redesign main > section[class*="bg-background"],
+  .marketing-redesign main > section[class*="bg-gradient"] {
+    border-bottom-color: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  .marketing-redesign main > section:first-child[class*="bg-gradient"] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .marketing-redesign main > section:first-child[class*="bg-gradient"] > .container {
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .marketing-redesign main > section + section {
+    border-top: 0 !important;
+  }
+
+  .marketing-redesign main h1,
+  .marketing-redesign main h2,
+  .marketing-redesign main h3,
+  .marketing-redesign h1,
+  .marketing-redesign h2 {
+    text-wrap: balance;
+  }
+
+  .marketing-redesign main p,
+  .marketing-redesign p {
+    text-wrap: pretty;
+  }
+
+  .hero-calendar-responsive {
+    aspect-ratio: 2.35 / 1;
+  }
+
+  .hero-calendar-image {
+    width: 100%;
+  }
+
+  @media (max-width: 639px) {
+    .hero-calendar-responsive {
+      aspect-ratio: 1.36 / 1;
+    }
+
+    .hero-calendar-image {
+      width: 185%;
+      transform: translateX(-8%);
+      transform-origin: left center;
+    }
+  }
+}

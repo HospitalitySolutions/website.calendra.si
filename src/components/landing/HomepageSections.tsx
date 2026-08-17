@@ -280,7 +280,7 @@ export const AudienceSection = () => {
       ];
 
   return (
-    <section id="za-koga" className="relative overflow-hidden bg-transparent py-16 md:py-20 lg:py-24">
+    <section id="za-koga" className="relative overflow-hidden bg-transparent py-14 md:py-[4.5rem] lg:py-20">
       <div className="pointer-events-none absolute -right-40 top-12 h-96 w-96 rounded-full bg-primary/[0.045] blur-3xl" aria-hidden="true" />
       <div className="container relative mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
@@ -289,7 +289,7 @@ export const AudienceSection = () => {
           <p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg">{section.intro}</p>
         </div>
 
-        <div className="mt-9 grid gap-4 sm:grid-cols-2 xl:grid-cols-4 xl:gap-[18px]">
+        <div className="mt-8 grid gap-3.5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-4">
           {section.items.map((item, index) => {
             const Icon = audienceIcons[index];
             const imageSrc = audienceCardBackgrounds[index];
@@ -299,9 +299,9 @@ export const AudienceSection = () => {
               <a
                 key={item.title}
                 href={getRoutePath(routeKey, language)}
-                className="group relative flex min-h-[238px] overflow-hidden rounded-[22px] border border-[#dfe5ee] bg-white shadow-[0_18px_42px_-36px_hsl(220_25%_10%/0.32)] transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_26px_56px_-36px_hsl(var(--primary)/0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:min-h-[250px]"
+                className="group relative flex min-h-[190px] overflow-hidden rounded-[18px] border border-[#dfe5ee] bg-white shadow-[0_18px_42px_-36px_hsl(220_25%_10%/0.30)] transition duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_26px_56px_-36px_hsl(var(--primary)/0.26)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:min-h-[196px]"
               >
-                <div className="absolute inset-y-0 right-0 w-[57%] overflow-hidden" aria-hidden="true">
+                <div className="absolute inset-y-0 right-0 w-[54%] overflow-hidden" aria-hidden="true">
                   <img
                     src={imageSrc}
                     alt=""
@@ -319,15 +319,15 @@ export const AudienceSection = () => {
                   aria-hidden="true"
                 />
 
-                <div className="relative z-10 flex w-full flex-col p-5 sm:p-6">
-                  <span className="grid h-11 w-11 place-items-center rounded-2xl bg-primary/[0.075] text-primary shadow-sm backdrop-blur-sm">
-                    <Icon className="h-[22px] w-[22px]" aria-hidden="true" />
+                <div className="relative z-10 flex w-full flex-col p-4 sm:p-[18px]">
+                  <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/[0.075] text-primary shadow-sm backdrop-blur-sm">
+                    <Icon className="h-[18px] w-[18px]" aria-hidden="true" />
                   </span>
-                  <div className="max-w-[67%] sm:max-w-[64%] xl:max-w-[62%]">
-                    <h3 className="mt-4 text-[1rem] font-bold leading-[1.35] tracking-[-0.01em] text-foreground sm:text-[1.05rem]">{item.title}</h3>
-                    <p className="mt-2 text-[0.84rem] leading-6 text-muted-foreground sm:text-[0.88rem]">{item.body}</p>
+                  <div className="max-w-[70%] sm:max-w-[66%] xl:max-w-[64%]">
+                    <h3 className="mt-3 text-[0.94rem] font-bold leading-[1.3] tracking-[-0.01em] text-foreground sm:text-[1rem]">{item.title}</h3>
+                    <p className="mt-1.5 text-[0.78rem] leading-5 text-muted-foreground sm:text-[0.82rem]">{item.body}</p>
                   </div>
-                  <span className="mt-auto flex max-w-[76%] items-center gap-1.5 pt-4 text-[0.82rem] font-semibold leading-5 text-primary sm:text-sm">
+                  <span className="mt-auto flex max-w-[78%] items-center gap-1.5 pt-3 text-[0.75rem] font-semibold leading-4 text-primary sm:text-[0.8rem]">
                     {item.cta}
                     <ArrowRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden="true" />
                   </span>
@@ -411,30 +411,31 @@ export const PricingOverview = () => {
   }, [language, pricingCatalog]);
 
   return (
-    <section id="cenik" className="scroll-mt-20 bg-transparent py-16 md:py-20 lg:py-24">
-      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
-        <div className="marketing-panel rounded-[30px] px-6 py-8 sm:px-8 md:px-10 md:py-10 lg:px-12 lg:py-12">
-          <div className="pointer-events-none absolute -bottom-20 -left-16 h-52 w-[32rem] rounded-[50%] bg-primary/[0.08] blur-2xl" aria-hidden="true" />
-          <div className="pointer-events-none absolute -bottom-20 -right-16 h-52 w-[30rem] rounded-[50%] bg-accent/[0.10] blur-2xl" aria-hidden="true" />
-          <div className="relative grid gap-9 lg:grid-cols-[1.18fr_0.82fr] lg:items-center lg:gap-14">
-            <div>
-              <span className="marketing-eyebrow">{section.eyebrow}</span>
-              <h2 className="marketing-section-title mt-3 text-3xl sm:text-4xl lg:text-[2.85rem]">{section.title}</h2>
-              <p className="mt-4 max-w-3xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
-                {section.introPrefix} <strong className="font-semibold text-foreground">{basicMonthlyPrice}</strong> {section.introSuffix}
-              </p>
-              <Button variant="hero" size="lg" className="mt-7 h-12 rounded-[14px] px-7 shadow-[0_14px_32px_-15px_hsl(var(--primary)/0.55)]" asChild>
-                <a href={getRoutePath("pricing", language)}>{section.cta}<ArrowRight className="h-4 w-4" /></a>
-              </Button>
-              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs font-medium text-muted-foreground sm:text-sm">
-                {section.items.slice(0, 2).map((item) => (
-                  <span key={item} className="inline-flex items-center gap-2"><span className="h-1.5 w-1.5 rounded-full bg-primary" />{item}</span>
-                ))}
-              </div>
+    <section id="cenik" className="relative scroll-mt-20 overflow-hidden bg-transparent py-16 md:py-20 lg:py-28">
+      <div className="pointer-events-none absolute inset-x-0 top-1/2 h-72 -translate-y-1/2 bg-gradient-to-r from-primary/[0.035] via-transparent to-accent/[0.045] blur-3xl" aria-hidden="true" />
+      <div className="container relative mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-center lg:gap-20">
+          <div className="max-w-2xl">
+            <span className="marketing-eyebrow">{section.eyebrow}</span>
+            <h2 className="marketing-section-title mt-3 text-3xl sm:text-4xl lg:text-[3rem]">{section.title}</h2>
+            <p className="mt-4 text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+              {section.introPrefix} <strong className="font-semibold text-foreground">{basicMonthlyPrice}</strong> {section.introSuffix}
+            </p>
+            <Button variant="hero" size="lg" className="mt-7 h-12 rounded-[12px] px-7 shadow-[0_14px_30px_-16px_hsl(var(--primary)/0.52)]" asChild>
+              <a href={getRoutePath("pricing", language)}>{section.cta}<ArrowRight className="h-4 w-4" /></a>
+            </Button>
+            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-xs font-medium text-muted-foreground sm:text-sm">
+              {section.items.slice(0, 2).map((item) => (
+                <span key={item} className="inline-flex items-center gap-2"><Check className="h-4 w-4 text-primary" />{item}</span>
+              ))}
             </div>
-            <div className="marketing-card rounded-[24px] bg-white/95 p-6 sm:p-7 lg:p-8">
+          </div>
+
+          <div className="relative mx-auto w-full max-w-[520px]">
+            <div className="pointer-events-none absolute -inset-10 rounded-[50%] bg-gradient-to-br from-primary/[0.11] via-violet-400/[0.07] to-accent/[0.10] blur-3xl" aria-hidden="true" />
+            <div className="marketing-card relative rounded-[26px] bg-white/96 p-7 shadow-[0_30px_80px_-40px_rgba(15,23,42,0.42)] sm:p-8">
               <span className="grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><BadgeEuro className="h-6 w-6" aria-hidden="true" /></span>
-              <p className="mt-5 font-display text-2xl font-extrabold tracking-[-0.025em] text-foreground sm:text-3xl">
+              <p className="mt-5 font-display text-2xl font-extrabold tracking-[-0.03em] text-foreground sm:text-3xl">
                 {section.fromPrefix} <span className="text-primary">{basicMonthlyPrice}</span> <span className="text-lg">{section.perMonth}</span>
               </p>
               <div className="mt-5 h-px bg-border/70" />
@@ -456,11 +457,22 @@ export const HomeFaq = () => {
   const section = copy[language].faq;
   const items = getFaqForRoute("home", language) ?? [];
   return (
-    <section className="bg-transparent py-16 md:py-20 lg:py-24">
-      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
-        <div className="marketing-panel grid gap-10 rounded-[30px] p-7 sm:p-9 lg:grid-cols-[0.72fr_1.28fr] lg:p-12">
-          <div><span className="marketing-eyebrow">{section.eyebrow}</span><h2 className="marketing-section-title mt-3 text-3xl sm:text-4xl">{section.title}</h2><span className="mt-7 grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Sparkles className="h-6 w-6" /></span></div>
-          <div className="grid gap-3">{items.map((item) => <details key={item.question} className="group marketing-card rounded-[18px] bg-white/90 p-5 open:border-primary/20"><summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden"><h3 className="inline text-base font-semibold">{item.question}</h3></summary><p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p></details>)}</div>
+    <section className="bg-transparent py-16 md:py-20 lg:py-28">
+      <div className="container mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
+          <div className="lg:sticky lg:top-28 lg:self-start">
+            <span className="marketing-eyebrow">{section.eyebrow}</span>
+            <h2 className="marketing-section-title mt-3 max-w-md text-3xl sm:text-4xl lg:text-[2.8rem]">{section.title}</h2>
+            <span className="mt-7 grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Sparkles className="h-6 w-6" /></span>
+          </div>
+          <div className="grid gap-3">
+            {items.map((item) => (
+              <details key={item.question} className="group rounded-[18px] border border-border/70 bg-white/70 px-5 py-4 shadow-[0_16px_44px_-40px_rgba(15,23,42,0.35)] open:bg-white open:shadow-[0_22px_52px_-40px_rgba(15,23,42,0.42)]">
+                <summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden"><h3 className="inline text-base font-semibold">{item.question}</h3></summary>
+                <p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p>
+              </details>
+            ))}
+          </div>
         </div>
       </div>
     </section>
