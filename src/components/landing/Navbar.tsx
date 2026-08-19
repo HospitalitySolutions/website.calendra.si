@@ -35,7 +35,12 @@ const Navbar = () => {
   const { language, setLanguage } = useSiteLanguage();
   const { pathname } = useLocation();
   const copy = getSiteCopy(language);
-  const customerMode = pathname === getRoutePath("customers", "sl")
+  // Never render the marketplace/customer navigation while the public
+  // marketplace is disabled. CustomerNavbar contains directory/search links
+  // that point at /za-stranke and /en/for-customers, which intentionally 404
+  // in private-marketplace mode.
+  const customerMode = CUSTOMER_MARKETPLACE_PUBLIC && (
+    pathname === getRoutePath("customers", "sl")
     || pathname === getRoutePath("customers", "en")
     || pathname.startsWith(`${getRoutePath("customers", "sl")}/`)
     || pathname.startsWith(`${getRoutePath("customers", "en")}/`)
@@ -44,7 +49,8 @@ const Navbar = () => {
     || pathname === getRoutePath("businesses", "sl")
     || pathname === getRoutePath("businesses", "en")
     || pathname.startsWith(`${getRoutePath("businesses", "sl")}/`)
-    || pathname.startsWith(`${getRoutePath("businesses", "en")}/`);
+    || pathname.startsWith(`${getRoutePath("businesses", "en")}/`)
+  );
 
   const homePath = getRoutePath("home", language);
   const bookingPath = getRoutePath("booking", language);

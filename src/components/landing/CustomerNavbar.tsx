@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { WORDMARK } from "@/lib/brand-assets";
 import { customerInitials, useCustomerSession } from "@/lib/customer-session";
 import { getRoutePath } from "@/lib/localized-routes";
+import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 import { CUSTOMER_LOGIN_ROUTE } from "@/lib/routes";
 import { languageNames } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
@@ -32,7 +33,12 @@ const CustomerNavbar = () => {
   const { pathname, search } = useLocation();
   const { language, setLanguage } = useSiteLanguage();
   const { user, loading: sessionLoading, isAuthenticated, logout } = useCustomerSession();
-  const customerPath = getRoutePath("customers", language);
+  // Defensive fallback: if this component is ever mounted while the public
+  // marketplace is disabled, do not emit links to routes that intentionally
+  // return 404. Navbar normally avoids rendering CustomerNavbar in that mode.
+  const customerPath = CUSTOMER_MARKETPLACE_PUBLIC
+    ? getRoutePath("customers", language)
+    : getRoutePath("booking", language);
   const connectPath = getRoutePath("connect", language);
   const nextPath = `${pathname}${search}`;
   const loginPath = `${CUSTOMER_LOGIN_ROUTE}?next=${encodeURIComponent(nextPath)}`;
