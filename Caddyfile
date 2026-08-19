@@ -33,6 +33,33 @@
     redir @legacyTenantBookingWithLocation /narocanje/{http.request.uri.query.tenant}?locationId={http.request.uri.query.locationId} 308
     redir @legacyTenantBooking /narocanje/{http.request.uri.query.tenant} 308
 
+    # Older English per-business booking URLs used /en/booking/{tenantCode}.
+    # The canonical public booking URL is language-neutral /narocanje/{tenantCode}.
+    @legacyEnBookingPath path_regexp legacyEnBookingPath ^/en/booking/([^/]+)$
+    redir @legacyEnBookingPath /narocanje/{re.legacyEnBookingPath.1} 308
+
+    # While the marketplace is private, keep old directory landing URLs useful
+    # instead of redirecting crawlers and visitors into intentionally disabled 404s.
+    @privateLegacySlDirectory {
+      path /ponudniki /podjetja /stranke
+      expression `"{$CUSTOMER_MARKETPLACE_PUBLIC:false}" != "true"`
+    }
+    @privateLegacyEnDirectory {
+      path /en/providers /en/businesses /en/clients /clients
+      expression `"{$CUSTOMER_MARKETPLACE_PUBLIC:false}" != "true"`
+    }
+    redir @privateLegacySlDirectory /narocanje 308
+    redir @privateLegacyEnDirectory /en/booking 308
+
+    # This known historical profile has a direct-booking replacement. Keep the
+    # redirect specific so unrelated old marketplace profiles are not sent to a
+    # potentially non-equivalent booking URL.
+    @legacyAvisensaProfile {
+      path /ponudniki/institut-avisensa /podjetja/institut-avisensa /en/providers/institut-avisensa /en/businesses/institut-avisensa
+      expression `"{$CUSTOMER_MARKETPLACE_PUBLIC:false}" != "true"`
+    }
+    redir @legacyAvisensaProfile /narocanje/institut-avisensa 308
+
     @legacySlProviderProfile path_regexp legacySlProviderProfile ^/(?:ponudniki|podjetja)/(.+)$
     @legacyEnProviderProfile path_regexp legacyEnProviderProfile ^/en/(?:providers|businesses)/(.+)$
     redir @legacySlProviderProfile /za-stranke/{re.legacySlProviderProfile.1} 308

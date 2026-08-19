@@ -225,16 +225,18 @@ const ClientsPage = () => {
           </div>
         </section>
 
-        <section className="container mx-auto max-w-7xl px-4 py-16 lg:px-8 md:py-20">
-          <div className="grid gap-6 rounded-[2rem] border border-border/70 bg-card p-8 shadow-soft md:grid-cols-[1fr_auto] md:items-center md:p-10">
-            <div>
-              <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{text.directoryEyebrow}</p>
-              <h2 className="mt-3 font-display text-3xl font-extrabold text-foreground">{text.directoryTitle}</h2>
-              <p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{text.directoryBody}</p>
+        {CUSTOMER_MARKETPLACE_PUBLIC && (
+          <section className="container mx-auto max-w-7xl px-4 py-16 lg:px-8 md:py-20">
+            <div className="grid gap-6 rounded-[2rem] border border-border/70 bg-card p-8 shadow-soft md:grid-cols-[1fr_auto] md:items-center md:p-10">
+              <div>
+                <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{text.directoryEyebrow}</p>
+                <h2 className="mt-3 font-display text-3xl font-extrabold text-foreground">{text.directoryTitle}</h2>
+                <p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{text.directoryBody}</p>
+              </div>
+              <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={customerSearchPath}><Search className="h-4 w-4" />{text.directoryButton}</a></Button>
             </div>
-            <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={customerSearchPath}><Search className="h-4 w-4" />{text.directoryButton}</a></Button>
-          </div>
-        </section>
+          </section>
+        )}
 
         <section className="bg-card py-20 md:py-28">
           <div className="container mx-auto grid max-w-7xl gap-10 px-4 lg:grid-cols-[0.75fr_1.25fr] lg:px-8"><div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{text.faqEyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{text.faqTitle}</h2><Link2 className="mt-7 h-9 w-9 text-primary" /></div><div className="grid gap-3">{(getFaqForRoute("booking", language) ?? []).map((item) => <details key={item.question} className="rounded-2xl border border-border/60 bg-background p-5"><summary className="cursor-pointer list-none font-semibold text-foreground"><h3 className="inline text-base font-semibold">{item.question}</h3></summary><p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p></details>)}</div></div>
