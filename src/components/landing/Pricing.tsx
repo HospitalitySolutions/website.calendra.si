@@ -8,8 +8,9 @@ import { buildPackageSignupRoute, type PricingSignupSummary } from "@/lib/routes
 import { LEGAL } from "@/lib/legal";
 import { getFaqForRoute } from "@/lib/faq";
 import { trackMarketingEvent } from "@/lib/marketing-events";
-import { getRoutePath } from "@/lib/localized-routes";
-import { BellRing, Building2, CalendarDays, Check, Link2, MessageSquareText, Receipt, Send, Star, Users, X as XIcon } from "lucide-react";
+import { getRoutePath, sitemapRouteMetadata } from "@/lib/localized-routes";
+import { getCustomerStory, getCustomerStoryPath } from "@/lib/customer-stories";
+import { BellRing, Building2, CalendarDays, Check, Link2, MessageSquareText, Quote, Receipt, Send, Star, Users, X as XIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
@@ -454,6 +455,21 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const configuratorRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLDivElement | null>(null);
 
+  // Real content-change date (the same one the sitemap and Product schema
+  // dateModified use), not a cosmetic "as of today" stamp, so it can't drift
+  // from what actually changed on the page.
+  const pricingUpdatedLabel = useMemo(() => {
+    const date = new Date(`${sitemapRouteMetadata.pricing.contentLastModified}T00:00:00Z`);
+    if (language !== "sl") {
+      return new Intl.DateTimeFormat("en-IE", { year: "numeric", month: "long", day: "numeric" }).format(date);
+    }
+    // Intl only has the nominative month form ("julij"), but "veljaven od"
+    // takes the genitive ("julija") — there's no Intl option for Slovenian
+    // grammatical case, so the genitive names are spelled out here instead.
+    const genitiveMonths = ["januarja", "februarja", "marca", "aprila", "maja", "junija", "julija", "avgusta", "septembra", "oktobra", "novembra", "decembra"];
+    return `${date.getUTCDate()}. ${genitiveMonths[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+  }, [language]);
+
   useEffect(() => {
     const controller = new AbortController();
     void fetchPublicPricingCatalog(controller.signal)
@@ -784,6 +800,12 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             {standalone ? content.standaloneTitle : content.sectionTitle}
           </HeadingTag>
           <p className="mt-4 text-lg text-muted-foreground">{content.sectionDescription}</p>
+          {standalone && (
+            <p className="mt-3 text-sm font-medium text-muted-foreground">
+              {language === "sl" ? "Cenik veljaven od " : "Pricing last updated "}
+              <time dateTime={sitemapRouteMetadata.pricing.contentLastModified}>{pricingUpdatedLabel}</time>
+            </p>
+          )}
         </div>
 
         <div className="mb-8 flex flex-col gap-3 md:mb-10 md:flex-row md:items-center md:justify-between">
@@ -1150,6 +1172,36 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 <RelatedPages routeKey="pricing" variant="pills" limit={8} className="mt-5" />
               </article>
             </section>
+
+            {standalone && (() => {
+              // Institut Avisensa here, Depilacije UG on /narocanje: a buyer
+              // who reads both money pages sees two different real customers
+              // instead of the same quote twice.
+              const story = getCustomerStory("institut-avisensa")!;
+              const storyContent = story.content[language];
+              return (
+                <section className="mt-16" aria-labelledby="pricing-testimonial-title">
+                  <h2 id="pricing-testimonial-title" className="sr-only">
+                    {language === "sl" ? "Kaj pravijo stranke o ceni" : "What customers say about the price"}
+                  </h2>
+                  <figure className="rounded-[2rem] border border-border/60 bg-card p-7 shadow-soft md:p-10">
+                    <Quote className="h-8 w-8 text-primary/40" aria-hidden="true" />
+                    <blockquote className="mt-4 font-display text-xl font-semibold leading-8 text-foreground md:text-2xl">
+                      “{storyContent.testimonial}”
+                    </blockquote>
+                    <figcaption className="mt-6">
+                      <p className="font-semibold text-foreground">{storyContent.representativeRole}</p>
+                      <a
+                        href={getCustomerStoryPath(story.slug, language)}
+                        className="mt-1 inline-flex text-sm font-medium text-primary underline-offset-4 hover:underline"
+                      >
+                        {language === "sl" ? "Preberite celotno zgodbo" : "Read the full story"}
+                      </a>
+                    </figcaption>
+                  </figure>
+                </section>
+              );
+            })()}
 
             <section className="mt-16" aria-labelledby="pricing-faq-title">
               <div className="flex items-center gap-3"><BellRing className="h-7 w-7 text-primary" /><h2 id="pricing-faq-title" className="font-display text-2xl font-bold text-foreground">{standaloneExtras[language].faqTitle}</h2></div>

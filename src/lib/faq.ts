@@ -40,12 +40,14 @@ const inlineFaqs: Partial<Record<CanonicalRouteKey, LocalizedFaq>> = {
       { question: "Kako se obračunajo SMS sporočila?", answer: "SMS sporočila se obračunajo glede na izbrano količino oziroma porabo po ceni, prikazani v konfiguratorju." },
       { question: "Ali lahko paket pozneje spremenim?", answer: "Da. Paket, število uporabnikov in dodatke lahko prilagodite glede na razvoj poslovanja." },
       { question: "Ali potrebujem kreditno kartico za preizkus?", answer: "Ne. Za 14-dnevni brezplačni preizkus kreditna kartica ni potrebna." },
+      { question: "Ali podpira skupinske termine, tečaje ali vadbe?", answer: "Da. Od paketa Profesionalno naprej lahko omogočite skupinske rezervacije z omejenim številom mest za tečaje, delavnice in vadbe. Stranke vidijo trenutno zasedenost in se prijavijo same, brez ročnega usklajevanja." },
     ],
     en: [
       { question: "Is one user included?", answer: "Yes. Every plan includes one user. Additional users can be added at the published monthly price." },
       { question: "How are SMS messages charged?", answer: "SMS messages are charged based on the selected quantity or usage at the price shown in the configurator." },
       { question: "Can I change plans later?", answer: "Yes. You can adjust the plan, user count and add-ons as your business develops." },
       { question: "Do I need a credit card for the trial?", answer: "No. A credit card is not required for the 14-day free trial." },
+      { question: "Does it support group classes, courses or sessions?", answer: "Yes. From the Professional plan upward you can enable group bookings with a capacity limit for classes, workshops and sessions. Customers see current availability and book themselves, without manual coordination." },
     ],
   },
   booking: {
