@@ -5,7 +5,6 @@ import { allBlogArticles, blogArticlePathnames } from "@/lib/blog";
 import { canonicalPathnames, canonicalRoutes, getLanguageFromPathname, getSitemapLastModified, sitemapRouteMetadata } from "@/lib/localized-routes";
 import { SiteLanguageProvider } from "@/lib/site-language";
 import { DEFAULT_OG_IMAGE, getSeoForPathname } from "@/lib/seo";
-import { HERO_IMAGE } from "@/lib/hero-media";
 import { buildLlmsFullTxt, buildLlmsTxt } from "@/lib/llms-txt";
 import { getPublicCompanyProfilePath, indexablePublicCompanyProfiles } from "@/lib/public-company-profiles";
 import { customerStories, customerStoryPathnames } from "@/lib/customer-stories";
@@ -38,7 +37,6 @@ export const routesToPrerender = [
 ];
 export {
   DEFAULT_OG_IMAGE,
-  HERO_IMAGE,
   PRICING_CATALOG_SCRIPT_ID,
   PUBLIC_PRICING_ENDPOINT,
   buildLlmsFullTxt,

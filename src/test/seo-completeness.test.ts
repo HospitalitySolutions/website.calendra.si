@@ -3,7 +3,6 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { canonicalRoutes, getSitemapLastModified, SHARED_SITE_LAST_MODIFIED, type CanonicalRouteKey, sitemapRouteMetadata } from "@/lib/localized-routes";
 import { ENTRY_PLAN_MONTHLY_PRICE, getSeoForPathname, pageSeo } from "@/lib/seo";
-import { HERO_IMAGE } from "@/lib/hero-media";
 
 const routeKeys = Object.keys(canonicalRoutes) as CanonicalRouteKey[];
 const languages = ["sl", "en"] as const;
@@ -79,15 +78,24 @@ describe("index.html fallback shell", () => {
     expect(html).not.toContain("AI pomočnik");
   });
 
-  it("preloads the image the hero actually renders", () => {
+  it("preloads the fonts the above-the-fold heading and lede actually render in", () => {
     const html = readIndexHtml();
-    expect(html).toContain(`rel="preload" as="image" href="${HERO_IMAGE.src}"`);
+    expect(html).toContain('rel="preload" as="font" type="font/woff2" href="/fonts/dm-sans-latin.woff2"');
+    expect(html).toContain('rel="preload" as="font" type="font/woff2" href="/fonts/plus-jakarta-sans-latin.woff2"');
+    expect(html).toContain('rel="preload" as="font" type="font/woff2" href="/fonts/dm-sans-latin-ext.woff2"');
+    expect(html).toContain('rel="preload" as="font" type="font/woff2" href="/fonts/plus-jakarta-sans-latin-ext.woff2"');
   });
 
-  it("preloads the same candidate set the hero offers, so the browser fetches one file", () => {
+  it("marks preloaded fonts crossorigin, since woff2 requests are CORS mode", () => {
     const html = readIndexHtml();
-    expect(html).toContain(`imagesrcset="${HERO_IMAGE.srcSet}"`);
-    expect(html).toContain(`imagesizes="${HERO_IMAGE.sizes}"`);
+    const preloadBlock = html.slice(
+      html.indexOf("<!-- CALENDRA_ROUTE_PRELOADS_START -->"),
+      html.indexOf("<!-- CALENDRA_ROUTE_PRELOADS_END -->"),
+    );
+    const fontPreloadCount = (preloadBlock.match(/rel="preload" as="font"/g) ?? []).length;
+    const crossoriginCount = (preloadBlock.match(/crossorigin="anonymous"/g) ?? []).length;
+    expect(fontPreloadCount).toBeGreaterThan(0);
+    expect(crossoriginCount).toBe(fontPreloadCount);
   });
 
   it("keeps the prerender placeholders outside the SEO block that is replaced last", () => {

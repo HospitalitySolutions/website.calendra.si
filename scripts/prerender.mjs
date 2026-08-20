@@ -119,7 +119,6 @@ if (!serverEntryPath) {
 
 const {
   DEFAULT_OG_IMAGE,
-  HERO_IMAGE,
   PRICING_CATALOG_SCRIPT_ID,
   PUBLIC_PRICING_ENDPOINT,
   buildLlmsFullTxt,
@@ -192,18 +191,28 @@ const buildAnalyticsBlock = () => {
 
 const analyticsBlock = buildAnalyticsBlock();
 
-const buildRoutePreloads = (routePath) => {
-  // Only the homepage has an above-the-fold image worth preloading. The empty
-  // marker pair is kept so the placeholder is verifiably still in the output.
-  if (routePath !== '/' && routePath !== '/en') {
-    return '<!-- CALENDRA_ROUTE_PRELOADS_START --><!-- CALENDRA_ROUTE_PRELOADS_END -->';
-  }
+// Every route renders its H1/lede in Plus Jakarta Sans and its body copy in
+// DM Sans above the fold, so both are on the LCP critical path everywhere,
+// not just the homepage. Preloading them removes the round trip where the
+// browser has to download and parse the render-blocking stylesheet before it
+// even discovers the @font-face requests inside it. English routes only need
+// the base Latin subset; Slovenian routes also need Latin Extended for the
+// diacritics (č/š/ž) that appear in the above-the-fold copy — see
+// src/styles/fonts.css for the matching @font-face/unicode-range pairs.
+const CRITICAL_FONT_FILES_LATIN = ['dm-sans-latin.woff2', 'plus-jakarta-sans-latin.woff2'];
+const CRITICAL_FONT_FILES_LATIN_EXT = ['dm-sans-latin-ext.woff2', 'plus-jakarta-sans-latin-ext.woff2'];
 
-  // imagesrcset/imagesizes must mirror the <img> exactly, otherwise the browser
-  // preloads one candidate and then downloads a second one for the element.
-  return `<!-- CALENDRA_ROUTE_PRELOADS_START -->
-    <link rel="preload" as="image" href="${escapeHtml(HERO_IMAGE.src)}" imagesrcset="${escapeHtml(HERO_IMAGE.srcSet)}" imagesizes="${escapeHtml(HERO_IMAGE.sizes)}" type="${escapeHtml(HERO_IMAGE.type)}" fetchpriority="high" />
-    <!-- CALENDRA_ROUTE_PRELOADS_END -->`;
+const buildRoutePreloads = (routePath) => {
+  const isEnglish = routePath === '/en' || routePath.startsWith('/en/');
+  const files = isEnglish
+    ? CRITICAL_FONT_FILES_LATIN
+    : [...CRITICAL_FONT_FILES_LATIN, ...CRITICAL_FONT_FILES_LATIN_EXT];
+
+  const links = files
+    .map((file) => `    <link rel="preload" as="font" type="font/woff2" href="/fonts/${escapeHtml(file)}" crossorigin="anonymous" />`)
+    .join('\n');
+
+  return `<!-- CALENDRA_ROUTE_PRELOADS_START -->\n${links}\n    <!-- CALENDRA_ROUTE_PRELOADS_END -->`;
 };
 
 const escapeXml = (value) =>

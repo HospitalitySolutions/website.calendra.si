@@ -9,14 +9,19 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="theme-color" content="#ffffff" />
     <!-- CALENDRA_ROUTE_PRELOADS_START -->
-    <link rel="preload" as="image" href="/hero/calendra-calendar-aug-2026-1280.webp" imagesrcset="/hero/calendra-calendar-aug-2026-640.webp 640w, /hero/calendra-calendar-aug-2026-960.webp 960w, /hero/calendra-calendar-aug-2026-1280.webp 1280w, /hero/calendra-calendar-aug-2026-1920.webp 1920w, /hero/calendra-calendar-aug-2026-2400.webp 2400w" imagesizes="(min-width: 1024px) 46vw, 100vw" type="image/webp" fetchpriority="high" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/dm-sans-latin.woff2" crossorigin="anonymous" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/plus-jakarta-sans-latin.woff2" crossorigin="anonymous" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/dm-sans-latin-ext.woff2" crossorigin="anonymous" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/plus-jakarta-sans-latin-ext.woff2" crossorigin="anonymous" />
     <!-- CALENDRA_ROUTE_PRELOADS_END -->
     <!--
       Fonts are self-hosted from /fonts and declared in src/styles/fonts.css, so
-      there is no render-blocking request to a third-party origin here. They are
-      deliberately not preloaded: the LCP element is the hero image above, and a
-      font preload would compete with it for bandwidth while `font-display: swap`
-      already keeps text visible.
+      there is no render-blocking request to a third-party origin here. The LCP
+      element is the above-the-fold heading/lede text (Plus Jakarta Sans and DM
+      Sans), so the critical subsets are preloaded above to remove the extra
+      round trip where the browser would otherwise only discover them after
+      downloading and parsing the stylesheet. `font-display: swap` still covers
+      the case where the preload hasn't resolved yet.
     -->
 
     <!--
