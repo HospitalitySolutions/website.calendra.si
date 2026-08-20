@@ -27,6 +27,7 @@ import {
   getBlogArticlePath,
 } from "@/lib/blog";
 import { getIndustryContent, isIndustryRouteKey, type IndustryRouteKey } from "@/lib/industry-pages";
+import { MARKETING_IMAGES } from "@/lib/marketing-images";
 import { getCustomerStoryFromPathname, getCustomerStoryPath } from "@/lib/customer-stories";
 import {
   getPublicCompanyProfileFromPathname,
@@ -319,7 +320,22 @@ const websiteSchema = (language: SiteLanguage) => ({
   publisher: { "@id": `${SITE_URL}/#organization` },
 });
 
-const softwareSchema = (language: SiteLanguage) => ({
+/**
+ * Defaults to a single representative "starting from" Offer, which is the
+ * right summary on every page except pricing itself. On `/cenik`, pass the
+ * same AggregateOffer `pricingProductSchema` renders below so the two nodes
+ * describe one price range instead of silently disagreeing with each other.
+ */
+const softwareSchema = (
+  language: SiteLanguage,
+  offers: Record<string, unknown> = {
+    "@type": "Offer",
+    price: formatPrice(cheapestPlan().monthlyGross),
+    priceCurrency: getInitialPricingCatalog().currency,
+    availability: "https://schema.org/InStock",
+    url: absoluteUrl(canonicalRoutes.pricing[language]),
+  },
+) => ({
   "@type": "SoftwareApplication",
   "@id": `${SITE_URL}/#software`,
   name: "Calendra",
@@ -330,13 +346,7 @@ const softwareSchema = (language: SiteLanguage) => ({
   description: language === "sl"
     ? "Slovenska platforma za spletno naročanje, koledar terminov, skupinske rezervacije, opomnike, račune, davčno blagajno, plačila, analitiko, upravljanje strank in materialno poslovanje."
     : "A booking and appointment management platform for service businesses, including group bookings, reminders, invoicing, a fiscal cash register, payments, analytics, client management and inventory management.",
-  offers: {
-    "@type": "Offer",
-    price: formatPrice(cheapestPlan().monthlyGross),
-    priceCurrency: getInitialPricingCatalog().currency,
-    availability: "https://schema.org/InStock",
-    url: absoluteUrl(canonicalRoutes.pricing[language]),
-  },
+  offers,
   // Set once a Wikidata item for Calendra exists. A Wikidata identifier is the
   // reference most knowledge graphs and AI assistants reconcile entities
   // against, so it is the single highest-value off-site signal.
@@ -462,45 +472,51 @@ export const personSchema = (language: SiteLanguage) => ({
       : ["Online appointment booking", "Service business management", "Invoicing and fiscal verification", "Small business IT support"],
 });
 
-const pricingProductSchema = (language: SiteLanguage) => {
+/** Shared with `softwareSchema` on the pricing route so both nodes quote the same range. */
+const pricingAggregateOffer = (language: SiteLanguage) => {
   const catalog = getInitialPricingCatalog();
   const prices = catalog.plans.map((plan) => plan.monthlyGross);
 
   return {
-    "@type": "Product",
-    "@id": `${absoluteUrl(canonicalRoutes.pricing[language])}#product`,
-    name: "Calendra",
-    description: pageSeo.pricing[language].description,
+    "@type": "AggregateOffer",
+    priceCurrency: catalog.currency,
+    lowPrice: formatPrice(Math.min(...prices)),
+    highPrice: formatPrice(Math.max(...prices)),
+    offerCount: catalog.plans.length,
+    availability: "https://schema.org/InStock",
     url: absoluteUrl(canonicalRoutes.pricing[language]),
-    brand: { "@id": `${SITE_URL}/#organization` },
-    category: language === "sl" ? "Program za naročanje strank" : "Appointment booking software",
-    offers: {
-      "@type": "AggregateOffer",
+    offers: catalog.plans.map((plan) => ({
+      "@type": "Offer",
+      name: language === "sl" ? plan.nameSl : plan.name,
+      price: formatPrice(plan.monthlyGross),
       priceCurrency: catalog.currency,
-      lowPrice: formatPrice(Math.min(...prices)),
-      highPrice: formatPrice(Math.max(...prices)),
-      offerCount: catalog.plans.length,
       availability: "https://schema.org/InStock",
       url: absoluteUrl(canonicalRoutes.pricing[language]),
-      offers: catalog.plans.map((plan) => ({
-        "@type": "Offer",
-        name: language === "sl" ? plan.nameSl : plan.name,
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
         price: formatPrice(plan.monthlyGross),
         priceCurrency: catalog.currency,
-        availability: "https://schema.org/InStock",
-        url: absoluteUrl(canonicalRoutes.pricing[language]),
-        priceSpecification: {
-          "@type": "UnitPriceSpecification",
-          price: formatPrice(plan.monthlyGross),
-          priceCurrency: catalog.currency,
-          valueAddedTaxIncluded: catalog.vatIncluded,
-          unitCode: "MON",
-          billingIncrement: 1,
-        },
-      })),
-    },
+        valueAddedTaxIncluded: catalog.vatIncluded,
+        unitCode: "MON",
+        billingIncrement: 1,
+      },
+    })),
   };
 };
+
+const pricingProductSchema = (language: SiteLanguage) => ({
+  "@type": "Product",
+  "@id": `${absoluteUrl(canonicalRoutes.pricing[language])}#product`,
+  name: "Calendra",
+  description: pageSeo.pricing[language].description,
+  url: absoluteUrl(canonicalRoutes.pricing[language]),
+  // Required for Product rich-result eligibility. A real calendar screenshot,
+  // not the generic OG/marketing card, so it actually represents the product.
+  image: `${SITE_URL}${MARKETING_IMAGES.calendar.src}`,
+  brand: { "@id": `${SITE_URL}/#organization` },
+  category: language === "sl" ? "Program za naročanje strank" : "Appointment booking software",
+  offers: pricingAggregateOffer(language),
+});
 
 const zoomHowToSchema = (language: SiteLanguage) => ({
   "@type": "HowTo",
@@ -941,7 +957,7 @@ export const getSeoForPathname = (pathname: string) => {
               : isIndustryRouteKey(routeKey)
                 ? [softwareSchema(language), industryServiceSchema(routeKey, language)]
                 : routeKey === "pricing"
-                  ? [softwareSchema(language), pricingProductSchema(language)]
+                  ? [softwareSchema(language, pricingAggregateOffer(language)), pricingProductSchema(language)]
                   : routeKey === "zoom"
                     ? [softwareSchema(language), zoomHowToSchema(language)]
                     : routeKey === "contact" || routeKey === "businesses" || routeKey === "customers"

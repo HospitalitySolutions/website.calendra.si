@@ -47,22 +47,29 @@ const CookieConsentBanner = () => {
 
   return (
     <div className="fixed inset-x-0 bottom-0 z-[100] p-3 sm:p-5" role="dialog" aria-live="polite" aria-label={c.title}>
-      <div className="mx-auto flex max-w-5xl flex-col gap-4 rounded-2xl border border-border/70 bg-background/95 p-4 shadow-2xl backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:p-5">
+      {/*
+        On mobile this bar sits over the hero, so every line of height here is
+        a line the primary CTA loses. The full explanation stays one tap away
+        via the "more" link instead of wrapping to 3-4 lines inline, and the
+        two choices sit side by side instead of stacked, which is what let a
+        375px-wide banner run to ~45% of viewport height and hide both CTAs.
+      */}
+      <div className="mx-auto flex max-w-5xl flex-col gap-3 rounded-2xl border border-border/70 bg-background/95 p-3 shadow-2xl backdrop-blur sm:flex-row sm:items-center sm:justify-between sm:gap-4 sm:p-5">
         <div className="max-w-2xl">
           <p className="text-sm font-semibold text-foreground">{c.title}</p>
-          <p className="mt-1 text-sm leading-6 text-muted-foreground">{c.text}</p>
+          <p className="mt-0.5 line-clamp-1 text-sm leading-6 text-muted-foreground sm:mt-1 sm:line-clamp-none">{c.text}</p>
           <a
             href={getRoutePath("cookies", language)}
-            className="mt-2 inline-flex text-sm font-medium text-primary underline-offset-4 hover:underline"
+            className="mt-1 inline-flex text-sm font-medium text-primary underline-offset-4 hover:underline sm:mt-2"
           >
             {c.more}
           </a>
         </div>
-        <div className="flex shrink-0 flex-col-reverse gap-2 sm:flex-row">
-          <Button type="button" variant="outline" className="rounded-xl" onClick={() => choose("denied")}>
+        <div className="flex shrink-0 gap-2">
+          <Button type="button" variant="outline" className="flex-1 rounded-xl sm:flex-initial" onClick={() => choose("denied")}>
             {c.necessary}
           </Button>
-          <Button type="button" className="rounded-xl" onClick={() => choose("granted")}>
+          <Button type="button" className="flex-1 rounded-xl sm:flex-initial" onClick={() => choose("granted")}>
             {c.analytics}
           </Button>
         </div>
