@@ -99,6 +99,14 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     sl: { title: "Materialno poslovanje in evidenca zaloge | Calendra", description: "Vodite artikle, zalogo po lokacijah, dobavitelje, nabavo, premike zaloge, inventuro in porabo materiala v Calendri." },
     en: { title: "Inventory and material management for service businesses | Calendra", description: "Manage items, stock by location, suppliers, purchasing, stock movements, inventory counts and material usage in Calendra." },
   },
+  fiscalCashRegister: {
+    sl: { title: "Davčna blagajna za storitvena podjetja | Calendra", description: "Izdajte račun neposredno iz termina, evidentirajte plačila in predplačila ter po potrebi izvedite davčno potrjevanje računa znotraj Calendre." },
+    en: { title: "Fiscal cash register for service businesses | Calendra", description: "Create invoices directly from appointments, record payments and prepayments, and fiscally verify invoices in Calendra when required." },
+  },
+  groupBookings: {
+    sl: { title: "Skupinske rezervacije in termini | Calendra", description: "Upravljajte skupinske termine, kapacitete, spletne prijave, čakalne vrste, ponovitve, udeležence, članstva in pakete obiskov na enem mestu." },
+    en: { title: "Group bookings and capacity management | Calendra", description: "Manage group appointments, capacity, online registration, waiting lists, recurring sessions, participants, memberships and visit packages." },
+  },
   beautyHair: {
     sl: { title: "Rešitve za lepotne in frizerske dejavnosti | Calendra", description: "Pregled rešitev Calendra za frizerske, kozmetične in druge lepotne dejavnosti z naročanjem, urniki, prostori, opomniki, plačili in računi." },
     en: { title: "Solutions for beauty and hair businesses | Calendra", description: "Overview of Calendra solutions for hair, beauty and related service businesses with booking, schedules, rooms, reminders, payments and invoices." },
@@ -320,8 +328,8 @@ const softwareSchema = (language: SiteLanguage) => ({
   url: SITE_URL,
   inLanguage: language === "sl" ? "sl-SI" : "en",
   description: language === "sl"
-    ? "Slovenska platforma za spletno naročanje, koledar terminov, opomnike, račune, plačila, analitiko, upravljanje strank in materialno poslovanje."
-    : "A booking and appointment management platform for service businesses, including reminders, invoicing, payments, analytics, client management and inventory management.",
+    ? "Slovenska platforma za spletno naročanje, koledar terminov, skupinske rezervacije, opomnike, račune, davčno blagajno, plačila, analitiko, upravljanje strank in materialno poslovanje."
+    : "A booking and appointment management platform for service businesses, including group bookings, reminders, invoicing, a fiscal cash register, payments, analytics, client management and inventory management.",
   offers: {
     "@type": "Offer",
     price: formatPrice(cheapestPlan().monthlyGross),

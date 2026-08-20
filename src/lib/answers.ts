@@ -50,6 +50,14 @@ const answers: Partial<Record<CanonicalRouteKey, Record<SiteLanguage, string>>> 
     sl: "Materialno poslovanje v Calendri združi artikle, zalogo, dobavitelje, nabavo, premike, inventuro in porabo materiala na enem mestu. Zalogo lahko spremljate po poslovalnicah, hitro opazite artikle pod minimalno zalogo ter pregledate premike in porabo brez ločenih preglednic.",
     en: "Inventory management in Calendra brings items, stock, suppliers, purchasing, movements, inventory counts and material usage into one place. Track stock by location, spot items below minimum stock quickly and review movements and usage without separate spreadsheets.",
   },
+  fiscalCashRegister: {
+    sl: "Davčna blagajna v Calendri poveže opravljen termin, postavke računa, plačnika, plačilo in davčno potrjevanje v enem postopku. Račun pripravite iz podatkov termina, upoštevate lahko predplačilo in popuste, pri računih, kjer je to potrebno, pa davčno potrjevanje izvedete brez preklopa v ločen program.",
+    en: "Calendra’s fiscal cash register connects the completed appointment, invoice lines, payer, payment and fiscal verification in one checkout flow. Prepare the invoice from appointment data, apply prepayments and discounts, and fiscally verify invoices that require it without switching to a separate application.",
+  },
+  groupBookings: {
+    sl: "Skupinske rezervacije v Calendri omogočajo nastavitev kapacitete, spletne prijave, seznam udeležencev, ponavljajoče se termine in čakalno vrsto. Individualni in skupinski termini ostanejo v istem koledarju, članstva in paketi obiskov pa se lahko povežejo z dejansko udeležbo posamezne stranke.",
+    en: "Group bookings in Calendra support capacity limits, online registration, participant lists, recurring appointments and waiting lists. Individual and group appointments stay in the same calendar, while memberships and visit packages can connect to each participant’s actual attendance.",
+  },
   connect: {
     sl: "Calendra Connect je brezplačna mobilna aplikacija za stranke, na voljo za iOS in Android. V njej rezervirate, prestavite ali odpoveste termin, prejemate obvestila ter na enem mestu spremljate termine pri vseh ponudnikih, ki uporabljajo Calendro.",
     en: "Calendra Connect is a free mobile app for customers, available for iOS and Android. Use it to book, reschedule or cancel appointments, receive notifications and follow appointments with every provider that uses Calendra from one place.",

@@ -62,6 +62,8 @@ const Navbar = () => {
   const remindersPath = getRoutePath("reminders", language);
   const invoicingPath = getRoutePath("invoicing", language);
   const materialManagementPath = getRoutePath("materialManagement", language);
+  const fiscalCashRegisterPath = getRoutePath("fiscalCashRegister", language);
+  const groupBookingsPath = getRoutePath("groupBookings", language);
   const contactPath = getRoutePath("contact", language);
 
   const featurePaths = [
@@ -77,6 +79,10 @@ const Navbar = () => {
     getRoutePath("integrations", "en"),
     getRoutePath("materialManagement", "sl"),
     getRoutePath("materialManagement", "en"),
+    getRoutePath("fiscalCashRegister", "sl"),
+    getRoutePath("fiscalCashRegister", "en"),
+    getRoutePath("groupBookings", "sl"),
+    getRoutePath("groupBookings", "en"),
   ];
   const industryPaths = ALL_INDUSTRY_ROUTE_KEYS.flatMap((key) => [getRoutePath(key, "sl"), getRoutePath(key, "en")]);
   const bookingPaths = [getRoutePath("booking", "sl"), getRoutePath("booking", "en")];
@@ -134,7 +140,7 @@ const Navbar = () => {
           language === "sl"
             ? "Popolna skladnost z zakonodajo in enostavno izdajanje računov."
             : "Compliant invoicing and fiscal workflows made simple.",
-        href: invoicingPath,
+        href: fiscalCashRegisterPath,
         icon: Receipt,
       },
       {
@@ -165,6 +171,15 @@ const Navbar = () => {
         icon: Globe,
       },
       {
+        title: language === "sl" ? "Skupinske rezervacije" : "Group bookings",
+        description:
+          language === "sl"
+            ? "Kapacitete, spletne prijave, udeleženci in ponavljajoči skupinski termini."
+            : "Capacity, online registration, participants and recurring group appointments.",
+        href: groupBookingsPath,
+        icon: Users,
+      },
+      {
         title: language === "sl" ? "Materialno poslovanje" : "Inventory management",
         description:
           language === "sl"
@@ -174,7 +189,7 @@ const Navbar = () => {
         icon: Package,
       },
     ],
-    [bookingPath, calendarPath, clientManagementPath, homePath, invoicingPath, language, materialManagementPath, remindersPath],
+    [bookingPath, calendarPath, clientManagementPath, fiscalCashRegisterPath, groupBookingsPath, homePath, invoicingPath, language, materialManagementPath, remindersPath],
   );
 
   const solutionMenuItems = useMemo(

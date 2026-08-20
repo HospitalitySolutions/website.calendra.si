@@ -198,6 +198,10 @@ const AppRoutes = () => (
       <Route path="/en/integrations" element={<FeatureDetailPage />} />
       <Route path="/materialno-poslovanje" element={<FeatureDetailPage />} />
       <Route path="/en/inventory-management" element={<FeatureDetailPage />} />
+      <Route path="/davcna-blagajna" element={<FeatureDetailPage />} />
+      <Route path="/en/fiscal-cash-register" element={<FeatureDetailPage />} />
+      <Route path="/skupinske-rezervacije" element={<FeatureDetailPage />} />
+      <Route path="/en/group-bookings" element={<FeatureDetailPage />} />
 
       <Route path="/za-lepotne-in-frizerske-salone" element={<IndustryDetailPage />} />
       <Route path="/en/for-beauty-and-hair-salons" element={<IndustryDetailPage />} />

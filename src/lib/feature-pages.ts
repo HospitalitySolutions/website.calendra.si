@@ -4,7 +4,7 @@ import type { SiteLanguage } from "@/lib/site-language";
 
 export type FeatureRouteKey = Extract<
   CanonicalRouteKey,
-  "calendar" | "invoicing" | "clientManagement" | "reminders" | "integrations" | "materialManagement"
+  "calendar" | "invoicing" | "clientManagement" | "reminders" | "integrations" | "materialManagement" | "fiscalCashRegister" | "groupBookings"
 >;
 
 export const FEATURE_ROUTE_KEYS: FeatureRouteKey[] = [
@@ -14,6 +14,8 @@ export const FEATURE_ROUTE_KEYS: FeatureRouteKey[] = [
   "reminders",
   "integrations",
   "materialManagement",
+  "fiscalCashRegister",
+  "groupBookings",
 ];
 
 type TitledBody = {
@@ -1653,6 +1655,349 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
           answer:
             "Yes. Material usage and other stock movements can be recorded and then reviewed in reports for the selected period.",
         },
+      ],
+    },
+  },
+  fiscalCashRegister: {
+    sl: {
+      eyebrow: "Davčna blagajna",
+      title: "Davčna blagajna za storitvena podjetja",
+      intro:
+        "Calendra poveže termin, opravljeno storitev, račun, plačilo in davčno potrjevanje v enem delovnem toku. Podatkov iz koledarja ni treba ponovno prepisovati v ločeno blagajno.",
+      heroPoints: [
+        "Izdaja računa neposredno iz opravljenega termina",
+        "Davčno potrjevanje računov znotraj Calendre",
+        "Plačila, popusti, predplačila in pregled računov na enem mestu",
+      ],
+      useCasesTitle: "Kdaj pride davčna blagajna najbolj do izraza",
+      useCasesIntro:
+        "Davčna blagajna je namenjena podjetjem, ki želijo obračun storitve zaključiti tam, kjer že vodijo termin in stranko.",
+      useCases: [
+        {
+          title: "Salon, ki račun izda takoj po storitvi",
+          body:
+            "Zaposleni po zaključku termina odpre obračun, preveri opravljene storitve in način plačila ter izda račun. Stranka, storitev in cena so že povezane s terminom, zato se zmanjša ročno prepisovanje in možnost napak.",
+        },
+        {
+          title: "Več načinov plačila pri istem računu",
+          body:
+            "Pri obračunu lahko evidentirate način plačila in po potrebi kombinirate več plačil. Popusti, predplačila in že poravnani zneski ostanejo vidni v istem postopku, preden račun zaključite.",
+        },
+        {
+          title: "Predplačilo pred prihodom stranke",
+          body:
+            "Če je bil del zneska plačan ob rezervaciji, Calendra predplačilo poveže z obiskom in ga upošteva pri končnem obračunu. Tako ni treba ločeno iskati nakazila ali ročno računati preostanka.",
+        },
+        {
+          title: "Podjetje, ki želi eno evidenco za termin in račun",
+          body:
+            "Račun ostane povezan s terminom in profilom stranke oziroma plačnika. Zgodovino storitev, izdanih računov in plačil zato preverite brez preklapljanja med koledarjem in drugim programom.",
+        },
+      ],
+      benefitsTitle: "Zakaj povezati blagajno s termini",
+      benefits: [
+        {
+          title: "Manj dvojnega vnosa",
+          body:
+            "Storitev, cena in podatki stranke iz termina se uporabijo pri pripravi računa, zato istega podatka ne vnašate še enkrat v ločeno blagajno.",
+        },
+        {
+          title: "Jasna sled od obiska do računa",
+          body:
+            "Termin, račun in plačilo ostanejo povezani. Ekipa lahko hitro preveri, kaj je bilo opravljeno, kdo je plačnik in ali je račun že zaključen.",
+        },
+        {
+          title: "Davčno potrjevanje v istem postopku",
+          body:
+            "Kadar je račun treba davčno potrditi, to uredite z dodatkom Davčna blagajna znotraj Calendre namesto v ločenem programu.",
+        },
+      ],
+      comparisonTitle: "Ločena blagajna v primerjavi s Calendro",
+      comparisonIntro:
+        "Pri ločenem sistemu se obračun začne znova. V Calendri pa se nadaljuje iz podatkov, ki so že nastali ob rezervaciji in izvedbi termina.",
+      comparisonManualLabel: "Koledar + ločena blagajna",
+      comparisonCalendraLabel: "Calendra",
+      comparisonRows: [
+        { aspect: "Podatki stranke", manual: "Ponoven vnos ali iskanje v drugem sistemu.", calendra: "Prevzamejo se iz termina oziroma profila plačnika." },
+        { aspect: "Postavke računa", manual: "Ročno prepisovanje storitev in cen.", calendra: "Opravljene storitve so že pripravljene za obračun." },
+        { aspect: "Predplačilo", manual: "Ločeno preverjanje in ročni odštevek.", calendra: "Predplačilo ostane povezano z obiskom in končnim računom." },
+        { aspect: "Davčno potrjevanje", manual: "Preklop v drugo blagajno ali storitev.", calendra: "Davčno potrjevanje poteka v istem obračunu, kadar je potrebno." },
+        { aspect: "Zgodovina", manual: "Termin in račun sta v dveh evidencah.", calendra: "Račun ostane povezan s terminom in stranko." },
+        { aspect: "Pregled poslovanja", manual: "Podatke je treba usklajevati med sistemi.", calendra: "Termini, računi in plačila izhajajo iz iste evidence." },
+      ],
+      processTitle: "Od zaključenega termina do računa",
+      process: [
+        "Po opravljeni storitvi odprete termin in izberete obračun.",
+        "Preverite storitve, cene, popuste, predplačila in plačnika.",
+        "Izberete način oziroma načine plačila in zaključite račun.",
+        "Kadar je potrebno, Calendra račun davčno potrdi, nato pa ostane povezan s terminom in stranko.",
+      ],
+      detailsTitle: "Kako deluje davčna blagajna v Calendri",
+      details: [
+        {
+          title: "Ali je Davčna blagajna samostojen program?",
+          body:
+            "Ne. Gre za dodatek znotraj Calendre, zato uporablja iste termine, stranke, storitve in obračunske podatke kot preostali del aplikacije. Namen je, da izdaje računa ne ločite od vsakodnevnega dela s termini.",
+        },
+        {
+          title: "Ali lahko račun izdam neposredno iz termina?",
+          body:
+            "Da. Pri obračunu se uporabijo storitve in podatki, ki so že povezani s terminom. Pred zaključkom jih lahko preverite ter upoštevate plačnika, popuste ali predplačilo.",
+        },
+        {
+          title: "Kaj pa računi, ki ne potrebujejo davčnega potrjevanja?",
+          body:
+            "Calendra podpira tudi običajen potek izdaje računov in evidentiranje plačil. Davčno potrjevanje se uporabi pri računih, kjer je to potrebno glede na način plačila in veljavna pravila.",
+        },
+        {
+          title: "Koliko stane dodatek Davčna blagajna?",
+          body:
+            "Po trenutnem ceniku je dodatek Davčna blagajna na voljo za 9,90 EUR mesečno in ga lahko vključite poleg izbranega paketa Calendra.",
+        },
+      ],
+      faqTitle: "Pogosta vprašanja o davčni blagajni",
+      finalTitle: "Izdajajte račune tam, kjer že vodite termine",
+      finalBody:
+        "Preizkusite Calendro 14 dni brez kreditne kartice. Dodatek Davčna blagajna lahko vključite glede na način obračunavanja svojega podjetja.",
+      faq: [
+        { question: "Ali Calendra omogoča davčno potrjevanje računov?", answer: "Da. Z dodatkom Davčna blagajna lahko račune, pri katerih je davčno potrjevanje potrebno, potrdite neposredno v Calendri." },
+        { question: "Ali se račun pripravi iz termina?", answer: "Da. Storitev, cena, stranka oziroma plačnik in drugi podatki se lahko prevzamejo iz termina, zato je ponovnega vnosa bistveno manj." },
+        { question: "Ali lahko upoštevam predplačilo?", answer: "Da. Predplačilo, povezano z rezervacijo oziroma terminom, se lahko upošteva pri končnem obračunu." },
+        { question: "Ali lahko uporabljam več načinov plačila?", answer: "Da. Obračun omogoča evidentiranje načinov plačila, pri podprtih potekih pa tudi razdelitev plačila med več načinov." },
+        { question: "Ali moram Davčno blagajno vključiti takoj?", answer: "Ne. Dodatek lahko vključite takrat, ko ga potrebujete glede na svoj način izdajanja in plačevanja računov." },
+      ],
+    },
+    en: {
+      eyebrow: "Fiscal cash register",
+      title: "Fiscal cash register for service businesses",
+      intro:
+        "Calendra connects the appointment, delivered service, invoice, payment and fiscal verification in one workflow. Calendar data does not have to be re-entered into a separate cash-register application.",
+      heroPoints: [
+        "Create an invoice directly from a completed appointment",
+        "Fiscal verification of invoices inside Calendra",
+        "Payments, discounts, prepayments and invoice history in one place",
+      ],
+      useCasesTitle: "Where the fiscal cash register saves the most work",
+      useCasesIntro:
+        "The fiscal cash register is for businesses that want to complete billing in the same system where the appointment and client are already managed.",
+      useCases: [
+        { title: "A salon invoicing immediately after a service", body: "After the appointment, the employee opens billing, checks the delivered services and payment method and issues the invoice. Client, service and price are already connected to the appointment, reducing repeated entry and mistakes." },
+        { title: "Several payment methods on one invoice", body: "Record the payment method during checkout and, where supported, combine payments. Discounts, prepayments and amounts already paid remain visible before the invoice is finalised." },
+        { title: "Prepayment before the client arrives", body: "If part of the amount was paid at booking, Calendra keeps the prepayment connected to the visit and takes it into account in the final checkout, without a separate reconciliation step." },
+        { title: "One record for appointment and invoice", body: "The invoice remains linked to the appointment and to the client or payer profile, so service history, issued invoices and payments can be checked without switching systems." },
+      ],
+      benefitsTitle: "Why connect the cash register to appointments",
+      benefits: [
+        { title: "Less duplicate entry", body: "Service, price and client data from the appointment are reused when preparing the invoice instead of being typed into a separate register." },
+        { title: "A clear trail from visit to invoice", body: "Appointment, invoice and payment stay linked, making it easy to see what was delivered, who paid and whether checkout is complete." },
+        { title: "Fiscal verification in the same workflow", body: "When an invoice needs fiscal verification, the Fiscal cash register add-on handles it within Calendra rather than in a separate application." },
+      ],
+      comparisonTitle: "A separate cash register compared with Calendra",
+      comparisonIntro: "A separate system makes billing start again from zero. Calendra continues from data already created by the booking and completed appointment.",
+      comparisonManualLabel: "Calendar + separate cash register",
+      comparisonCalendraLabel: "Calendra",
+      comparisonRows: [
+        { aspect: "Client details", manual: "Re-entered or looked up in another system.", calendra: "Taken from the appointment or payer profile." },
+        { aspect: "Invoice lines", manual: "Services and prices copied manually.", calendra: "Delivered services are already available for checkout." },
+        { aspect: "Prepayment", manual: "Checked separately and deducted by hand.", calendra: "The prepayment stays linked to the visit and final invoice." },
+        { aspect: "Fiscal verification", manual: "Switch to another register or service.", calendra: "Handled in the same checkout when required." },
+        { aspect: "History", manual: "Appointment and invoice live in two records.", calendra: "The invoice stays connected to the appointment and client." },
+        { aspect: "Business overview", manual: "Figures need reconciling between systems.", calendra: "Appointments, invoices and payments come from one record set." },
+      ],
+      processTitle: "From completed appointment to invoice",
+      process: [
+        "Open the completed appointment and start checkout.",
+        "Review services, prices, discounts, prepayments and the payer.",
+        "Choose the payment method or methods and finalise the invoice.",
+        "Where required, Calendra fiscally verifies the invoice and keeps it linked to the appointment and client.",
+      ],
+      detailsTitle: "How Calendra's fiscal cash register works",
+      details: [
+        { title: "Is the Fiscal cash register a separate program?", body: "No. It is an add-on inside Calendra and uses the same appointments, clients, services and billing data as the rest of the application." },
+        { title: "Can an invoice be created directly from an appointment?", body: "Yes. Billing uses the services and data already connected to the appointment. Before finalising you can review the payer, discounts and any prepayment." },
+        { title: "What about invoices that do not require fiscal verification?", body: "Calendra also supports normal invoicing and payment recording. Fiscal verification is used for invoices where it is required by the applicable payment and tax rules." },
+        { title: "How much does the Fiscal cash register add-on cost?", body: "According to the current pricing, the Fiscal cash register add-on is available for 9.90 EUR per month alongside the selected Calendra plan." },
+      ],
+      faqTitle: "Fiscal cash register questions",
+      finalTitle: "Issue invoices where you already manage appointments",
+      finalBody: "Try Calendra free for 14 days with no credit card. Add the Fiscal cash register when it fits the way your business bills customers.",
+      faq: [
+        { question: "Does Calendra support fiscal verification of invoices?", answer: "Yes. With the Fiscal cash register add-on, invoices that require fiscal verification can be verified directly in Calendra." },
+        { question: "Is the invoice prepared from the appointment?", answer: "Yes. Service, price, client or payer and other data can carry over from the appointment, reducing repeated entry." },
+        { question: "Can a prepayment be applied?", answer: "Yes. A prepayment connected to the booking or appointment can be taken into account during final checkout." },
+        { question: "Can several payment methods be recorded?", answer: "Yes. Checkout records payment methods and supported flows can split a payment across more than one method." },
+        { question: "Do I have to enable the Fiscal cash register immediately?", answer: "No. You can add it when you need it for the way your business issues and receives payment for invoices." },
+      ],
+    },
+  },
+  groupBookings: {
+    sl: {
+      eyebrow: "Skupinske rezervacije",
+      title: "Skupinske rezervacije in termini na enem mestu",
+      intro:
+        "Calendra omogoča spletne prijave na skupinske termine z omejeno kapaciteto, seznamom udeležencev, ponavljajočimi se izvedbami, čakalno vrsto ter povezavo s članstvi in paketi obiskov.",
+      heroPoints: [
+        "Kapaciteta in število prostih mest pri vsaki izvedbi",
+        "Spletne prijave, seznam udeležencev in čakalna vrsta",
+        "Ponavljajoči termini, članstva in paketi obiskov",
+      ],
+      useCasesTitle: "Za katere skupinske storitve je Calendra primerna",
+      useCasesIntro:
+        "Skupinske rezervacije niso namenjene samo fitnesu. Enak način dela uporabljajo studii, tečaji, delavnice in druge storitve z omejenim številom mest.",
+      useCases: [
+        {
+          title: "Joga, pilates in skupinske vadbe",
+          body:
+            "Za vsako uro določite trenerja, prostor in največje število udeležencev. Stranke se prijavijo prek spleta, vidijo prosta mesta, ekipa pa ima na terminu vedno aktualen seznam prijavljenih.",
+        },
+        {
+          title: "Tečaji in delavnice",
+          body:
+            "Redno izvedbo ustvarite kot ponavljajočo se serijo, posamezen datum pa po potrebi prestavite ali odpoveste. Udeleženci ostanejo povezani z ustrezno izvedbo in prejmejo obvestilo o spremembi.",
+        },
+        {
+          title: "Programi s članstvi ali paketi obiskov",
+          body:
+            "Pri prijavi lahko preverjate pravice iz članstva ali paketa obiskov. Po izvedbi se obisk poveže z udeležencem, zato je preostalo število obiskov vidno brez ločenih seznamov.",
+        },
+        {
+          title: "Polna skupina in čakalna vrsta",
+          body:
+            "Ko je kapaciteta zapolnjena, dodatni interesenti lahko ostanejo na čakalni vrsti. Če se mesto sprosti, ga lahko ponudite naslednjemu interesentu glede na nastavljen potek.",
+        },
+      ],
+      benefitsTitle: "Kaj pridobite z urejenimi skupinskimi prijavami",
+      benefits: [
+        {
+          title: "Vedno aktualna zasedenost",
+          body:
+            "Število prijavljenih in prostih mest se posodablja skupaj z rezervacijami, zato ni treba primerjati obrazcev, sporočil in ročnih seznamov.",
+        },
+        {
+          title: "Manj administracije za ekipo",
+          body:
+            "Udeleženci se prijavijo sami, Calendra pa poveže termin, udeleženca, obvestila in po potrebi članstvo ali paket obiskov.",
+        },
+        {
+          title: "Individualni in skupinski termini skupaj",
+          body:
+            "Osebne termine in skupinske izvedbe vodite v istem koledarju, skupaj z zaposlenimi, prostori in razpoložljivostjo.",
+        },
+      ],
+      comparisonTitle: "Ročni seznam prijav v primerjavi s Calendro",
+      comparisonIntro:
+        "Preglednica ali skupina v sporočilih hitro postane nepregledna, ko se začnejo odpovedi, menjave terminov in poraba paketov.",
+      comparisonManualLabel: "Preglednica, sporočila ali obrazec",
+      comparisonCalendraLabel: "Calendra",
+      comparisonRows: [
+        { aspect: "Kapaciteta", manual: "Ročno štetje prijavljenih.", calendra: "Prosta mesta se izračunajo iz nastavljene kapacitete in prijav." },
+        { aspect: "Spletna prijava", manual: "Obrazec ali sporočilo, ki ga mora nekdo obdelati.", calendra: "Prijava se takoj zapiše na izbrani skupinski termin." },
+        { aspect: "Čakalna vrsta", manual: "Ločen seznam in ročno obveščanje.", calendra: "Interesenti ostanejo povezani s polnim terminom in sproščenimi mesti." },
+        { aspect: "Ponavljajoč urnik", manual: "Vsako izvedbo ustvarite ali popravljate posebej.", calendra: "Redne skupine ustvarite kot serijo in upravljate posamezne ali prihodnje izvedbe." },
+        { aspect: "Paketi in članstva", manual: "Ročno odštevanje obiskov.", calendra: "Obiski se povežejo s pravicami udeleženca in dejansko izvedbo." },
+        { aspect: "Spremembe termina", manual: "Vsakega udeleženca kontaktirate posebej.", calendra: "Prijavljene lahko obvestite iz istega sistema, kjer je termin spremenjen." },
+      ],
+      processTitle: "Kako poteka skupinska rezervacija",
+      process: [
+        "Ustvarite skupinsko storitev ali termin ter določite izvajalca, prostor in kapaciteto.",
+        "Stranka prek spleta izbere odprto izvedbo in vidi, koliko mest je še prostih.",
+        "Calendra prijavo doda na seznam udeležencev; pri polni skupini lahko uporabi čakalno vrsto.",
+        "Po izvedbi se obisk zabeleži v zgodovino udeleženca in po potrebi porabi članstvo ali paket obiskov.",
+      ],
+      detailsTitle: "Kako so skupinske rezervacije organizirane",
+      details: [
+        {
+          title: "Ali lahko nastavim največje število udeležencev?",
+          body:
+            "Da. Vsaki skupinski izvedbi določite kapaciteto. Spletno naročanje nato upošteva že prijavljene udeležence in prikazuje razpoložljiva mesta.",
+        },
+        {
+          title: "Ali so možni ponavljajoči se skupinski termini?",
+          body:
+            "Da. Redno vadbo, tečaj ali drugo skupino lahko ustvarite kot ponavljajočo se serijo. Spremembo lahko izvedete na posamezni izvedbi ali na prihodnjih terminih serije.",
+        },
+        {
+          title: "Ali lahko uporabljam članstva in pakete obiskov?",
+          body:
+            "Da. Članstva, paketi obiskov in druge ugodnosti lahko veljajo za izbrane storitve ali skupine storitev, ob zaključku obiska pa Calendra vodi porabo pravic udeleženca.",
+        },
+        {
+          title: "Ali lahko skupinske termine kombiniram z individualnimi?",
+          body:
+            "Da. Oboje je v istem koledarju. Tako lahko isti zaposleni ali prostor dopoldne sprejema individualne stranke, popoldne pa izvaja skupinsko storitev z omejeno kapaciteto.",
+        },
+      ],
+      faqTitle: "Pogosta vprašanja o skupinskih rezervacijah",
+      finalTitle: "Poenostavite prijave na skupinske termine",
+      finalBody:
+        "Začnite s 14-dnevnim brezplačnim preizkusom in nastavite svojo prvo skupino, kapaciteto, ponovitve ter pravila spletne prijave.",
+      faq: [
+        { question: "Ali lahko nastavim kapaciteto skupinskega termina?", answer: "Da. Določite največje število udeležencev, Calendra pa pri spletnih prijavah upošteva že zasedena in prosta mesta." },
+        { question: "Ali se lahko stranke prijavijo prek spleta?", answer: "Da. Stranka izbere skupinsko storitev in odprto izvedbo, prijava pa se takoj zapiše na seznam udeležencev." },
+        { question: "Ali Calendra podpira čakalno vrsto?", answer: "Da. Pri zapolnjeni skupini lahko dodatni interesenti ostanejo povezani s terminom prek čakalne vrste in sproščenih mest." },
+        { question: "Ali lahko ustvarim ponavljajoče se skupinske termine?", answer: "Da. Redne termine lahko ustvarite kot serijo in nato spremenite eno izvedbo ali prihodnje termine." },
+        { question: "Ali lahko skupina uporablja pakete obiskov ali članstva?", answer: "Da. Ugodnosti lahko določite za izbrane storitve oziroma skupine, obiski pa se ob izvedbi povežejo z udeležencem in njegovo razpoložljivo pravico." },
+      ],
+    },
+    en: {
+      eyebrow: "Group bookings",
+      title: "Group bookings and appointments in one place",
+      intro:
+        "Calendra supports online registration for capacity-limited group appointments with participant lists, recurring sessions, waiting lists and links to memberships and visit packages.",
+      heroPoints: [
+        "Capacity and remaining-place counts for every session",
+        "Online registration, participant lists and waiting lists",
+        "Recurring appointments, memberships and visit packages",
+      ],
+      useCasesTitle: "Which group services Calendra works for",
+      useCasesIntro: "Group booking is not only for fitness. The same workflow suits studios, courses, workshops and other services with a limited number of places.",
+      useCases: [
+        { title: "Yoga, Pilates and group classes", body: "Set an instructor, room and maximum participant count for every class. Customers register online and see remaining places while the team always has an up-to-date participant list." },
+        { title: "Courses and workshops", body: "Create a regular programme as a recurring series and reschedule or cancel an individual date when needed. Participants stay linked to the relevant occurrence and can be informed about changes." },
+        { title: "Programmes with memberships or visit packages", body: "Bookings can use entitlements from a membership or visit package. After the session, attendance stays connected to the participant so remaining visits are visible without separate lists." },
+        { title: "A full class and a waiting list", body: "Once capacity is reached, additional interest can remain on a waiting list. When a place becomes available, it can be offered to the next person according to the configured workflow." },
+      ],
+      benefitsTitle: "What organised group registration gives you",
+      benefits: [
+        { title: "Always-current occupancy", body: "Participant and remaining-place counts update with bookings, so there is no need to reconcile forms, messages and manual lists." },
+        { title: "Less administration for the team", body: "Participants register themselves while Calendra connects the appointment, participant, notifications and, where relevant, membership or visit package." },
+        { title: "Individual and group appointments together", body: "Personal appointments and group sessions live in the same calendar alongside employees, rooms and availability." },
+      ],
+      comparisonTitle: "Manual registration lists compared with Calendra",
+      comparisonIntro: "A spreadsheet or message group becomes difficult to manage as soon as cancellations, schedule changes and package usage begin.",
+      comparisonManualLabel: "Spreadsheet, messages or form",
+      comparisonCalendraLabel: "Calendra",
+      comparisonRows: [
+        { aspect: "Capacity", manual: "Participants counted by hand.", calendra: "Remaining places are calculated from capacity and current registrations." },
+        { aspect: "Online registration", manual: "A form or message someone still needs to process.", calendra: "Registration is written directly to the selected group appointment." },
+        { aspect: "Waiting list", manual: "A separate list and manual follow-up.", calendra: "Interest stays linked to the full session and newly released places." },
+        { aspect: "Recurring schedule", manual: "Every occurrence created or edited separately.", calendra: "Regular groups are created as a series with control over single or future occurrences." },
+        { aspect: "Packages and memberships", manual: "Visits deducted by hand.", calendra: "Attendance connects to participant entitlements and the actual completed session." },
+        { aspect: "Schedule changes", manual: "Each participant contacted individually.", calendra: "Participants can be notified from the same system where the appointment changes." },
+      ],
+      processTitle: "How a group booking works",
+      process: [
+        "Create the group service or appointment and set the instructor, room and capacity.",
+        "The customer chooses an open session online and sees the number of remaining places.",
+        "Calendra adds the registration to the participant list; a full group can use a waiting list.",
+        "After the session, attendance is stored in the participant history and can consume a membership or visit package where relevant.",
+      ],
+      detailsTitle: "How group bookings are organised",
+      details: [
+        { title: "Can I set a maximum participant count?", body: "Yes. Set capacity for each group occurrence. Online booking then takes current registrations into account and shows available places." },
+        { title: "Can group appointments repeat?", body: "Yes. A regular class, course or other group can be created as a recurring series, with changes applied to one occurrence or future appointments in the series." },
+        { title: "Can memberships and visit packages be used?", body: "Yes. Memberships, visit packages and other benefits can apply to selected services or service groups, and completed attendance can consume the participant's entitlement." },
+        { title: "Can group appointments be combined with individual appointments?", body: "Yes. Both live in the same calendar, so the same employee or room can be used for individual clients at one time and a capacity-limited group at another." },
+      ],
+      faqTitle: "Group booking questions",
+      finalTitle: "Simplify registration for group appointments",
+      finalBody: "Start a 14-day free trial and configure your first group, capacity, recurring schedule and online registration rules.",
+      faq: [
+        { question: "Can I set capacity for a group appointment?", answer: "Yes. Set the maximum participant count and Calendra uses current registrations to calculate occupied and remaining places." },
+        { question: "Can customers register online?", answer: "Yes. The customer chooses the group service and an open occurrence, and the registration is added directly to the participant list." },
+        { question: "Does Calendra support waiting lists?", answer: "Yes. When a group is full, additional interest can remain connected to the appointment through the waiting-list flow and released places." },
+        { question: "Can I create recurring group appointments?", answer: "Yes. Regular appointments can be created as a series, then one occurrence or future appointments can be changed." },
+        { question: "Can a group use visit packages or memberships?", answer: "Yes. Benefits can apply to selected services or service groups, and completed visits can be connected to the participant and their available entitlement." },
       ],
     },
   },

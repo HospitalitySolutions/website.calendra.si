@@ -17,6 +17,8 @@ export type CanonicalRouteKey =
   | "reminders"
   | "integrations"
   | "materialManagement"
+  | "fiscalCashRegister"
+  | "groupBookings"
   | "beautyHair"
   | "consultantsEducators"
   | "healthWellbeing"
@@ -71,6 +73,8 @@ export const canonicalRoutes: Record<CanonicalRouteKey, Record<SiteLanguage, str
   reminders: { sl: "/sms-opomniki", en: "/en/appointment-reminders" },
   integrations: { sl: "/integracije", en: "/en/integrations" },
   materialManagement: { sl: "/materialno-poslovanje", en: "/en/inventory-management" },
+  fiscalCashRegister: { sl: "/davcna-blagajna", en: "/en/fiscal-cash-register" },
+  groupBookings: { sl: "/skupinske-rezervacije", en: "/en/group-bookings" },
   beautyHair: { sl: "/za-lepotne-in-frizerske-salone", en: "/en/for-beauty-and-hair-salons" },
   consultantsEducators: { sl: "/za-svetovalce-in-izobrazevalce", en: "/en/for-consultants-and-educators" },
   healthWellbeing: { sl: "/za-zdravje-in-dobro-pocutje", en: "/en/for-health-and-wellbeing" },
@@ -146,6 +150,8 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   reminders: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-11" },
   integrations: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-07-15" },
   materialManagement: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-12" },
+  fiscalCashRegister: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-08-20" },
+  groupBookings: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-08-20" },
   beautyHair: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-08-11" },
   consultantsEducators: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },
   healthWellbeing: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },
