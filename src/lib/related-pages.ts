@@ -118,7 +118,12 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
  */
 const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>> = {
   pricing: ["booking", "calendar", "reminders", "invoicing", "blog"],
-  booking: ["customers", "customerStories", "calendar", "reminders", "connect", "pricing"],
+  // Feature/industry hybrid: the SXO audit found this page competing with
+  // Calendra's own homepage for head-term booking queries, while carrying no
+  // link path into the industry verticals that make it a genuinely broader
+  // page than a single-feature one. beautyHair/healthWellbeing/fitnessGroups
+  // give it that breadth instead of only linking within the feature cluster.
+  booking: ["customers", "customerStories", "beautyHair", "healthWellbeing", "fitnessGroups", "calendar", "reminders", "pricing"],
   customers: ["connect", "booking"],
   businesses: ["customers", "connect", "booking", "customerStories"],
   demo: ["pricing", "booking", "calendar"],

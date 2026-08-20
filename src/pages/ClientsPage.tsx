@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import AnswerSummary from "@/components/seo/AnswerSummary";
@@ -11,14 +12,22 @@ import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 import { MARKETING_IMAGES } from "@/lib/marketing-images";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage } from "@/lib/site-language";
+import { getCustomerStory, getCustomerStoryPath } from "@/lib/customer-stories";
+import {
+  fetchPublicPricingCatalog,
+  getInitialPricingCatalog,
+  type PublicPricingCatalog,
+} from "@/lib/public-pricing";
 import {
   ArrowRight,
+  BadgeEuro,
   BellRing,
   CalendarDays,
   CheckCircle2,
   Link2,
   MessageSquareText,
   MonitorSmartphone,
+  Quote,
   Search,
   ShieldCheck,
   Sparkles,
@@ -61,8 +70,16 @@ const copy = {
     timeBody: "Pri skupinskih storitvah stranka vidi odprte ure in število prostih mest. Pri individualnih storitvah se pokažejo samo termini, ki so dejansko na voljo.",
     reviewTitle: "Pregled rezervacije in način plačila",
     reviewBody: "Pred potrditvijo stranka pregleda storitev, datum, uro in plačilo. Podjetje samo določi, ali je plačilo na lokaciji, predplačilo ali spletno plačilo del rezervacijskega toka.",
+    pricingEyebrow: "Cenik",
+    pricingTitle: "Koliko stane spletno naročanje?",
+    pricingFromPrefix: "Od",
+    pricingPerMonth: "/mesec",
+    pricingBody: "Spletno naročanje je vključeno v vsak paket Calendre, brez ločenega doplačila. Cena je odvisna od števila uporabnikov in dodatnih funkcij, ki jih vaše podjetje potrebuje.",
+    pricingCta: "Oglejte si celoten cenik",
     trustedEyebrow: "Uporabljajo Calendro",
     trustedTitle: "Od psihološkega svetovanja do lepotnih storitev",
+    testimonialReadMore: "Preberite celotno zgodbo",
+    testimonialOtherStory: "Preberite tudi zgodbo podjetja Inštitut Avisensa",
     directoryEyebrow: "Želite rezervirati termin?",
     directoryTitle: "Poiščite podjetje, ki uporablja Calendro",
     directoryBody:
@@ -108,8 +125,16 @@ const copy = {
     timeBody: "For group services, customers see open class times and remaining places. For one-to-one services, only genuinely available appointments are offered.",
     reviewTitle: "Booking review and payment method",
     reviewBody: "Before confirming, customers review the service, date, time and payment. The business decides whether the flow uses pay on site, a deposit or online payment.",
+    pricingEyebrow: "Pricing",
+    pricingTitle: "What does online booking cost?",
+    pricingFromPrefix: "From",
+    pricingPerMonth: "/month",
+    pricingBody: "Online booking is included in every Calendra plan at no extra charge. The price depends on the number of users and the additional features your business needs.",
+    pricingCta: "See full pricing",
     trustedEyebrow: "Businesses using Calendra",
     trustedTitle: "From psychological counselling to beauty services",
+    testimonialReadMore: "Read the full story",
+    testimonialOtherStory: "Also read the Inštitut Avisensa story",
     directoryEyebrow: "Looking to book an appointment?",
     directoryTitle: "Find a business that uses Calendra",
     directoryBody:
@@ -131,6 +156,35 @@ const ClientsPage = () => {
   const { language } = useSiteLanguage();
   const text = copy[language];
   const customerSearchPath = getRoutePath("customers", language);
+
+  const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(getInitialPricingCatalog);
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetchPublicPricingCatalog(controller.signal)
+      .then(setPricingCatalog)
+      .catch((error) => {
+        if (controller.signal.aborted) return;
+        console.error("Could not load the public pricing catalog for /narocanje; using the built-in fallback.", error);
+      });
+    return () => controller.abort();
+  }, []);
+
+  const fromMonthlyPrice = useMemo(() => {
+    const cheapest = pricingCatalog.plans.reduce((lowest, plan) => (plan.monthlyGross < lowest.monthlyGross ? plan : lowest));
+    return new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-IE", {
+      style: "currency",
+      currency: pricingCatalog.currency || "EUR",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(cheapest.monthlyGross);
+  }, [language, pricingCatalog]);
+
+  // A booking-flow-specific quote reads more credibly here than a generic
+  // one, and this business's story links straight into the beauty/hair
+  // industry vertical this page otherwise never cross-links to.
+  const featuredStory = getCustomerStory("depilacije-ug")!;
+  const featuredStoryContent = featuredStory.content[language];
+  const otherStoryPath = getCustomerStoryPath("institut-avisensa", language);
 
   return (
     <div className="marketing-page min-h-screen overflow-hidden bg-background">
@@ -214,14 +268,54 @@ const ClientsPage = () => {
 
         <section className="bg-background py-14">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">
-            <div className="rounded-[2rem] border border-primary/15 bg-primary/[0.035] p-7 md:p-9">
-              <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{text.trustedEyebrow}</p>
-              <h2 className="mt-3 font-display text-2xl font-extrabold text-foreground md:text-3xl">{text.trustedTitle}</h2>
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <a href="https://avisensa.com/" target="_blank" rel="noreferrer noopener" className="rounded-2xl border border-border/70 bg-card px-5 py-4 font-semibold text-foreground shadow-sm transition hover:border-primary/30 hover:text-primary">Inštitut Avisensa</a>
-                <a href="https://www.depilacijeug.si/" target="_blank" rel="noreferrer noopener" className="rounded-2xl border border-border/70 bg-card px-5 py-4 font-semibold text-foreground shadow-sm transition hover:border-primary/30 hover:text-primary">Depilacije UG</a>
+            <div className="grid gap-6 rounded-[2rem] border border-primary/15 bg-primary/[0.035] p-7 md:grid-cols-[1fr_auto] md:items-center md:p-9">
+              <div>
+                <span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{text.pricingEyebrow}</span>
+                <h2 className="mt-3 font-display text-2xl font-extrabold text-foreground md:text-3xl">{text.pricingTitle}</h2>
+                <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">{text.pricingBody}</p>
+              </div>
+              <div className="flex flex-col items-start gap-4 md:items-end">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><BadgeEuro className="h-5 w-5" /></span>
+                  <p className="font-display text-2xl font-extrabold text-foreground">
+                    {text.pricingFromPrefix} <span className="text-primary">{fromMonthlyPrice}</span> <span className="text-base font-semibold text-muted-foreground">{text.pricingPerMonth}</span>
+                  </p>
+                </div>
+                <Button variant="outline" size="lg" className="rounded-xl" asChild>
+                  <a href={getRoutePath("pricing", language)}>{text.pricingCta}<ArrowRight className="h-4 w-4" /></a>
+                </Button>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="bg-background pb-14">
+          <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+            <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{text.trustedEyebrow}</p>
+            <h2 className="mt-3 max-w-2xl font-display text-2xl font-extrabold text-foreground md:text-3xl">{text.trustedTitle}</h2>
+            <figure className="mt-8 rounded-[2rem] border border-border/60 bg-card p-7 shadow-soft md:p-10">
+              <Quote className="h-8 w-8 text-primary/40" aria-hidden="true" />
+              <blockquote className="mt-4 font-display text-xl font-semibold leading-8 text-foreground md:text-2xl">
+                “{featuredStoryContent.testimonial}”
+              </blockquote>
+              <figcaption className="mt-6 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                  <p className="font-semibold text-foreground">{featuredStoryContent.representativeRole}</p>
+                  <a
+                    href={getCustomerStoryPath(featuredStory.slug, language)}
+                    className="mt-1 inline-flex text-sm font-medium text-primary underline-offset-4 hover:underline"
+                  >
+                    {text.testimonialReadMore}
+                  </a>
+                </div>
+                <a
+                  href={otherStoryPath}
+                  className="rounded-2xl border border-border/70 bg-background px-5 py-3 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/30 hover:text-primary"
+                >
+                  {text.testimonialOtherStory}
+                </a>
+              </figcaption>
+            </figure>
           </div>
         </section>
 
