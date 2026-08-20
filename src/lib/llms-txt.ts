@@ -26,7 +26,7 @@ const routeGroups: RouteGroup[] = [
   },
   {
     heading: { sl: "Funkcionalnosti", en: "Product features" },
-    routeKeys: ["calendar", "invoicing", "clientManagement", "reminders", "integrations", "materialManagement", "zoom"],
+    routeKeys: ["calendar", "invoicing", "clientManagement", "reminders", "integrations", "materialManagement", "fiscalCashRegister", "groupBookings", "zoom"],
   },
   {
     heading: { sl: "Rešitve po dejavnostih", en: "Solutions by industry" },
