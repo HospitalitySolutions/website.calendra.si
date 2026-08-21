@@ -258,18 +258,17 @@ const Navbar = () => {
     const body = document.body;
     const root = document.documentElement;
     const previousBodyOverflow = body.style.overflow;
-    const previousRootOverflow = root.style.overflow;
     const previousRootOverscrollBehavior = root.style.overscrollBehavior;
 
-    // The mobile navigation is its own scroll container. Lock the document
-    // while it is open so touch/wheel gestures cannot scroll the page behind it.
+    // Keep the page behind the mobile navigation from scrolling, but do not
+    // change overflow on <html>. The navbar is sticky and changing the root
+    // scroll container while the page is already scrolled can make the navbar
+    // disappear and leave the document locked on mobile browsers.
     body.style.overflow = "hidden";
-    root.style.overflow = "hidden";
     root.style.overscrollBehavior = "none";
 
     return () => {
       body.style.overflow = previousBodyOverflow;
-      root.style.overflow = previousRootOverflow;
       root.style.overscrollBehavior = previousRootOverscrollBehavior;
     };
   }, [open]);
@@ -481,7 +480,7 @@ const Navbar = () => {
       </div>
 
       {open && (
-        <div className="max-h-[calc(100dvh-74px)] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain border-t border-border/70 bg-background/95 px-4 pb-6 pt-4 backdrop-blur-xl [-webkit-overflow-scrolling:touch] xl:hidden">
+        <div className="h-[calc(100dvh-74px)] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain border-t border-border/70 bg-background/95 px-4 pb-6 pt-4 backdrop-blur-xl [-webkit-overflow-scrolling:touch] xl:hidden">
           <div className="flex flex-col gap-3">
             <div className="relative w-full">
               <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
