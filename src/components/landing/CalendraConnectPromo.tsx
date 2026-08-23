@@ -31,88 +31,59 @@ const promoCopy = {
 const CalendraConnectPromo = () => {
   const { language } = useSiteLanguage();
   const copy = promoCopy[language];
-  const appCopy = language === "sl"
-    ? {
-        greeting: "Pozdravljena, Maja",
-        next: "Naslednji termin",
-        service: "Masaža",
-        date: "Petek, 24. maj 2024",
-        manage: "Upravljaj rezervacijo",
-        add: "Dodaj v koledar",
-        quick: "Hitre akcije",
-        actions: ["Moje rezervacije", "Zgodovina in računi", "Plačila in predplačila"],
-        confirmed: "Rezervacija potrjena",
-        notifications: "Samodejna obvestila",
-      }
-    : {
-        greeting: "Welcome, Maya",
-        next: "Next appointment",
-        service: "Massage",
-        date: "Friday, 24 May 2024",
-        manage: "Manage booking",
-        add: "Add to calendar",
-        quick: "Quick actions",
-        actions: ["My bookings", "History and invoices", "Payments and deposits"],
-        confirmed: "Booking confirmed",
-        notifications: "Automatic notifications",
-      };
 
   return (
-    <section className="relative overflow-hidden bg-[#fff9f2] py-16 md:py-20 lg:py-24">
-      <div className="pointer-events-none absolute bottom-0 left-0 top-0 w-2 bg-orange-500" aria-hidden="true" />
-      <div className="pointer-events-none absolute -right-28 top-1/2 h-[34rem] w-[34rem] -translate-y-1/2 rounded-full bg-orange-100/50 blur-3xl" aria-hidden="true" />
-      <div className="container relative mx-auto max-w-[1480px] px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[0.48fr_0.52fr] lg:items-center lg:gap-14 xl:gap-20">
-          <div className="max-w-2xl py-2">
-            <span className="text-xs font-extrabold uppercase tracking-[0.19em] text-orange-600 sm:text-sm">{copy.eyebrow}</span>
-            <h2 className="mt-4 font-display text-4xl font-extrabold tracking-[-0.045em] text-[#071b3a] sm:text-5xl lg:text-[3.65rem] lg:leading-[1.03]">{copy.title}</h2>
-            <p className="mt-5 max-w-xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">{copy.body}</p>
-            <ul className="mt-7 divide-y divide-slate-200/80 border-y border-slate-200/80">
+    <section className="connect-promo-editorial relative overflow-hidden py-16 md:py-20 lg:py-28">
+      <div className="container relative mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-[1fr_0.86fr] lg:items-center lg:gap-20">
+          <div className="max-w-2xl">
+            <span className="marketing-eyebrow">{copy.eyebrow}</span>
+            <h2 className="marketing-section-title mt-3 text-3xl sm:text-4xl lg:text-[3rem]">{copy.title}</h2>
+            <p className="mt-5 text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{copy.body}</p>
+            <ul className="mt-7 grid gap-3">
               {copy.bullets.map((bullet, index) => {
                 const Icon = icons[index];
                 return (
-                  <li key={bullet} className="flex items-center gap-3 py-3.5 text-sm font-semibold text-[#071b3a] sm:text-base">
-                    <span className="grid h-8 w-8 place-items-center rounded-lg bg-blue-50 text-primary"><Icon className="h-4 w-4" aria-hidden="true" /></span>
+                  <li key={bullet} className="flex items-center gap-3 text-sm font-semibold text-foreground sm:text-base">
+                    <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary/[0.075] text-primary"><Icon className="h-4 w-4" aria-hidden="true" /></span>
                     {bullet}
                   </li>
                 );
               })}
             </ul>
-            <Button variant="hero" size="lg" className="mt-8 h-12 rounded-[9px] px-6 shadow-[0_16px_30px_-16px_rgba(13,99,229,0.58)]" asChild>
+            <Button variant="hero" size="lg" className="mt-8 rounded-xl" asChild>
               <a href={getRoutePath("connect", language)}>{copy.cta}<ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
             </Button>
           </div>
 
-          <div className="relative mx-auto min-h-[590px] w-full max-w-[650px] sm:min-h-[650px] lg:min-h-[620px]">
-            <div className="pointer-events-none absolute left-[13%] top-[38%] h-px w-[46%] bg-orange-400" aria-hidden="true" />
-            <div className="pointer-events-none absolute bottom-[20%] left-[21%] h-px w-[34%] bg-orange-400" aria-hidden="true" />
-
-            <div className="absolute left-[4%] top-[34%] z-20 hidden w-[43%] rounded-[14px] border border-slate-200 bg-white p-4 shadow-[0_26px_60px_-28px_rgba(15,23,42,0.4)] sm:block">
-              <div className="flex items-center gap-3"><span className="grid h-8 w-8 place-items-center rounded-full bg-emerald-50 text-emerald-600"><Check className="h-4 w-4" /></span><p className="text-sm font-extrabold text-[#071b3a]">{appCopy.confirmed}</p></div>
-              <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3"><div><p className="text-sm font-bold text-slate-900">{appCopy.service}</p><p className="mt-0.5 text-[11px] text-slate-500">{appCopy.date}</p></div><span className="text-xs font-bold text-primary">14:00</span></div>
-            </div>
-
-            <div className="absolute right-[-1%] top-0 z-10 w-[70%] min-w-[285px] rounded-[3.25rem] border-[7px] border-[#071b3a] bg-white p-2 shadow-[0_40px_90px_-32px_rgba(7,27,58,0.48)] sm:w-[61%] lg:right-[2%]">
-              <div className="overflow-hidden rounded-[2.6rem] bg-white px-4 pb-6 pt-5 sm:px-5">
-                <div className="mx-auto mb-4 h-5 w-24 rounded-full bg-[#071b3a]" aria-hidden="true" />
-                <div className="flex items-center justify-between"><img src="/connect/calendra-connect-icon.png" alt="Calendra Connect" width="48" height="48" className="h-8 w-8 rounded-lg object-contain" loading="lazy" /><BellRing className="h-4 w-4 text-primary" aria-hidden="true" /></div>
-                <p className="mt-5 font-display text-xl font-extrabold text-[#071b3a]">{appCopy.greeting}</p>
-                <div className="mt-4 rounded-[14px] border border-blue-100 bg-blue-50/60 p-3">
-                  <p className="text-[10px] font-medium text-slate-500">{appCopy.next}</p>
-                  <div className="mt-2 flex items-start justify-between"><div><p className="text-sm font-extrabold text-[#071b3a]">{appCopy.service}</p><p className="mt-0.5 text-[10px] text-slate-500">{appCopy.date} · 14:00</p></div><CalendarCheck2 className="h-4 w-4 text-primary" aria-hidden="true" /></div>
-                  <button type="button" className="mt-3 h-8 w-full rounded-lg bg-primary text-[10px] font-bold text-white">{appCopy.manage}</button>
-                  <button type="button" className="mt-2 h-8 w-full rounded-lg border border-blue-200 bg-white text-[10px] font-bold text-primary">{appCopy.add}</button>
-                </div>
-                <p className="mt-5 text-xs font-extrabold text-[#071b3a]">{appCopy.quick}</p>
-                <div className="mt-2 divide-y divide-slate-100 rounded-[14px] border border-slate-200">
-                  {appCopy.actions.map((action) => <div key={action} className="flex items-center justify-between px-3 py-3 text-[11px] font-semibold text-slate-700"><span>{action}</span><ArrowRight className="h-3 w-3 text-primary" aria-hidden="true" /></div>)}
-                </div>
+          <div className="relative mx-auto min-h-[470px] w-full max-w-[540px]">
+            <div className="pointer-events-none absolute inset-8 rounded-[48%] bg-gradient-to-br from-primary/[0.14] via-violet-400/[0.08] to-accent/[0.11] blur-3xl" aria-hidden="true" />
+            <div className="absolute left-[5%] top-[13%] hidden w-[46%] rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_30px_70px_-38px_rgba(15,23,42,0.42)] sm:block">
+              <p className="text-xs font-bold uppercase tracking-[0.13em] text-primary">Connect</p>
+              <p className="mt-3 font-display text-xl font-bold text-foreground">{language === "sl" ? "Rezervacija potrjena" : "Booking confirmed"}</p>
+              <div className="mt-4 rounded-2xl bg-slate-50 p-4">
+                <div className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/[0.11] text-emerald-600"><Check className="h-4 w-4" /></span><div><p className="text-sm font-semibold">Masaža</p><p className="text-xs text-muted-foreground">Danes · 16:00</p></div></div>
               </div>
             </div>
 
-            <div className="absolute bottom-[7%] left-[12%] z-20 hidden w-[42%] rounded-[14px] border border-slate-200 bg-white p-4 shadow-[0_26px_60px_-28px_rgba(15,23,42,0.4)] sm:block">
-              <div className="flex items-center gap-3"><BellRing className="h-5 w-5 text-primary" /><p className="text-sm font-extrabold text-[#071b3a]">{appCopy.notifications}</p></div>
-              <p className="mt-2 text-xs leading-5 text-slate-500">{language === "sl" ? "Opomniki in spremembe termina vedno pravočasno." : "Reminders and booking changes, always on time."}</p>
+            <div className="absolute right-[3%] top-0 w-[58%] min-w-[250px] rounded-[2.8rem] border-[7px] border-slate-900 bg-white p-3 shadow-[0_36px_80px_-34px_rgba(15,23,42,0.52)] sm:w-[52%]">
+              <div className="rounded-[2rem] bg-white px-4 pb-5 pt-6">
+                <div className="flex items-center justify-between">
+                  <img src="/connect/calendra-connect-icon.png" alt="Calendra Connect" width="64" height="64" className="h-10 w-10 rounded-xl" loading="lazy" />
+                  <span className="rounded-full bg-primary/[0.08] px-3 py-1 text-[10px] font-bold text-primary">Connect</span>
+                </div>
+                <p className="mt-6 font-display text-lg font-bold text-foreground">{copy.appointments}</p>
+                <div className="mt-4 rounded-2xl bg-primary p-4 text-primary-foreground">
+                  <p className="text-[10px] text-primary-foreground/80">{copy.next}</p>
+                  <p className="mt-3 text-sm font-bold">{copy.time}</p>
+                </div>
+                {[0, 1, 2].map((item) => <div key={item} className="mt-2.5 flex items-center gap-3 rounded-xl border border-border/60 bg-slate-50 p-2.5"><Check className="h-3.5 w-3.5 text-primary" /><span className="h-2 flex-1 rounded-full bg-muted" /></div>)}
+              </div>
+            </div>
+
+            <div className="absolute bottom-2 left-[3%] w-[48%] rounded-[22px] border border-slate-200 bg-white p-4 shadow-[0_28px_64px_-36px_rgba(15,23,42,0.40)]">
+              <div className="flex items-center gap-3"><BellRing className="h-5 w-5 text-primary" /><p className="text-sm font-bold text-foreground">{language === "sl" ? "Samodejna obvestila" : "Automatic notifications"}</p></div>
+              <p className="mt-2 text-xs leading-5 text-muted-foreground">{language === "sl" ? "Opomniki in spremembe termina vedno pravočasno." : "Reminders and booking changes delivered on time."}</p>
             </div>
           </div>
         </div>
