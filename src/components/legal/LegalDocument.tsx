@@ -17,7 +17,7 @@ export const LegalDocument = ({ badge, title, intro, lastUpdated, children, clas
     <Navbar />
     <main className="py-16 md:py-20">
       <div className={cn("container mx-auto max-w-5xl px-4 sm:px-6 lg:px-8", className)}>
-        <section className="marketing-panel rounded-[30px] p-8 md:p-12">
+        <section className="legal-hero-editorial border-b border-border pb-10 md:pb-12">
           <div className="max-w-3xl">
             <span className="marketing-pill inline-flex px-4 py-1.5 text-sm font-semibold text-primary">
               {badge}
@@ -27,7 +27,7 @@ export const LegalDocument = ({ badge, title, intro, lastUpdated, children, clas
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{intro}</p>
             <div className="mt-6 flex flex-wrap gap-3 text-sm text-muted-foreground">
-              <span className="rounded-full bg-muted px-3 py-1">{lastUpdated}</span>
+              <span>{lastUpdated}</span>
             </div>
           </div>
         </section>
@@ -48,13 +48,13 @@ type LegalSectionProps = {
 export const LegalSection = ({ id, title, children, tone = "default" }: LegalSectionProps) => {
   const toneClass =
     tone === "highlight"
-      ? "border-primary/20 bg-primary/[0.04]"
+      ? "border-primary bg-primary/[0.035]"
       : tone === "warning"
-        ? "border-amber-500/20 bg-amber-500/[0.06]"
-        : "border-border/60 bg-card";
+        ? "border-amber-500 bg-amber-500/[0.045]"
+        : "border-primary/25 bg-transparent";
 
   return (
-    <section id={id} className={cn("rounded-[24px] border p-8 shadow-soft md:p-10", toneClass)}>
+    <section id={id} className={cn("legal-section-editorial border-l-[3px] px-6 py-5 md:px-8 md:py-6", toneClass)}>
       <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">{title}</h2>
       <div className="mt-5 space-y-4 text-base leading-7 text-muted-foreground">{children}</div>
     </section>
@@ -73,5 +73,5 @@ export const LegalList = ({ items }: { items: string[] }) => (
 );
 
 export const LegalNotice = ({ children }: { children: ReactNode }) => (
-  <div className="rounded-2xl border border-border/60 bg-muted/40 p-5 text-sm leading-6 text-muted-foreground">{children}</div>
+  <div className="rounded-[10px] border border-border/60 bg-muted/40 p-5 text-sm leading-6 text-muted-foreground">{children}</div>
 );

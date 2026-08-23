@@ -4,7 +4,6 @@ import {
   CalendarCheck2,
   CalendarDays,
   Check,
-  CircleDollarSign,
   Plug,
   Receipt,
   Users,
@@ -15,11 +14,13 @@ import { getRoutePath, type CanonicalRouteKey } from "@/lib/localized-routes";
 
 const featureIcons = [CalendarCheck2, CalendarDays, Receipt, Users, Bell, Plug] as const;
 const detailRouteKeys: CanonicalRouteKey[] = ["booking", "calendar", "invoicing", "clientManagement", "reminders", "integrations"];
-const featurePairs = [[0, 1], [2, 3], [4, 5]] as const;
+const featurePairs = [[0, 1], [2, 3]] as const;
 
 const Features = () => {
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).features;
+  const reminderFeature = copy.items[4];
+  const ReminderIcon = featureIcons[4];
 
   return (
     <section id="funkcionalnosti" className="scroll-mt-20 bg-transparent py-16 md:py-20 lg:py-28">
@@ -78,6 +79,27 @@ const Features = () => {
               </div>
             );
           })}
+
+          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16 xl:gap-24">
+            <div>
+              <span className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/[0.075] text-primary">
+                <ReminderIcon className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <h3 className="mt-5 font-display text-3xl font-extrabold tracking-[-0.035em] text-foreground sm:text-[2.35rem] sm:leading-[1.08]">
+                {reminderFeature.title}
+              </h3>
+              <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">{reminderFeature.description}</p>
+              <a
+                href={getRoutePath(detailRouteKeys[4], language)}
+                className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:gap-3"
+              >
+                {reminderFeature.linkLabel}<ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </a>
+            </div>
+            <div>
+              <FeatureVisual index={2} language={language} />
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -162,11 +184,11 @@ const FeatureVisual = ({ index, language }: { index: number; language: "sl" | "e
         <div className="mt-4 flex items-center gap-2 text-sm font-semibold text-emerald-600"><Check className="h-4 w-4" />{language === "sl" ? "Samodejno poslano" : "Sent automatically"}</div>
       </div>
       <div className="absolute bottom-3 right-0 w-[62%] rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_28px_64px_-34px_rgba(15,23,42,0.40)]">
-        <div className="flex items-center justify-between"><p className="font-bold text-foreground">{language === "sl" ? "Povezane storitve" : "Connected services"}</p><Plug className="h-5 w-5 text-orange-500" /></div>
+        <div className="flex items-center justify-between"><p className="font-bold text-foreground">{language === "sl" ? "Pravila obveščanja" : "Notification rules"}</p><Bell className="h-5 w-5 text-orange-500" /></div>
         <div className="mt-4 grid gap-2">
-          {["Google Calendar", "Stripe", "Zoom"].map((name, i) => <div key={name} className="flex items-center justify-between rounded-xl border border-border/70 px-3 py-2.5 text-sm"><span className="font-medium">{name}</span><span className={`h-2.5 w-2.5 rounded-full ${i === 0 ? "bg-blue-500" : i === 1 ? "bg-violet-500" : "bg-sky-500"}`} /></div>)}
+          {(language === "sl" ? ["Potrditev rezervacije", "Opomnik 24 ur prej", "Obvestilo o spremembi"] : ["Booking confirmation", "Reminder 24 hours before", "Change notification"]).map((name, index) => <div key={name} className="flex items-center justify-between rounded-xl border border-border/70 px-3 py-2.5 text-sm"><span className="font-medium">{name}</span><span className={`relative h-5 w-9 rounded-full ${index < 2 ? "bg-primary" : "bg-slate-200"}`}><span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow-sm ${index < 2 ? "right-0.5" : "left-0.5"}`} /></span></div>)}
         </div>
-        <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-muted-foreground"><CircleDollarSign className="h-4 w-4 text-primary" />{language === "sl" ? "Vse na enem mestu" : "Everything in one place"}</div>
+        <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-muted-foreground"><CalendarDays className="h-4 w-4 text-primary" />{language === "sl" ? "Pošljite ob pravem času" : "Send at the right time"}</div>
       </div>
     </div>
   );

@@ -197,7 +197,7 @@ const BusinessDirectoryPage = () => {
   };
 
   return (
-    <div className="marketing-page min-h-screen bg-background">
+    <div className="marketing-page marketing-redesign min-h-screen bg-background">
       <Navbar />
       <main>
         <section className="border-b border-border/50 bg-gradient-to-br from-background via-card to-primary/[0.05] py-14 md:py-20">

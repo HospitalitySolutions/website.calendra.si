@@ -9,6 +9,7 @@ import CalendraConnectPromoSsr from "@/components/landing/CalendraConnectPromo";
 import {
   AudienceSection,
   HomeFaq,
+  IntegrationsSection,
   PricingOverview,
 } from "@/components/landing/HomepageSections";
 
@@ -41,6 +42,7 @@ const Index = () => (
       <Testimonials />
     </Suspense>
     <Features />
+    <IntegrationsSection />
     <Suspense fallback={<SectionFallback minHeight={520} />}>
       <CalendraConnectPromo />
     </Suspense>

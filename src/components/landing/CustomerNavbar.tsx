@@ -137,12 +137,12 @@ const CustomerNavbar = () => {
   };
 
   const LanguageSelect = ({ mobile = false }: { mobile?: boolean }) => (
-    <div className={`relative ${mobile ? "w-full" : "min-w-[145px]"}`}>
+    <div className={`relative ${mobile ? "w-full" : "min-w-[126px]"}`}>
       <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
       <select
         value={language}
         onChange={(event) => setLanguage(event.target.value as SiteLanguage)}
-        className={`w-full appearance-none rounded-xl border border-border/70 bg-background px-9 pr-9 text-sm font-medium text-foreground outline-none transition focus:border-primary ${mobile ? "py-3" : "py-2.5"}`}
+        className={`w-full appearance-none rounded-full border border-border/70 bg-background px-9 pr-9 text-sm font-medium text-foreground outline-none transition focus:border-primary ${mobile ? "py-3" : "py-2"}`}
         aria-label={language === "sl" ? "Jezik" : "Language"}
       >
         <option value="sl">{languageNames[language].sl}</option>
@@ -190,14 +190,14 @@ const CustomerNavbar = () => {
       ) : null}
     </div>
   ) : (
-    <Button variant="hero" className="rounded-xl" asChild>
+    <Button variant="hero" className="rounded-[10px] shadow-none" asChild>
       <a href={loginPath}>{labels.auth}</a>
     </Button>
   );
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur-xl">
-      <div className="mx-auto flex h-[72px] max-w-[1380px] items-center gap-4 px-4 lg:px-6">
+    <nav className="site-navbar-editorial sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur-xl">
+      <div className="mx-auto flex h-[68px] max-w-[1380px] items-center gap-4 px-4 lg:px-6">
         <a href={customerPath} className="flex shrink-0 items-center">
           <img src={WORDMARK.src} alt="Calendra" width={WORDMARK.width} height={WORDMARK.height} className="h-8 w-auto md:h-9" />
         </a>
@@ -220,7 +220,7 @@ const CustomerNavbar = () => {
               <input type="date" value={date} onChange={(event) => setDate(event.target.value)} className="w-full bg-transparent text-sm font-medium text-foreground outline-none" />
             </label>
           </div>
-          <Button type="submit" variant="hero" className="ml-2 h-11 rounded-xl px-5 shadow-[0_6px_16px_rgba(15,107,255,0.20)]">
+          <Button type="submit" variant="hero" className="ml-2 h-11 rounded-[10px] px-5 shadow-none">
             {labels.search}<Search className="h-4 w-4" />
           </Button>
         </form>

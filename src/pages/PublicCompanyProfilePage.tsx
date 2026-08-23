@@ -254,7 +254,7 @@ const PublicCompanyProfilePage = () => {
 
   if (loading && !client) {
     return (
-      <div className="marketing-page min-h-screen bg-background">
+      <div className="marketing-page marketing-redesign min-h-screen bg-background">
         <Navbar />
         <main className="container mx-auto max-w-6xl px-4 py-24 lg:px-8">
           <div className="h-48 animate-pulse rounded-3xl border border-border/60 bg-card" aria-hidden="true" />
@@ -454,7 +454,7 @@ const PublicCompanyProfilePage = () => {
   const onlineBookingLabel = language === "sl" ? "Spletno naročanje" : "Online booking";
 
   return (
-    <div className="marketing-page min-h-screen bg-[#fbfcfe]">
+    <div className="marketing-page marketing-redesign min-h-screen bg-[#fbfcfe]">
       <Navbar />
       <main className="pb-20">
         <section id="o-ponudniku" className="bg-background pt-5 md:pt-7">

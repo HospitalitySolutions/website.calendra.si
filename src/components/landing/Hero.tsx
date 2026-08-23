@@ -123,27 +123,27 @@ const Hero = () => {
             <div className="pointer-events-none absolute inset-x-[4%] bottom-[5%] top-[3%] rounded-[42%] bg-gradient-to-br from-primary/[0.13] via-violet-400/[0.08] to-accent/[0.08] blur-[52px]" aria-hidden="true" />
 
             <HeroProductMockup language={language} />
+          </div>
+        </div>
 
-            <div className="relative mt-5 flex flex-wrap items-center justify-center gap-5 text-sm lg:justify-start lg:pl-12">
-              <div className="flex items-center gap-3">
-                <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/[0.075] text-primary">
-                  <CircleUserRound className="h-5 w-5" aria-hidden="true" />
-                </span>
-                <span>
-                  <span className="block text-[12px] text-muted-foreground">{copy.trustPrefix}</span>
-                  <span className="font-display text-lg font-extrabold text-foreground">{copy.trustedCompanies}</span>
-                </span>
-              </div>
-              <span className="hidden h-11 w-px bg-border/80 sm:block" aria-hidden="true" />
-              <div>
-                <div className="flex gap-0.5" aria-label={copy.reviewRating}>
-                  {Array.from({ length: 5 }).map((_, index) => (
-                    <Star key={index} className="h-[18px] w-[18px] fill-amber-400 text-amber-400" aria-hidden="true" />
-                  ))}
-                </div>
-                <span className="mt-1 block text-[12px] text-muted-foreground">{copy.reviewRating}</span>
-              </div>
+        <div className="relative mt-7 flex flex-wrap items-center justify-center gap-6 text-sm lg:mt-5">
+          <div className="flex items-center gap-3">
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/[0.075] text-primary">
+              <CircleUserRound className="h-5 w-5" aria-hidden="true" />
+            </span>
+            <span>
+              <span className="block text-[12px] text-muted-foreground">{copy.trustPrefix}</span>
+              <span className="font-display text-lg font-extrabold text-foreground">{copy.trustedCompanies}</span>
+            </span>
+          </div>
+          <span className="hidden h-11 w-px bg-border/80 sm:block" aria-hidden="true" />
+          <div>
+            <div className="flex gap-0.5" aria-label={copy.reviewRating}>
+              {Array.from({ length: 5 }).map((_, index) => (
+                <Star key={index} className="h-[18px] w-[18px] fill-accent text-accent" aria-hidden="true" />
+              ))}
             </div>
+            <span className="mt-1 block text-[12px] text-muted-foreground">{copy.reviewRating}</span>
           </div>
         </div>
       </div>

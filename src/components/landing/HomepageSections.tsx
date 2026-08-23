@@ -19,6 +19,7 @@ import {
   CalendarCheck2,
   Check,
   Clock3,
+  CreditCard,
   Dumbbell,
   FileText,
   Flower2,
@@ -26,16 +27,19 @@ import {
   Headphones,
   HeartPulse,
   LayoutGrid,
+  Mail,
   MailCheck,
+  MessageSquare,
   MonitorSmartphone,
   PawPrint,
   PenTool,
   PhoneCall,
-  PlugZap,
+  Plus,
   RefreshCw,
   Scissors,
   ShieldCheck,
   Sparkles,
+  Video,
   Waves,
 } from "lucide-react";
 
@@ -81,11 +85,11 @@ const copy = {
       ],
     },
     integrations: {
-      eyebrow: "Integracije",
-      title: "Povežite koledar, spletne sestanke in plačila",
-      intro: "Calendra se vključuje v obstoječe delo, da vam ni treba podvajati podatkov med več orodji.",
+      eyebrow: "06 · Povezave",
+      title: "Integracije",
+      intro: "Calendra se brezhibno poveže z orodji, ki jih že uporabljate. Prihranite čas, zmanjšajte napake in imejte vse na enem mestu.",
       items: ["Google Koledar", "Zoom", "Stripe", "PayPal", "E-pošta in SMS", "Spletni vtičnik"],
-      cta: "Več o integracijah",
+      cta: "Preglejte integracije",
     },
     pricing: {
       eyebrow: "Prilagodljivi paketi",
@@ -143,9 +147,9 @@ const copy = {
       ],
     },
     integrations: {
-      eyebrow: "Integrations",
-      title: "Connect calendars, online meetings and payments",
-      intro: "Calendra fits into your existing workflow so information does not need to be copied between tools.",
+      eyebrow: "06 · Connections",
+      title: "Integrations",
+      intro: "Calendra connects seamlessly with the tools you already use. Save time, reduce errors and keep everything in one place.",
       items: ["Google Calendar", "Zoom", "Stripe", "PayPal", "Email and SMS", "Website widget"],
       cta: "Explore integrations",
     },
@@ -373,13 +377,110 @@ export const HowItWorksSection = () => {
 export const IntegrationsSection = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].integrations;
+  const dashboardCopy = language === "sl"
+    ? {
+        subtitle: "Povežite Calendro z vašimi priljubljenimi storitvami.",
+        connected: "Povezano",
+        notConnected: "Ni povezano",
+        manage: "Upravljaj",
+        connect: "Poveži",
+        rows: [
+          { name: "Google Koledar", description: "Sinhronizirajte dogodke in razpoložljivost." },
+          { name: "Stripe", description: "Sprejemajte plačila in upravljajte naročnine." },
+          { name: "Zoom", description: "Samodejno ustvarjajte Zoom srečanja." },
+          { name: "Mailchimp", description: "Sinhronizirajte stranke in pošiljajte e-pošto." },
+          { name: "Slack", description: "Prejemajte obvestila v izbranem kanalu." },
+        ],
+      }
+    : {
+        subtitle: "Connect Calendra with your favourite services.",
+        connected: "Connected",
+        notConnected: "Not connected",
+        manage: "Manage",
+        connect: "Connect",
+        rows: [
+          { name: "Google Calendar", description: "Synchronise events and availability." },
+          { name: "Stripe", description: "Accept payments and manage subscriptions." },
+          { name: "Zoom", description: "Automatically create Zoom meetings." },
+          { name: "Mailchimp", description: "Synchronise customers and send email." },
+          { name: "Slack", description: "Receive notifications in your chosen channel." },
+        ],
+      };
+  const integrationIcons = [CalendarCheck2, CreditCard, Video, Mail, MessageSquare] as const;
+  const integrationIconClasses = [
+    "bg-blue-50 text-blue-600",
+    "bg-indigo-50 text-indigo-600",
+    "bg-sky-50 text-sky-600",
+    "bg-amber-50 text-amber-700",
+    "bg-emerald-50 text-emerald-600",
+  ];
+
   return (
-      <section className="bg-card py-20 md:py-28">
-        <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:px-8">
-          <div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><p className="mt-4 text-lg leading-8 text-muted-foreground">{section.intro}</p><Button variant="outline" size="lg" className="mt-7 rounded-xl" asChild><a href={getRoutePath("integrations", language)}>{section.cta}<ArrowRight className="h-4 w-4" /></a></Button></div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">{section.items.map((item, index) => <div key={item} className="flex min-h-28 flex-col justify-between rounded-2xl border border-border/60 bg-background p-5 shadow-sm"><PlugZap className={`h-6 w-6 ${index % 2 === 0 ? "text-primary" : "text-accent"}`} /><span className="mt-4 font-semibold text-foreground">{item}</span></div>)}</div>
+    <section id="integracije" className="relative overflow-hidden bg-[#071b3a] py-16 text-white md:py-20 lg:py-24">
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-1/2 bg-[radial-gradient(circle_at_75%_45%,rgba(13,99,229,0.48),transparent_58%)]" aria-hidden="true" />
+      <div className="pointer-events-none absolute right-[-9rem] top-1/2 h-[28rem] w-[28rem] -translate-y-1/2 rounded-full border border-blue-400/15" aria-hidden="true" />
+      <div className="container relative mx-auto max-w-[1480px] px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-12 lg:grid-cols-[0.38fr_0.62fr] lg:items-center lg:gap-14 xl:gap-20">
+          <div className="max-w-xl">
+            <span className="text-xs font-extrabold uppercase tracking-[0.2em] text-orange-400 sm:text-sm">{section.eyebrow}</span>
+            <h2 className="mt-4 font-display text-5xl font-extrabold tracking-[-0.045em] text-white sm:text-6xl lg:text-[4.25rem] lg:leading-[0.98]">{section.title}</h2>
+            <p className="mt-6 max-w-lg text-base leading-7 text-blue-50/78 sm:text-lg sm:leading-8">{section.intro}</p>
+            <ul className="mt-7 grid gap-3 text-sm font-semibold text-white sm:text-base">
+              {(language === "sl"
+                ? ["Google Koledar, Stripe in Zoom", "Enotno upravljanje podatkov", "Samodejna sinhronizacija v realnem času"]
+                : ["Google Calendar, Stripe and Zoom", "Unified data management", "Automatic real-time synchronisation"]
+              ).map((item) => (
+                <li key={item} className="flex items-center gap-3">
+                  <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-orange-500 text-white"><Check className="h-3 w-3" aria-hidden="true" /></span>
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <a href={getRoutePath("integrations", language)} className="mt-9 inline-flex items-center gap-2 text-sm font-bold text-white transition hover:gap-3 sm:text-base">
+              {section.cta}<ArrowRight className="h-4 w-4 text-orange-400" aria-hidden="true" />
+            </a>
+          </div>
+
+          <div className="relative">
+            <div className="relative overflow-hidden rounded-[14px] border border-white/15 bg-white shadow-[0_36px_90px_-35px_rgba(0,0,0,0.62)]">
+              <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 sm:px-5">
+                <div className="flex items-center gap-3"><img src="/calendra-logo.png" alt="Calendra" width="32" height="32" className="h-8 w-8 object-contain" loading="lazy" /><div><p className="text-sm font-extrabold text-slate-900">Integracije</p><p className="hidden text-[11px] text-slate-500 sm:block">{dashboardCopy.subtitle}</p></div></div>
+                <span className="rounded-md bg-blue-50 px-2.5 py-1 text-[10px] font-bold text-primary">Calendra</span>
+              </div>
+              <div className="divide-y divide-slate-200 px-3 sm:px-5">
+                {dashboardCopy.rows.map((row, index) => {
+                  const Icon = integrationIcons[index];
+                  const connected = index < 3;
+                  return (
+                    <div key={row.name} className="grid grid-cols-[1fr_auto] items-center gap-3 py-3.5 sm:grid-cols-[1fr_auto_auto] sm:gap-5">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg ${integrationIconClasses[index]}`}><Icon className="h-[18px] w-[18px]" aria-hidden="true" /></span>
+                        <div className="min-w-0"><p className="truncate text-sm font-bold text-slate-900">{row.name}</p><p className="hidden truncate text-[11px] text-slate-500 sm:block">{row.description}</p></div>
+                      </div>
+                      <span className={`hidden items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold sm:inline-flex ${connected ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${connected ? "bg-emerald-500" : "bg-slate-400"}`} aria-hidden="true" />
+                        {connected ? dashboardCopy.connected : dashboardCopy.notConnected}
+                      </span>
+                      <a href={getRoutePath("integrations", language)} className="rounded-md border border-slate-200 px-2.5 py-1.5 text-[10px] font-bold text-slate-700 transition hover:border-primary hover:text-primary">
+                        {connected ? dashboardCopy.manage : dashboardCopy.connect}
+                      </a>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="pointer-events-none absolute -right-8 top-6 hidden h-[86%] w-28 sm:block" aria-hidden="true">
+              <span className="absolute left-0 top-[7%] h-px w-full bg-orange-500/80" />
+              <span className="absolute left-0 top-[29%] h-px w-full bg-orange-500/80" />
+              <span className="absolute left-0 top-[51%] h-px w-full bg-orange-500/80" />
+              <span className="absolute left-0 top-[73%] h-px w-full bg-orange-500/80" />
+              {["G", "S", "Z", "M"].map((letter, index) => <span key={letter} className="absolute right-0 grid h-8 w-8 place-items-center rounded-lg bg-primary text-[10px] font-extrabold text-white shadow-lg" style={{ top: `${index * 22}%` }}>{letter}</span>)}
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
+    </section>
   );
 };
 
@@ -457,19 +558,25 @@ export const HomeFaq = () => {
   const section = copy[language].faq;
   const items = getFaqForRoute("home", language) ?? [];
   return (
-    <section className="bg-transparent py-16 md:py-20 lg:py-28">
-      <div className="container mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
-          <div className="lg:sticky lg:top-28 lg:self-start">
+    <section className="bg-white py-16 md:py-20 lg:py-24">
+      <div className="container mx-auto max-w-[1480px] px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-[0.36fr_0.64fr] lg:gap-16 xl:gap-24">
+          <div>
             <span className="marketing-eyebrow">{section.eyebrow}</span>
-            <h2 className="marketing-section-title mt-3 max-w-md text-3xl sm:text-4xl lg:text-[2.8rem]">{section.title}</h2>
-            <span className="mt-7 grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Sparkles className="h-6 w-6" /></span>
+            <h2 className="marketing-section-title mt-3 max-w-md text-4xl sm:text-5xl lg:text-[3.25rem]">{section.title}</h2>
+            <p className="mt-5 max-w-sm text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+              {language === "sl" ? "Vse, kar želite vedeti o Calendri — na kratko in jasno." : "Everything you want to know about Calendra — clear and concise."}
+            </p>
           </div>
-          <div className="grid gap-3">
-            {items.map((item) => (
-              <details key={item.question} className="group rounded-[18px] border border-border/70 bg-white/70 px-5 py-4 shadow-[0_16px_44px_-40px_rgba(15,23,42,0.35)] open:bg-white open:shadow-[0_22px_52px_-40px_rgba(15,23,42,0.42)]">
-                <summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden"><h3 className="inline text-base font-semibold">{item.question}</h3></summary>
-                <p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p>
+          <div className="border-t border-slate-300">
+            {items.map((item, index) => (
+              <details key={item.question} className="home-faq-row group border-x-0 border-b border-t-0 border-slate-300 bg-transparent py-0 shadow-none">
+                <summary className="grid cursor-pointer list-none grid-cols-[2.25rem_1fr_auto] items-center gap-3 py-5 marker:hidden sm:grid-cols-[3.25rem_1fr_auto] sm:gap-4 sm:py-6">
+                  <span className="text-sm font-extrabold tabular-nums text-primary">{String(index + 1).padStart(2, "0")}</span>
+                  <h3 className="text-base font-semibold tracking-[-0.01em] text-foreground sm:text-lg">{item.question}</h3>
+                  <Plus className="h-5 w-5 text-slate-700 transition-transform duration-200 group-open:rotate-45" aria-hidden="true" />
+                </summary>
+                <p className="pb-6 pl-[3.05rem] pr-10 text-sm leading-7 text-muted-foreground sm:pl-[4.25rem] sm:text-base">{item.answer}</p>
               </details>
             ))}
           </div>

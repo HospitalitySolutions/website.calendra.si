@@ -277,10 +277,10 @@ const Navbar = () => {
 
   return (
     <nav
-      className="sticky top-0 isolate border-b border-border/45 bg-white/82 shadow-[0_10px_30px_-28px_rgba(15,23,42,0.35)] backdrop-blur-xl supports-[backdrop-filter]:bg-white/76"
+      className="site-navbar-editorial sticky top-0 isolate border-b border-border/45 bg-white/90 backdrop-blur-xl supports-[backdrop-filter]:bg-white/84"
       style={{ zIndex: 1000 }}
     >
-      <div className="container mx-auto flex h-[74px] max-w-[1500px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto flex h-[68px] max-w-[1500px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4">
           <a href={homePath} className="flex items-center">
             <img
@@ -288,16 +288,16 @@ const Navbar = () => {
               alt="Calendra"
               width={WORDMARK.width}
               height={WORDMARK.height}
-              className="h-8 w-auto md:h-9"
+              className="h-8 w-auto"
             />
           </a>
 
-          <div className="relative hidden min-w-[145px] xl:block">
+          <div className="relative hidden min-w-[126px] xl:block">
             <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />
             <select
               value={language}
               onChange={(event) => setLanguage(event.target.value as SiteLanguage)}
-              className="w-full appearance-none rounded-[13px] border border-border/70 bg-white/90 px-9 py-2.5 pr-9 text-sm font-medium text-foreground outline-none transition focus:border-primary"
+              className="w-full appearance-none rounded-full border border-border/70 bg-white/80 px-9 py-2 pr-8 text-xs font-medium text-foreground outline-none transition focus:border-primary"
               aria-label={copy.nav.language}
             >
               <option value="sl">{languageNames[language].sl}</option>
@@ -469,7 +469,7 @@ const Navbar = () => {
               </a>
             </Button>
           )}
-          <Button variant="hero" className="rounded-xl" asChild>
+          <Button variant="hero" className="h-10 rounded-[10px] px-5 shadow-none" asChild>
             <a href={businessLoginPath}>{language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}</a>
           </Button>
         </div>
@@ -480,7 +480,7 @@ const Navbar = () => {
       </div>
 
       {open && (
-        <div className="h-[calc(100dvh-74px)] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain border-t border-border/70 bg-background/95 px-4 pb-6 pt-4 backdrop-blur-xl [-webkit-overflow-scrolling:touch] xl:hidden">
+        <div className="h-[calc(100dvh-68px)] touch-pan-y overflow-x-hidden overflow-y-auto overscroll-contain border-t border-border/70 bg-background/95 px-4 pb-6 pt-4 backdrop-blur-xl [-webkit-overflow-scrolling:touch] xl:hidden">
           <div className="flex flex-col gap-3">
             <div className="relative w-full">
               <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary" />

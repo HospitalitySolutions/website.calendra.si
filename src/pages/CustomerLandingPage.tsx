@@ -383,7 +383,7 @@ const CustomerLandingPage = () => {
   );
 
   return (
-    <div className="customer-surface min-h-screen bg-background">
+    <div className="customer-surface marketing-page marketing-redesign min-h-screen bg-background">
       <Navbar />
       <main>
         <section className="relative overflow-hidden pb-11 pt-11 md:pb-13 md:pt-14 lg:pt-16">

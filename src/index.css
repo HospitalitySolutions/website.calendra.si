@@ -371,3 +371,218 @@ All colors MUST be HSL.
     background-color: rgb(255 255 255 / 0.98);
   }
 }
+
+/* Calendra editorial system v2
+ *
+ * This final layer is shared by every public marketing route. Wide fields,
+ * restrained radii and product screenshots replace the previous stack of
+ * floating cards while forms and data-heavy customer views remain familiar. */
+@layer components {
+  .marketing-page.marketing-redesign {
+    --background: 0 0% 100%;
+    --secondary: 214 63% 96%;
+    --muted: 214 38% 95%;
+    --border: 215 25% 87%;
+    background: hsl(var(--background));
+  }
+
+  .site-navbar-editorial {
+    box-shadow: none;
+  }
+
+  .site-navbar-editorial [class*="w-[980px]"],
+  .site-navbar-editorial [class*="w-[390px]"] {
+    border-radius: 0.875rem !important;
+    border-color: hsl(var(--border) / 0.78) !important;
+    box-shadow: 0 1.25rem 3.5rem -1.6rem hsl(220 34% 16% / 0.25) !important;
+  }
+
+  .site-navbar-editorial [class*="w-[980px]"] a[class*="rounded-3xl"],
+  .site-navbar-editorial [class*="w-[980px]"] a[class*="rounded-2xl"],
+  .site-navbar-editorial [class*="w-[390px]"] a[class*="rounded-2xl"] {
+    border-color: transparent !important;
+    border-radius: 0.625rem !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .site-navbar-editorial [class*="w-[980px]"] a:hover,
+  .site-navbar-editorial [class*="w-[390px]"] a:hover {
+    background: hsl(var(--secondary)) !important;
+  }
+
+  .marketing-redesign .marketing-eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.13em;
+  }
+
+  .marketing-redesign .marketing-section-title {
+    letter-spacing: -0.045em;
+    line-height: 1.04;
+  }
+
+  .marketing-redesign .marketing-pill {
+    border-radius: 0.5rem;
+    box-shadow: none;
+  }
+
+  .marketing-redesign .marketing-card,
+  .marketing-redesign main article[class*="rounded-3xl"],
+  .marketing-redesign main article[class*="rounded-2xl"],
+  .marketing-redesign main section[class*="rounded-3xl"],
+  .marketing-redesign main div[class*="rounded-3xl"][class*="border"],
+  .marketing-redesign main div[class*="rounded-2xl"][class*="border"] {
+    border-radius: 0.875rem !important;
+    box-shadow: none !important;
+  }
+
+  .marketing-redesign main > section,
+  .marketing-redesign main > section[class*="bg-card"],
+  .marketing-redesign main > section[class*="bg-background"],
+  .marketing-redesign main > section[class*="bg-gradient"] {
+    background-image: none !important;
+  }
+
+  .marketing-redesign main > section:nth-child(odd),
+  .marketing-redesign main > section:nth-child(odd)[class*="bg-card"],
+  .marketing-redesign main > section:nth-child(odd)[class*="bg-background"] {
+    background-color: hsl(0 0% 100%) !important;
+  }
+
+  .marketing-redesign main > section:nth-child(even),
+  .marketing-redesign main > section:nth-child(even)[class*="bg-card"],
+  .marketing-redesign main > section:nth-child(even)[class*="bg-background"] {
+    background-color: hsl(214 75% 97%) !important;
+  }
+
+  .marketing-redesign main > section:first-child {
+    background-color: hsl(0 0% 100%) !important;
+    background-image:
+      radial-gradient(circle at 77% 8%, hsl(213 100% 95%), transparent 31rem),
+      radial-gradient(circle at 95% 88%, hsl(34 100% 95%), transparent 25rem) !important;
+  }
+
+  .marketing-redesign main > section.container:nth-child(even) {
+    box-shadow: 0 0 0 100vmax hsl(214 75% 97%) !important;
+    clip-path: inset(0 -100vmax);
+  }
+
+  .marketing-redesign main > section:first-child h1 {
+    font-size: clamp(2.65rem, 5.2vw, 4.75rem);
+    line-height: 0.99;
+    letter-spacing: -0.052em;
+  }
+
+  .audience-carousel-section,
+  .feature-tone-white,
+  .connect-promo-editorial {
+    background: hsl(0 0% 100%);
+  }
+
+  .audience-carousel-card {
+    box-shadow: 0 1.25rem 2.75rem -2rem hsl(220 34% 13% / 0.38);
+  }
+
+  .editorial-pricing-band,
+  .feature-tone-blue,
+  .home-faq-editorial {
+    background:
+      radial-gradient(circle at 76% 15%, hsl(213 100% 94%), transparent 31rem),
+      hsl(214 76% 97%);
+  }
+
+  .editorial-testimonials,
+  .feature-tone-warm,
+  .final-cta-editorial {
+    background:
+      radial-gradient(circle at 86% 38%, hsl(32 100% 96%), transparent 28rem),
+      hsl(35 55% 98%);
+  }
+
+  .editorial-testimonials blockquote {
+    text-wrap: pretty;
+  }
+
+  .feature-editorial-row {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-icon {
+    display: inline-grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border-radius: 50%;
+  }
+
+  .feature-icon-white,
+  .feature-icon-blue {
+    background: hsl(var(--primary) / 0.09);
+    color: hsl(var(--primary));
+  }
+
+  .feature-icon-warm {
+    background: hsl(var(--accent) / 0.12);
+    color: hsl(27 88% 47%);
+  }
+
+  .feature-product-shot {
+    max-height: 34rem;
+    border-radius: 0.875rem !important;
+    border-color: hsl(215 30% 84% / 0.85) !important;
+    background: hsl(0 0% 100%) !important;
+    box-shadow: 0 1.75rem 4.5rem -2.5rem hsl(216 48% 25% / 0.42) !important;
+  }
+
+  .feature-product-image {
+    width: 100%;
+    height: auto;
+  }
+
+  .feature-product-shot-3 {
+    max-width: 28rem;
+    margin-inline: auto;
+  }
+
+  .legal-hero-editorial .marketing-pill {
+    border: 0;
+    padding-inline: 0;
+    background: transparent;
+  }
+
+  .legal-section-editorial {
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .site-footer-editorial {
+    --foreground: 0 0% 100%;
+    --muted-foreground: 215 25% 76%;
+    --border: 215 28% 31%;
+    background: hsl(216 78% 14%);
+    color: hsl(var(--foreground));
+  }
+
+  .site-footer-editorial a:hover,
+  .site-footer-editorial button:hover {
+    color: hsl(0 0% 100%);
+  }
+
+  @media (max-width: 767px) {
+    .marketing-redesign main > section:first-child h1 {
+      font-size: clamp(2.35rem, 12vw, 3.4rem);
+    }
+
+    .feature-product-shot {
+      max-height: 25rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .audience-carousel-card img,
+    .audience-carousel-card svg {
+      transition: none !important;
+    }
+  }
+}
