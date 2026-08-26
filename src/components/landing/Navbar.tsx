@@ -1,12 +1,13 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { BUSINESS_LOGIN_ROUTE } from "@/lib/routes";
+import { BUSINESS_LOGIN_ROUTE, CUSTOMER_ACCOUNT_ROUTE } from "@/lib/routes";
 import { getRoutePath } from "@/lib/localized-routes";
 import { ALL_INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import {
   BarChart3,
   Bell,
   Briefcase,
+  BriefcaseBusiness,
   CalendarDays,
   ChevronDown,
   ChevronRight,
@@ -17,6 +18,7 @@ import {
   Receipt,
   Scissors,
   Sparkles,
+  UserRound,
   Users,
   X,
 } from "lucide-react";
@@ -31,6 +33,9 @@ const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const [mobileResourcesOpen, setMobileResourcesOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const desktopAccountMenuRef = useRef<HTMLDivElement>(null);
+  const mobileAccountMenuRef = useRef<HTMLDivElement>(null);
   const { language, setLanguage } = useSiteLanguage();
   const { pathname } = useLocation();
   const copy = getSiteCopy(language);
@@ -55,6 +60,7 @@ const Navbar = () => {
   const bookingPath = getRoutePath("booking", language);
   const customerPath = getRoutePath("customers", language);
   const businessLoginPath = BUSINESS_LOGIN_ROUTE;
+  const customerAccountPath = CUSTOMER_ACCOUNT_ROUTE;
   const pricingPath = getRoutePath("pricing", language);
   const calendarPath = getRoutePath("calendar", language);
   const clientManagementPath = getRoutePath("clientManagement", language);
@@ -251,6 +257,28 @@ const Navbar = () => {
    */
   const isLinkActive = (activePaths: string[]) =>
     activePaths.some((activePath) => pathname === activePath || pathname.startsWith(`${activePath}/`));
+
+  useEffect(() => {
+    if (!accountOpen) return;
+
+    const onPointerDown = (event: PointerEvent) => {
+      const target = event.target as Node;
+      const clickedDesktopMenu = desktopAccountMenuRef.current?.contains(target);
+      const clickedMobileMenu = mobileAccountMenuRef.current?.contains(target);
+      if (!clickedDesktopMenu && !clickedMobileMenu) setAccountOpen(false);
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setAccountOpen(false);
+    };
+
+    window.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [accountOpen]);
 
   useEffect(() => {
     if (!open) return;
@@ -469,14 +497,132 @@ const Navbar = () => {
               </a>
             </Button>
           )}
-          <Button variant="hero" className="h-10 rounded-[10px] px-5 shadow-none" asChild>
-            <a href={businessLoginPath}>{language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}</a>
-          </Button>
+
+          <div className="relative" ref={desktopAccountMenuRef}>
+            <button
+              type="button"
+              onClick={() => setAccountOpen((current) => !current)}
+              className="inline-flex h-10 items-center gap-1.5 rounded-[12px] border border-primary/55 bg-white px-5 text-sm font-semibold text-primary shadow-none transition hover:border-primary/75 hover:bg-primary/[0.035] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-2"
+              aria-haspopup="menu"
+              aria-expanded={accountOpen}
+            >
+              {language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}
+              <ChevronDown className={`h-4 w-4 transition ${accountOpen ? "rotate-180" : ""}`} aria-hidden="true" />
+            </button>
+
+            {accountOpen && (
+              <div
+                className="absolute right-0 top-[calc(100%+10px)] z-[1020] w-[310px] overflow-hidden rounded-[20px] border border-border/70 bg-white shadow-[0_20px_55px_rgba(15,23,42,0.14)]"
+                role="menu"
+              >
+                <a
+                  href={businessLoginPath}
+                  className="flex items-center gap-3.5 px-4 py-4 transition hover:bg-secondary/55 focus-visible:bg-secondary/55 focus-visible:outline-none"
+                  role="menuitem"
+                  onClick={() => setAccountOpen(false)}
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-primary/[0.08] text-primary">
+                    <BriefcaseBusiness className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold text-foreground">{language === "sl" ? "Za podjetja" : "For businesses"}</span>
+                    <span className="mt-0.5 block text-xs leading-5 text-muted-foreground">
+                      {language === "sl" ? "Prijava v poslovno aplikacijo" : "Sign in to the business app"}
+                    </span>
+                  </span>
+                </a>
+                <div className="h-px bg-border/70" aria-hidden="true" />
+                <a
+                  href={customerAccountPath}
+                  className="flex items-center gap-3.5 px-4 py-4 transition hover:bg-secondary/55 focus-visible:bg-secondary/55 focus-visible:outline-none"
+                  role="menuitem"
+                  onClick={() => setAccountOpen(false)}
+                >
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[14px] bg-primary/[0.08] text-primary">
+                    <UserRound className="h-5 w-5" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold text-foreground">{language === "sl" ? "Za stranke" : "For customers"}</span>
+                    <span className="mt-0.5 block text-xs leading-5 text-muted-foreground">
+                      {language === "sl" ? "Odpri svoj račun" : "Open your account"}
+                    </span>
+                  </span>
+                </a>
+              </div>
+            )}
+          </div>
         </div>
 
-        <button className="xl:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
+        <div className="ml-auto flex items-center gap-2 xl:hidden">
+          <div className="relative" ref={mobileAccountMenuRef}>
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                setAccountOpen((current) => !current);
+              }}
+              className="inline-flex h-10 items-center gap-1 rounded-[12px] border border-primary/55 bg-white px-3 text-sm font-semibold text-primary shadow-none transition hover:border-primary/75 hover:bg-primary/[0.035] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/25 focus-visible:ring-offset-2 sm:px-4"
+              aria-haspopup="menu"
+              aria-expanded={accountOpen}
+            >
+              {language === "sl" ? "Prijava" : "Login"}
+              <ChevronDown className={`h-4 w-4 transition ${accountOpen ? "rotate-180" : ""}`} aria-hidden="true" />
+            </button>
+
+            {accountOpen && (
+              <div
+                className="absolute right-0 top-[calc(100%+10px)] z-[1020] w-[286px] max-w-[calc(100vw-32px)] overflow-hidden rounded-[18px] border border-border/70 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.15)]"
+                role="menu"
+              >
+                <a
+                  href={businessLoginPath}
+                  className="flex items-center gap-3 px-3.5 py-3.5 transition hover:bg-secondary/55 focus-visible:bg-secondary/55 focus-visible:outline-none"
+                  role="menuitem"
+                  onClick={() => setAccountOpen(false)}
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[13px] bg-primary/[0.08] text-primary">
+                    <BriefcaseBusiness className="h-[18px] w-[18px]" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold text-foreground">{language === "sl" ? "Za podjetja" : "For businesses"}</span>
+                    <span className="mt-0.5 block text-[11px] leading-4 text-muted-foreground">
+                      {language === "sl" ? "Prijava v poslovno aplikacijo" : "Sign in to the business app"}
+                    </span>
+                  </span>
+                </a>
+                <div className="h-px bg-border/70" aria-hidden="true" />
+                <a
+                  href={customerAccountPath}
+                  className="flex items-center gap-3 px-3.5 py-3.5 transition hover:bg-secondary/55 focus-visible:bg-secondary/55 focus-visible:outline-none"
+                  role="menuitem"
+                  onClick={() => setAccountOpen(false)}
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[13px] bg-primary/[0.08] text-primary">
+                    <UserRound className="h-[18px] w-[18px]" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold text-foreground">{language === "sl" ? "Za stranke" : "For customers"}</span>
+                    <span className="mt-0.5 block text-[11px] leading-4 text-muted-foreground">
+                      {language === "sl" ? "Odpri svoj račun" : "Open your account"}
+                    </span>
+                  </span>
+                </a>
+              </div>
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="grid h-10 w-9 place-items-center text-foreground"
+            onClick={() => {
+              setAccountOpen(false);
+              setOpen((current) => !current);
+            }}
+            aria-label="Menu"
+          >
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
       </div>
 
       {open && (
@@ -618,9 +764,6 @@ const Navbar = () => {
               )}
             </div>
 
-            <Button variant="hero" size="lg" className="rounded-xl" asChild>
-              <a href={businessLoginPath} onClick={() => setOpen(false)}>{language === "sl" ? "Prijava / Ustvari račun" : "Login / Create account"}</a>
-            </Button>
           </div>
         </div>
       )}

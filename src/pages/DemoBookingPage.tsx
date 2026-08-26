@@ -12,6 +12,7 @@ import {
   Clock3,
   Loader2,
   Mail,
+  Phone,
   RefreshCw,
   Video,
   XCircle,
@@ -53,6 +54,11 @@ const copy = {
     notePlaceholder: "Na primer: naročanje strank, računi, mobilna aplikacija ...",
     privacy: "Podatke bomo uporabili samo za organizacijo predstavitve in nadaljnjo komunikacijo o vašem povpraševanju.",
     confirm: "Potrdi rezervacijo",
+    confirmFailedTitle: "Rezervacija ni uspela",
+    confirmFailedText: "Žal rezervacije nismo mogli potrditi. Prosimo, kontaktirajte podporo po e-pošti ali telefonu.",
+    contactSupport: "Kontaktirajte podporo",
+    contactSupportText: "Z veseljem vam pomagamo in skupaj poiščemo nov termin.",
+    retryConfirm: "Poskusi znova rezervirati",
     selected: "Izbrani termin",
     loading: "Nalagam proste termine …",
     unavailable: "Spletno naročanje predstavitve trenutno ni na voljo.",
@@ -97,6 +103,11 @@ const copy = {
     notePlaceholder: "For example: online booking, invoices, mobile app ...",
     privacy: "We will only use your details to organise the demo and follow up on your enquiry.",
     confirm: "Confirm booking",
+    confirmFailedTitle: "Booking failed",
+    confirmFailedText: "Unfortunately, we could not confirm your booking. Please contact support by email or phone.",
+    contactSupport: "Contact support",
+    contactSupportText: "We will be happy to help and find another suitable time with you.",
+    retryConfirm: "Try booking again",
     selected: "Selected time",
     loading: "Loading available times …",
     unavailable: "Online demo booking is currently unavailable.",
@@ -120,6 +131,10 @@ const copy = {
     pageError: "The booking could not be found or this link is no longer valid.",
   },
 } as const;
+
+const SUPPORT_EMAIL = "info@calendra.si";
+const SUPPORT_PHONE = "040 641 644";
+const SUPPORT_PHONE_LINK = "+38640641644";
 
 const formatDateTime = (value: string, language: "sl" | "en", timeZone?: string) => new Intl.DateTimeFormat(language === "sl" ? "sl-SI" : "en-GB", {
   weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone,
@@ -170,6 +185,7 @@ const DemoBookingPage = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [confirmationFailed, setConfirmationFailed] = useState(false);
   const [form, setForm] = useState({ guestName: "", guestEmail: "", guestPhone: "", companyName: "", guestNote: "" });
   const selectedSummaryRef = useRef<HTMLElement | null>(null);
 
@@ -238,6 +254,7 @@ const DemoBookingPage = () => {
   const chooseSlot = async (slot: DemoSlot) => {
     setSaving(true);
     setError("");
+    setConfirmationFailed(false);
     try {
       const nextHold = await demoBookingApi.hold(slot.startAt, timeZone, hold?.holdToken);
       setSelectedSlot(slot);
@@ -264,6 +281,7 @@ const DemoBookingPage = () => {
 
   const openDetails = () => {
     if (!selectedSlot || !hold) return;
+    setConfirmationFailed(false);
     setStep("details");
     trackMarketingEvent("demo_booking_form_started", { language });
   };
@@ -284,6 +302,7 @@ const DemoBookingPage = () => {
     if (!hold) return;
     setSaving(true);
     setError("");
+    setConfirmationFailed(false);
     try {
       const params = new URLSearchParams(window.location.search);
       const result = await demoBookingApi.confirm({
@@ -296,10 +315,12 @@ const DemoBookingPage = () => {
         utmCampaign: params.get("utm_campaign"),
       });
       setBooking(result);
+      setConfirmationFailed(false);
       setStep("confirmed");
       trackMarketingEvent("demo_booking_confirmed", { language, booking_id: result.id, meeting_provider: result.meetingProvider });
     } catch (cause) {
-      setError(cause instanceof Error ? cause.message : t.error);
+      setConfirmationFailed(true);
+      if (import.meta.env.DEV) console.error("Demo booking confirmation failed", cause);
     } finally {
       setSaving(false);
     }
@@ -426,19 +447,99 @@ const DemoBookingPage = () => {
       ) : (
         <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
           <section className="rounded-[2rem] border border-border/70 bg-card p-5 shadow-[0_28px_80px_-45px_hsl(var(--primary)/0.45)] md:p-8">
-            {step === "slots" ? slotPicker : <form onSubmit={confirm} className="grid gap-5">
-              <div><Button type="button" variant="ghost" className="-ml-3 mb-3" onClick={() => setStep("slots")}><ArrowLeft className="mr-2 h-4 w-4" />{t.back}</Button><h2 className="font-display text-2xl font-bold text-foreground">{t.details}</h2><p className="mt-2 text-muted-foreground">{t.detailsHelp}</p></div>
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div className="grid gap-2"><Label htmlFor="demo-name">{t.name}</Label><Input id="demo-name" required value={form.guestName} onChange={(e) => setForm({ ...form, guestName: e.target.value })} className="h-12 rounded-xl" autoComplete="name" /></div>
-                <div className="grid gap-2"><Label htmlFor="demo-email">{t.email}</Label><Input id="demo-email" type="email" required value={form.guestEmail} onChange={(e) => setForm({ ...form, guestEmail: e.target.value })} className="h-12 rounded-xl" autoComplete="email" /></div>
-                <div className="grid gap-2"><Label htmlFor="demo-company">{t.company}</Label><Input id="demo-company" required value={form.companyName} onChange={(e) => setForm({ ...form, companyName: e.target.value })} className="h-12 rounded-xl" autoComplete="organization" /></div>
-                <div className="grid gap-2"><Label htmlFor="demo-phone">{t.phone}</Label><Input id="demo-phone" type="tel" value={form.guestPhone} onChange={(e) => setForm({ ...form, guestPhone: e.target.value })} className="h-12 rounded-xl" autoComplete="tel" /></div>
-              </div>
-              <div className="grid gap-2"><Label htmlFor="demo-note">{t.note}</Label><Textarea id="demo-note" value={form.guestNote} onChange={(e) => setForm({ ...form, guestNote: e.target.value })} placeholder={t.notePlaceholder} className="min-h-28 rounded-xl" /></div>
-              <p className="text-xs leading-5 text-muted-foreground">{t.privacy}</p>
-              {error && <p className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive">{error}</p>}
-              <Button type="submit" variant="hero" className="h-12 rounded-xl text-base" disabled={saving}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Check className="mr-2 h-4 w-4" />}{t.confirm}</Button>
-            </form>}
+            {step === "slots" ? slotPicker : (
+              <form onSubmit={confirm} className="grid gap-5">
+                <div>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    className="-ml-3 mb-3"
+                    onClick={() => {
+                      setConfirmationFailed(false);
+                      setStep("slots");
+                    }}
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    {t.back}
+                  </Button>
+                  <h2 className="font-display text-2xl font-bold text-foreground">{t.details}</h2>
+                  <p className="mt-2 text-muted-foreground">{t.detailsHelp}</p>
+                </div>
+
+                <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid gap-2">
+                    <Label htmlFor="demo-name">{t.name}</Label>
+                    <Input id="demo-name" required value={form.guestName} onChange={(e) => setForm({ ...form, guestName: e.target.value })} className="h-12 rounded-xl" autoComplete="name" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="demo-email">{t.email}</Label>
+                    <Input id="demo-email" type="email" required value={form.guestEmail} onChange={(e) => setForm({ ...form, guestEmail: e.target.value })} className="h-12 rounded-xl" autoComplete="email" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="demo-company">{t.company}</Label>
+                    <Input id="demo-company" required value={form.companyName} onChange={(e) => setForm({ ...form, companyName: e.target.value })} className="h-12 rounded-xl" autoComplete="organization" />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="demo-phone">{t.phone}</Label>
+                    <Input id="demo-phone" type="tel" value={form.guestPhone} onChange={(e) => setForm({ ...form, guestPhone: e.target.value })} className="h-12 rounded-xl" autoComplete="tel" />
+                  </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="demo-note">{t.note}</Label>
+                  <Textarea id="demo-note" value={form.guestNote} onChange={(e) => setForm({ ...form, guestNote: e.target.value })} placeholder={t.notePlaceholder} className="min-h-28 rounded-xl" />
+                </div>
+
+                {confirmationFailed && (
+                  <div className="grid gap-3" aria-live="polite">
+                    <div role="alert" className="flex gap-3 rounded-2xl border border-destructive/35 bg-destructive/[0.055] p-4 sm:p-5">
+                      <span aria-hidden="true" className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-destructive text-base font-extrabold text-destructive-foreground shadow-sm">
+                        !
+                      </span>
+                      <div className="min-w-0">
+                        <h3 className="font-display text-base font-bold text-destructive">{t.confirmFailedTitle}</h3>
+                        <p className="mt-1 text-sm leading-6 text-foreground/75">{t.confirmFailedText}</p>
+                      </div>
+                    </div>
+
+                    <div className="rounded-2xl border border-primary/10 bg-primary/[0.055] p-4 sm:p-5">
+                      <h3 className="font-display text-sm font-bold text-foreground">{t.contactSupport}</h3>
+                      <p className="mt-1 text-sm leading-5 text-muted-foreground">{t.contactSupportText}</p>
+                      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                        <a
+                          href={`mailto:${SUPPORT_EMAIL}`}
+                          aria-label={`${t.contactSupport}: ${SUPPORT_EMAIL}`}
+                          className="group flex min-h-12 min-w-0 items-center gap-3 rounded-xl border border-border/80 bg-card px-3.5 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+                        >
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                            <Mail className="h-4 w-4" />
+                          </span>
+                          <span className="min-w-0 flex-1 truncate text-left">{SUPPORT_EMAIL}</span>
+                          <ChevronRight className="h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" />
+                        </a>
+                        <a
+                          href={`tel:${SUPPORT_PHONE_LINK}`}
+                          aria-label={`${t.contactSupport}: ${SUPPORT_PHONE}`}
+                          className="group flex min-h-12 min-w-0 items-center gap-3 rounded-xl border border-border/80 bg-card px-3.5 text-sm font-semibold text-foreground shadow-sm transition hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+                        >
+                          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                            <Phone className="h-4 w-4" />
+                          </span>
+                          <span className="min-w-0 flex-1 text-left">{SUPPORT_PHONE}</span>
+                          <ChevronRight className="h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-0.5" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <Button type="submit" variant="hero" className="h-12 rounded-xl text-base" disabled={saving}>
+                  {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : confirmationFailed ? <RefreshCw className="mr-2 h-4 w-4" /> : <Check className="mr-2 h-4 w-4" />}
+                  {confirmationFailed ? t.retryConfirm : t.confirm}
+                </Button>
+                <p className="text-xs leading-5 text-muted-foreground">{t.privacy}</p>
+              </form>
+            )}
           </section>
           <aside ref={selectedSummaryRef} className="scroll-mt-24 rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-card to-card p-6 shadow-soft lg:sticky lg:top-28 md:p-7">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground"><CalendarDays className="h-6 w-6" /></span>
