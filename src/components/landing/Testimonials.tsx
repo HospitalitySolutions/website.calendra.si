@@ -54,15 +54,6 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
     readStory: "Preberite zgodbo stranke",
     reviews: [
       {
-        name: "Latanya Powell",
-        quote: "Calendro uporabljam na Irskem in se mi zdi preprosta, zanesljiva ter enostavna za upravljanje terminov. Prihrani mi čas in poskrbi, da je vse dobro organizirano. Zelo priporočam.",
-        context: "Beauty Lounge",
-        initials: "LP",
-        avatar: "/reviews/latanya-powell.png",
-        translated: true,
-        sourceKind: "google",
-      },
-      {
         name: "Nina Piberčnik",
         quote: "Calendra nam omogoča, da imamo termine, stranke in organizacijo dela pregledno na enem mestu. Posebej nam je pomembno, da je sistem enostaven za uporabo tako za našo ekipo kot za stranke, ki se naročajo na termine.",
         context: "Direktor, Inštitut Avisensa",
@@ -84,14 +75,6 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         sourceKind: "customer",
         storySlug: "depilacije-ug",
       },
-      {
-        name: "Andrej Novak",
-        quote: "Uporabljamo aplikacijo že nekaj časa, stvar deluje odlično in se vedno nadgrajuje. Toplo priporočam!",
-        context: "Uporabnik Calendre",
-        initials: "A",
-        avatarClassName: "bg-violet-500",
-        sourceKind: "google",
-      },
     ],
   },
   en: {
@@ -107,14 +90,6 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
     next: "Next review",
     readStory: "Read the customer story",
     reviews: [
-      {
-        name: "Latanya Powell",
-        quote: "I’ve been using Calendra in Ireland and find it simple, reliable and easy to manage appointments with. It saves time and keeps everything organised. Highly recommended.",
-        context: "Beauty Lounge",
-        initials: "LP",
-        avatar: "/reviews/latanya-powell.png",
-        sourceKind: "google",
-      },
       {
         name: "Nina Piberčnik",
         quote: "Calendra lets us keep appointments, clients and work organisation clearly in one place. It is especially important to us that the system is easy to use both for our team and for clients booking appointments.",
@@ -138,15 +113,6 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
         sourceLabel: "Depilacije UG",
         sourceKind: "customer",
         storySlug: "depilacije-ug",
-      },
-      {
-        name: "Andrej Novak",
-        quote: "We have been using the app for some time. It works excellently and is continuously improving. Highly recommended!",
-        context: "Calendra user",
-        initials: "A",
-        avatarClassName: "bg-violet-500",
-        translated: true,
-        sourceKind: "google",
       },
     ],
   },

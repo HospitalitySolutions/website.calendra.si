@@ -11,8 +11,8 @@ import type { SiteLanguage } from "@/lib/site-language";
  */
 const answers: Partial<Record<CanonicalRouteKey, Record<SiteLanguage, string>>> = {
   pricing: {
-    sl: "Calendra stane od 17,90 EUR na mesec z DDV za paket Osnovno, 34,90 EUR za Profesionalno in 54,90 EUR za Premium. Vsak paket vključuje enega uporabnika, dodatni stanejo od 9,90 EUR mesečno. Pri letnem plačilu plačate 10 mesecev za 12. Preizkus traja 14 dni brez kreditne kartice.",
-    en: "Calendra costs from 17.90 EUR per month including VAT for the Basic plan, 34.90 EUR for Professional and 54.90 EUR for Premium. Every plan includes one user, and additional users start at 9.90 EUR per month. Annual billing charges 10 months for 12. The trial lasts 14 days with no credit card.",
+    sl: "Calendra stane od 17,90 EUR na mesec z DDV za paket Osnovno, 34,90 EUR za Profesionalno in 54,90 EUR za Premium. Vsak paket vključuje enega uporabnika, vsak dodatni uporabnik stane 5,90 EUR mesečno. Pri letnem plačilu plačate 10 mesecev za 12. Preizkus traja 14 dni brez kreditne kartice.",
+    en: "Calendra costs from 17.90 EUR per month including VAT for the Basic plan, 34.90 EUR for Professional and 54.90 EUR for Premium. Every plan includes one user, and each additional user costs 5.90 EUR per month. Annual billing charges 10 months for 12. The trial lasts 14 days with no credit card.",
   },
   booking: {
     sl: "Spletno naročanje v Calendri strankam omogoča, da 24 ur na dan same izberejo storitev, zaposlenega in prost termin. Rezervacija se takoj zapiše v koledar, stranka pa prejme potrditev ter povezavo za spremembo ali odpoved. Nove spletne strani ne potrebujete: uporabite javno povezavo ali vtičnik.",

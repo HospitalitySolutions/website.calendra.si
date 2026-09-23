@@ -44,15 +44,6 @@ export const publicCompanyProfiles: PublicCompanyProfile[] = [
       sl: ["Lepotne storitve", "Nega", "Rezervacija terminov"],
       en: ["Beauty services", "Treatments", "Appointment booking"],
     },
-    review: {
-      author: "Latanya Powell",
-      rating: 5,
-      source: "Google",
-      text: {
-        sl: "Calendro uporabljam na Irskem. Je preprosta, zanesljiva in mi pomaga, da so termini dobro organizirani.",
-        en: "I use Calendra in Ireland. It is simple, reliable and helps me keep appointments well organised.",
-      },
-    },
     lastModified: "2026-07-15",
   },
   {

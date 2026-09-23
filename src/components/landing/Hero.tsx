@@ -126,19 +126,9 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="relative mt-7 flex flex-wrap items-center justify-center gap-6 text-sm lg:mt-5">
-          <div className="flex items-center gap-3">
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-primary/[0.075] text-primary">
-              <CircleUserRound className="h-5 w-5" aria-hidden="true" />
-            </span>
-            <span>
-              <span className="block text-[12px] text-muted-foreground">{copy.trustPrefix}</span>
-              <span className="font-display text-lg font-extrabold text-foreground">{copy.trustedCompanies}</span>
-            </span>
-          </div>
-          <span className="hidden h-11 w-px bg-border/80 sm:block" aria-hidden="true" />
+        <div className="relative mt-7 flex items-center justify-center text-sm lg:mt-5">
           <div>
-            <div className="flex gap-0.5" aria-label={copy.reviewRating}>
+            <div className="flex justify-center gap-0.5" aria-label={copy.reviewRating}>
               {Array.from({ length: 5 }).map((_, index) => (
                 <Star key={index} className="h-[18px] w-[18px] fill-accent text-accent" aria-hidden="true" />
               ))}

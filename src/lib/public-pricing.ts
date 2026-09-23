@@ -30,6 +30,8 @@ export type PublicAdditionalUserRule = {
   monthlyGrossPerUser: number;
 };
 
+export const ADDITIONAL_USER_MONTHLY_GROSS = 5.9;
+
 export type PublicPricingAddOn = {
   key: string;
   code: string;
@@ -198,8 +200,7 @@ export const FALLBACK_PUBLIC_PRICING: PublicPricingCatalog = {
   ],
   features: fallbackFeatures,
   additionalUserRules: [
-    { fromUser: 2, toUser: 5, monthlyGrossPerUser: 9.9 },
-    { fromUser: 6, toUser: null, monthlyGrossPerUser: 6.9 },
+    { fromUser: 2, toUser: null, monthlyGrossPerUser: ADDITIONAL_USER_MONTHLY_GROSS },
   ],
   addOns: [
     {
@@ -310,21 +311,12 @@ export const normalizePublicPricingCatalog = (
         .filter((feature): feature is PublicPricingFeature => feature !== null)
     : FALLBACK_PUBLIC_PRICING.features;
 
-  const rules = Array.isArray(raw.additionalUserRules)
-    ? raw.additionalUserRules
-        .map((rule): PublicAdditionalUserRule | null => {
-          if (!rule) return null;
-          const fromUser = Math.max(2, Math.trunc(Number(rule.fromUser) || 2));
-          const toValue = rule.toUser == null ? null : Math.trunc(Number(rule.toUser));
-          const toUser = toValue != null && toValue >= fromUser ? toValue : null;
-          return {
-            fromUser,
-            toUser,
-            monthlyGrossPerUser: finiteMoney(rule.monthlyGrossPerUser, 0),
-          };
-        })
-        .filter((rule): rule is PublicAdditionalUserRule => rule !== null)
-    : FALLBACK_PUBLIC_PRICING.additionalUserRules;
+  // Website pricing has one fixed price for every user beyond the included first user.
+  // Keep this authoritative on the website so a stale pricing API response cannot
+  // reintroduce the previous 2–5 / 6+ user tiers.
+  const rules: PublicAdditionalUserRule[] = [
+    { fromUser: 2, toUser: null, monthlyGrossPerUser: ADDITIONAL_USER_MONTHLY_GROSS },
+  ];
 
   const rawRecord = raw as Record<string, unknown>;
   const incomingAddOns = Array.isArray(rawRecord.addOns)
@@ -394,9 +386,7 @@ export const normalizePublicPricingCatalog = (
     ),
     plans,
     features,
-    additionalUserRules: rules.length
-      ? rules
-      : FALLBACK_PUBLIC_PRICING.additionalUserRules,
+    additionalUserRules: rules,
     addOns: addOns.length ? addOns : FALLBACK_PUBLIC_PRICING.addOns,
     smsPerMessageGross: finiteMoney(
       raw.smsPerMessageGross,

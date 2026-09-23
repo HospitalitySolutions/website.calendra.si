@@ -103,7 +103,7 @@ const keyFacts = (language: SiteLanguage) => {
     ? [
         `Paketi: ${planSummary("sl")} (cene z DDV, en uporabnik vključen).`,
         `Letno plačilo: plačate ${catalog.annualBilledMonths} mesecev za 12 mesecev uporabe.`,
-        `Dodatni uporabniki: od ${formatPrice(catalog.additionalUserRules[0].monthlyGrossPerUser)} na uporabnika mesečno.`,
+        `Dodatni uporabniki: ${formatPrice(catalog.additionalUserRules[0].monthlyGrossPerUser)} na uporabnika mesečno.`,
         `Brezplačni preizkus: 14 dni, brez kreditne kartice.`,
         `Jeziki: slovenščina in angleščina. Valuta: EUR. Trg: Slovenija.`,
         `Mobilna aplikacija za končne stranke: Calendra Connect (brezplačna, iOS in Android).`,
@@ -112,7 +112,7 @@ const keyFacts = (language: SiteLanguage) => {
     : [
         `Plans: ${planSummary("en")} (VAT included, one user included).`,
         `Annual billing: pay for ${catalog.annualBilledMonths} months and use the product for 12.`,
-        `Additional users: from ${formatPrice(catalog.additionalUserRules[0].monthlyGrossPerUser)} per user per month.`,
+        `Additional users: ${formatPrice(catalog.additionalUserRules[0].monthlyGrossPerUser)} per user per month.`,
         `Free trial: 14 days, no credit card required.`,
         `Languages: Slovenian and English. Currency: EUR. Market: Slovenia.`,
         `Customer mobile app: Calendra Connect (free, iOS and Android).`,

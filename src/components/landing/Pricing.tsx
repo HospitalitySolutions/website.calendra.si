@@ -112,7 +112,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     enterprisePanelCta: "Pošljite povpraševanje",
     enterprisePanelResponse: "Odzovemo se v 24 urah.",
     usersLabel: "2. Dodatni uporabniki",
-    usersHint: "Vsak dodatni uporabnik: 9,90€ / mesec",
+    usersHint: "Vsak dodatni uporabnik: 5,90 € / mesec",
     usersCountLabel: "uporabnikov",
     smsLabel: "3. Dodatna SMS sporočila",
     smsHint: "Vsako dodatno SMS sporočilo: 0,06€",
@@ -246,7 +246,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     enterprisePanelCta: "Send an enquiry",
     enterprisePanelResponse: "We respond within 24 hours.",
     usersLabel: "2. Additional users",
-    usersHint: "Each additional user: €9.90 / month",
+    usersHint: "Each additional user: €5.90 / month",
     usersCountLabel: "users",
     smsLabel: "3. Additional SMS messages",
     smsHint: "Each additional SMS message: €0.06",
@@ -375,7 +375,7 @@ const standaloneExtras = {
     includedTitle: "Vključeno v mesečni paket",
     included: ["Funkcionalnosti izbranega paketa", "1 uporabnik", "14-dnevni brezplačni preizkus", "Posodobitve in varnostne izboljšave"],
     extraTitle: "Dodatni stroški po izbiri ali porabi",
-    extra: ["Dodatni uporabniki: 9,90 € / mesec", "Dodatna SMS sporočila: 0,06 € / sporočilo", "Izbrani dodatni moduli"],
+    extra: ["Dodatni uporabniki: 5,90 € / mesec", "Dodatna SMS sporočila: 0,06 € / sporočilo", "Izbrani dodatni moduli"],
     trialTitle: "Pogoji brezplačnega preizkusa",
     trialBody: "Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice. Pred potrditvijo plačljivega paketa vidite izbrani paket, dodatke ter ocenjeni mesečni in prvi račun.",
     relatedTitle: "Preverite povezane funkcionalnosti",
@@ -393,7 +393,7 @@ const standaloneExtras = {
     includedTitle: "Included in the monthly plan",
     included: ["Features in the selected plan", "1 user", "14-day free trial", "Product updates and security improvements"],
     extraTitle: "Optional or usage-based costs",
-    extra: ["Additional users: €9.90 / month", "Additional SMS messages: €0.06 / message", "Selected add-on modules"],
+    extra: ["Additional users: €5.90 / month", "Additional SMS messages: €0.06 / message", "Selected add-on modules"],
     trialTitle: "Free-trial terms",
     trialBody: "The free trial lasts 14 days and does not require a credit card. Before confirming a paid plan, you can review the selected package, add-ons and estimated monthly and first invoice.",
     relatedTitle: "Explore related features",
@@ -538,9 +538,13 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     const firstRule = rules[0];
     const secondRule = rules[1];
     const usersHint = firstRule
-      ? language === "sl"
-        ? `Od ${firstRule.fromUser}. do ${firstRule.toUser ?? "∞"}. uporabnika: ${formatter.format(firstRule.monthlyGrossPerUser)} na uporabnika/mesec${secondRule ? `; od ${secondRule.fromUser}. uporabnika dalje: ${formatter.format(secondRule.monthlyGrossPerUser)} na uporabnika/mesec` : ""}.`
-        : `Users ${firstRule.fromUser}${firstRule.toUser ? `–${firstRule.toUser}` : "+"}: ${formatter.format(firstRule.monthlyGrossPerUser)} per user/month${secondRule ? `; from user ${secondRule.fromUser}: ${formatter.format(secondRule.monthlyGrossPerUser)} per user/month` : ""}.`
+      ? !secondRule && firstRule.toUser == null
+        ? language === "sl"
+          ? `Vsak dodatni uporabnik: ${formatter.format(firstRule.monthlyGrossPerUser)} / mesec.`
+          : `Each additional user: ${formatter.format(firstRule.monthlyGrossPerUser)} / month.`
+        : language === "sl"
+          ? `Od ${firstRule.fromUser}. do ${firstRule.toUser ?? "∞"}. uporabnika: ${formatter.format(firstRule.monthlyGrossPerUser)} na uporabnika/mesec${secondRule ? `; od ${secondRule.fromUser}. uporabnika dalje: ${formatter.format(secondRule.monthlyGrossPerUser)} na uporabnika/mesec` : ""}.`
+          : `Users ${firstRule.fromUser}${firstRule.toUser ? `–${firstRule.toUser}` : "+"}: ${formatter.format(firstRule.monthlyGrossPerUser)} per user/month${secondRule ? `; from user ${secondRule.fromUser}: ${formatter.format(secondRule.monthlyGrossPerUser)} per user/month` : ""}.`
       : baseContent.usersHint;
 
     return {
