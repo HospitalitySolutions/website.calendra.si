@@ -137,12 +137,12 @@ export const getSitemapLastModified = (contentLastModified?: string) => {
 };
 
 export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadata> = {
-  home: { changeFrequency: "weekly", priority: { sl: 1, en: 0.9 }, contentLastModified: "2026-07-15" },
+  home: { changeFrequency: "weekly", priority: { sl: 1, en: 0.9 }, contentLastModified: "2026-10-06" },
   pricing: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-07-15" },
   booking: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-08-11" },
   customers: { changeFrequency: "weekly", priority: { sl: 0.9, en: 0.8 }, contentLastModified: "2026-08-13" },
   businesses: { changeFrequency: "weekly", priority: { sl: 0.75, en: 0.65 }, contentLastModified: "2026-08-11" },
-  customerStories: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-11" },
+  customerStories: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-10-06" },
   demo: { changeFrequency: "weekly", priority: { sl: 0.8, en: 0.75 }, contentLastModified: "2026-07-22" },
   calendar: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-11" },
   invoicing: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-11" },

@@ -240,6 +240,103 @@ export const customerStories: CustomerStory[] = [
       },
     },
   },
+
+  {
+    slug: "skreativa",
+    name: "SKreativa",
+    websiteUrl: "https://www.skreativa.si/",
+    representative: "Špela Kovačič",
+    logo: {
+      src: "/customer-stories/skreativa-logo.webp",
+      width: 894,
+      height: 900,
+      alt: "SKreativa",
+    },
+    industryRouteKey: "otherServices",
+    lastModified: "2026-10-06",
+    content: {
+      sl: {
+        eyebrow: "Zgodba stranke · oglaševalska agencija",
+        title: "Kako SKreativa s Calendro zmanjša usklajevanje terminov po e-pošti",
+        description:
+          "SKreativa uporablja Calendro za sestanke z naročniki in svetovalne termine, da stranke same izberejo termin, potrditve in opomniki pa potekajo samodejno.",
+        businessDescription:
+          "Oglaševalska agencija SKreativa uporablja Calendro pri organizaciji sestankov z naročniki in svetovalnih terminov. Cilj je preprost in profesionalen proces naročanja, ki zmanjša administracijo ter ohrani dober pregled nad termini.",
+        challengeTitle: "Pred Calendro: preveč usklajevanja terminov po e-pošti",
+        challenge: [
+          "Dogovarjanje terminov z naročniki je zahtevalo več usklajevanja po e-pošti.",
+          "Vsak dogovor je pomenil dodatno administracijo okoli izbire in potrjevanja termina.",
+          "Želeli so bolj pregleden in profesionalen način naročanja tako za agencijo kot za stranko.",
+        ],
+        setupTitle: "Kako uporabljajo Calendro",
+        facts: [
+          { label: "Uporaba", value: "Sestanki in svetovalni termini" },
+          { label: "Spletno naročanje", value: "Da" },
+          { label: "Potrditve", value: "Samodejne" },
+          { label: "Opomniki", value: "Da" },
+        ],
+        workflowTitle: "Stranka izbere termin, Calendra poskrbi za naslednje korake",
+        workflowIntro:
+          "Pri SKreativi stranke same izberejo ustrezen termin. Calendra nato poskrbi za potrditev in opomnik, zato ni treba vsake rezervacije posebej usklajevati in spremljati po e-pošti.",
+        features: [
+          { title: "Samostojna izbira termina", description: "Stranka med razpoložljivimi možnostmi sama izbere termin za sestanek ali svetovanje." },
+          { title: "Potrditev in opomnik", description: "Po rezervaciji Calendra samodejno poskrbi za potrditev in opomnik pred terminom." },
+          { title: "Pregleden urnik", description: "Dogovorjeni termini so zbrani na enem mestu, zato je način dela preglednejši in administracije manj." },
+        ],
+        outcomeTitle: "Rezultat že po prvem tednu: manj administracije in bolj pregleden način dela",
+        outcomes: [
+          "Manj usklajevanja z naročniki po e-pošti.",
+          "Boljši pregled nad dogovorjenimi termini.",
+          "Bolj urejen in profesionalen proces naročanja za agencijo in stranko.",
+        ],
+        testimonial:
+          "Calendro uporabljam za sestanke z naročniki in svetovalne termine. Vzpostavitev je bila hitra, uporaba pa je preprosta. Največja sprememba je, da se mi ni treba več toliko usklajevati po e-pošti. Stranke same izberejo termin, Calendra pa poskrbi za potrditev in opomnik. Tako imam boljši pregled nad termini, celoten proces naročanja pa je bolj urejen in profesionalen – tako zame kot za stranko. Že po prvem tednu uporabe opažam predvsem manj administracije okoli dogovarjanja terminov in precej bolj pregleden način dela.",
+        representativeRole: "Oglaševalska agencija SKreativa",
+        websiteLabel: "Obiščite spletno stran SKreativa",
+        industryCta: "Calendra za druge storitvene dejavnosti",
+      },
+      en: {
+        eyebrow: "Customer story · advertising agency",
+        title: "How SKreativa reduces appointment coordination by email with Calendra",
+        description:
+          "SKreativa uses Calendra for client meetings and consulting appointments, letting clients choose their own time while confirmations and reminders are handled automatically.",
+        businessDescription:
+          "SKreativa advertising agency uses Calendra to organise client meetings and consulting appointments. The goal is a simple, professional booking process that reduces administration while keeping appointments easy to oversee.",
+        challengeTitle: "Before Calendra: too much appointment coordination by email",
+        challenge: [
+          "Arranging appointments with clients required more back-and-forth by email.",
+          "Each booking created extra administration around choosing and confirming a suitable time.",
+          "They wanted a clearer and more professional booking experience for both the agency and the client.",
+        ],
+        setupTitle: "How they use Calendra",
+        facts: [
+          { label: "Use case", value: "Client meetings and consulting" },
+          { label: "Online booking", value: "Yes" },
+          { label: "Confirmations", value: "Automatic" },
+          { label: "Reminders", value: "Yes" },
+        ],
+        workflowTitle: "Clients choose a time, Calendra handles the next steps",
+        workflowIntro:
+          "At SKreativa, clients select a suitable appointment themselves. Calendra then handles the confirmation and reminder, so each booking no longer needs to be coordinated and followed up manually by email.",
+        features: [
+          { title: "Self-service time selection", description: "Clients choose an available time for a meeting or consulting appointment themselves." },
+          { title: "Confirmation and reminder", description: "After booking, Calendra automatically handles the confirmation and reminder before the appointment." },
+          { title: "Clear appointment overview", description: "Booked appointments are kept in one place, making the workflow clearer and reducing administration." },
+        ],
+        outcomeTitle: "Result after the first week: less administration and a clearer way of working",
+        outcomes: [
+          "Less appointment coordination with clients by email.",
+          "A better overview of scheduled appointments.",
+          "A more organised and professional booking process for both the agency and the client.",
+        ],
+        testimonial:
+          "I use Calendra for client meetings and consulting appointments. Setup was quick and the system is easy to use. The biggest change is that I no longer need to spend as much time coordinating by email. Clients choose their own time, while Calendra handles the confirmation and reminder. This gives me a better overview of appointments and makes the whole booking process more organised and professional for both me and the client. After the first week, I am already noticing less administration around arranging appointments and a much clearer way of working.",
+        representativeRole: "SKreativa advertising agency",
+        websiteLabel: "Visit the SKreativa website",
+        industryCta: "Calendra for other service businesses",
+      },
+    },
+  },
 ];
 
 export const getCustomerStory = (slug: string) => customerStories.find((story) => story.slug === slug);
