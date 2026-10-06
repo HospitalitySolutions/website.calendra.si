@@ -56,7 +56,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
       {
         name: "Nina Piberčnik",
         quote: "Calendra nam omogoča, da imamo termine, stranke in organizacijo dela pregledno na enem mestu. Posebej nam je pomembno, da je sistem enostaven za uporabo tako za našo ekipo kot za stranke, ki se naročajo na termine.",
-        context: "Direktor, Inštitut Avisensa",
+        context: "Ustanoviteljica, Inštitut Avisensa",
         initials: "NP",
         avatar: "/customer-stories/nina-pibercnik.webp",
         avatarClassName: "bg-pink-500",
@@ -68,7 +68,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
       {
         name: "Urška Grmek",
         quote: "S Calendro je organizacija terminov precej enostavnejša. Stranke se lahko naročijo same, mi pa imamo ves čas jasen pregled nad urnikom in manj usklajevanja po telefonu ali sporočilih.",
-        context: "Lastnik, Depilacije UG",
+        context: "Lastnica, Depilacije UG",
         initials: "UG",
         avatar: "/customer-stories/urska-grmek.webp",
         avatarClassName: "bg-emerald-500",
@@ -80,7 +80,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
       {
         name: "Špela Kovačič",
         quote: "Calendro uporabljam za sestanke z naročniki in svetovalne termine. Vzpostavitev je bila hitra, uporaba pa je preprosta. Največja sprememba je, da se mi ni treba več toliko usklajevati po e-pošti. Stranke same izberejo termin, Calendra pa poskrbi za potrditev in opomnik. Tako imam boljši pregled nad termini, celoten proces naročanja pa je bolj urejen in profesionalen – tako zame kot za stranko. Že po prvem tednu uporabe opažam predvsem manj administracije okoli dogovarjanja terminov in precej bolj pregleden način dela.",
-        context: "Oglaševalska agencija SKreativa",
+        context: "Lastnica, Oglaševalska agencija SKreativa",
         initials: "ŠK",
         avatar: "/customer-stories/spela-kovacic.webp",
         sourceUrl: "https://www.skreativa.si/",
@@ -106,7 +106,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
       {
         name: "Nina Piberčnik",
         quote: "Calendra lets us keep appointments, clients and work organisation clearly in one place. It is especially important to us that the system is easy to use both for our team and for clients booking appointments.",
-        context: "Director, Inštitut Avisensa",
+        context: "Founder, Inštitut Avisensa",
         initials: "NP",
         avatar: "/customer-stories/nina-pibercnik.webp",
         avatarClassName: "bg-pink-500",
@@ -132,7 +132,7 @@ const translations: Record<SiteLanguage, TestimonialsCopy> = {
       {
         name: "Špela Kovačič",
         quote: "I use Calendra for client meetings and consulting appointments. Setup was quick and the system is easy to use. The biggest change is that I no longer need to spend as much time coordinating by email. Clients choose their own time, while Calendra handles the confirmation and reminder. This gives me a better overview of appointments and makes the whole booking process more organised and professional for both me and the client. After the first week, I am already noticing less administration around arranging appointments and a much clearer way of working.",
-        context: "SKreativa advertising agency",
+        context: "Owner, SKreativa advertising agency",
         initials: "ŠK",
         avatar: "/customer-stories/spela-kovacic.webp",
         translated: true,
