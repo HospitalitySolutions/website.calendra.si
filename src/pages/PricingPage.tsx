@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { getRoutePath } from "@/lib/localized-routes";
 import { useSiteLanguage } from "@/lib/site-language";
 import { ArrowRight, Check, Laptop, ShieldCheck, Wrench } from "lucide-react";
+import "@/styles/pricing.css";
 
 const PricingPage = () => {
   const { language } = useSiteLanguage();
@@ -25,22 +26,22 @@ const PricingPage = () => {
       };
 
   return (
-    <div className="marketing-page marketing-redesign min-h-screen bg-background">
+    <div className="marketing-page pricing-page min-h-screen bg-background">
       <Navbar />
-      <main className="pb-16 pt-8 md:pb-20 md:pt-10">
+      <main>
         <Pricing standalone />
-        <section className="container mx-auto max-w-[1500px] -mt-12 px-4 pb-16 sm:px-6 lg:px-8 md:-mt-16">
-          <div className="marketing-panel overflow-hidden rounded-[30px] p-7 sm:p-9 md:p-10">
-            <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+        <section className="pricing-it-band" aria-labelledby="pricing-it-title">
+          <div className="container mx-auto">
+            <div className="pricing-it-layout">
               <div>
                 <span className="marketing-eyebrow">{copy.eyebrow}</span>
-                <h2 className="marketing-section-title mt-3 text-3xl sm:text-4xl">{copy.title}</h2>
-                <p className="mt-4 max-w-3xl text-lg leading-8 text-muted-foreground">{copy.body}</p>
-                <Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild>
+                <h2 id="pricing-it-title" className="pricing-section-title mt-3">{copy.title}</h2>
+                <p className="mt-4 text-muted-foreground leading-7">{copy.body}</p>
+                <Button variant="hero" size="lg" className="pricing-button mt-6" asChild>
                   <a href={getRoutePath("itServices", language)}>{copy.cta}<ArrowRight className="h-4 w-4" /></a>
                 </Button>
               </div>
-              <div className="marketing-card rounded-[22px] bg-white/92 p-6">
+              <div className="pricing-info-card">
                 <div className="flex items-center gap-3 text-primary"><Laptop className="h-6 w-6" /><Wrench className="h-6 w-6" /><ShieldCheck className="h-6 w-6" /></div>
                 <ul className="mt-6 grid gap-4">
                   {copy.items.map((item) => <li key={item} className="flex items-start gap-3 font-medium text-foreground"><Check className="mt-0.5 h-5 w-5 shrink-0 text-primary" />{item}</li>)}

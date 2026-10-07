@@ -21,8 +21,8 @@ const distDir = path.join(root, 'dist');
 const BUDGETS = {
   /** Entry chunk and its static imports: the JS required before the homepage is interactive. */
   initialJs: 210,
-  /** Shared stylesheet plus the scoped, responsive homepage design (+2 KB). */
-  css: 18,
+  /** Shared styles plus the scoped homepage and pricing designs (+3.5 KB for pricing). */
+  css: 21.5,
   /** Largest single lazily loaded route chunk, as an early warning for a runaway page. */
   largestRouteChunk: 50,
 };

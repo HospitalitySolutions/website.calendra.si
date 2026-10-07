@@ -1,4 +1,4 @@
-import RelatedPages from "@/components/seo/RelatedPages";
+import { getRelatedPages } from "@/lib/related-pages";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -10,8 +10,7 @@ import { getFaqForRoute } from "@/lib/faq";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { getRoutePath, sitemapRouteMetadata } from "@/lib/localized-routes";
 import { getCustomerStory, getCustomerStoryPath } from "@/lib/customer-stories";
-import { BellRing, Building2, CalendarDays, Check, Link2, MessageSquareText, Quote, Receipt, Send, Star, Users, X as XIcon } from "lucide-react";
-import { motion } from "framer-motion";
+import { ArrowRight, CalendarDays, Check, CreditCard, Link2, Minus, Plus, Quote, Receipt, Star, Users } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
@@ -111,7 +110,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     enterprisePanelDescription: "Enterprise paket prilagodimo vašemu poslovanju.",
     enterprisePanelCta: "Pošljite povpraševanje",
     enterprisePanelResponse: "Odzovemo se v 24 urah.",
-    usersLabel: "2. Dodatni uporabniki",
+    usersLabel: "2. Uporabniki",
     usersHint: "Vsak dodatni uporabnik: 5,90 € / mesec",
     usersCountLabel: "uporabnikov",
     smsLabel: "3. Dodatna SMS sporočila",
@@ -590,7 +589,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       const inheritedLabel = language === "sl"
         ? tier.key === "professional"
           ? "Vse vključeno iz Osnovnega paketa +"
-          : "Vse vključeno iz Poslovnega paketa +"
+          : "Vse vključeno iz Profesionalnega paketa +"
         : tier.key === "professional"
           ? "Everything included in the Basic plan +"
           : "Everything included in the Professional plan +";
@@ -618,8 +617,8 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     [availableAddOns, selectedApiPlanKey],
   );
   const selectedAddOns = useMemo(
-    () => availableAddOns.filter((addOn) => selectedAddOnKeys.includes(addOn.key)),
-    [availableAddOns, selectedAddOnKeys],
+    () => visibleAddOns.filter((addOn) => selectedAddOnKeys.includes(addOn.key)),
+    [visibleAddOns, selectedAddOnKeys],
   );
   const additionalUsersPrice = calculateAdditionalUsersPrice(
     additionalUsers,
@@ -696,7 +695,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     () => ({
       totalUsers: additionalUsers,
       additionalSms,
-      fiscalCashRegister: selectedAddOns.some((addOn) => addOn.code === "FISCAL_CASH_REGISTER"),
+      fiscalCashRegister: selectedAddOns.some((addOn) => ["FISCAL", "FISCAL_CASH_REGISTER"].includes(addOn.code)),
       websiteCreation: false,
       businessPremises: selectedAddOns.some((addOn) => addOn.code === "BUSINESS_PREMISES"),
       selectedAddOnKeys: selectedAddOns.map((addOn) => addOn.key),
@@ -730,7 +729,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
 
     if (!standalone) {
       const query = `plan=${tierKey}&billing=${billingPeriod}`;
-      const target = tierKey === "enterprise" ? `/cenik?${query}#contact-form` : `/cenik?${query}#pricing-configurator`;
+      const target = `${getRoutePath("pricing", language)}?${query}${tierKey === "enterprise" ? "#contact-form" : "#pricing-configurator"}`;
       window.location.assign(target);
       return;
     }
@@ -764,501 +763,271 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     window.location.href = mailto;
   };
 
-  const additionalUserCostLines = pricingCatalog.additionalUserRules.map((rule) => {
-    if (language === "sl") {
-      const range = rule.toUser == null
-        ? `Od ${rule.fromUser}. uporabnika dalje`
-        : `Od ${rule.fromUser}. do ${rule.toUser}. uporabnika`;
-      return `${range}: ${formatter.format(rule.monthlyGrossPerUser)} na uporabnika/mesec`;
-    }
-    const range = rule.toUser == null
-      ? `From user ${rule.fromUser}`
-      : `Users ${rule.fromUser}–${rule.toUser}`;
-    return `${range}: ${formatter.format(rule.monthlyGrossPerUser)} per user/month`;
-  });
-  const extraCostItems = [
-    ...additionalUserCostLines,
-    language === "sl"
-      ? `Dodatna SMS sporočila: ${formatter.format(pricingCatalog.smsPerMessageGross)} / sporočilo`
-      : `Additional SMS messages: ${formatter.format(pricingCatalog.smsPerMessageGross)} / message`,
-    ...(visibleAddOns.length > 0
-      ? [language === "sl" ? "Izbrani dodatni moduli" : "Selected add-on modules"]
-      : []),
-  ];
-
-  // On /cenik this block is the page, so its heading is the h1 and the plan
-  // names sit one level below it. Embedded on the homepage everything shifts
-  // down a level, which keeps the document outline gapless in both places.
+  const sl = language === "sl";
+  const extra = standaloneExtras[language];
+  const ui = sl ? {
+    comparison: "Poiščite funkcionalnosti, ki jih potrebuje vaše podjetje.",
+    trial: "14 dni brezplačno", noCard: "Brez kreditne kartice",
+    configure: "Prilagodite svoj paket",
+    calculatorDescription: "Izberite paket, uporabnike in dodatke. Končno ceno vidite takoj.",
+    selected: "Vaš izbrani paket", package: "Paket", users: "Dodatni uporabniki",
+    sms: "SMS sporočila", modules: "Dodatni moduli", included: "Vključeno",
+    unavailable: "Ni vključeno", perMonth: "mesec", perMessage: "sporočilo",
+    user: "Dodatni uporabnik", fromSecond: "Od 2. uporabnika dalje.",
+    optional: "Dodatno po izbiri ali porabi", byPrice: "Po ceniku",
+    custom: "Ponudba po meri", team: "Rešitev za vašo ekipo.",
+    teamDescription: "Za večje ekipe, več lokacij ali posebne zahteve pripravimo ponudbo po meri.",
+    benefits: ["Prilagoditev vašemu poslovanju", "Povezovanje z drugimi orodji", "Odzovemo se v 24 urah."],
+    inquiry: "Povpraševanje za Enterprise", removeUser: "Odstrani uporabnika", addUser: "Dodaj uporabnika",
+    userCount: "Število uporabnikov", smsCount: "Število dodatnih SMS sporočil",
+    monthlyBilling: "Mesečni obračun", annualBilling: "Letni obračun",
+    annualPackage: "Letno za paket", enterprise: "Za Enterprise pripravimo izračun po meri.",
+    readStory: "Preberite celotno zgodbo", swipe: "Za vse pakete podrsajte po tabeli.",
+  } : {
+    comparison: "Find the features your business needs.",
+    trial: "14 days free", noCard: "No credit card required",
+    configure: "Make it your plan",
+    calculatorDescription: "Choose your plan, users and extras. See your total right away.",
+    selected: "Your selected plan", package: "Plan", users: "Additional users",
+    sms: "SMS messages", modules: "Add-on modules", included: "Included",
+    unavailable: "Not included", perMonth: "month", perMessage: "message",
+    user: "Additional user", fromSecond: "From the second user.",
+    optional: "Optional or usage-based costs", byPrice: "As listed",
+    custom: "A tailored offer", team: "A solution for your team.",
+    teamDescription: "For larger teams, multiple locations or special requirements, we prepare a tailored offer.",
+    benefits: ["Tailored to your business", "Connect your existing tools", "We respond within 24 hours."],
+    inquiry: "Enterprise enquiry", removeUser: "Remove a user", addUser: "Add a user",
+    userCount: "Number of users", smsCount: "Number of additional SMS messages",
+    monthlyBilling: "Monthly billing", annualBilling: "Annual billing",
+    annualPackage: "Annual plan price", enterprise: "We prepare a custom estimate for Enterprise.",
+    readStory: "Read the full story", swipe: "Scroll the table to compare all plans.",
+  };
+  const userCountLabel = sl
+    ? `${additionalUsers} ${additionalUsers % 100 === 1 ? "uporabnik" : additionalUsers % 100 === 2 ? "uporabnika" : [3, 4].includes(additionalUsers % 100) ? "uporabniki" : "uporabnikov"}`
+    : `${additionalUsers} ${additionalUsers === 1 ? "user" : "users"}`;
+  const includedUserLabel = sl
+    ? includedUsers === 1 ? "1 uporabnik je vključen." : `Vključeni uporabniki: ${includedUsers}.`
+    : `${includedUsers} ${includedUsers === 1 ? "user is" : "users are"} included.`;
+  const modulesPrice = selectedAddOns.reduce((total, addOn) => total + addOn.monthlyGross, 0);
+  const story = getCustomerStory("institut-avisensa")!;
+  const storyContent = story.content[language];
+  const relatedPages = getRelatedPages("pricing", language, 8);
   const HeadingTag = standalone ? "h1" : "h2";
   const TierHeadingTag = standalone ? "h2" : "h3";
+  const SectionHeading = standalone ? "h2" : "h3";
+  const setUserCount = (value: number) => setAdditionalUsers(Math.min(USER_SLIDER_MAX, Math.max(includedUsers, Math.trunc(value) || includedUsers)));
+  const setSmsCount = (value: number) => setAdditionalSms(Math.min(SMS_SLIDER_MAX, Math.max(0, Math.trunc(value) || 0)));
+
+  const trustLine = (
+    <div className="pricing-trust">
+      <span><Check aria-hidden="true" />{ui.trial}</span>
+      <span><CreditCard aria-hidden="true" />{ui.noCard}</span>
+    </div>
+  );
+  const signupButton = (
+    <Button variant="hero" size="lg" className="pricing-button" asChild>
+      <a href={signupRoute} data-pricing-signup>
+        {content.continueToRegister}<ArrowRight aria-hidden="true" className="h-4 w-4" />
+      </a>
+    </Button>
+  );
 
   return (
-    <section
-      id={standalone ? undefined : "cenik"}
-      className={`${standalone ? "pt-0 pb-36 md:pb-40" : "scroll-mt-20"} bg-transparent py-16 md:py-20 lg:py-24`}
-    >
-      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
-        <div className="mb-10 text-center md:text-left">
+    <section id={standalone ? undefined : "cenik"} className="pricing-content">
+      <div className="container mx-auto">
+        <header className="pricing-intro">
           <span className="marketing-eyebrow">{content.sectionEyebrow}</span>
-          <HeadingTag className="marketing-section-title mt-3 text-3xl sm:text-4xl lg:text-[2.8rem]" style={{ color: "hsl(var(--text-heading))" }}>
-            {standalone ? content.standaloneTitle : content.sectionTitle}
-          </HeadingTag>
-          <p className="mt-4 text-lg text-muted-foreground">{content.sectionDescription}</p>
-          {standalone && (
-            <p className="mt-3 text-sm font-medium text-muted-foreground">
-              {language === "sl" ? "Cenik veljaven od " : "Pricing last updated "}
-              <time dateTime={sitemapRouteMetadata.pricing.contentLastModified}>{pricingUpdatedLabel}</time>
-            </p>
-          )}
-        </div>
-
-        <div className="mb-8 flex flex-col gap-3 md:mb-10 md:flex-row md:items-center md:justify-between">
-          <div className="inline-flex w-full max-w-max items-center rounded-full border border-border/70 bg-background p-1 shadow-sm">
-            <button
-              type="button"
-              onClick={() => setBillingPeriod("monthly")}
-              className={`rounded-full px-6 py-3 text-sm font-semibold transition ${
-                billingPeriod === "monthly"
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {content.billingMonthlyLabel}
-            </button>
-            <button
-              type="button"
-              onClick={() => setBillingPeriod("annual")}
-              className={`rounded-full px-6 py-3 text-sm font-semibold transition ${
-                billingPeriod === "annual"
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {content.billingAnnualLabel}
-            </button>
+          <HeadingTag>{standalone ? content.standaloneTitle : content.sectionTitle}</HeadingTag>
+          <p className="pricing-intro-description">{content.sectionDescription}</p>
+          {standalone && <p className="pricing-updated">{sl ? "Cenik veljaven od " : "Pricing last updated "}{pricingUpdatedLabel}</p>}
+          <div className="pricing-billing-row">
+            <div className="pricing-billing-switch" role="group" aria-label={sl ? "Obračunsko obdobje" : "Billing period"}>
+              {(["monthly", "annual"] as const).map((period) => (
+                <button key={period} type="button" aria-pressed={billingPeriod === period} onClick={() => setBillingPeriod(period)}>
+                  {period === "monthly" ? content.billingMonthlyLabel : content.billingAnnualLabel}
+                </button>
+              ))}
+            </div>
+            <span className="pricing-savings">{content.billingAnnualSavingsLabel.replace("{months}", String(annualSavingsMonths))}</span>
           </div>
+          {trustLine}
+        </header>
 
-          <div className="inline-flex max-w-full items-center rounded-full bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700">
-            {content.billingAnnualSavingsLabel.replace("{months}", String(annualSavingsMonths))}
-          </div>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {packageTiers.map((tier, index) => {
-            const isSelected = selectedTierKey === tier.key;
+        <div className="pricing-plan-grid">
+          {packageTiers.map((tier) => {
+            const plan = pricingCatalog.plans.find((item) => item.key === API_PLAN_BY_TIER[tier.key]);
             return (
-              <motion.div
-                key={tier.name}
-                className={`relative flex flex-col overflow-hidden rounded-[24px] border p-7 transition-all ${
-                  tier.accent ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border-border/50 bg-background"
-                } ${isSelected ? "ring-2 ring-primary ring-offset-2 ring-offset-background" : ""}`}
-                initial={false}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.08 }}
-              >
-                {tier.popular && (
-                  <span className="absolute right-4 top-4 flex items-center gap-1 rounded-full bg-accent px-3 py-1 text-xs font-bold text-accent-foreground">
-                    <Star className="h-3 w-3" /> {content.badge}
-                  </span>
-                )}
-
-                <TierHeadingTag className={`font-display text-lg font-bold ${tier.accent ? "" : "text-foreground"}`}>
-                  {tier.name}
-                </TierHeadingTag>
-                <div className="mt-4 flex items-baseline gap-1">
-                  <span className={`font-display text-4xl font-extrabold ${tier.accent ? "" : "text-foreground"}`}>{tier.price}</span>
-                  {tier.priceSuffix && (
-                    <span className={`text-sm ${tier.accent ? "text-primary-foreground" : "text-muted-foreground"}`}>{tier.priceSuffix}</span>
-                  )}
+              <article key={tier.key} className={`pricing-plan${tier.popular ? " pricing-plan-popular" : ""}`} data-plan={tier.key}>
+                <div className="pricing-plan-heading">
+                  <TierHeadingTag>{tier.name}</TierHeadingTag>
+                  {tier.popular && <span className="pricing-popular-badge"><Star aria-hidden="true" />{content.badge}</span>}
                 </div>
-                <p className={`mt-2 text-sm ${tier.accent ? "text-primary-foreground" : "text-muted-foreground"}`}>{tier.description}</p>
-
-                {tier.inheritedLabel && (
-                  <p className={`mt-6 text-sm font-bold ${tier.accent ? "text-primary-foreground" : "text-foreground"}`}>
-                    {tier.inheritedLabel}
-                  </p>
-                )}
-
-                <ul className={`${tier.inheritedLabel ? "mt-4" : "mt-6"} flex flex-1 flex-col gap-2.5`}>
-                  {tier.features.map((feature) => (
-                    <li key={feature} className={`flex items-start gap-2 text-sm ${tier.accent ? "text-primary-foreground" : "text-foreground"}`}>
-                      <Check className={`mt-0.5 h-4 w-4 shrink-0 ${tier.accent ? "text-accent" : "text-primary"}`} />
-                      {feature}
-                    </li>
-                  ))}
+                <p className="pricing-plan-price"><strong>{tier.price}</strong><span>{tier.priceSuffix}</span></p>
+                {billingPeriod === "annual" && plan && <p className="pricing-annual-price">{ui.annualPackage}: {formatter.format(plan.annualGross)}</p>}
+                <p className="pricing-plan-description">{tier.description}</p>
+                {tier.inheritedLabel && <p className="pricing-inherited">{tier.inheritedLabel}</p>}
+                <ul className="pricing-plan-features">
+                  {tier.features.map((feature) => <li key={feature}><Check aria-hidden="true" /><span>{feature}</span></li>)}
                 </ul>
-
-                <Button
-                  variant={tier.accent ? "hero-outline" : "hero"}
-                  size="lg"
-                  className={`mt-8 w-full rounded-xl ${
-                    tier.accent
-                      ? "border-primary-foreground/40 bg-transparent text-primary-foreground hover:bg-primary-foreground/15"
-                      : ""
-                  }`}
-                  onClick={() => handleTierSelect(tier.key)}
-                >
-                  {tier.cta}
-                </Button>
-              </motion.div>
+                <Button variant="hero" size="lg" className="pricing-button" onClick={() => handleTierSelect(tier.key)}>{tier.cta}</Button>
+              </article>
             );
           })}
         </div>
 
         {enterpriseTier && (
-          <section className="marketing-panel mt-6 rounded-[24px] p-5 md:p-6" aria-label={enterpriseTier.name}>
-            <div className="grid gap-5 lg:grid-cols-[1.25fr_2.2fr_auto] lg:items-center">
-              <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-primary/15 bg-primary/[0.08] text-primary">
-                  <Users className="h-7 w-7" />
-                </div>
-                <div>
-                  <TierHeadingTag className="text-lg font-bold text-foreground">{content.enterprisePanelTitle}</TierHeadingTag>
-                  <p className="mt-1 text-sm leading-6 text-muted-foreground">{content.enterprisePanelDescription}</p>
-                </div>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                {[
-                  enterpriseTier.features[0],
-                  enterpriseTier.features[1],
-                  enterpriseTier.features[3],
-                  enterpriseTier.features[enterpriseTier.features.length - 1],
-                ].filter(Boolean).map((feature) => (
-                  <div key={feature} className="flex items-center gap-2 text-sm font-medium text-foreground">
-                    <Check className="h-4 w-4 shrink-0 text-primary" />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-col items-stretch gap-2 lg:min-w-[190px]">
-                <Button variant="hero" size="lg" className="rounded-xl" onClick={() => handleTierSelect("enterprise")}>
-                  {content.enterprisePanelCta}
-                </Button>
-                <p className="text-center text-xs text-muted-foreground">{content.enterprisePanelResponse}</p>
-              </div>
-            </div>
+          <section className="pricing-enterprise-banner" aria-label={enterpriseTier.name}>
+            <div className="pricing-enterprise-title"><span className="pricing-icon"><Users aria-hidden="true" /></span><div><TierHeadingTag>{content.enterprisePanelTitle}</TierHeadingTag><p>{content.enterprisePanelDescription}</p></div></div>
+            <ul>{enterpriseTier.features.filter((_, index) => [0, 1, 3, 6].includes(index)).map((feature) => <li key={feature}>{feature}</li>)}</ul>
+            <div><Button variant="outline" size="lg" className="pricing-button" onClick={() => handleTierSelect("enterprise")}>{content.enterprisePanelCta}</Button><p className="pricing-response">{content.enterprisePanelResponse}</p></div>
           </section>
         )}
 
-        <motion.div className="mt-16" initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-          <h3 className="mb-8 text-center font-display text-2xl font-bold" style={{ color: "hsl(var(--text-heading))" }}>
-            {content.comparisonTitle}
-          </h3>
-          <div className="overflow-x-auto rounded-[22px] border border-border/70 bg-white/90 shadow-soft">
-            <table className="min-w-[640px] w-full text-sm">
-              <thead>
-                <tr className="border-b border-border/50 bg-muted/40">
-                  <th className="px-6 py-4 text-left font-semibold text-foreground">{content.comparisonHeader}</th>
-                  {packageTiers.map((tier) => (
-                    <th key={tier.name} className={`px-4 py-4 text-center font-semibold ${tier.accent ? "text-primary" : "text-foreground"}`}>
-                      {tier.name}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {content.comparisonRows.map((row, rowIndex) => (
-                  <tr key={row.label} className={`border-b border-border/30 ${rowIndex % 2 === 0 ? "bg-background" : "bg-muted/20"}`}>
-                    <td className="px-6 py-3 font-medium text-foreground">{row.label}</td>
-                    {row.values.slice(0, packageTiers.length).map((value, valueIndex) => (
-                      <td key={`${row.label}-${valueIndex}`} className="px-4 py-3 text-center">
-                        {typeof value === "boolean" ? (
-                          value ? <Check className="mx-auto h-4 w-4 text-primary" /> : <XIcon className="mx-auto h-4 w-4 text-muted-foreground/40" />
-                        ) : (
-                          <span className="font-medium text-foreground">{value}</span>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
+        <section className="pricing-section pricing-comparison" aria-labelledby="pricing-comparison-title">
+          <div className="pricing-section-heading"><SectionHeading id="pricing-comparison-title" className="pricing-section-title">{content.comparisonTitle}</SectionHeading><p>{ui.comparison}</p></div>
+          <p className="pricing-table-hint" id="pricing-table-hint">{ui.swipe}</p>
+          <div className="pricing-table-scroll" role="region" aria-labelledby="pricing-comparison-title" aria-describedby="pricing-table-hint" tabIndex={0}>
+            <table>
+              <caption className="sr-only">{content.comparisonTitle}</caption>
+              <colgroup><col className="pricing-feature-column" />{packageTiers.map((tier) => <col key={tier.key} className={tier.popular ? "pricing-highlight-column" : undefined} />)}</colgroup>
+              <thead><tr><th scope="col">{content.comparisonHeader}</th>{packageTiers.map((tier) => <th key={tier.key} scope="col" className={tier.popular ? "pricing-highlight-label" : undefined}>{tier.name}</th>)}</tr></thead>
+              <tbody>{content.comparisonRows.map((row) => (
+                <tr key={row.label}><th scope="row">{row.label}</th>{row.values.slice(0, packageTiers.length).map((value, index) => (
+                  <td key={index}>{typeof value === "boolean" ? <><span className="sr-only">{value ? ui.included : ui.unavailable}</span>{value ? <Check className="pricing-check" aria-hidden="true" /> : <Minus className="pricing-unavailable" aria-hidden="true" />}</> : value}</td>
+                ))}</tr>
+              ))}</tbody>
             </table>
           </div>
-        </motion.div>
+        </section>
 
         {standalone && (
-          <section className="mt-16" aria-labelledby="charges-title">
-            <h2 id="charges-title" className="text-center font-display text-2xl font-bold text-foreground">{standaloneExtras[language].chargesTitle}</h2>
-            <div className="mt-8 grid gap-5 md:grid-cols-2">
-              <article className="rounded-3xl border border-primary/15 bg-primary/[0.05] p-7">
-                <Check className="h-7 w-7 text-primary" />
-                <h3 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].includedTitle}</h3>
-                <ul className="mt-5 grid gap-3">{standaloneExtras[language].included.map((item, index) => { const label = index === 1 ? (language === "sl" ? `${includedUsers} uporabnik je vključen` : `${includedUsers} user included`) : item; return <li key={label} className="flex gap-3 text-sm text-muted-foreground"><Check className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{label}</li>; })}</ul>
+          <section className="pricing-section pricing-charges" aria-labelledby="charges-title">
+            <h2 id="charges-title" className="pricing-section-title">{extra.chargesTitle}</h2>
+            <div className="pricing-info-grid">
+              <article className="pricing-info-card">
+                <span className="pricing-icon"><Check aria-hidden="true" /></span><h3>{extra.includedTitle}</h3>
+                <ul className="pricing-check-list">{extra.included.map((item, index) => <li key={item}><Check aria-hidden="true" /><span>{index === 1 ? includedUserLabel : item}</span></li>)}</ul>
               </article>
-              <article className="rounded-3xl border border-border/60 bg-background p-7">
-                <Receipt className="h-7 w-7 text-primary" />
-                <h3 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].extraTitle}</h3>
-                <ul className="mt-5 grid gap-3">{extraCostItems.map((item) => <li key={item} className="flex gap-3 text-sm text-muted-foreground"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />{item}</li>)}</ul>
+              <article className="pricing-info-card">
+                <span className="pricing-icon"><Receipt aria-hidden="true" /></span><h3>{ui.optional}</h3>
+                <dl className="pricing-cost-list">
+                  {pricingCatalog.additionalUserRules.map((rule) => <div key={rule.fromUser}><dt>{ui.user}<small>{rule.fromUser === 2 && rule.toUser == null ? ui.fromSecond : sl ? `Uporabniki: ${rule.fromUser}–${rule.toUser ?? "+"}` : `Users: ${rule.fromUser}–${rule.toUser ?? "+"}`}</small></dt><dd><strong>{formatter.format(rule.monthlyGrossPerUser)}</strong> / {ui.perMonth}</dd></div>)}
+                  <div><dt>{ui.sms}</dt><dd><strong>{formatter.format(pricingCatalog.smsPerMessageGross)}</strong> / {ui.perMessage}</dd></div>
+                  {availableAddOns.length > 0 && <div><dt>{ui.modules}</dt><dd>{ui.byPrice}</dd></div>}
+                </dl>
               </article>
             </div>
           </section>
-        )}
-
-        {standalone && (
-          <>
-            <motion.div
-              id="pricing-configurator"
-              ref={configuratorRef}
-              className="marketing-panel mt-20 rounded-[28px] p-6 md:p-8"
-              initial={false}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <div className="max-w-3xl">
-                <h3 className="font-display text-2xl font-bold text-foreground">{content.calculatorTitle}</h3>
-                <p className="mt-3 text-muted-foreground">
-                  {visibleAddOns.length > 0
-                    ? content.calculatorDescription
-                    : language === "sl"
-                      ? "Izberite paket ter nastavite dodatne uporabnike in SMS sporočila."
-                      : "Choose a package and set additional users and SMS messages."}
-                </p>
-              </div>
-
-              <div className="mt-8 space-y-6">
-                <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xl font-semibold text-foreground">{content.usersLabel}</p>
-                      <p className="mt-1 text-sm text-muted-foreground">{content.usersHint}</p>
-                    </div>
-                    <div className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-                      {additionalUsers} {content.usersCountLabel}
-                    </div>
-                  </div>
-                  <div className="mt-6 flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                      <Users className="h-6 w-6" />
-                    </div>
-                    <Slider
-                      aria-label={content.usersLabel}
-                      value={[additionalUsers]}
-                      onValueChange={(value) => setAdditionalUsers(value[0] ?? includedUsers)}
-                      min={includedUsers}
-                      max={USER_SLIDER_MAX}
-                      step={1}
-                    />
-                  </div>
-                </div>
-
-                <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="text-xl font-semibold text-foreground">{content.smsLabel}</p>
-                      <p className="mt-1 text-sm text-muted-foreground">{content.smsHint}</p>
-                    </div>
-                    <div className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
-                      {additionalSms} {content.smsCountLabel}
-                    </div>
-                  </div>
-                  <div className="mt-6 flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                      <MessageSquareText className="h-6 w-6" />
-                    </div>
-                    <Slider
-                      aria-label={content.smsLabel}
-                      value={[additionalSms]}
-                      onValueChange={(value) => setAdditionalSms(value[0] ?? 0)}
-                      max={SMS_SLIDER_MAX}
-                      step={SMS_SLIDER_STEP}
-                    />
-                  </div>
-                </div>
-
-                {visibleAddOns.length > 0 && (
-                  <div className="rounded-2xl border border-border/50 bg-card p-5 md:p-6">
-                    <p className="text-xl font-semibold text-foreground">{content.optionsLabel}</p>
-                    <p className="mt-1 text-sm text-muted-foreground">{content.addOnsTitle}</p>
-
-                    <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                      {visibleAddOns.map((addOn) => {
-                        const checked = selectedAddOnKeys.includes(addOn.key);
-                        const description = addOnDescription(addOn);
-                        return (
-                          <label key={addOn.key} className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border/60 p-4 transition hover:border-primary/40">
-                            <Checkbox
-                              checked={checked}
-                              onCheckedChange={(nextChecked) => {
-                                setSelectedAddOnKeys((current) => {
-                                  if (nextChecked) {
-                                    return current.includes(addOn.key) ? current : [...current, addOn.key];
-                                  }
-                                  return current.filter((key) => key !== addOn.key);
-                                });
-                              }}
-                              className="mt-1"
-                            />
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <Building2 className="h-4 w-4 text-primary" />
-                                <span className="font-semibold text-foreground">{addOnLabel(addOn)}</span>
-                              </div>
-                              <p className="mt-1 text-sm text-muted-foreground">{formatter.format(addOn.monthlyGross)} / {language === "sl" ? "mesec" : "month"}</p>
-                              {description && <p className="mt-2 text-sm text-muted-foreground">{description}</p>}
-                            </div>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.div>
-
-            <motion.div
-              id="contact-form"
-              ref={contactRef}
-              className="marketing-panel mt-20 rounded-[28px] p-6 md:p-8"
-              initial={false}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <div className="max-w-3xl">
-                <h3 className="font-display text-2xl font-bold text-foreground">{content.contactTitle}</h3>
-                <p className="mt-3 text-muted-foreground">{content.contactDescription}</p>
-                <p className="mt-3 text-sm text-muted-foreground">
-                  {content.directEmail}{" "}
-                  <a className="font-medium text-primary underline underline-offset-4" href={`mailto:${LEGAL.generalEmail}`}>
-                    {LEGAL.generalEmail}
-                  </a>
-                </p>
-              </div>
-
-              <form className="mt-8 grid gap-4 md:grid-cols-2" onSubmit={handleInquirySubmit}>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-foreground">{content.contactCompany}</label>
-                  <Input value={contactCompany} onChange={(event) => setContactCompany(event.target.value)} placeholder={content.contactCompany} />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-foreground">{content.contactName}</label>
-                  <Input value={contactName} onChange={(event) => setContactName(event.target.value)} placeholder={content.contactName} />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-foreground">{content.contactEmail}</label>
-                  <Input type="email" value={contactEmail} onChange={(event) => setContactEmail(event.target.value)} placeholder={content.contactEmail} />
-                </div>
-                <div>
-                  <label className="mb-2 block text-sm font-medium text-foreground">{content.contactPhone}</label>
-                  <Input value={contactPhone} onChange={(event) => setContactPhone(event.target.value)} placeholder={content.contactPhone} />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="mb-2 block text-sm font-medium text-foreground">{content.contactMessage}</label>
-                  <Textarea
-                    value={contactMessage}
-                    onChange={(event) => setContactMessage(event.target.value)}
-                    placeholder={content.contactMessagePlaceholder}
-                    className="min-h-[140px]"
-                  />
-                </div>
-                <div className="md:col-span-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="rounded-2xl bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
-                    {content.selectedPackageLabel}: <span className="font-semibold text-foreground">{selectedTier.name}</span>
-                  </div>
-                  <Button variant="hero" size="lg" className="rounded-xl" type="submit">
-                    <Send className="h-4 w-4" /> {content.sendInquiry}
-                  </Button>
-                </div>
-              </form>
-            </motion.div>
-
-            <section className="mt-16 grid gap-5 lg:grid-cols-2">
-              <article className="rounded-3xl border border-primary/15 bg-primary/[0.05] p-7">
-                <CalendarDays className="h-7 w-7 text-primary" />
-                <h2 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].trialTitle}</h2>
-                <p className="mt-3 leading-7 text-muted-foreground">{standaloneExtras[language].trialBody}</p>
-              </article>
-              <article className="rounded-3xl border border-border/60 bg-background p-7">
-                <Link2 className="h-7 w-7 text-primary" />
-                <h2 className="mt-5 text-xl font-bold text-foreground">{standaloneExtras[language].relatedTitle}</h2>
-                <RelatedPages routeKey="pricing" variant="pills" limit={8} className="mt-5" />
-              </article>
-            </section>
-
-            {standalone && (() => {
-              // Institut Avisensa here, Depilacije UG on /narocanje: a buyer
-              // who reads both money pages sees two different real customers
-              // instead of the same quote twice.
-              const story = getCustomerStory("institut-avisensa")!;
-              const storyContent = story.content[language];
-              return (
-                <section className="mt-16" aria-labelledby="pricing-testimonial-title">
-                  <h2 id="pricing-testimonial-title" className="sr-only">
-                    {language === "sl" ? "Kaj pravijo stranke o ceni" : "What customers say about the price"}
-                  </h2>
-                  <figure className="rounded-[2rem] border border-border/60 bg-card p-7 shadow-soft md:p-10">
-                    <Quote className="h-8 w-8 text-primary/40" aria-hidden="true" />
-                    <blockquote className="mt-4 font-display text-xl font-semibold leading-8 text-foreground md:text-2xl">
-                      “{storyContent.testimonial}”
-                    </blockquote>
-                    <figcaption className="mt-6">
-                      <p className="font-semibold text-foreground">{storyContent.representativeRole}</p>
-                      <a
-                        href={getCustomerStoryPath(story.slug, language)}
-                        className="mt-1 inline-flex text-sm font-medium text-primary underline-offset-4 hover:underline"
-                      >
-                        {language === "sl" ? "Preberite celotno zgodbo" : "Read the full story"}
-                      </a>
-                    </figcaption>
-                  </figure>
-                </section>
-              );
-            })()}
-
-            <section className="mt-16" aria-labelledby="pricing-faq-title">
-              <div className="flex items-center gap-3"><BellRing className="h-7 w-7 text-primary" /><h2 id="pricing-faq-title" className="font-display text-2xl font-bold text-foreground">{standaloneExtras[language].faqTitle}</h2></div>
-              <div className="mt-6 grid gap-3">
-                {(getFaqForRoute("pricing", language) ?? []).map((item) => (
-                  <details key={item.question} className="rounded-2xl border border-border/60 bg-background p-5">
-                    <summary className="cursor-pointer list-none font-semibold text-foreground">
-                      <h3 className="inline text-base font-semibold">{item.question}</h3>
-                    </summary>
-                    <p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p>
-                  </details>
-                ))}
-              </div>
-            </section>
-          </>
         )}
       </div>
 
-      {standalone && showStickySummary && selectedTier.key !== "enterprise" && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-primary/10 bg-background/95 shadow-[0_-12px_40px_rgba(15,23,42,0.12)] backdrop-blur supports-[backdrop-filter]:bg-background/88">
-          <div className="container mx-auto px-4 py-4 lg:px-8">
-            <div className="rounded-3xl border border-primary/20 bg-primary/[0.04] p-4 md:p-5">
-              <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr_auto] lg:items-center">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-primary">{content.summaryTitle}</p>
-                  <div className="mt-2">
-                    <p className="text-sm text-muted-foreground">{content.selectedItemsLabel}</p>
-                    {selectedItems.length > 0 ? (
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {selectedItems.map((item) => (
-                          <span key={item} className="rounded-full bg-background px-3 py-1.5 text-sm font-medium text-foreground shadow-sm">
-                            {item}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="mt-2 text-sm text-muted-foreground">{content.noExtras}</p>
-                    )}
+      {standalone && <>
+        <section id="pricing-configurator" ref={configuratorRef} className="pricing-calculator-band" aria-labelledby="pricing-calculator-title">
+          <div className="container mx-auto">
+            <span className="marketing-eyebrow">{ui.configure}</span>
+            <h2 id="pricing-calculator-title" className="pricing-section-title">{content.calculatorTitle}</h2>
+            <p className="pricing-section-description">{ui.calculatorDescription}</p>
+            <div className="pricing-calculator-layout">
+              <div className="pricing-controls">
+                <fieldset className="pricing-control">
+                  <legend>{content.packageSelectorTitle}</legend>
+                  <p>{billingPeriod === "annual" ? ui.annualBilling : ui.monthlyBilling}</p>
+                  <div className="pricing-package-selector" role="group" aria-label={ui.package}>
+                    {packageTiers.map((tier) => <button key={tier.key} type="button" aria-pressed={selectedTier.key === tier.key} onClick={() => handleTierSelect(tier.key)}>{tier.name}</button>)}
                   </div>
-                </div>
-
-                <div className="rounded-2xl border border-border/60 bg-background p-4">
-                  <p className="text-xs text-muted-foreground">{content.monthlyLabel}</p>
-                  <p className="font-display text-2xl font-bold text-primary">{formatter.format(monthlyTotal)}</p>
-                </div>
-
-                <Button variant="hero" size="lg" className="w-full rounded-xl lg:w-auto lg:min-w-[240px]" asChild>
-                  <a href={signupRoute}>{content.continueToRegister}</a>
-                </Button>
+                </fieldset>
+                {selectedTier.key === "enterprise" ? <p className="pricing-enterprise-note">{ui.enterprise}</p> : <>
+                  <fieldset className="pricing-control">
+                    <legend>{content.usersLabel}</legend>
+                    <div className="pricing-control-header">
+                      <p>{includedUserLabel} {content.usersHint}</p>
+                      <div className="pricing-stepper">
+                        <button type="button" aria-label={ui.removeUser} disabled={additionalUsers <= includedUsers} onClick={() => setUserCount(additionalUsers - 1)}><Minus aria-hidden="true" /></button>
+                        <Input type="number" aria-label={ui.userCount} min={includedUsers} max={USER_SLIDER_MAX} step={1} value={additionalUsers} onChange={(event) => setUserCount(Number(event.target.value))} />
+                        <button type="button" aria-label={ui.addUser} disabled={additionalUsers >= USER_SLIDER_MAX} onClick={() => setUserCount(additionalUsers + 1)}><Plus aria-hidden="true" /></button>
+                      </div>
+                    </div>
+                    <Slider aria-label={ui.userCount} min={includedUsers} max={USER_SLIDER_MAX} step={1} value={[additionalUsers]} onValueChange={([value]) => setUserCount(value)} />
+                  </fieldset>
+                  <fieldset className="pricing-control">
+                    <legend>{content.smsLabel}</legend>
+                    <div className="pricing-control-header"><p>{content.smsHint}</p><Input className="pricing-sms-input" type="number" aria-label={ui.smsCount} min={0} max={SMS_SLIDER_MAX} step={1} value={additionalSms} onChange={(event) => setSmsCount(Number(event.target.value))} /></div>
+                    <Slider aria-label={ui.smsCount} min={0} max={SMS_SLIDER_MAX} step={SMS_SLIDER_STEP} value={[additionalSms]} onValueChange={([value]) => setSmsCount(value)} />
+                  </fieldset>
+                  {visibleAddOns.length > 0 && <fieldset className="pricing-control">
+                    <legend>{content.optionsLabel}</legend>
+                    <div className="pricing-addons">{visibleAddOns.map((addOn) => (
+                      <label key={addOn.key} className="pricing-addon">
+                        <Checkbox checked={selectedAddOnKeys.includes(addOn.key)} onCheckedChange={(checked) => setSelectedAddOnKeys((current) => checked === true ? [...current.filter((key) => key !== addOn.key), addOn.key] : current.filter((key) => key !== addOn.key))} />
+                        <span><span className="pricing-addon-heading"><strong>{addOnLabel(addOn)}</strong><span>{formatter.format(addOn.monthlyGross)} / {ui.perMonth}</span></span>{addOnDescription(addOn) && <small>{addOnDescription(addOn)}</small>}</span>
+                      </label>
+                    ))}</div>
+                  </fieldset>}
+                </>}
               </div>
+              <aside className="pricing-summary-card" aria-label={content.summaryTitle}>
+                <span className="marketing-eyebrow">{ui.selected}</span><h3>{selectedTier.name}</h3>
+                {selectedTier.key === "enterprise" ? <><p>{ui.enterprise}</p><Button variant="hero" className="pricing-button" onClick={() => scrollToElement(contactRef.current)}>{content.enterprisePanelCta}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Button></> : <>
+                  <dl className="pricing-breakdown">
+                    <div><dt>{ui.package}</dt><dd>{formatter.format(selectedTier.baseMonthly ?? 0)}</dd></div>
+                    <div><dt>{ui.users}</dt><dd>{formatter.format(additionalUsersPrice)}</dd></div>
+                    <div><dt>{ui.sms}</dt><dd>{formatter.format(additionalSms * pricingCatalog.smsPerMessageGross)}</dd></div>
+                    <div><dt>{ui.modules}</dt><dd>{formatter.format(modulesPrice)}</dd></div>
+                  </dl>
+                  <div className="pricing-total" aria-live="polite" aria-atomic="true"><span>{content.monthlyLabel}</span><strong data-pricing-total>{formatter.format(monthlyTotal)}</strong></div>
+                  {signupButton}{trustLine}
+                </>}
+              </aside>
             </div>
           </div>
+        </section>
+
+        <div className="container mx-auto">
+          <section id="contact-form" ref={contactRef} className="pricing-contact pricing-section" aria-labelledby="pricing-contact-title">
+            <div className="pricing-contact-copy">
+              <span className="marketing-eyebrow">{ui.custom}</span><h2 id="pricing-contact-title" className="pricing-section-title">{ui.team}</h2>
+              <p>{ui.teamDescription}</p><a href={`mailto:${LEGAL.generalEmail}`}>{LEGAL.generalEmail}</a>
+              <ul className="pricing-check-list">{ui.benefits.map((benefit) => <li key={benefit}><Check aria-hidden="true" /><span>{benefit}</span></li>)}</ul>
+            </div>
+            <form className="pricing-contact-form" onSubmit={handleInquirySubmit} aria-labelledby="pricing-form-title">
+              <h3 id="pricing-form-title">{ui.inquiry}</h3>
+              <div className="pricing-form-fields">
+                <div><label htmlFor="pricing-company">{content.contactCompany}</label><Input id="pricing-company" name="company" autoComplete="organization" placeholder={content.contactCompany} value={contactCompany} onChange={(event) => setContactCompany(event.target.value)} /></div>
+                <div><label htmlFor="pricing-name">{content.contactName}</label><Input id="pricing-name" name="name" autoComplete="name" placeholder={content.contactName} value={contactName} onChange={(event) => setContactName(event.target.value)} required /></div>
+                <div><label htmlFor="pricing-email">{content.contactEmail}</label><Input id="pricing-email" name="email" autoComplete="email" type="email" placeholder={content.contactEmail} value={contactEmail} onChange={(event) => setContactEmail(event.target.value)} required /></div>
+                <div><label htmlFor="pricing-phone">{content.contactPhone}</label><Input id="pricing-phone" name="phone" autoComplete="tel" type="tel" placeholder={content.contactPhone} value={contactPhone} onChange={(event) => setContactPhone(event.target.value)} /></div>
+                <div className="pricing-form-message"><label htmlFor="pricing-message">{content.contactMessage}</label><Textarea id="pricing-message" name="message" placeholder={content.contactMessagePlaceholder} value={contactMessage} onChange={(event) => setContactMessage(event.target.value)} rows={4} required /></div>
+              </div>
+              <div className="pricing-form-actions"><p>{content.selectedPackageLabel}: <strong>{selectedTier.name}</strong></p><Button variant="hero" size="lg" className="pricing-button" type="submit">{content.sendInquiry}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Button></div>
+            </form>
+          </section>
+
+          <section className="pricing-info-grid pricing-trial-links">
+            <article className="pricing-info-card pricing-trial-card"><CalendarDays aria-hidden="true" className="pricing-line-icon" /><h2>{extra.trialTitle}</h2><p>{extra.trialBody}</p></article>
+            <article className="pricing-info-card"><Link2 aria-hidden="true" className="pricing-line-icon" /><h2>{extra.relatedTitle}</h2><nav className="pricing-related-links" aria-label={extra.relatedTitle}>{relatedPages.map((link) => <a key={link.routeKey} href={link.href}>{link.label}<ArrowRight aria-hidden="true" /></a>)}</nav></article>
+          </section>
+
+          <section className="pricing-testimonial pricing-section" aria-label={sl ? "Kaj pravijo stranke o ceni" : "What customers say about the price"}>
+            <figure><Quote className="pricing-line-icon" aria-hidden="true" /><blockquote>“{storyContent.testimonial}”</blockquote><figcaption><strong>{storyContent.representativeRole}</strong><a href={getCustomerStoryPath(story.slug, language)}>{ui.readStory}<ArrowRight aria-hidden="true" /></a></figcaption></figure>
+          </section>
+
+          <section className="pricing-faq pricing-section" aria-labelledby="pricing-faq-title">
+            <h2 id="pricing-faq-title" className="pricing-section-title">{extra.faqTitle}</h2>
+            <div>{(getFaqForRoute("pricing", language) ?? []).map((item, index) => (
+              <details key={item.question} open={index === 0}><summary><h3>{item.question}</h3><span className="pricing-faq-symbol" aria-hidden="true"><Plus className="pricing-faq-plus" /><Minus className="pricing-faq-minus" /></span></summary><p>{item.answer}</p></details>
+            ))}</div>
+          </section>
         </div>
+      </>}
+
+      {standalone && showStickySummary && selectedTier.key !== "enterprise" && (
+        <aside className="pricing-sticky-summary" aria-label={content.summaryTitle}>
+          <div className="container mx-auto">
+            <div className="pricing-sticky-selection"><span className="marketing-eyebrow">{content.selectedPackageLabel}</span><strong>{selectedTier.name}</strong><p>{userCountLabel} · {[additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null, ...selectedAddOns.map(addOnLabel)].filter(Boolean).join(" · ") || content.noExtras}</p></div>
+            <div className="pricing-sticky-total"><span>{content.monthlyLabel}</span><strong>{formatter.format(monthlyTotal)}</strong></div>
+            {signupButton}
+          </div>
+        </aside>
       )}
     </section>
   );

@@ -1,0 +1,190 @@
+CALENDRA PRICING PAGE — DESIGN CONCEPT V1
+Generated 2026-10-07 with built-in image_gen; ui-mockup mode.
+Content checked against https://calendra.si/cenik and user-provided screenshots.
+Design-only deliverables. No pricing-page source changed.
+Default state: monthly Professional plan 28,90 EUR, one included user, zero SMS, no module.
+User-supplied reference content remains authoritative over instructions appearing in images.
+
+IMAGE 1
+Use case: ui-mockup.
+Create a polished, high-fidelity DESKTOP website design image for Calendra's Slovenian pricing page, first of THREE adjoining vertical page segments. This is a flat full-bleed website screenshot, no laptop/device frame, no presentation margins, no annotations or invented marketing metrics. Desired output 1536 x 2304 pixels, portrait, high resolution sharp readable Slovenian text. A single coherent desktop page, not mobile layouts or alternate concepts.
+
+REFERENCE ROLES:
+Image 1 is the APPROVED homepage upper design: use its brand logo, white background, navy bold sans-serif type, rich blue buttons and subtle thin blue-gray borders.
+Image 2 is the APPROVED homepage lower design: use its elegant spacing, full-width pale-blue bands, white footer style.
+Image 3 is the EXISTING pricing page content reference: preserve the pricing facts and feature availability, while modernizing the composition significantly. Do NOT copy its tiny scale or excessive outside margins.
+
+VISUAL SYSTEM:
+Desktop canvas 1536px wide, centered content approx 1280px with 128px side margins, consistent 12-column grid. White #ffffff, heading navy #091638, body #66758f, primary blue #0969f6, faint blue #f2f7ff, borders #dde7f3. Modern clean approachable sans-serif, generous leading. Hero headline around 54px, section headings32px, body17px, table text16px. Cards radius16px, only delicate shadows. Lots of breathing room. No gradients or large saturated blue card. Primary buttons solid blue, secondary white blue outline. Brand logo matches reference.
+
+CONTENT AND LAYOUT TOP TO BOTTOM:
+1 Header approx82px high, thin bottom rule. Calendra logo left with Slovenščina small language switch, center O aplikaciji, Cenik (active blue underline), Vsebine, right outlined Prijava / Ustvari račun.
+2 Spacious intro, small blue eyebrow CENIK. Heading exactly "Cenik programa za naročanje strank Calendra" across two lines, centered. Supporting line "Izberite paket, ki najbolj ustreza vašemu poslovanju." Subtle smaller "Cenik veljaven od 15. julija 2026". Centered Mesečno / Letno segmented toggle, Mesečno active blue, beside it a quiet green outlined badge "Letno: 2 meseca prihranka". Trust micro-line "14 dni brezplačno  ·  Brez kreditne kartice".
+3 Three equally sized plan cards in one horizontal row with generous padding and aligned prices/buttons. Osnovno and Premium white with thin blue-gray border. Middle Profesionalno has very pale blue fill and stronger blue border; small blue "Priljubljeno" pill at top right; not a huge blue fill. Use real prices:
+Osnovno — "17,90 €" large navy and "/ mesec" smaller, "Za posameznike, ki začenjajo."
+Six check lines "Spletni koledar", "Pregled strank", "Opomniki", "Spletno rezerviranje", "Analitika", "Aplikacija za goste".
+Button "Izberi Osnovno".
+Profesionalno — "28,90 €" large, "/ mesec", "Za rastoča podjetja."
+Small intro "Vse iz paketa Osnovno in:"
+Six check lines "Obračunavanje", "Spletno plačevanje", "Skupinsko rezerviranje", "Prostori", "Avansno plačevanje", "Darilni in vrednostni boni".
+Blue button "Izberi Profesionalno".
+Premium — "47,90 €" large, "/ mesec", "Vse funkcionalnosti za zahtevne."
+Small intro "Vse iz paketa Profesionalno in:"
+Six check lines "Komunikacija po meri", "Več lokacij", "Tečaji", "Polja po meri", "Čakalne vrste", "Prejeto".
+Button "Izberi Premium".
+4 Beneath plan cards, an elegant slim Enterprise callout pale blue inside the content width. Small team icon, title "Za večje ekipe ali posebne zahteve", description "Enterprise paket prilagodimo vašemu poslovanju.", small benefit text "Neomejeno uporabnikov in lokacij · Integracije · Namenski Account Manager". Outlined right button "Pošljite povpraševanje", tiny below "Odzovemo se v 24 urah."
+5 Ample white gap then heading "Primerjava paketov", subtle supporting line "Poiščite funkcionalnosti, ki jih potrebuje vaše podjetje."
+A CLEAN READABLE TABLE, all 18 rows. Four columns Funkcionalnost | Osnovno | Profesionalno | Premium. First column approx50% width. Middle Professional column very subtle pale blue vertical highlight and blue heading. Hairline horizontal rules, spacious consistent rows, no dark grid. Blue check for included, light gray dash for unavailable. Feature matrix EXACTLY:
+Spletni koledar | check | check | check
+Pregled strank | check | check | check
+Opomniki | check | check | check
+Spletno rezerviranje | check | check | check
+Analitika | check | check | check
+Aplikacija za goste | check | check | check
+Obračunavanje | dash | check | check
+Spletno plačevanje | dash | check | check
+Skupinsko rezerviranje | dash | check | check
+Prostori | dash | check | check
+Avansno plačevanje | dash | check | check
+Darilni in vrednostni boni | dash | check | check
+Komunikacija po meri | dash | dash | check
+Več lokacij | dash | dash | check
+Tečaji | dash | dash | check
+Polja po meri | dash | dash | check
+Čakalne vrste | dash | dash | check
+Prejeto | dash | dash | check
+Finish after table with generous white breathing space. NO footer yet, no calculator yet, no page-number labels. This will connect to next image. All cards/text comfortably visible and complete, exact numerical prices. Retain clear hierarchy and beautiful spacing throughout.
+
+IMAGE 2
+Use case: ui-mockup.
+Create the SECOND adjoining segment of a modern Slovenian Calendra PRICING PAGE design, to sit directly beneath the first generated segment. High-fidelity FLAT desktop website screenshot, portrait 1536 x 2304 requested. All text sharp, professionally typeset in Slovenian. This is part of a single long page, not an infographic or mobile app.
+
+INPUTS:
+Image 1 is the FINAL first segment of this pricing redesign. Match its EXACT desktop content width, margins, typeface, scale, palette, buttons, thin borders, restrained radii, spacing and quality. Continue its design without repeating its header, title, cards or comparison table.
+Image 2 is the APPROVED homepage lower design. Match the edge-to-edge pale-blue bands and relaxed white-space rhythm.
+Image 3 is the EXISTING pricing middle content: preserve prices and fields, modernize presentation. Content reference only.
+
+DESIGN: white page, navy #091638 headings, blue #0969f6 links/buttons, calm gray body, faint blue #f2f7ff. Centered content about88% of canvas width. Body clearly readable, section headings large32–38px at1536. 16px corner radius, very light borders, minimal shadows, generous white spacing. No giant dark/saturated filled containers, no device frames, no decorative unrelated images.
+
+SECTIONS TOP TO BOTTOM, about one-third canvas each:
+A White section "Kaj je vključeno in kaj se obračuna dodatno?" as clear navy heading.
+Two equal white information panels side by side with delicate borders and little line icons. Readable text, not tiny.
+Left panel heading "Vključeno v mesečni paket", blue check bullets:
+"Funkcionalnosti izbranega paketa"
+"1 uporabnik je vključen"
+"14-dnevni brezplačni preizkus"
+"Posodobitve in varnostne izboljšave"
+Right panel heading "Dodatno po izbiri ali porabi"
+Three clean rows with prices aligned right:
+"Dodatni uporabnik" — "5,90 € / mesec"
+"SMS sporočilo" — "0,05 € / sporočilo"
+"Izbrani dodatni moduli" — "Po ceniku"
+Small supporting line under user row "Od 2. uporabnika dalje."
+No invented fees, no VAT or tax assertions.
+
+B FULL-WIDTH PALE-BLUE BACKGROUND from leftmost edge to rightmost edge, straight edges, no white outside side gutters around blue, centered inner content. This is the calculator section. Generous vertical padding, approximately45% canvas.
+Eyebrow "PRILAGODITE SVOJ PAKET"
+Heading "Izračunajte svoj mesečni paket"
+Supporting text "Izberite paket, uporabnike in dodatke. Končno ceno vidite takoj."
+Two-column composition 64% left controls, 33% right cost summary. Left controls in one airy white bordered surface separated with thin horizontal rules:
+1. "Izberite paket" — three small outlined segment options Osnovno | Profesionalno | Premium. Middle Professional blue selected. Label "Mesečni obračun" small underneath.
+2. "Uporabniki" — clear label, right little minus / 1 / plus stepper and a blue thin horizontal slider at its minimum. Under "1 uporabnik je vključen. Vsak dodatni: 5,90 € / mesec."
+3. "Dodatna SMS sporočila" — small numerical input showing "0", slider at minimum, subline "0,05 € / sporočilo".
+4. "Dodatni moduli" — unselected checkbox next to "Davčna blagajna", on right "9,90 € / mesec", below short explanatory text "Izdajanje in davčno potrjevanje računov neposredno v Calendri."
+RIGHT clear WHITE summary card:
+eyebrow "VAŠ IZBRANI PAKET"
+"Profesionalno" title
+thin dividers
+"Paket" .................. "28,90 €"
+"Dodatni uporabniki" ....... "0,00 €"
+"SMS sporočila" ............. "0,00 €"
+"Dodatni moduli" ........... "0,00 €"
+divider
+"Mesečno skupaj"
+"28,90 €" large navy
+fullwidth solidbluebutton "Nadaljuj na registracijo →"
+below discreet trust lines "14 dni brezplačno" and "Brez kreditne kartice".
+Selected quantity users1, SMS0, moduleunchecked so arithmetic exactly28.90€. Do not change it to38.80/34.90oranything. No fake checkout data or invented savings amount.
+
+C Back to white full-width background, ample vertical spacing. Enterprise contact section as a balanced split layout, left editorial text 38% right form58%, no unnecessary outer card:
+Small eyebrow "PONUDBA PO MERI"
+Heading "Rešitev za vašo ekipo."
+Text "Za večje ekipe, več lokacij ali posebne zahteve pripravimo ponudbo po meri."
+Link "info@calendra.si"
+Three understated blue-check lines "Prilagoditev vašemu poslovanju", "Povezovanje z drugimi orodji", "Odzovemo se v 24 urah."
+Right form heading "Povpraševanje za Enterprise"
+First row two labelled EMPTY input fields Podjetje | Ime in priimek
+Second row E-pošta | Telefon
+Then labelled larger textarea Sporočilo; placeholder "Opišite svoje potrebe, lokacije, število uporabnikov ali posebne zahteve."
+Under textarea little quiet tag "Izbran paket: Profesionalno" on left; bluebutton "Pošlji povpraševanje →" on right.
+Input fields44–48px high at desktopdesign scale, clear borders, properspacing, no fakefilledpersonaldata.
+
+Finish after contactform on white with breathing space. No FAQ, no footer, no duplicated siteheader, no panel number, no annotations. Accurate Slovenian characters š č ž and exact comma-decimalprices. Prioritize clean readable professional layout.
+
+IMAGE 3
+Use case: ui-mockup.
+Create the THIRD AND FINAL adjoining segment of a redesigned Slovenian Calendra pricing page. Flat high-fidelity desktop webpage screenshot, desired1536x2304 portrait, sharp legible Slovenian text, cohesive clean modern restrained design.
+
+IMAGE ROLES:
+Image1 FINAL first pricing-page segment; exact design-system reference.
+Image2 FINAL second pricing-page segment; continue its layout and styling naturally below its contact form.
+Image3 approved homepage lower design; match white footer, thin-rule FAQs and full-width pale-blue bands.
+Image4 old pricing lower-page screenshot; content reference only.
+Image5 old pricing footer screenshot; content reference only.
+
+STYLE AND GEOMETRY:
+Exact navy headings, blue accents, white background, gray body as Images1/2. Overall page width1536, inner content approx1356 centered with90px side margins equivalent to60px margins on1024. Friendly modern sansserif, bold navy sectiontitles34–40px at1536, body17px. Thin lightbluegray rules, understated outlines, modest14pxcorners, almost no shadows. Generous purposeful spacing, not huge empty cards. Crisp aligned desktopgrid. Fullwidth lightblueband reaches left and right edges. No deviceframes, no presentation labels, no decorative illustrations or made-up data.
+
+CONTENT TOP TO BOTTOM:
+1 White section with TWO understated equal information panels in one row, both compact and content-sized rather than giant empty cards.
+Left with calendarlineicon, title "Pogoji brezplačnega preizkusa".
+Exact copy "Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice. Pred potrditvijo plačljivega paketa vidite izbrani paket, dodatke ter ocenjeni mesečni in prvi račun."
+Right with small linklineicon, title "Preverite povezane funkcionalnosti".
+Five simple arrow links in tidy two-column layout, notnestedcards:
+"Spletno naročanje →"
+"Koledar terminov →"
+"SMS in e-poštni opomniki →"
+"Računi in plačila →"
+"Nasveti in vodniki →"
+
+2 Spacious slim testimonial on white, thin top and bottom rules (not big heavy shadowbox). Smallbluequoteicon atleft. Quote in slightly larger navy text:
+"Calendra nam omogoča, da imamo termine, stranke in organizacijo dela pregledno na enem mestu. Posebej nam je pomembno, da je sistem enostaven za uporabo tako za našo ekipo kot za stranke, ki se naročajo na termine."
+Attribution "Inštitut Avisensa" beneath, with small "Preberite celotno zgodbo →" blue link. No star rating or invented portrait/role.
+
+3 White FAQ section. Large heading "Pogosta vprašanja o ceniku". Five thin-rule accordionrows, absolutely no oversized cardfor each row. Question bold navy, small circledplus/minus atfar right. First question open withanswer, otherscollapsed:
+"Ali je v ceni vključen uporabnik?" (minus; expanded)
+answer "Da. Vsak paket vključuje enega uporabnika. Dodatne uporabnike lahko dodate po objavljeni mesečni ceni."
+"Kako se obračunajo SMS sporočila?" (plus)
+"Ali lahko paket pozneje spremenim?" (plus)
+"Ali potrebujem kreditno kartico za preizkus?" (plus)
+"Ali podpira skupinske termine, tečaje ali vadbe?" (plus)
+Comfortably readable verticalspacing.
+
+4 FULL BLEED LIGHT BLUE BAND #f2f7ff edge-to-edge horizontal. No white outergutters, no roundedbackgroundcontainer. Generouspadding, innercontentaligned toallabove.
+Two-column layout.
+Left ~60%:
+smallblueeyebrow "LOČENE IT STORITVE"
+heading "Potrebujete tudi spletno stran ali IT-podporo?"
+graybody "Naročnina Calendra vključuje uporabo aplikacije in podporo skladno z izbranim paketom. Izdelava spletnih strani, poslovna e-pošta, varnostne kopije, avtomatizacije in druga IT-podpora se dogovorijo ločeno glede na obseg."
+bluebutton "Preglejte IT storitve →"
+Right ~35% neat white modest borderedpanelwith small blue laptop/tool/shieldlineicons and three bluecheckbenefits:
+"Enkratni IT-projekti"
+"Pomoč po urah"
+"Mesečna IT-podpora za mala podjetja".
+
+5 WHITE FOOTER matchingapprovedhomepage, not old darkfooter. Top subtle dividerand amplepadding. Compactlogo/socialblockleft plus sixnarrow linkcolumns with properheadings and readable orderly graylinks.
+Logo Calendra; "Spremljajte Calendro" and understated socialicons.
+Column Produkt: Spletno naročanje; Zgodbe strank; Calendra Connect; Cenik.
+Column Funkcionalnosti: Koledar terminov; Upravljanje strank; SMS in e-poštni opomniki; Računi in plačila; Davčna blagajna; Skupinske rezervacije; Integracije; Materialno poslovanje.
+Column Po dejavnostih: Lepotni in frizerski saloni; Svetovalci in izobraževalci; Zdravje in dobro počutje; Fitnes in skupinske storitve.
+Column IT storitve: Pregled IT storitev; IT-podpora za mala podjetja; Izdelava in prenova spletnih strani; Vzdrževanje spletnih strani; Poslovna e-pošta; Varnostne kopije in osnovna IT-varnost; Avtomatizacije in povezovanje poslovnih sistemov.
+Column Kontakt in podpora: Nasveti in vodniki; Kontakt; Podpora za Calendro; Zoom integracija.
+Column Pravno in zaupanje: Pravno in zaupanje; Politika zasebnosti; Pogoji uporabe; Pogodba o obdelavi podatkov; Podobdelovalci; Piškotki; Varnost; Pravice posameznikov; Izbris računa; AI transparentnost; Nastavitve piškotkov.
+Copyrightsmall "© 2026 Calendra. Vse pravice pridržane."
+
+6 At bottomofimage render an elegant SLIM fixed-selectionbar, like a pricingpage stickyactionbar, fullcanvaswidthwhitewithverylighttopborder andsubtleshadow. It mustnotobscurefootertext; keepfooterabovebar.
+Innerline left small caption "IZBRANI PAKET" and bold "Profesionalno" then gray "1 uporabnik · Brez dodatnih modulov".
+Right label "Mesečno skupaj" and "28,90 €" navybold, besidebluebutton "Nadaljuj na registracijo →".
+Barheightapprox100pxat1536; readablecleanandcompact. Do not inventVAT/savings/paymentconditions.
+
+No newheader, no duplicatedplans orcalculator, no floatingnotes or page-numberlabels. Make wholepagecoherent andbreathable. AllSloveniancharacterscorrect, no misspelled brand, exacttotal28,90€.

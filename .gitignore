@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Local screenshots produced by the pricing browser check.
+/output/pricing-implementation/
+
 # Local secrets (analytics database password, app secret, IndexNow key)
 .env
 .env.*
