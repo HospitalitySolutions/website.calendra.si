@@ -56,34 +56,28 @@ const CalendraConnectPromo = () => {
             </Button>
           </div>
 
-          <div className="relative mx-auto min-h-[470px] w-full max-w-[540px]">
-            <div className="pointer-events-none absolute inset-8 rounded-[48%] bg-gradient-to-br from-primary/[0.14] via-violet-400/[0.08] to-accent/[0.11] blur-3xl" aria-hidden="true" />
-            <div className="absolute left-[5%] top-[13%] hidden w-[46%] rounded-[24px] border border-slate-200 bg-white p-5 shadow-[0_30px_70px_-38px_rgba(15,23,42,0.42)] sm:block">
-              <p className="text-xs font-bold uppercase tracking-[0.13em] text-primary">Connect</p>
-              <p className="mt-3 font-display text-xl font-bold text-foreground">{language === "sl" ? "Rezervacija potrjena" : "Booking confirmed"}</p>
-              <div className="mt-4 rounded-2xl bg-slate-50 p-4">
-                <div className="flex items-center gap-3"><span className="grid h-9 w-9 place-items-center rounded-full bg-emerald-500/[0.11] text-emerald-600"><Check className="h-4 w-4" /></span><div><p className="text-sm font-semibold">Masaža</p><p className="text-xs text-muted-foreground">Danes · 16:00</p></div></div>
+          <div className="home-connect-preview">
+            <div className="home-connect-phone">
+              <div className="flex items-center justify-between">
+                <img src="/connect/calendra-connect-icon.png" alt="Calendra Connect" width="40" height="40" className="h-9 w-9 rounded-xl" loading="lazy" />
+                <span className="text-xs font-semibold text-primary">Connect</span>
               </div>
-            </div>
-
-            <div className="absolute right-[3%] top-0 w-[58%] min-w-[250px] rounded-[2.8rem] border-[7px] border-slate-900 bg-white p-3 shadow-[0_36px_80px_-34px_rgba(15,23,42,0.52)] sm:w-[52%]">
-              <div className="rounded-[2rem] bg-white px-4 pb-5 pt-6">
-                <div className="flex items-center justify-between">
-                  <img src="/connect/calendra-connect-icon.png" alt="Calendra Connect" width="64" height="64" className="h-10 w-10 rounded-xl" loading="lazy" />
-                  <span className="rounded-full bg-primary/[0.08] px-3 py-1 text-[10px] font-bold text-primary">Connect</span>
-                </div>
-                <p className="mt-6 font-display text-lg font-bold text-foreground">{copy.appointments}</p>
-                <div className="mt-4 rounded-2xl bg-primary p-4 text-primary-foreground">
-                  <p className="text-[10px] text-primary-foreground/80">{copy.next}</p>
-                  <p className="mt-3 text-sm font-bold">{copy.time}</p>
-                </div>
-                {[0, 1, 2].map((item) => <div key={item} className="mt-2.5 flex items-center gap-3 rounded-xl border border-border/60 bg-slate-50 p-2.5"><Check className="h-3.5 w-3.5 text-primary" /><span className="h-2 flex-1 rounded-full bg-muted" /></div>)}
+              <p className="mt-6 text-base font-bold">{copy.appointments}</p>
+              <div className="home-connect-next">
+                <p>{copy.next}</p><strong>{copy.time}</strong>
+                <span>{language === "sl" ? "Masaža" : "Massage"}</span>
               </div>
+              <p className="mb-3 mt-5 text-xs font-semibold">{language === "sl" ? "Prihodnji termini" : "Upcoming appointments"}</p>
+              {[{ date: language === "sl" ? "Pet, 9. okt 2026" : "Fri, 9 Oct 2026", time: "10:55–12:10", service: language === "sl" ? "Individualna vadba" : "Personal training" }, { date: language === "sl" ? "Sre, 14. okt 2026" : "Wed, 14 Oct 2026", time: "14:30–15:30", service: language === "sl" ? "Fizioterapija" : "Physiotherapy" }].map((appointment) => (
+                <div key={appointment.date} className="home-connect-appointment"><strong>{appointment.date}</strong><span>{appointment.time}</span><span>{appointment.service}</span></div>
+              ))}
             </div>
-
-            <div className="absolute bottom-2 left-[3%] w-[48%] rounded-[22px] border border-slate-200 bg-white p-4 shadow-[0_28px_64px_-36px_rgba(15,23,42,0.40)]">
-              <div className="flex items-center gap-3"><BellRing className="h-5 w-5 text-primary" /><p className="text-sm font-bold text-foreground">{language === "sl" ? "Samodejna obvestila" : "Automatic notifications"}</p></div>
-              <p className="mt-2 text-xs leading-5 text-muted-foreground">{language === "sl" ? "Opomniki in spremembe termina vedno pravočasno." : "Reminders and booking changes delivered on time."}</p>
+            <div className="home-connect-confirmation">
+              <span className="home-connect-check"><Check aria-hidden="true" /></span>
+              <strong>{language === "sl" ? "Rezervacija potrjena" : "Booking confirmed"}</strong>
+              <span>{language === "sl" ? "Masaža" : "Massage"}</span>
+              <span>{language === "sl" ? "Danes · 16:00" : "Today · 16:00"}</span>
+              <small>{language === "sl" ? "Hvala za vašo rezervacijo! Se vidimo kmalu." : "Thank you for booking! See you soon."}</small>
             </div>
           </div>
         </div>

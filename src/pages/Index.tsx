@@ -6,6 +6,7 @@ import TestimonialsSsr from "@/components/landing/Testimonials";
 import FinalCta from "@/components/landing/FinalCta";
 import Footer from "@/components/landing/Footer";
 import CalendraConnectPromoSsr from "@/components/landing/CalendraConnectPromo";
+import "@/styles/homepage.css";
 import {
   AudienceSection,
   HomeFaq,
@@ -17,8 +18,8 @@ import {
  * Below-fold sections are code-split on the client while staying statically
  * imported for SSR, so the prerendered HTML still contains their full copy for
  * crawlers while the browser does not parse their JavaScript to paint the hero.
- * Testimonials is here because it is the only homepage section that pulls in a
- * carousel library.
+ * Keep interactive reviews and the Connect preview below the initial page
+ * bundle. The audience carousel remains available immediately.
  */
 const Testimonials = import.meta.env.SSR
   ? TestimonialsSsr
@@ -33,7 +34,7 @@ const SectionFallback = ({ minHeight }: { minHeight: number }) => (
 );
 
 const Index = () => (
-  <div className="marketing-page marketing-redesign min-h-screen">
+  <div className="marketing-page homepage min-h-screen">
     <Navbar />
     <Hero />
     <AudienceSection />

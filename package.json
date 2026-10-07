@@ -17,6 +17,7 @@
     "serve:dist": "node scripts/serve-dist.mjs 4173",
     "indexnow": "node scripts/indexnow-ping.mjs",
     "images": "node scripts/optimize-images.mjs",
+    "images:homepage": "node scripts/prepare-homepage-assets.mjs",
     "fonts": "node scripts/fetch-fonts.mjs",
     "budget": "node scripts/check-bundle-budget.mjs",
     "lighthouse": "lhci autorun",

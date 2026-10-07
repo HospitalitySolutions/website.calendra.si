@@ -18,14 +18,14 @@ import {
   type PublicPricingCatalog,
 } from "@/lib/public-pricing";
 import { useEffect, useMemo, useState } from "react";
+import IntegrationMark from "./IntegrationMark";
 import {
   ArrowRight,
   CalendarCheck2,
   Check,
   Clock3,
   MailCheck,
-  PlugZap,
-  Sparkles,
+  Plus,
 } from "lucide-react";
 
 const copy = {
@@ -133,21 +133,6 @@ const copy = {
   },
 } as const satisfies Record<SiteLanguage, unknown>;
 
-const audienceCardBackgrounds = [
-  "/industries/audience/hair-salon.webp",
-  "/industries/audience/beauty-salon.webp",
-  "/industries/audience/massage.webp",
-  "/industries/audience/spa-sauna.webp",
-  "/industries/audience/tattoo-piercing.webp",
-  "/industries/audience/fitness-personal-training.webp",
-  "/industries/audience/physiotherapy.webp",
-  "/industries/audience/psychology-counselling.webp",
-  "/industries/audience/yoga-pilates.webp",
-  "/industries/audience/pet-services.webp",
-  "/industries/audience/education-coaching.webp",
-  "/industries/audience/other-services.webp",
-] as const;
-
 const audienceRoutes = [
   "hairSalons",
   "beautySalons",
@@ -187,7 +172,7 @@ export const AudienceSection = () => {
   return (
     <section id="za-koga" className="audience-carousel-section relative overflow-hidden py-16 md:py-20">
       <div className="container relative mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
-        <Carousel setApi={setApi} opts={{ align: "start", loop: true, skipSnaps: false }}>
+        <Carousel aria-label={section.title} setApi={setApi} opts={{ align: "start", loop: true, skipSnaps: false }}>
           <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
             <div className="max-w-3xl">
               <span className="marketing-eyebrow">{section.eyebrow}</span>
@@ -214,20 +199,20 @@ export const AudienceSection = () => {
               >
                 <a
                   href={getRoutePath(audienceRoutes[index], language)}
-                  className="audience-carousel-card group relative block aspect-[1.04/1] overflow-hidden rounded-[10px] bg-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  className="audience-carousel-card group block overflow-hidden rounded-xl border border-border bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   aria-label={item.cta}
                 >
-                  <img
-                    src={audienceCardBackgrounds[index]}
-                    alt=""
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.045]"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <span className="absolute inset-0 bg-gradient-to-t from-[#06142e]/95 via-[#06142e]/10 to-transparent" aria-hidden="true" />
-                  <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-3 p-4">
-                    <span className="font-display text-[1.02rem] font-bold leading-tight text-white">{item.title}</span>
-                    <ArrowRight className="h-4 w-4 shrink-0 text-white/85 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                  <span className="audience-service-scene" aria-hidden="true">
+                    <img
+                      src="/homepage/service-scenes.webp" alt="" width={1672} height={941}
+                      className="audience-service-photo"
+                      style={{ left: `${-(index % 4) * 100}%`, top: `${-Math.floor(index / 4) * 100}%` }}
+                      loading="lazy" decoding="async" draggable={false}
+                    />
+                  </span>
+                  <span className="flex min-h-16 items-center justify-between gap-3 px-4 py-3">
+                    <span className="font-display text-sm font-bold leading-snug text-foreground">{item.title}</span>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-primary transition-transform group-hover:translate-x-1" aria-hidden="true" />
                   </span>
                   <span className="sr-only">{item.body}</span>
                 </a>
@@ -268,10 +253,11 @@ export const IntegrationsSection = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].integrations;
   return (
-      <section className="bg-card py-20 md:py-28">
-        <div className="container mx-auto grid gap-10 px-4 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:px-8">
-          <div><span className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{section.eyebrow}</span><h2 className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{section.title}</h2><p className="mt-4 text-lg leading-8 text-muted-foreground">{section.intro}</p><Button variant="outline" size="lg" className="mt-7 rounded-xl" asChild><a href={getRoutePath("integrations", language)}>{section.cta}<ArrowRight className="h-4 w-4" /></a></Button></div>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">{section.items.map((item, index) => <div key={item} className="flex min-h-28 flex-col justify-between rounded-2xl border border-border/60 bg-background p-5 shadow-sm"><PlugZap className={`h-6 w-6 ${index % 2 === 0 ? "text-primary" : "text-accent"}`} /><span className="mt-4 font-semibold text-foreground">{item}</span></div>)}</div>
+      <section className="home-integrations home-section">
+        <div className="container text-center">
+          <div className="home-section-heading"><h2 className="marketing-section-title">{section.title}</h2><p>{section.intro}</p></div>
+          <div className="home-integration-grid">{section.items.map((item, index) => <div key={item} className="home-integration-tile"><IntegrationMark index={index} /><span>{item}</span></div>)}</div>
+          <a className="home-feature-link mt-6 inline-flex" href={getRoutePath("integrations", language)}>{section.cta}<ArrowRight aria-hidden="true" /></a>
         </div>
       </section>
   );
@@ -319,10 +305,11 @@ export const PricingOverview = () => {
             </Button>
           </div>
 
-          <div className="w-full max-w-[560px] lg:justify-self-end">
-            <p className="font-display text-3xl font-extrabold tracking-[-0.045em] text-foreground sm:text-4xl lg:text-[3.1rem]">
-              {section.fromPrefix} <span className="text-primary">{basicMonthlyPrice}</span>{" "}
-              <span className="text-base font-bold tracking-normal sm:text-lg">{section.perMonth}</span>
+          <div className="home-price-details">
+            <p className="home-price font-display">
+              <span className="home-price-from">{section.fromPrefix}</span>
+              <span className="home-price-amount">{basicMonthlyPrice}</span>
+              <span className="home-price-period">{section.perMonth}</span>
             </p>
             <ul className="mt-6 grid gap-4">
               {section.items.map((item) => (
@@ -334,9 +321,6 @@ export const PricingOverview = () => {
                 </li>
               ))}
             </ul>
-            <p className="mt-7 text-sm text-muted-foreground">
-              {section.items.slice(0, 2).join("  ·  ")}
-            </p>
           </div>
         </div>
       </div>
@@ -351,16 +335,12 @@ export const HomeFaq = () => {
   return (
     <section className="home-faq-editorial py-16 md:py-20 lg:py-28">
       <div className="container mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-20">
-          <div className="lg:sticky lg:top-28 lg:self-start">
-            <span className="marketing-eyebrow">{section.eyebrow}</span>
-            <h2 className="marketing-section-title mt-3 max-w-md text-3xl sm:text-4xl lg:text-[2.8rem]">{section.title}</h2>
-            <span className="mt-7 grid h-12 w-12 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><Sparkles className="h-6 w-6" /></span>
-          </div>
-          <div className="grid gap-3">
-            {items.map((item) => (
-              <details key={item.question} className="group rounded-[18px] border border-border/70 bg-white/70 px-5 py-4 shadow-[0_16px_44px_-40px_rgba(15,23,42,0.35)] open:bg-white open:shadow-[0_22px_52px_-40px_rgba(15,23,42,0.42)]">
-                <summary className="cursor-pointer list-none font-semibold text-foreground marker:hidden"><h3 className="inline text-base font-semibold">{item.question}</h3></summary>
+        <div>
+          <h2 className="marketing-section-title">{section.title}</h2>
+          <div className="home-faq-list mt-8">
+            {items.map((item, index) => (
+              <details key={item.question} open={index === 0} className="home-faq-item group">
+                <summary><h3>{item.question}</h3><Plus aria-hidden="true" /></summary>
                 <p className="mt-3 leading-7 text-muted-foreground">{item.answer}</p>
               </details>
             ))}

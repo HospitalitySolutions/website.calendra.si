@@ -181,7 +181,7 @@ const Testimonials = () => {
                 <ExternalLink className="h-4 w-4 text-muted-foreground transition group-hover:text-primary" aria-hidden="true" />
               </a>
               <span className="hidden h-8 w-px bg-border sm:block" aria-hidden="true" />
-              <div className="flex items-center gap-3">
+              <div className="home-testimonial-controls flex items-center gap-3">
                 <CarouselPrevious
                   aria-label={copy.previous}
                   className="static h-11 w-11 translate-x-0 translate-y-0 border-border bg-white text-primary shadow-none hover:bg-primary hover:text-white"
@@ -194,14 +194,15 @@ const Testimonials = () => {
             </div>
           </div>
 
-          <CarouselContent className="mt-10 -ml-8 items-stretch overflow-visible">
+          <CarouselContent className="mt-10 -ml-5 items-stretch">
             {copy.reviews.map((review) => (
-              <CarouselItem key={review.name} className="basis-[92%] pl-8 md:basis-[76%] lg:basis-[66%] xl:basis-[61%]">
-                <article className="flex h-full min-h-[265px] flex-col border-l-[3px] border-primary py-2 pl-7 pr-4 sm:pl-10 lg:min-h-[290px]">
-                  <Quote className="h-9 w-9 fill-primary text-primary" aria-hidden="true" />
-                  <blockquote className="mt-3 flex-1 font-display text-[1.45rem] font-medium leading-[1.36] tracking-[-0.03em] text-foreground sm:text-[1.75rem] lg:text-[2rem]">
-                    {review.quote}
+              <CarouselItem key={review.name} className="basis-[90%] pl-5 md:basis-1/2 lg:basis-1/3">
+                <article className="home-testimonial-card">
+                  <Quote className="h-7 w-7 fill-primary text-primary" aria-hidden="true" />
+                  <blockquote>
+                    {review.quote.split(/(?<=[.!?])\s+/).slice(0, 2).join(" ")}
                   </blockquote>
+                  {review.quote.split(/(?<=[.!?])\s+/).length > 2 && <details className="home-review-full"><summary>{language === "sl" ? "Celotno mnenje" : "Full review"}</summary><p>{review.quote}</p></details>}
 
                   <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
