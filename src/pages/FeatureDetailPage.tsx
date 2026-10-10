@@ -179,7 +179,7 @@ const FeatureDetailPage = () => {
           </section>
         ) : null}
 
-        <section className="bg-card py-16 md:py-24">
+        {page.details.length > 0 && <section className="bg-card py-16 md:py-24">
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
             <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.detailsTitle}</h2>
             <div className="mt-10 grid gap-6 md:grid-cols-2">
@@ -191,7 +191,7 @@ const FeatureDetailPage = () => {
               ))}
             </div>
           </div>
-        </section>
+        </section>}
 
         <section className="container mx-auto max-w-6xl px-4 py-16 lg:px-8 md:py-24">
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.faqTitle}</h2>

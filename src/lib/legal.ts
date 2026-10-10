@@ -11,6 +11,8 @@ export const LEGAL = {
   supportPhoneTel: "+38640641644",
   websiteAndAppSameEntity: true,
   audience: "B2B",
+  // Confirmed by the owner on 10 October 2026. Review when the entity changes.
+  vatRegistered: false,
   governingLaw: "Republic of Slovenia",
   hostingRegion: "AWS EU region",
   // Baseline analytics use self-hosted Umami without cookies. Google Analytics 4

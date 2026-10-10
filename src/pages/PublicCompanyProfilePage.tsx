@@ -170,8 +170,8 @@ const PublicCompanyProfilePage = () => {
           try {
             const resolvedStorefront = await fetchStorefront(directLocation.slug);
             if (!cancelled && resolvedStorefront) setStorefront(resolvedStorefront);
-          } catch (error: any) {
-            if (error?.name !== "AbortError") console.warn("Public storefront catalog could not be loaded.", error);
+          } catch (error: unknown) {
+            if (!controller.signal.aborted) console.warn("Public storefront catalog could not be loaded.", error);
           }
           return;
         }
@@ -194,11 +194,11 @@ const PublicCompanyProfilePage = () => {
         try {
           const matchedStorefront = await fetchStorefront(match.slug);
           if (!cancelled && matchedStorefront) setStorefront(matchedStorefront);
-        } catch (error: any) {
-          if (error?.name !== "AbortError") console.warn("Public storefront catalog could not be loaded.", error);
+        } catch (error: unknown) {
+          if (!controller.signal.aborted) console.warn("Public storefront catalog could not be loaded.", error);
         }
-      } catch (error: any) {
-        if (error?.name !== "AbortError") console.warn("Public provider profile could not be refreshed.", error);
+      } catch (error: unknown) {
+        if (!controller.signal.aborted) console.warn("Public provider profile could not be refreshed.", error);
       } finally {
         if (!cancelled) setLoading(false);
       }

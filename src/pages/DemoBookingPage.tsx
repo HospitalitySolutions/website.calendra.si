@@ -27,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { demoBookingApi, type DemoAvailability, type DemoBooking, type DemoHold, type DemoProfile, type DemoSlot } from "@/lib/demo-booking";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { useSiteLanguage } from "@/lib/site-language";
+import { sanitizeAcquisition } from "@/lib/acquisition";
 
 const dateInput = (date: Date) => format(date, "yyyy-MM-dd");
 const detectedTimeZone = () => typeof Intl !== "undefined" ? Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Ljubljana" : "Europe/Ljubljana";
@@ -188,6 +189,7 @@ const DemoBookingPage = () => {
   const [confirmationFailed, setConfirmationFailed] = useState(false);
   const [form, setForm] = useState({ guestName: "", guestEmail: "", guestPhone: "", companyName: "", guestNote: "" });
   const selectedSummaryRef = useRef<HTMLElement | null>(null);
+  const confirmationLocked = useRef(false);
 
   const loadAvailability = async (bookingHorizonDays = profile?.bookingHorizonDays || 30) => {
     const from = new Date();
@@ -259,7 +261,7 @@ const DemoBookingPage = () => {
       const nextHold = await demoBookingApi.hold(slot.startAt, timeZone, hold?.holdToken);
       setSelectedSlot(slot);
       setHold(nextHold);
-      trackMarketingEvent("demo_booking_slot_selected", { language, start_at: slot.startAt });
+      trackMarketingEvent("demo_booking_slot_selected", { language });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t.error);
       await loadAvailability().catch(() => undefined);
@@ -299,12 +301,13 @@ const DemoBookingPage = () => {
 
   const confirm = async (event: FormEvent) => {
     event.preventDefault();
-    if (!hold) return;
+    if (!hold || saving || step === "confirmed" || confirmationLocked.current) return;
+    confirmationLocked.current = true;
     setSaving(true);
     setError("");
     setConfirmationFailed(false);
     try {
-      const params = new URLSearchParams(window.location.search);
+      const params = sanitizeAcquisition(window.location.search);
       const result = await demoBookingApi.confirm({
         holdToken: hold.holdToken,
         ...form,
@@ -314,11 +317,13 @@ const DemoBookingPage = () => {
         utmMedium: params.get("utm_medium"),
         utmCampaign: params.get("utm_campaign"),
       });
+      if (result.status !== "CONFIRMED" || !result.id) throw new Error("Demo was not confirmed");
       setBooking(result);
       setConfirmationFailed(false);
       setStep("confirmed");
-      trackMarketingEvent("demo_booking_confirmed", { language, booking_id: result.id, meeting_provider: result.meetingProvider });
+      trackMarketingEvent("demo_booking_confirmed", { language, meeting_provider: result.meetingProvider });
     } catch (cause) {
+      confirmationLocked.current = false;
       setConfirmationFailed(true);
       if (import.meta.env.DEV) console.error("Demo booking confirmation failed", cause);
     } finally {
@@ -334,7 +339,7 @@ const DemoBookingPage = () => {
       const result = await demoBookingApi.cancel(booking.manageToken, language);
       setBooking(result);
       setRescheduling(false);
-      trackMarketingEvent("demo_booking_cancelled", { language, booking_id: result.id });
+      trackMarketingEvent("demo_booking_cancelled", { language });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t.pageError);
     } finally { setSaving(false); }
@@ -363,7 +368,7 @@ const DemoBookingPage = () => {
       setRescheduling(false);
       setSelectedSlot(null);
       setHold(null);
-      trackMarketingEvent("demo_booking_rescheduled", { language, booking_id: result.id, start_at: result.startAt });
+      trackMarketingEvent("demo_booking_rescheduled", { language });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t.error);
     } finally { setSaving(false); }
@@ -413,7 +418,7 @@ const DemoBookingPage = () => {
     <main className={`container mx-auto max-w-6xl px-4 ${step === "confirmed" ? "py-5 md:py-16" : "py-12 md:py-16"} lg:px-8`}>
       {!token && step === "slots" && <header className="mx-auto mb-6 max-w-3xl text-center md:mb-10">
         <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.06] px-4 py-2 text-sm font-bold text-primary"><Video className="h-4 w-4" />{t.eyebrow}</span>
-        <h1 className="mt-5 hidden font-display text-4xl font-extrabold tracking-tight text-foreground md:block md:text-5xl">{t.title}</h1>
+        <h1 className="mt-5 font-display text-3xl font-extrabold tracking-tight text-foreground md:text-5xl">{t.title}</h1>
         <p className="mx-auto mt-4 hidden max-w-2xl text-lg leading-8 text-muted-foreground md:block">{t.subtitle}</p>
         <AnswerSummary routeKey="demo" className="mx-auto mt-6 hidden text-left md:block" />
         <div className="mt-6 hidden flex-wrap justify-center gap-3 text-sm font-semibold text-foreground md:flex">
@@ -421,8 +426,9 @@ const DemoBookingPage = () => {
           <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span>
         </div>
       </header>}
+      {!token && step === "details" && <h1 className="sr-only">{t.title}</h1>}
 
-      {loading ? <div className="flex min-h-[420px] items-center justify-center"><Loader2 className="h-9 w-9 animate-spin text-primary" /><span className="ml-3 text-muted-foreground">{t.loading}</span></div> : error && !profile && !booking ? <div className="mx-auto max-w-xl rounded-3xl border border-destructive/20 bg-card p-8 text-center shadow-soft"><XCircle className="mx-auto h-12 w-12 text-destructive" /><h1 className="mt-4 font-display text-2xl font-bold">{token ? t.pageError : t.unavailable}</h1><p className="mt-2 text-muted-foreground">{error}</p></div> : !token && profile && !profile.enabled ? <div className="mx-auto max-w-xl rounded-3xl border bg-card p-10 text-center shadow-soft"><CalendarDays className="mx-auto h-12 w-12 text-muted-foreground" /><h2 className="mt-4 font-display text-2xl font-bold">{t.unavailable}</h2></div> : step === "confirmed" && booking ? (
+      {loading ? <div className="flex min-h-[420px] items-center justify-center"><Loader2 className="h-9 w-9 animate-spin text-primary" /><span className="ml-3 text-muted-foreground">{t.loading}</span></div> : error && !profile && !booking ? <div className="mx-auto max-w-xl rounded-3xl border border-destructive/20 bg-card p-8 text-center shadow-soft"><XCircle className="mx-auto h-12 w-12 text-destructive" />{token ? <h1 className="mt-4 font-display text-2xl font-bold">{t.pageError}</h1> : <h2 className="mt-4 font-display text-2xl font-bold">{t.unavailable}</h2>}<p className="mt-2 text-muted-foreground">{error}</p></div> : !token && profile && !profile.enabled ? <div className="mx-auto max-w-xl rounded-3xl border bg-card p-10 text-center shadow-soft"><CalendarDays className="mx-auto h-12 w-12 text-muted-foreground" /><h2 className="mt-4 font-display text-2xl font-bold">{t.unavailable}</h2></div> : step === "confirmed" && booking ? (
         <div className="mx-auto max-w-3xl rounded-[2rem] border border-border/70 bg-card p-4 shadow-[0_28px_80px_-40px_hsl(var(--primary)/0.5)] sm:p-6 md:p-10">
           <div className="text-center">
             <span className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full sm:h-16 sm:w-16 ${booking.status === "CANCELLED" ? "bg-destructive/10 text-destructive" : "bg-emerald-500/10 text-emerald-600"}`}>{booking.status === "CANCELLED" ? <XCircle className="h-7 w-7 sm:h-9 sm:w-9" /> : <CheckCircle2 className="h-7 w-7 sm:h-9 sm:w-9" />}</span>

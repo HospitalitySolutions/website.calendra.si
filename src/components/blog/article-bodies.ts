@@ -1,26 +1,24 @@
-import type { ComponentType } from "react";
+import { lazy, type ComponentType, type LazyExoticComponent } from "react";
 import type { MDXComponents } from "mdx/types";
 import type { SiteLanguage } from "@/lib/site-language";
 
 type MdxComponent = ComponentType<{ components?: MDXComponents }>;
 
 /**
- * Eagerly imports every compiled article body.
+ * Prerender every article synchronously, but download only the current article
+ * body in the browser. The same Suspense boundary is rendered on both sides so
+ * hydration can keep the server's complete prose while that body loads.
  *
- * Eager is deliberate: prerendering has to emit the full prose into the HTML,
- * and a lazily loaded body would leave hydration with nothing to match. Because
- * this module is only reachable from the blog route components, which are
- * themselves code-split, the bundled articles land in the blog chunk and never
- * touch the entry bundle.
+ * Both glob patterns stay literal so adding a translated MDX article continues
+ * to work without updating a hand-written import list.
  */
-const modules = import.meta.glob<{ default: MdxComponent }>("/content/blog/*/*.mdx", { eager: true });
+const bodies: Record<string, MdxComponent | LazyExoticComponent<MdxComponent>> = import.meta.env.SSR
+  ? import.meta.glob<MdxComponent>("/content/blog/*/*.mdx", { eager: true, import: "default" })
+  : Object.fromEntries(
+      Object.entries(import.meta.glob<{ default: MdxComponent }>("/content/blog/*/*.mdx")).map(
+        ([filePath, load]) => [filePath, lazy(load)],
+      ),
+    );
 
-const bodies = new Map<string, MdxComponent>();
-
-for (const [filePath, module] of Object.entries(modules)) {
-  const match = /\/content\/blog\/(sl|en)\/(.+)\.mdx$/.exec(filePath);
-  if (!match) continue;
-  bodies.set(`${match[1]}:${match[2]}`, module.default);
-}
-
-export const getArticleBody = (slug: string, language: SiteLanguage) => bodies.get(`${language}:${slug}`);
+export const getArticleBody = (slug: string, language: SiteLanguage) =>
+  bodies[`/content/blog/${language}/${slug}.mdx`];

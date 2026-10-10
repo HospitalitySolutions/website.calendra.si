@@ -10,6 +10,26 @@ const sitemapPath = path.join(distDir, 'sitemap.xml');
 
 const sitemapXml = await fs.readFile(sitemapPath, 'utf8');
 const locations = [...sitemapXml.matchAll(/<loc>(.*?)<\/loc>/g)].map((match) => match[1]);
+const clientManifest = JSON.parse(await fs.readFile(path.join(distDir, '.vite', 'manifest.json'), 'utf8'));
+
+const staticStylesheets = (entryKey) => {
+  const pending = [entryKey];
+  const visited = new Set();
+  const files = new Set();
+  while (pending.length > 0) {
+    const key = pending.pop();
+    if (visited.has(key)) continue;
+    visited.add(key);
+    const chunk = clientManifest[key];
+    if (!chunk) throw new Error(`Missing client manifest entry: ${key}`);
+    for (const file of chunk.css ?? []) files.add(`/${file}`);
+    pending.push(...(chunk.imports ?? []));
+  }
+  return files;
+};
+const initialStylesheets = staticStylesheets('index.html');
+const pricingStylesheets = staticStylesheets('src/pages/PricingPage.tsx');
+const pricingOnlyStylesheets = [...pricingStylesheets].filter((file) => !initialStylesheets.has(file));
 
 if (locations.length === 0) {
   throw new Error('No URLs were found in dist/sitemap.xml.');
@@ -27,10 +47,9 @@ const { origin } = server;
 const failures = [];
 
 /**
- * AI crawlers (OAI-SearchBot, PerplexityBot, Claude-SearchBot and friends) do
- * not execute JavaScript, so they only ever see the prerendered HTML. Measuring
- * the visible text of the served document is the only way to catch a regression
- * where prerendering silently degrades to an empty SPA shell.
+ * Keep substantial page content in the initial HTML for visitors and crawlers.
+ * This check catches a regression to an empty SPA shell; the word threshold is
+ * a repository safeguard, not a search ranking or AI inclusion requirement.
  */
 const MINIMUM_VISIBLE_WORDS = 150;
 
@@ -77,6 +96,32 @@ const checkImageAltText = (route, html) => {
   }
 };
 
+// A lazy route may hydrate correctly while its initial HTML briefly paints
+// without layout CSS. Verify the actual output links before browser execution,
+// including cascade order, and keep pricing-only CSS off unrelated pages.
+const checkPricingStylesheets = (route, html) => {
+  const head = html.slice(0, html.indexOf('</head>'));
+  const linkedStylesheets = [...head.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["']([^"']+)["'][^>]*>/gi)]
+    .map((match) => match[1]);
+  if (route === '/cenik' || route === '/en/pricing') {
+    for (const file of pricingStylesheets) {
+      if (linkedStylesheets.filter((href) => href === file).length !== 1) {
+        failures.push(`${route}: expected exactly one initial stylesheet link for ${file}`);
+      }
+    }
+    const lastInitialStyle = Math.max(...[...initialStylesheets].map((file) => linkedStylesheets.indexOf(file)));
+    for (const file of pricingOnlyStylesheets) {
+      if (linkedStylesheets.indexOf(file) <= lastInitialStyle) {
+        failures.push(`${route}: route stylesheet ${file} must follow the entry styles`);
+      }
+    }
+  } else {
+    for (const file of pricingOnlyStylesheets) {
+      if (linkedStylesheets.includes(file)) failures.push(`${route}: loads unrelated pricing stylesheet ${file}`);
+    }
+  }
+};
+
 try {
   for (const location of locations) {
     const productionUrl = new URL(location);
@@ -93,6 +138,7 @@ try {
 
     collectInternalLinks(route, html);
     checkImageAltText(route, html);
+    checkPricingStylesheets(route, html);
 
     if (/name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(html)) {
       failures.push(`${route}: sitemap URL is marked noindex`);

@@ -61,8 +61,8 @@ const copy = {
     integrations: {
       eyebrow: "Integracije",
       title: "Povežite koledar, spletne sestanke in plačila",
-      intro: "Calendra se vključuje v obstoječe delo, da vam ni treba podvajati podatkov med več orodji.",
-      items: ["Google Koledar", "Zoom", "Stripe", "PayPal", "E-pošta in SMS", "Spletni vtičnik"],
+      intro: "Povežite svoje račune in omogočite izbrane integracije. Razpoložljivost je odvisna od paketa, nastavitev in dovoljenj povezanega ponudnika.",
+      items: ["Google Koledar", "Zoom", "Stripe", "Google Meet", "E-pošta in SMS", "Spletni vtičnik"],
       cta: "Več o integracijah",
     },
     pricing: {
@@ -112,8 +112,8 @@ const copy = {
     integrations: {
       eyebrow: "Integrations",
       title: "Connect calendars, online meetings and payments",
-      intro: "Calendra fits into your existing workflow so information does not need to be copied between tools.",
-      items: ["Google Calendar", "Zoom", "Stripe", "PayPal", "Email and SMS", "Website widget"],
+      intro: "Connect your accounts and enable the integrations you need. Availability depends on your plan, settings and the connected provider’s permissions.",
+      items: ["Google Calendar", "Zoom", "Stripe", "Google Meet", "Email and SMS", "Website widget"],
       cta: "Explore integrations",
     },
     pricing: {
@@ -200,7 +200,7 @@ export const AudienceSection = () => {
                 <a
                   href={getRoutePath(audienceRoutes[index], language)}
                   className="audience-carousel-card group block overflow-hidden rounded-xl border border-border bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  aria-label={item.cta}
+                  aria-label={`${item.title}: ${item.cta}`}
                 >
                   <span className="audience-service-scene" aria-hidden="true">
                     <img

@@ -6,6 +6,8 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { buildPackageSignupRoute, type PricingSignupSummary } from "@/lib/routes";
 import { LEGAL } from "@/lib/legal";
+import { getPricingTaxNote } from "@/lib/pricing-copy";
+import { useInquiry } from "@/lib/use-inquiry";
 import { getFaqForRoute } from "@/lib/faq";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { getRoutePath, sitemapRouteMetadata } from "@/lib/localized-routes";
@@ -109,7 +111,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     enterprisePanelTitle: "Za večje ekipe ali posebne zahteve",
     enterprisePanelDescription: "Enterprise paket prilagodimo vašemu poslovanju.",
     enterprisePanelCta: "Pošljite povpraševanje",
-    enterprisePanelResponse: "Odzovemo se v 24 urah.",
+    enterprisePanelResponse: "Skupaj določimo naslednje korake.",
     usersLabel: "2. Uporabniki",
     usersHint: "Vsak dodatni uporabnik: 5,90 € / mesec",
     usersCountLabel: "uporabnikov",
@@ -243,7 +245,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     enterprisePanelTitle: "For larger teams or special requirements",
     enterprisePanelDescription: "We tailor the Enterprise plan to your business.",
     enterprisePanelCta: "Send an enquiry",
-    enterprisePanelResponse: "We respond within 24 hours.",
+    enterprisePanelResponse: "Agree the next steps together.",
     usersLabel: "2. Additional users",
     usersHint: "Each additional user: €5.90 / month",
     usersCountLabel: "users",
@@ -376,7 +378,7 @@ const standaloneExtras = {
     extraTitle: "Dodatni stroški po izbiri ali porabi",
     extra: ["Dodatni uporabniki: 5,90 € / mesec", "Dodatna SMS sporočila: 0,06 € / sporočilo", "Izbrani dodatni moduli"],
     trialTitle: "Pogoji brezplačnega preizkusa",
-    trialBody: "Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice. Pred potrditvijo plačljivega paketa vidite izbrani paket, dodatke ter ocenjeni mesečni in prvi račun.",
+    trialBody: "Brezplačni preizkus traja 14 dni, začne se z Osnovnim paketom in ne zahteva kreditne kartice. Izbira na ceniku se prenese v registracijo, plačljivi dodatki pa s tem še niso aktivirani. Pred potrditvijo plačljivega paketa vidite izbrani paket, dodatke ter ocenjeni mesečni in prvi račun.",
     relatedTitle: "Preverite povezane funkcionalnosti",
     faqTitle: "Pogosta vprašanja o ceniku",
   },
@@ -394,7 +396,7 @@ const standaloneExtras = {
     extraTitle: "Optional or usage-based costs",
     extra: ["Additional users: €5.90 / month", "Additional SMS messages: €0.06 / message", "Selected add-on modules"],
     trialTitle: "Free-trial terms",
-    trialBody: "The free trial lasts 14 days and does not require a credit card. Before confirming a paid plan, you can review the selected package, add-ons and estimated monthly and first invoice.",
+    trialBody: "The free trial lasts 14 days, starts on the Basic plan and does not require a credit card. Your pricing selection carries into registration; it does not activate paid add-ons. Before confirming a paid plan, you can review the selected package, add-ons and estimated monthly and first invoice.",
     relatedTitle: "Explore related features",
     faqTitle: "Pricing questions",
   },
@@ -438,6 +440,7 @@ const scrollToElement = (element: HTMLElement | null) => {
 
 const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const { language } = useSiteLanguage();
+  const inquiry = useInquiry(language);
   const baseContent = useMemo(() => translations[language], [language]);
   const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(getInitialPricingCatalog);
   const [selectedTierKey, setSelectedTierKey] = useState<PlanKey>("professional");
@@ -454,16 +457,14 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const configuratorRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLDivElement | null>(null);
 
-  // Real content-change date (the same one the sitemap and Product schema
-  // dateModified use), not a cosmetic "as of today" stamp, so it can't drift
-  // from what actually changed on the page.
+  // Share the sitemap's recorded content-change date for this pricing page.
   const pricingUpdatedLabel = useMemo(() => {
     const date = new Date(`${sitemapRouteMetadata.pricing.contentLastModified}T00:00:00Z`);
     if (language !== "sl") {
       return new Intl.DateTimeFormat("en-IE", { year: "numeric", month: "long", day: "numeric" }).format(date);
     }
-    // Intl only has the nominative month form ("julij"), but "veljaven od"
-    // takes the genitive ("julija") — there's no Intl option for Slovenian
+    // Intl only has the nominative month form ("julij"), but a date after
+    // "posodobljen" takes the genitive ("julija") — there's no Intl option for Slovenian
     // grammatical case, so the genitive names are spelled out here instead.
     const genitiveMonths = ["januarja", "februarja", "marca", "aprila", "maja", "junija", "julija", "avgusta", "septembra", "oktobra", "novembra", "decembra"];
     return `${date.getUTCDate()}. ${genitiveMonths[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
@@ -724,7 +725,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       package_price: tier?.baseMonthly ?? null,
       currency: "EUR",
       language,
-      source: standalone ? "pricing_page" : "homepage",
+      placement: standalone ? "pricing_page" : "homepage",
     });
 
     if (!standalone) {
@@ -745,7 +746,6 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
 
   const handleInquirySubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const subject = `${language === "sl" ? "Povpraševanje" : "Pricing inquiry"} - ${selectedTier.name}`;
     const bodyLines = [
       `${content.selectedPackageLabel}: ${selectedTier.name}`,
       `${content.contactCompany}: ${contactCompany || "-"}`,
@@ -759,8 +759,11 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       contactMessage || "-",
     ];
 
-    const mailto = `mailto:${LEGAL.generalEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join("\n"))}`;
-    window.location.href = mailto;
+    void inquiry.submit({
+      name: contactName, email: contactEmail, phone: contactPhone,
+      message: bodyLines.join("\n"), locale: language,
+      billing: billingPeriod,
+    }, "enterprise");
   };
 
   const sl = language === "sl";
@@ -777,7 +780,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     optional: "Dodatno po izbiri ali porabi", byPrice: "Po ceniku",
     custom: "Ponudba po meri", team: "Rešitev za vašo ekipo.",
     teamDescription: "Za večje ekipe, več lokacij ali posebne zahteve pripravimo ponudbo po meri.",
-    benefits: ["Prilagoditev vašemu poslovanju", "Povezovanje z drugimi orodji", "Odzovemo se v 24 urah."],
+    benefits: ["Prilagoditev vašemu poslovanju", "Povezovanje z drugimi orodji", "Skupaj določimo naslednje korake."],
     inquiry: "Povpraševanje za Enterprise", removeUser: "Odstrani uporabnika", addUser: "Dodaj uporabnika",
     userCount: "Število uporabnikov", smsCount: "Število dodatnih SMS sporočil",
     monthlyBilling: "Mesečni obračun", annualBilling: "Letni obračun",
@@ -795,7 +798,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     optional: "Optional or usage-based costs", byPrice: "As listed",
     custom: "A tailored offer", team: "A solution for your team.",
     teamDescription: "For larger teams, multiple locations or special requirements, we prepare a tailored offer.",
-    benefits: ["Tailored to your business", "Connect your existing tools", "We respond within 24 hours."],
+    benefits: ["Tailored to your business", "Connect your existing tools", "Agree the next steps together."],
     inquiry: "Enterprise enquiry", removeUser: "Remove a user", addUser: "Add a user",
     userCount: "Number of users", smsCount: "Number of additional SMS messages",
     monthlyBilling: "Monthly billing", annualBilling: "Annual billing",
@@ -839,7 +842,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           <span className="marketing-eyebrow">{content.sectionEyebrow}</span>
           <HeadingTag>{standalone ? content.standaloneTitle : content.sectionTitle}</HeadingTag>
           <p className="pricing-intro-description">{content.sectionDescription}</p>
-          {standalone && <p className="pricing-updated">{sl ? "Cenik veljaven od " : "Pricing last updated "}{pricingUpdatedLabel}</p>}
+          {standalone && <p className="pricing-updated">{sl ? "Cenik posodobljen " : "Pricing last updated "}{pricingUpdatedLabel}</p>}
           <div className="pricing-billing-row">
             <div className="pricing-billing-switch" role="group" aria-label={sl ? "Obračunsko obdobje" : "Billing period"}>
               {(["monthly", "annual"] as const).map((period) => (
@@ -851,6 +854,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             <span className="pricing-savings">{content.billingAnnualSavingsLabel.replace("{months}", String(annualSavingsMonths))}</span>
           </div>
           {trustLine}
+          <p className="mt-4 text-sm text-muted-foreground">{getPricingTaxNote(language, pricingCatalog.vatIncluded)}</p>
         </header>
 
         <div className="pricing-plan-grid">
@@ -992,13 +996,14 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             <form className="pricing-contact-form" onSubmit={handleInquirySubmit} aria-labelledby="pricing-form-title">
               <h3 id="pricing-form-title">{ui.inquiry}</h3>
               <div className="pricing-form-fields">
-                <div><label htmlFor="pricing-company">{content.contactCompany}</label><Input id="pricing-company" name="company" autoComplete="organization" placeholder={content.contactCompany} value={contactCompany} onChange={(event) => setContactCompany(event.target.value)} /></div>
-                <div><label htmlFor="pricing-name">{content.contactName}</label><Input id="pricing-name" name="name" autoComplete="name" placeholder={content.contactName} value={contactName} onChange={(event) => setContactName(event.target.value)} required /></div>
-                <div><label htmlFor="pricing-email">{content.contactEmail}</label><Input id="pricing-email" name="email" autoComplete="email" type="email" placeholder={content.contactEmail} value={contactEmail} onChange={(event) => setContactEmail(event.target.value)} required /></div>
-                <div><label htmlFor="pricing-phone">{content.contactPhone}</label><Input id="pricing-phone" name="phone" autoComplete="tel" type="tel" placeholder={content.contactPhone} value={contactPhone} onChange={(event) => setContactPhone(event.target.value)} /></div>
-                <div className="pricing-form-message"><label htmlFor="pricing-message">{content.contactMessage}</label><Textarea id="pricing-message" name="message" placeholder={content.contactMessagePlaceholder} value={contactMessage} onChange={(event) => setContactMessage(event.target.value)} rows={4} required /></div>
+                <div><label htmlFor="pricing-company">{content.contactCompany}</label><Input id="pricing-company" maxLength={200} name="company" autoComplete="organization" placeholder={content.contactCompany} value={contactCompany} onChange={(event) => setContactCompany(event.target.value)} /></div>
+                <div><label htmlFor="pricing-name">{content.contactName}</label><Input id="pricing-name" maxLength={120} name="name" autoComplete="name" placeholder={content.contactName} value={contactName} onChange={(event) => setContactName(event.target.value)} required /></div>
+                <div><label htmlFor="pricing-email">{content.contactEmail}</label><Input id="pricing-email" maxLength={254} name="email" autoComplete="email" type="email" placeholder={content.contactEmail} value={contactEmail} onChange={(event) => setContactEmail(event.target.value)} required /></div>
+                <div><label htmlFor="pricing-phone">{content.contactPhone}</label><Input id="pricing-phone" maxLength={50} name="phone" autoComplete="tel" type="tel" placeholder={content.contactPhone} value={contactPhone} onChange={(event) => setContactPhone(event.target.value)} /></div>
+                <div className="pricing-form-message"><label htmlFor="pricing-message">{content.contactMessage}</label><Textarea id="pricing-message" maxLength={3000} name="message" placeholder={content.contactMessagePlaceholder} value={contactMessage} onChange={(event) => setContactMessage(event.target.value)} rows={4} required /></div>
               </div>
-              <div className="pricing-form-actions"><p>{content.selectedPackageLabel}: <strong>{selectedTier.name}</strong></p><Button variant="hero" size="lg" className="pricing-button" type="submit">{content.sendInquiry}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Button></div>
+              <div className="pricing-form-actions"><p>{content.selectedPackageLabel}: <strong>{selectedTier.name}</strong></p><Button variant="hero" size="lg" className="pricing-button" type="submit" disabled={inquiry.disabled}>{content.sendInquiry}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Button></div>
+              <p role={inquiry.status === "error" ? "alert" : "status"}>{inquiry.message}</p>
             </form>
           </section>
 

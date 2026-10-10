@@ -102,6 +102,7 @@ const writeRouteHtml = async (routePath, html) => {
 };
 
 const template = await fs.readFile(templatePath, 'utf8');
+const clientManifest = JSON.parse(await fs.readFile(path.join(distDir, '.vite', 'manifest.json'), 'utf8'));
 const serverEntryPath = (await Promise.all(
   serverEntryCandidates.map(async (candidate) => {
     try {
@@ -172,24 +173,10 @@ const pricingBlock = pricingCatalog
     <!-- CALENDRA_PRICING_END -->`
   : '<!-- CALENDRA_PRICING_START --><!-- CALENDRA_PRICING_END -->';
 
-/**
- * The cookieless Umami tracker is injected as a plain deferred script rather
- * than bundled, so it never blocks hydration and stays out of the JS graph.
- * Serving it from a first-party path keeps content blockers from dropping it.
- */
-const buildAnalyticsBlock = () => {
-  const websiteId = process.env.VITE_UMAMI_WEBSITE_ID ?? '';
-  if (!websiteId) return '<!-- CALENDRA_ANALYTICS_START --><!-- CALENDRA_ANALYTICS_END -->';
-
-  const scriptUrl = process.env.VITE_UMAMI_SCRIPT_URL ?? '/stats/script.js';
-  const hostUrl = (process.env.VITE_UMAMI_HOST_URL ?? '/stats').replace(/\/+$/, '');
-
-  return `<!-- CALENDRA_ANALYTICS_START -->
-    <script defer src="${escapeHtml(scriptUrl)}" data-website-id="${escapeHtml(websiteId)}" data-host-url="${escapeHtml(hostUrl)}"></script>
-    <!-- CALENDRA_ANALYTICS_END -->`;
-};
-
-const analyticsBlock = buildAnalyticsBlock();
+// The browser adapter loads Umami only on known marketing routes and supplies
+// sanitized page fields. A global automatic tracker would also collect tokens
+// and customer routes served through the SPA fallback.
+const analyticsBlock = '<!-- CALENDRA_ANALYTICS_START --><!-- CALENDRA_ANALYTICS_END -->';
 
 // Every route renders its H1/lede in Plus Jakarta Sans and its body copy in
 // DM Sans above the fold, so both are on the LCP critical path everywhere,
@@ -213,6 +200,42 @@ const buildRoutePreloads = (routePath) => {
     .join('\n');
 
   return `<!-- CALENDRA_ROUTE_PRELOADS_START -->\n${links}\n    <!-- CALENDRA_ROUTE_PRELOADS_END -->`;
+};
+
+// Vite loads a lazy route's CSS with its JavaScript. Its prerendered markup is
+// visible before that import runs, so the pricing layout must also be linked
+// from the initial HTML. Keep it on pricing routes and after the entry styles
+// to preserve the same cascade order as client-side navigation.
+const routeStyleEntries = new Map([
+  ['/cenik', 'src/pages/PricingPage.tsx'],
+  ['/en/pricing', 'src/pages/PricingPage.tsx'],
+]);
+const templateStylesheets = new Set(
+  [...template.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["']([^"']+)["'][^>]*>/gi)]
+    .map((match) => match[1].replace(/^\//, '')),
+);
+
+const buildRouteStylesheets = (routePath) => {
+  const entryKey = routeStyleEntries.get(routePath);
+  if (!entryKey) return '';
+
+  const visited = new Set();
+  const stylesheets = new Set();
+  const collectStylesheets = (key) => {
+    if (visited.has(key)) return;
+    visited.add(key);
+    const chunk = clientManifest[key];
+    if (!chunk) throw new Error(`Missing client manifest entry ${key} for ${routePath}.`);
+    for (const imported of chunk.imports ?? []) collectStylesheets(imported);
+    for (const stylesheet of chunk.css ?? []) {
+      if (!templateStylesheets.has(stylesheet)) stylesheets.add(stylesheet);
+    }
+  };
+  collectStylesheets(entryKey);
+
+  return [...stylesheets]
+    .map((stylesheet) => `    <link rel="stylesheet" crossorigin href="/${escapeHtml(stylesheet)}" />\n`)
+    .join('');
 };
 
 const escapeXml = (value) =>
@@ -261,6 +284,7 @@ const writeDynamicLocationProfileShell = async (language) => {
     .replace(analyticsBlockPattern, analyticsBlock)
     .replace(pricingBlockPattern, pricingBlock)
     .replace(seoBlockPattern, head)
+    .replace('</head>', `${buildRouteStylesheets(routePath)}</head>`)
     .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
 
   await fs.writeFile(path.join(distDir, `_dynamic-location-profile-${language}.html`), output);
@@ -280,6 +304,7 @@ for (const routePath of routesToPrerender) {
     .replace(analyticsBlockPattern, analyticsBlock)
     .replace(pricingBlockPattern, pricingBlock)
     .replace(seoBlockPattern, head)
+    .replace('</head>', `${buildRouteStylesheets(routePath)}</head>`)
     .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
 
   await writeRouteHtml(routePath, output);

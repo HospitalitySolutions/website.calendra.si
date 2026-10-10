@@ -36,19 +36,21 @@ const SectionFallback = ({ minHeight }: { minHeight: number }) => (
 const Index = () => (
   <div className="marketing-page homepage min-h-screen">
     <Navbar />
-    <Hero />
-    <AudienceSection />
-    <PricingOverview />
-    <Suspense fallback={<SectionFallback minHeight={640} />}>
-      <Testimonials />
-    </Suspense>
-    <Features />
-    <IntegrationsSection />
-    <Suspense fallback={<SectionFallback minHeight={520} />}>
-      <CalendraConnectPromo />
-    </Suspense>
-    <HomeFaq />
-    <FinalCta />
+    <main>
+      <Hero />
+      <AudienceSection />
+      <PricingOverview />
+      <Suspense fallback={<SectionFallback minHeight={640} />}>
+        <Testimonials />
+      </Suspense>
+      <Features />
+      <IntegrationsSection />
+      <Suspense fallback={<SectionFallback minHeight={520} />}>
+        <CalendraConnectPromo />
+      </Suspense>
+      <HomeFaq />
+      <FinalCta />
+    </main>
     <Footer />
   </div>
 );

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { getItServiceContent, IT_SERVICE_ROUTE_KEYS, type ItServiceRouteKey } from "@/lib/it-services";
 import { LEGAL } from "@/lib/legal";
+import { useInquiry } from "@/lib/use-inquiry";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { getRoutePath } from "@/lib/localized-routes";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
@@ -54,7 +55,7 @@ const copy = {
       phone: "Telefon",
       message: "Sporočilo",
       privacy: "Podatke bomo uporabili samo za obravnavo vašega vprašanja ali povpraševanja.",
-      formIntro: "Po oddaji se odpre vaš e-poštni program z že pripravljenim sporočilom. Pred pošiljanjem ga lahko še dopolnite.",
+      formIntro: "Sporočilo bomo prejeli neposredno prek obrazca. Potrdilo o prejemu vam pošljemo po e-pošti.",
     },
     calendra: {
       formTitle: "Vprašanje o Calendri",
@@ -62,7 +63,7 @@ const copy = {
       selectTopic: "Izberite temo",
       topics: ["Paketi in cena", "Funkcionalnosti", "Predstavitev / demo", "Preizkusni račun", "Obračun in naročnina", "Tehnična podpora za aplikacijo", "Drugo"],
       messagePlaceholder: "Opišite vprašanje, težavo ali funkcionalnost, ki vas zanima.",
-      submit: "Pripravi vprašanje o Calendri",
+      submit: "Pošlji vprašanje",
       subject: "Vprašanje o Calendri",
     },
     it: {
@@ -79,7 +80,7 @@ const copy = {
       website: "Obstoječa spletna stran ali domena",
       websitePlaceholder: "https://... ali domena podjetja",
       messagePlaceholder: "Opišite trenutno stanje, težavo, cilj, uporabljene sisteme in morebitne roke.",
-      submit: "Pripravi e-poštno povpraševanje",
+      submit: "Pošlji povpraševanje",
       subject: "Povpraševanje za IT storitve",
     },
     directTitle: "Raje stopite v stik neposredno?",
@@ -117,7 +118,7 @@ const copy = {
       phone: "Phone",
       message: "Message",
       privacy: "We will use the information only to respond to your question or enquiry.",
-      formIntro: "Submitting the form opens your email application with a prepared message that you can review before sending.",
+      formIntro: "Your message is sent directly through this form. We will email you a receipt confirmation.",
     },
     calendra: {
       formTitle: "Question about Calendra",
@@ -125,7 +126,7 @@ const copy = {
       selectTopic: "Choose a topic",
       topics: ["Plans and pricing", "Features", "Product demonstration", "Trial account", "Billing and subscription", "Application support", "Other"],
       messagePlaceholder: "Describe your question, issue or the feature you are interested in.",
-      submit: "Prepare Calendra question",
+      submit: "Send question",
       subject: "Question about Calendra",
     },
     it: {
@@ -142,7 +143,7 @@ const copy = {
       website: "Existing website or domain",
       websitePlaceholder: "https://... or your company domain",
       messagePlaceholder: "Describe the current situation, problem, goal, existing systems and any deadlines.",
-      submit: "Prepare email enquiry",
+      submit: "Send enquiry",
       subject: "IT services enquiry",
     },
     directTitle: "Prefer to contact us directly?",
@@ -159,6 +160,7 @@ const copy = {
 const ContactPage = () => {
   const { language } = useSiteLanguage();
   const page = copy[language];
+  const inquiry = useInquiry(language);
   const [searchParams] = useSearchParams();
   const requestedService = searchParams.get("service") as ItServiceRouteKey | null;
   const validRequestedService = requestedService && IT_SERVICE_ROUTE_KEYS.includes(requestedService) ? requestedService : "";
@@ -215,13 +217,7 @@ const ContactPage = () => {
       message,
     ].join("\n");
 
-    trackMarketingEvent("calendra_inquiry_submitted", {
-      topic: topic || "unspecified",
-      language,
-      delivery_method: "mailto",
-    });
-
-    window.location.href = `mailto:${LEGAL.generalEmail}?subject=${encodeURIComponent(`${page.calendra.subject}${topic ? ` – ${topic}` : ""}`)}&body=${encodeURIComponent(body)}`;
+    void inquiry.submit({ name, email, phone, message: body, locale: language }, "calendra");
   };
 
   const handleItSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -241,16 +237,7 @@ const ContactPage = () => {
       message,
     ].join("\n");
 
-    trackMarketingEvent("it_service_inquiry_submitted", {
-      service_key: service || "unspecified",
-      company_size: companySize || "unspecified",
-      cooperation_type: cooperation || "unspecified",
-      urgency: urgency || "unspecified",
-      language,
-      delivery_method: "mailto",
-    });
-
-    window.location.href = `mailto:${LEGAL.generalEmail}?subject=${encodeURIComponent(`${page.it.subject} – ${selectedServiceLabel}`)}&body=${encodeURIComponent(body)}`;
+    void inquiry.submit({ name, email, phone, message: body, locale: language }, "it");
   };
 
   return (
@@ -316,7 +303,7 @@ const ContactPage = () => {
                         {page.calendra.topics.map((option) => <option key={option} value={option}>{option}</option>)}
                       </select>
                     </div>
-                    <MessageAndSubmit page={page.common} message={message} setMessage={setMessage} placeholder={page.calendra.messagePlaceholder} submit={page.calendra.submit} />
+                    <MessageAndSubmit page={page.common} message={message} setMessage={setMessage} placeholder={page.calendra.messagePlaceholder} submit={page.calendra.submit} disabled={inquiry.disabled} />
                   </form>
                 ) : (
                   <form className="mt-8 grid gap-5 md:grid-cols-2" onSubmit={handleItSubmit}>
@@ -352,11 +339,12 @@ const ContactPage = () => {
                     </div>
                     <div className="md:col-span-2">
                       <label htmlFor="it-contact-website" className="mb-2 block text-sm font-semibold text-foreground">{page.it.website}</label>
-                      <Input id="it-contact-website" type="text" inputMode="url" placeholder={page.it.websitePlaceholder} value={website} onChange={(event) => setWebsite(event.target.value)} />
+                      <Input id="it-contact-website" maxLength={300} type="text" inputMode="url" placeholder={page.it.websitePlaceholder} value={website} onChange={(event) => setWebsite(event.target.value)} />
                     </div>
-                    <MessageAndSubmit page={page.common} message={message} setMessage={setMessage} placeholder={page.it.messagePlaceholder} submit={page.it.submit} />
+                    <MessageAndSubmit page={page.common} message={message} setMessage={setMessage} placeholder={page.it.messagePlaceholder} submit={page.it.submit} disabled={inquiry.disabled} />
                   </form>
                 )}
+                <p role={inquiry.status === "error" ? "alert" : "status"} className="mt-4 text-sm">{inquiry.message}</p>
               </section>
 
               <ContactAside page={page} language={language} />
@@ -401,32 +389,32 @@ const CommonFields = ({
   <>
     <div>
       <label htmlFor="contact-name" className="mb-2 block text-sm font-semibold text-foreground">{page.name} *</label>
-      <Input id="contact-name" required autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} />
+      <Input id="contact-name" maxLength={120} required autoComplete="name" value={name} onChange={(event) => setName(event.target.value)} />
     </div>
     <div>
       <label htmlFor="contact-company" className="mb-2 block text-sm font-semibold text-foreground">{page.company}</label>
-      <Input id="contact-company" autoComplete="organization" value={company} onChange={(event) => setCompany(event.target.value)} />
+      <Input id="contact-company" maxLength={200} autoComplete="organization" value={company} onChange={(event) => setCompany(event.target.value)} />
     </div>
     <div>
       <label htmlFor="contact-email" className="mb-2 block text-sm font-semibold text-foreground">{page.email} *</label>
-      <Input id="contact-email" required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} />
+      <Input id="contact-email" maxLength={254} required type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} />
     </div>
     <div>
       <label htmlFor="contact-phone" className="mb-2 block text-sm font-semibold text-foreground">{page.phone}</label>
-      <Input id="contact-phone" type="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} />
+      <Input id="contact-phone" maxLength={50} type="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} />
     </div>
   </>
 );
 
-const MessageAndSubmit = ({ page, message, setMessage, placeholder, submit }: { page: CommonCopy; message: string; setMessage: (value: string) => void; placeholder: string; submit: string }) => (
+const MessageAndSubmit = ({ page, message, setMessage, placeholder, submit, disabled }: { page: CommonCopy; message: string; setMessage: (value: string) => void; placeholder: string; submit: string; disabled: boolean }) => (
   <>
     <div className="md:col-span-2">
       <label htmlFor="contact-message" className="mb-2 block text-sm font-semibold text-foreground">{page.message} *</label>
-      <Textarea id="contact-message" required className="min-h-40" placeholder={placeholder} value={message} onChange={(event) => setMessage(event.target.value)} />
+      <Textarea id="contact-message" required maxLength={2500} className="min-h-40" placeholder={placeholder} value={message} onChange={(event) => setMessage(event.target.value)} />
     </div>
     <div className="md:col-span-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <p className="max-w-xl text-sm leading-6 text-muted-foreground">{page.privacy}</p>
-      <Button type="submit" variant="hero" size="lg" className="shrink-0 rounded-xl"><Send className="h-4 w-4" />{submit}</Button>
+      <Button type="submit" disabled={disabled} variant="hero" size="lg" className="shrink-0 rounded-xl"><Send className="h-4 w-4" />{submit}</Button>
     </div>
   </>
 );

@@ -24,6 +24,7 @@ import { getRoutePath } from "@/lib/localized-routes";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { AUTHOR } from "@/lib/seo";
 import { ArrowRight, CalendarDays, Clock3, ListTree, Tag } from "lucide-react";
+import { Suspense } from "react";
 import { useLocation } from "react-router-dom";
 
 const copy = {
@@ -138,9 +139,11 @@ const BlogArticlePage = () => {
             </div>
           </header>
 
-          <div className="container mx-auto grid max-w-6xl gap-12 px-4 py-14 lg:grid-cols-[minmax(0,1fr)_16rem] lg:px-8">
-            <div className="max-w-3xl">
-              {Body ? <Body components={mdxComponents} /> : null}
+          <div className="container mx-auto grid max-w-6xl grid-cols-1 gap-12 px-4 py-14 lg:grid-cols-[minmax(0,1fr)_16rem] lg:px-8">
+            <div className="min-w-0 w-full max-w-3xl">
+              <Suspense fallback={null}>
+                {Body ? <Body components={mdxComponents} /> : null}
+              </Suspense>
 
               <div className="mt-14 overflow-hidden rounded-[1.75rem] border border-primary/20 bg-gradient-to-br from-primary/[0.10] via-card to-accent/[0.08] p-7 md:p-9">
                 <h2 className="font-display text-2xl font-bold text-foreground">{text.ctaTitle}</h2>

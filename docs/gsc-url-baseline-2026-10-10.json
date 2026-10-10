@@ -1,0 +1,107 @@
+{
+  "observed": "2026-10-10",
+  "reportUpdated": "2026-10-04",
+  "source": "Search Console signed-in URL examples; sc-domain:calendra.si",
+  "sitemap": {
+    "lastRead": "2026-10-10",
+    "discovered": 130,
+    "status": "Success"
+  },
+  "groups": {
+    "notFound": [
+      "https://calendra.si/en/businesses/institut-avisensa",
+      "https://calendra.si/ponudniki",
+      "https://calendra.si/za-stranke",
+      "https://calendra.si/en/businesses/beauty-lounge",
+      "https://calendra.si/en/providers",
+      "https://calendra.si/podjetja/beauty-lounge",
+      "https://calendra.si/podjetja/institut-avisensa",
+      "https://calendra.si/podjetja",
+      "https://calendra.si/ponudniki/institut-avisensa",
+      "https://www.calendra.si/stranke",
+      "https://calendra.si/stranke",
+      "https://calendra.si/en/businesses",
+      "https://calendra.si/en/providers/institut-avisensa",
+      "https://calendra.si/en/booking/institut-avisensa",
+      "https://calendra.si/en/booking/beauty-lounge"
+    ],
+    "noindex": [
+      "https://calendra.si/en/for-customers/beauty-lounge",
+      "https://app.calendra.si/signup?flow=trial",
+      "https://calendra.si/racun/registracija?next=/en/calendra-connect",
+      "https://calendra.si/racun/pozabljeno-geslo?next=/en/calendra-connect",
+      "https://calendra.si/racun/profil",
+      "https://calendra.si/racun/prijava?next=/en/calendra-connect",
+      "https://app.calendra.si/login",
+      "https://calendra.si/racun/registracija?next=/racun/",
+      "https://calendra.si/racun/pozabljeno-geslo?next=/racun/",
+      "https://calendra.si/en/account-deletion",
+      "https://calendra.si/racun",
+      "https://calendra.si/racun/",
+      "https://calendra.si/izbris-racuna",
+      "https://calendra.si/en/for-customers/__dynamic-location-profile__",
+      "https://calendra.si/za-stranke/__dynamic-location-profile__",
+      "https://calendra.si/za-stranke/institut-avisensa",
+      "https://calendra.si/racun/pozabljeno-geslo",
+      "https://calendra.si/racun/pozabljeno-geslo?next=/za-stranke",
+      "https://calendra.si/en/for-customers/institut-avisensa",
+      "https://calendra.si/racun/prijava",
+      "https://calendra.si/za-stranke/beauty-lounge",
+      "https://calendra.si/racun/pozabljeno-geslo?next=/ponudniki",
+      "https://calendra.si/racun/registracija?next=/za-stranke",
+      "https://calendra.si/racun/register",
+      "https://calendra.si/racun/prijava?next=/ponudniki",
+      "https://calendra.si/racun/prijava?next=/za-stranke",
+      "https://calendra.si/racun/registracija"
+    ],
+    "alternate": [
+      "https://calendra.si/en/contact?service=backupsSecurity",
+      "https://calendra.si/kontakt?service=websiteDesign",
+      "https://calendra.si/kontakt?service=itSupport",
+      "https://calendra.si/kontakt?service=businessEmail",
+      "https://calendra.si/en/blog?kategorija=Getting started",
+      "https://calendra.si/blog?kategorija=Nakupni vodnik",
+      "https://calendra.si/blog?kategorija=Slovarček",
+      "https://calendra.si/kontakt?service=automation",
+      "https://calendra.si/blog?kategorija=Naročanje strank",
+      "https://calendra.si/narocanje?tenant=bella-beauty",
+      "https://calendra.si/kontakt?type=calendra",
+      "https://calendra.si/blog?kategorija=Opomniki",
+      "https://calendra.si/blog?kategorija=Prvi koraki",
+      "https://calendra.si/kontakt?service=backupsSecurity",
+      "https://calendra.si/en/booking?tenant=studio-lux",
+      "https://calendra.si/en/blog?kategorija=Reminders",
+      "https://calendra.si/en/blog?kategorija=Invoicing and payments",
+      "https://calendra.si/en/blog?kategorija=Privacy and compliance",
+      "https://calendra.si/en/blog?kategorija=Buyer guide",
+      "https://calendra.si/en/contact?type=calendra",
+      "https://calendra.si/en/contact?type=it",
+      "https://www.calendra.si/zasebnost"
+    ],
+    "duplicate": [
+      "https://calendra.si/narocanje/beauty-lounge",
+      "https://calendra.si/narocanje/3DAV?locationId=3",
+      "https://calendra.si/narocanje/21HOS?locationId=22",
+      "https://calendra.si/narocanje/institut-avisensa"
+    ],
+    "redirect": [
+      "https://www.calendra.si/",
+      "http://calendra.si/",
+      "http://www.calendra.si/",
+      "https://www.calendra.si/narocanje?tenant=bella-beauty",
+      "https://calendra.si/en/clients",
+      "https://calendra.si/terms-of-service",
+      "https://calendra.si/privacy-policy"
+    ],
+    "discovered": [
+      "https://calendra.si/en/for-spas-and-saunas",
+      "https://calendra.si/vzdrzevanje-spletnih-strani",
+      "https://calendra.si/za-fitnes-in-osebno-trenerstvo"
+    ],
+    "crawled": [
+      "https://calendra.si/en",
+      "https://calendra.si/en/blog/how-to-reduce-no-shows",
+      "https://calendra.si/favicon.ico"
+    ]
+  }
+}

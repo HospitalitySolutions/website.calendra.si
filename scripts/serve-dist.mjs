@@ -10,6 +10,7 @@
 import { createReadStream } from 'node:fs';
 import fs from 'node:fs/promises';
 import http from 'node:http';
+import { createGzip } from 'node:zlib';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
@@ -64,8 +65,18 @@ export const startDistServer = async (port = 0) => {
         return;
       }
 
-      response.writeHead(200, { 'content-type': contentTypeFor(filePath) });
-      createReadStream(filePath).pipe(response);
+      const compress = /\bgzip\b/.test(request.headers['accept-encoding'] || '')
+        && /\.(html|xml|txt|js|css|json|svg)$/.test(filePath);
+      response.writeHead(200, {
+        'content-type': contentTypeFor(filePath),
+        'vary': 'Accept-Encoding',
+        ...(compress ? { 'content-encoding': 'gzip' } : {}),
+      });
+      // Match production Caddy's compression so mobile network simulation
+      // measures shipped transfer sizes instead of uncompressed source sizes.
+      const stream = createReadStream(filePath);
+      if (compress) stream.pipe(createGzip()).pipe(response);
+      else stream.pipe(response);
     } catch (error) {
       response.writeHead(500, { 'content-type': 'text/plain; charset=utf-8' });
       response.end(error instanceof Error ? error.message : String(error));

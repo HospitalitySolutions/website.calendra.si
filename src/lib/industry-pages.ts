@@ -108,7 +108,7 @@ const legacyContent: Record<LegacyIndustryRouteKey, Record<SiteLanguage, Industr
       featuresTitle: "Vse, kar potrebujete za urejen urnik salona",
       featuresIntro: "Izpostavite samo funkcionalnosti, ki jih vaša ekipa res uporablja, in jih prilagodite svojemu načinu dela.",
       features: [
-        { title: "Koledar po zaposlenih", description: "Preglejte dnevni, tedenski ali delovni teden za posameznika ali celotno ekipo." },
+        { title: "Koledar po zaposlenih", description: "Preglejte urnik posameznika ali celotne ekipe po dnevih, tednih ali delovnih tednih." },
         { title: "Storitve z različnim trajanjem", description: "Striženje, barvanje, depilacija ali nega imajo lahko svojo ceno, trajanje, pripravljalni čas in nabor izvajalcev." },
         { title: "Prostori in oprema", description: "Pri rezervaciji upoštevajte kabine, stole, naprave ali druge omejene vire." },
         { title: "Spletno naročanje", description: "Dodajte javno povezavo ali rezervacijski vtičnik na svojo spletno stran." },
@@ -416,7 +416,7 @@ const legacyContent: Record<LegacyIndustryRouteKey, Record<SiteLanguage, Industr
       screenshotTitle: "Kapaciteta, prijave in članstva v enem delovnem toku",
       screenshotDescription: "Stranka pri spletni prijavi vidi odprte skupinske ure in prosta mesta, ekipa pa v Calendri spremlja kapaciteto, seznam udeležencev ter aktivna članstva ali pakete obiskov.",
       audienceEyebrow: "Primerno za",
-      audienceTitle: "Za vadbene centre, studije, trenerje in organizatorje skupin",
+      audienceTitle: "Za vadbene centre, studie, trenerje in organizatorje skupin",
       audiences: ["Fitnes studii", "Osebni trenerji", "Joga studii", "Pilates studii", "Plesne šole", "Športni klubi", "Vadbeni centri", "Skupinske delavnice in tečaji"],
       faqEyebrow: "Pogosta vprašanja",
       faqTitle: "Calendra za fitnes in skupinske storitve",
@@ -517,7 +517,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po frizerjev, storitvah, lokacijah in po potrebi stolov, delovnih mest in opreme."
+          description: "Preglejte termine po frizerjih, storitvah in lokacijah ter po potrebi preverite razpoložljivost stolov, delovnih mest in opreme."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -550,7 +550,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       audienceTitle: "Za samostojne frizerje, brivnice in salone z ekipami",
       audiences: ["Frizerski saloni", "Brivnice", "Barber shopi", "Samostojni frizerji", "Saloni z več zaposlenimi", "Saloni z več lokacijami", "Specialisti za barvanje", "Stilistične ekipe"],
       faqEyebrow: "Pogosta vprašanja",
-      faqTitle: "Calendra za frizerski saloni",
+      faqTitle: "Calendra za frizerske salone",
       faq: [
         {
           question: "Ali se lahko stranke naročijo same prek spleta?",
@@ -569,8 +569,8 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
           answer: "Da. Podprta so e-poštna in SMS obvestila glede na izbrani paket in nastavitve."
         },
         {
-          question: "Ali lahko ista storitev poteka različno dolgo pri različnih frizerjih?",
-          answer: "Da. Storitve imajo svoje trajanje in izvajalce, pri organizaciji dela pa lahko nastavite pravila, ki ustrezajo vašemu salonu."
+          question: "Ali lahko določim, kateri frizerji izvajajo posamezno storitev?",
+          answer: "Da. Pri vsaki storitvi določite trajanje in frizerje, ki jo lahko izvajajo, ter tako naročanje prilagodite načinu dela salona."
         }
       ],
       finalTitle: "Uredite naročanje v frizerskem salonu na enem mestu",
@@ -662,8 +662,8 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
           answer: "Yes. Email and SMS notifications are supported depending on the selected plan and configuration."
         },
         {
-          question: "Can service duration differ between stylists?",
-          answer: "Yes. Services can have their own duration and eligible providers, while your booking setup can reflect how your salon actually works."
+          question: "Can I choose which stylists provide each service?",
+          answer: "Yes. Set the duration and eligible stylists for each service to adapt booking to the way your salon works."
         }
       ],
       finalTitle: "Bring your hair-salon bookings into one clear workflow",
@@ -705,7 +705,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po kozmetičark in drugih izvajalcev, storitvah, lokacijah in po potrebi kabin, naprav in delovnih mest."
+          description: "Preglejte termine po kozmetičarkah in drugih izvajalcih, storitvah in lokacijah ter po potrebi preverite razpoložljivost kabin, naprav in delovnih mest."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -738,7 +738,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       audienceTitle: "Za kozmetične salone in lepotne studie vseh velikosti",
       audiences: ["Kozmetični saloni", "Lepotni centri", "Nohtni studii", "Depilacijski saloni", "Studii za obrvi in trepalnice", "Make-up studii", "Saloni z napravami", "Saloni z več lokacijami"],
       faqEyebrow: "Pogosta vprašanja",
-      faqTitle: "Calendra za kozmetični saloni",
+      faqTitle: "Calendra za kozmetične salone",
       faq: [
         {
           question: "Ali se lahko stranke naročijo same prek spleta?",
@@ -893,7 +893,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po maserjev in terapevtov, storitvah, lokacijah in po potrebi masažnih sob in miz."
+          description: "Preglejte termine po maserjih in terapevtih, storitvah in lokacijah ter po potrebi preverite razpoložljivost masažnih sob in miz."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -926,7 +926,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       audienceTitle: "Za masažne salone, terapevte in wellness izvajalce",
       audiences: ["Masažni saloni", "Samostojni maserji", "Športni maserji", "Wellness terapevti", "Centri dobrega počutja", "Hoteli z masažami", "Saloni z več terapevti", "Izvajalci na več lokacijah"],
       faqEyebrow: "Pogosta vprašanja",
-      faqTitle: "Calendra za masaža",
+      faqTitle: "Calendra za masažo",
       faq: [
         {
           question: "Ali se lahko stranke naročijo same prek spleta?",
@@ -1081,7 +1081,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po izvajalcev in receptorjev, storitvah, lokacijah in po potrebi savn, prostorov in omejenih kapacitet."
+          description: "Preglejte termine po izvajalcih in receptorjih, storitvah in lokacijah ter po potrebi preverite razpoložljivost savn in drugih prostorov ter število prostih mest."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -1114,7 +1114,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       audienceTitle: "Za spa centre, savne, wellness in hotelske storitve",
       audiences: ["Spa centri", "Savne", "Wellness centri", "Hotelski wellness", "Zasebni spa prostori", "Termalni ponudniki", "Centri z več prostori", "Ponudniki wellness paketov"],
       faqEyebrow: "Pogosta vprašanja",
-      faqTitle: "Calendra za spa & savna",
+      faqTitle: "Calendra za spa centre in savne",
       faq: [
         {
           question: "Ali se lahko stranke naročijo same prek spleta?",
@@ -1269,7 +1269,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po tattoo umetnikov in piercerjev, storitvah, lokacijah in po potrebi delovnih mest in prostorov."
+          description: "Preglejte termine po tattoo umetnikih in piercerjih, storitvah in lokacijah ter po potrebi preverite razpoložljivost delovnih mest in prostorov."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -1302,7 +1302,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       audienceTitle: "Za tattoo studie, piercing studie in samostojne umetnike",
       audiences: ["Tattoo studii", "Piercing studii", "Samostojni tattoo umetniki", "Samostojni piercerji", "Studii z več umetniki", "Gostujoči umetniki", "Studii z več lokacijami", "Kombinirani tattoo & piercing studii"],
       faqEyebrow: "Pogosta vprašanja",
-      faqTitle: "Calendra za tetoviranje & piercing",
+      faqTitle: "Calendra za tetoviranje in piercing",
       faq: [
         {
           question: "Ali se lahko stranke naročijo same prek spleta?",
@@ -1457,7 +1457,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po trenerjev in vaditeljev, storitvah, lokacijah in po potrebi dvoran, vadbenih prostorov in kapacitet."
+          description: "Preglejte termine po trenerjih in vaditeljih, storitvah in lokacijah ter po potrebi preverite razpoložljivost dvoran in vadbenih prostorov ter število prostih mest."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -1488,9 +1488,9 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       screenshotDescription: "Udeleženec vidi prosta mesta, ekipa pa spremlja seznam prijavljenih, dejanske obiske in veljavne pakete ali članstva.",
       audienceEyebrow: "Primerno za",
       audienceTitle: "Za fitnes centre, osebne trenerje in vadbene studie",
-      audiences: ["Fitnes centri", "Osebni trenerji", "Funkcionalni trening", "Cross training studii", "Mali vadbeni centri", "Trenerji na več lokacijah", "Skupinske vadbe", "Studii z članstvi"],
+      audiences: ["Fitnes centri", "Osebni trenerji", "Funkcionalni trening", "Cross training studii", "Mali vadbeni centri", "Trenerji na več lokacijah", "Skupinske vadbe", "Studii s članstvi"],
       faqEyebrow: "Pogosta vprašanja",
-      faqTitle: "Calendra za fitnes & osebno trenerstvo",
+      faqTitle: "Calendra za fitnes in osebno trenerstvo",
       faq: [
         {
           question: "Ali se lahko stranke naročijo same prek spleta?",
@@ -1645,7 +1645,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po fizioterapevtov, storitvah, lokacijah in po potrebi ordinacij, prostorov in opreme."
+          description: "Preglejte termine po fizioterapevtih, storitvah in lokacijah ter po potrebi preverite razpoložljivost ordinacij, drugih prostorov in opreme."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -1678,7 +1678,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       audienceTitle: "Za samostojne fizioterapevte in centre z več izvajalci",
       audiences: ["Fizioterapevti", "Fizioterapevtski centri", "Rehabilitacijski studii", "Športna fizioterapija", "Manualna terapija", "Centri z več izvajalci", "Izvajalci na več lokacijah", "Zasebne prakse"],
       faqEyebrow: "Pogosta vprašanja",
-      faqTitle: "Calendra za fizioterapija",
+      faqTitle: "Calendra za fizioterapijo",
       faq: [
         {
           question: "Ali se lahko stranke naročijo same prek spleta?",
@@ -1804,7 +1804,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       cardCta: "Calendra za psihologe & svetovalce",
       eyebrow: "Calendra za psihologijo in svetovanje",
       title: "Program za naročanje za psihologe in svetovalce",
-      intro: "Calendra pomaga pri organizaciji individualnih terminov, spletnih srečanj, ponavljajočih se obiskov, opomnikov, profilov strank, plačil in računov. Dostopi zaposlenih se lahko prilagodijo vlogam ekipe.",
+      intro: "Calendra pomaga pri organizaciji individualnih terminov, spletnih srečanj, ponavljajočih se obiskov, opomnikov, profilov strank, plačil in računov. Termine lahko vnaša samo osebje; javno samostojno naročanje je vaša izbira. Dostopi zaposlenih se prilagodijo vlogam ekipe.",
       heroPoints: ["Individualni, ponavljajoči in spletni termini", "Opomniki, Zoom povezave in urejen profil stranke", "Vloge in dovoljenja, plačila ter računi"],
       problemsEyebrow: "Manj administracije",
       problemsTitle: "Manj usklajevanja, boljši pregled nad termini",
@@ -1816,7 +1816,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
         },
         {
           title: "Prekrivanje razpoložljivosti",
-          description: "Calendra pri terminu poveže razpoložljivost psihologov in svetovalcev ter po potrebi izvajalcev, prostorov in spletnih terminov, da je urnik bolj zanesljiv."
+          description: "Calendra pri terminu poveže razpoložljivost psihologov in svetovalcev ter po potrebi prostorov, da je urnik osebnih in spletnih srečanj bolj zanesljiv."
         },
         {
           title: "Odpovedi in pozabljeni termini",
@@ -1833,7 +1833,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po psihologov in svetovalcev, storitvah, lokacijah in po potrebi izvajalcev, prostorov in spletnih terminov."
+          description: "Preglejte osebne in spletne termine po psihologih in svetovalcih, storitvah in lokacijah ter po potrebi preverite razpoložljivost prostorov."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -1853,12 +1853,12 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
         },
         {
           title: "Spletni termini, vloge in dovoljenja",
-          description: "Povežite spletna srečanja z Zoomom ter prilagodite dostop do funkcionalnosti glede na vlogo posameznega člana ekipe."
+          description: "Za spletna srečanja povežite svoj račun Zoom ali Google Meet in omogočite ustrezno integracijo. Dostop zaposlenih prilagodite njihovim vlogam; razpoložljivost integracije preverite pri izbranem paketu."
         }
       ],
       workflowEyebrow: "Od rezervacije do izvedbe",
       workflowTitle: "Kako poteka naročanje v Calendri",
-      workflow: ["Stranka izbere uvodni pogovor, svetovalni termin ali spletno srečanje.", "Calendra ponudi samo termine, ki ustrezajo nastavljenemu delovnemu času in razpoložljivosti.", "Stranka izbere prost termin in po potrebi izvajalca ali lokacijo.", "Po rezervaciji prejme potrditev in opomnik ter lahko termin spremeni ali odpove, če to omogočite.", "Po izvedbi ostanejo obisk, plačilo, račun in naslednji koraki povezani s profilom stranke."],
+      workflow: ["Določite storitve, trajanje, razpoložljivost svetovalcev in dostop zaposlenih.", "Osebje vnese dogovorjeni termin ali serijo ponavljajočih se obiskov. Če želite, omogočite tudi javno naročanje.", "Za spletni termin uporabite povezani račun za videoklice; osebna srečanja razporedite glede na prostore.", "Nastavite obvestila in dovoljena pravila spremembe ali odpovedi. V sporočila ne vključujte občutljivih vsebin svetovanja.", "Po izvedbi uredite evidenco obiska in račun. Klinično dokumentacijo vodite v namenskem sistemu."],
       screenshotEyebrow: "Pregleden urnik",
       screenshotTitle: "Individualni in spletni termini v enem koledarju",
       screenshotDescription: "Izvajalci hitro vidijo svoje termine in razpoložljivost, podatki poslovnega procesa pa ostanejo urejeni na profilu stranke.",
@@ -1866,7 +1866,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       audienceTitle: "Za psihologe, svetovalce in centre z več izvajalci",
       audiences: ["Psihološko svetovanje", "Karierno svetovanje", "Partnersko svetovanje", "Coaching ena na ena", "Centri z več svetovalci", "Spletno svetovanje", "Samostojni svetovalci", "Izvajalci na več lokacijah"],
       faqEyebrow: "Pogosta vprašanja",
-      faqTitle: "Calendra za psihologija & svetovanje",
+      faqTitle: "Calendra za psihologijo in svetovanje",
       faq: [
         {
           question: "Ali se lahko stranke naročijo same prek spleta?",
@@ -1897,7 +1897,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       cardCta: "Calendra for psychologists & counsellors",
       eyebrow: "Calendra for psychology and counselling",
       title: "Booking software for psychologists and counsellors",
-      intro: "Calendra helps organise individual appointments, online meetings, recurring visits, reminders, client profiles, payments and invoices. Employee access can be adapted to team roles.",
+      intro: "Calendra helps organise individual appointments, online meetings, recurring visits, reminders, client profiles, payments and invoices. Staff can manage all appointments internally; public self-booking is optional. Employee access can be adapted to team roles.",
       heroPoints: ["Individual, recurring and online appointments", "Reminders, Zoom links and organised client profiles", "Roles and permissions, payments and invoices"],
       problemsEyebrow: "Less administration",
       problemsTitle: "Less coordination and a clearer appointment workflow",
@@ -1946,12 +1946,12 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
         },
         {
           title: "Online appointments, roles and permissions",
-          description: "Connect online meetings with Zoom and adapt access to features according to each team member’s role."
+          description: "Connect your Zoom or Google Meet account and enable the relevant integration for online meetings. Set staff permissions by role and check integration availability for your selected plan."
         }
       ],
       workflowEyebrow: "From booking to delivery",
       workflowTitle: "How booking works in Calendra",
-      workflow: ["The client chooses an introductory call, counselling appointment or online meeting.", "Calendra offers only times that match working hours and configured availability.", "The client selects an available time and, when relevant, a provider or location.", "After booking they receive a confirmation and reminder and can reschedule or cancel when you allow it.", "After delivery, the visit, payment, invoice and next steps remain connected to the client profile."],
+      workflow: ["Set up services, duration, counsellor availability and staff access.", "Staff enter an agreed appointment or recurring series. Enable public self-booking only if it suits your practice.", "Use a connected video account for online appointments and allocate rooms for in-person meetings.", "Configure notifications and rescheduling or cancellation rules. Keep sensitive counselling content out of messages.", "Record the visit and issue an invoice after delivery. Keep clinical documentation in a dedicated system."],
       screenshotEyebrow: "A clear schedule",
       screenshotTitle: "Individual and online appointments in one calendar",
       screenshotDescription: "Providers can quickly see their appointments and availability while business-process information stays organised on the client profile.",
@@ -2021,7 +2021,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po inštruktorjev in vaditeljev, storitvah, lokacijah in po potrebi studiev, dvoran in kapacitet."
+          description: "Preglejte termine po inštruktorjih in vaditeljih, storitvah in lokacijah ter po potrebi preverite razpoložljivost studiev in dvoran ter število prostih mest."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -2046,7 +2046,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       ],
       workflowEyebrow: "Od rezervacije do izvedbe",
       workflowTitle: "Kako poteka naročanje v Calendri",
-      workflow: ["Stranka izbere jogo, pilates, reformer vadbo ali individualni termin.", "Calendra ponudi samo termine, ki ustrezajo nastavljenemu delovnemu času in razpoložljivosti.", "Stranka izbere prost termin in po potrebi izvajalca ali lokacijo.", "Po rezervaciji prejme potrditev in opomnik ter lahko termin spremeni ali odpove, če to omogočite.", "Po izvedbi ostanejo obisk, plačilo, račun in naslednji koraki povezani s profilom stranke."],
+      workflow: ["Nastavite skupinsko vadbo, inštruktorja, prostor, število mest in ponovitve; preverite vključitev funkcij v svoj paket.", "Članstvu ali karti določite veljavnost, število obiskov in storitve, za katere velja.", "Stranka izbere razpoložljivo izvedbo. Poleg veljavnosti ugodnosti vedno velja nastavitev Največ dni vnaprej.", "Pri polni skupini uporabite čakalno vrsto, če je omogočena. Odpoved in prestavitev dovoljujete po svojih pravilih; prehod na drugo skupinsko storitev zahteva ustrezno nastavitev in isto veljavno ugodnost.", "Po vadbi preverite udeležbo in koriščenje obiskov na profilu stranke ter po potrebi uredite račun."],
       screenshotEyebrow: "Pregleden urnik",
       screenshotTitle: "Prosta mesta, prijave in paketi v istem toku",
       screenshotDescription: "Udeleženec pri prijavi vidi razpoložljive ure in mesta, ekipa pa spremlja seznam skupine ter veljavna članstva ali pakete.",
@@ -2054,7 +2054,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       audienceTitle: "Za joga studie, pilates studie in vadbene centre",
       audiences: ["Joga studii", "Pilates studii", "Reformer pilates", "Samostojni inštruktorji", "Vadbeni centri", "Skupinske vadbe", "Studii z članstvi", "Studii z več lokacijami"],
       faqEyebrow: "Pogosta vprašanja",
-      faqTitle: "Calendra za joga & pilates",
+      faqTitle: "Calendra za jogo in pilates",
       faq: [
         {
           question: "Ali se lahko stranke naročijo same prek spleta?",
@@ -2139,7 +2139,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       ],
       workflowEyebrow: "From booking to delivery",
       workflowTitle: "How booking works in Calendra",
-      workflow: ["The client chooses a yoga class, pilates class, reformer session or private appointment.", "Calendra offers only times that match working hours and configured availability.", "The client selects an available time and, when relevant, a provider or location.", "After booking they receive a confirmation and reminder and can reschedule or cancel when you allow it.", "After delivery, the visit, payment, invoice and next steps remain connected to the client profile."],
+      workflow: ["Configure the class, instructor, room, capacity and recurrence; check which features your plan includes.", "Set membership or pass validity, visit limits and eligible services.", "The participant chooses an available class. The Maximum days in advance setting still applies, even when their pass is valid for longer.", "Use the waiting list when enabled. Cancellation and rescheduling follow your rules; switching group services requires the relevant setting and coverage by the same valid benefit.", "After the class, check attendance and visit usage on the client profile, then issue an invoice where needed."],
       screenshotEyebrow: "A clear schedule",
       screenshotTitle: "Remaining places, registrations and packages in one workflow",
       screenshotDescription: "Participants see available classes and places while the team tracks the group list and active memberships or packages.",
@@ -2177,7 +2177,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
   petServices: {
     sl: {
       navLabel: "Storitve za hišne ljubljenčke",
-      cardCta: "Calendra za pet storitve",
+      cardCta: "Calendra za storitve za hišne ljubljenčke",
       eyebrow: "Calendra za storitve za hišne ljubljenčke",
       title: "Program za naročanje za pasje salone in storitve za hišne ljubljenčke",
       intro: "Calendra pomaga organizirati termine za nego, striženje, varstvo, trening ali druge storitve za hišne ljubljenčke. Urniki izvajalcev, opomniki, podatki skrbnikov, plačila in računi so povezani na enem mestu.",
@@ -2209,7 +2209,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po negovalcev, trenerjev in drugih izvajalcev, storitvah, lokacijah in po potrebi delovnih mest, prostorov in lokacij."
+          description: "Preglejte termine po negovalcih, trenerjih in drugih izvajalcih, storitvah in lokacijah ter po potrebi preverite razpoložljivost delovnih mest in prostorov."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -2239,7 +2239,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       screenshotTitle: "Termini in storitve za ljubljenčke v enem koledarju",
       screenshotDescription: "Izvajalci vidijo vrsto storitve, trajanje, stranko oziroma skrbnika in razpoložljivost ekipe ali prostora.",
       audienceEyebrow: "Primerno za",
-      audienceTitle: "Za pasje salone, groomerje, trenerje in druge pet storitve",
+      audienceTitle: "Za pasje salone, negovalce, trenerje in druge ponudnike storitev za hišne ljubljenčke",
       audiences: ["Pasji saloni", "Pet grooming", "Trenerji psov", "Varstvo živali", "Sprehajalci psov", "Pet spa", "Mobilni groomerji", "Ponudniki z več lokacijami"],
       faqEyebrow: "Pogosta vprašanja",
       faqTitle: "Calendra za storitve za hišne ljubljenčke",
@@ -2265,7 +2265,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
           answer: "Da. Profil stranke lahko vsebuje kontaktne podatke, zgodovino terminov, opombe in polja po meri za vaš delovni proces."
         }
       ],
-      finalTitle: "Poenostavite naročanje za pet storitve",
+      finalTitle: "Poenostavite naročanje na storitve za hišne ljubljenčke",
       finalDescription: "Preizkusite Calendro 14 dni ter nastavite izvajalce, storitve, lokacije in opomnike."
     },
     en: {
@@ -2367,7 +2367,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       navLabel: "Izobraževanje & coaching",
       cardCta: "Calendra za izobraževanje & coaching",
       eyebrow: "Calendra za izobraževanje in coaching",
-      title: "Program za naročanje za coachinge, tečaje in izobraževanja",
+      title: "Program za naročanje na coaching, tečaje in izobraževanja",
       intro: "Calendra poveže individualna svetovanja, tečaje, skupinske termine, spletna srečanja, ponovitve, udeležence, pakete in plačila. Primerna je za delo ena na ena in za programe z omejenim številom mest.",
       heroPoints: ["Individualni termini, tečaji in skupinske izvedbe", "Zoom, ponavljajoči termini in spletne prijave", "Kapaciteta, paketi, plačila in evidenca udeležencev"],
       problemsEyebrow: "Manj administracije",
@@ -2397,7 +2397,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po coachev, mentorjev in predavateljev, storitvah, lokacijah in po potrebi učilnic, spletnih srečanj in kapacitet."
+          description: "Preglejte osebne in spletne termine po coachih, mentorjih in predavateljih, storitvah in lokacijah ter po potrebi preverite razpoložljivost učilnic in število prostih mest."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -2430,7 +2430,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       audienceTitle: "Za coache, mentorje, učitelje in ponudnike tečajev",
       audiences: ["Poslovni coaching", "Life coaching", "Mentorstvo", "Jezikovni tečaji", "Individualne ure", "Delavnice", "Izobraževalni centri", "Spletna izobraževanja"],
       faqEyebrow: "Pogosta vprašanja",
-      faqTitle: "Calendra za izobraževanje & coaching",
+      faqTitle: "Calendra za izobraževanje in coaching",
       faq: [
         {
           question: "Ali se lahko stranke naročijo same prek spleta?",
@@ -2585,7 +2585,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       features: [
         {
           title: "Koledar in razpoložljivost",
-          description: "Preglejte termine po zaposlenih in izvajalcev, storitvah, lokacijah in po potrebi lokacij, prostorov in drugih virov."
+          description: "Preglejte termine po zaposlenih in izvajalcih, storitvah in lokacijah ter po potrebi preverite razpoložljivost prostorov in drugih virov."
         },
         {
           title: "Storitve z različnim trajanjem",
@@ -2610,7 +2610,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       ],
       workflowEyebrow: "Od rezervacije do izvedbe",
       workflowTitle: "Kako poteka naročanje v Calendri",
-      workflow: ["Stranka izbere izbrano storitev ali termin.", "Calendra ponudi samo termine, ki ustrezajo nastavljenemu delovnemu času in razpoložljivosti.", "Stranka izbere prost termin in po potrebi izvajalca ali lokacijo.", "Po rezervaciji prejme potrditev in opomnik ter lahko termin spremeni ali odpove, če to omogočite.", "Po izvedbi ostanejo obisk, plačilo, račun in naslednji koraki povezani s profilom stranke."],
+      workflow: ["Stranka izbere želeno storitev.", "Calendra ponudi samo termine, ki ustrezajo nastavljenemu delovnemu času in razpoložljivosti.", "Stranka izbere prost termin in po potrebi izvajalca ali lokacijo.", "Po rezervaciji prejme potrditev in opomnik ter lahko termin spremeni ali odpove, če to omogočite.", "Po izvedbi ostanejo obisk, plačilo, račun in naslednji koraki povezani s profilom stranke."],
       screenshotEyebrow: "Pregleden urnik",
       screenshotTitle: "Prilagodljiv koledar za različne storitvene procese",
       screenshotDescription: "Koledar je mogoče organizirati po izvajalcih, storitvah in lokacijah, dodatne funkcionalnosti pa vključite glede na potrebe podjetja.",
