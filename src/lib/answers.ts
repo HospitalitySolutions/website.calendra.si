@@ -1,19 +1,14 @@
 import type { CanonicalRouteKey } from "@/lib/localized-routes";
 import type { SiteLanguage } from "@/lib/site-language";
+import { getPricingSummary } from "@/lib/pricing-copy";
 
 /**
  * Short, self-contained answers rendered directly beneath each page's H1.
  *
- * AI assistants extract passages, not pages. A paragraph that names the entity
- * in its first sentence, answers the page's implied question outright and
- * carries concrete numbers is far more likely to be quoted than one that builds
- * up to the point. Each entry is deliberately kept to roughly 40-60 words.
+ * Each paragraph names the product and answers the page's main question
+ * before the supporting detail. Commercial facts come from the pricing catalog.
  */
 const answers: Partial<Record<CanonicalRouteKey, Record<SiteLanguage, string>>> = {
-  pricing: {
-    sl: "Calendra stane od 17,90 EUR na mesec z DDV za paket Osnovno, 34,90 EUR za Profesionalno in 54,90 EUR za Premium. Vsak paket vključuje enega uporabnika, vsak dodatni uporabnik stane 5,90 EUR mesečno. Pri letnem plačilu plačate 10 mesecev za 12. Preizkus traja 14 dni brez kreditne kartice.",
-    en: "Calendra costs from 17.90 EUR per month including VAT for the Basic plan, 34.90 EUR for Professional and 54.90 EUR for Premium. Every plan includes one user, and each additional user costs 5.90 EUR per month. Annual billing charges 10 months for 12. The trial lasts 14 days with no credit card.",
-  },
   booking: {
     sl: "Spletno naročanje v Calendri strankam omogoča, da 24 ur na dan same izberejo storitev, zaposlenega in prost termin. Rezervacija se takoj zapiše v koledar, stranka pa prejme potrditev ter povezavo za spremembo ali odpoved. Nove spletne strani ne potrebujete: uporabite javno povezavo ali vtičnik.",
     en: "Online booking in Calendra lets customers choose a service, an employee and a free time slot themselves, 24 hours a day. The booking is written straight into the calendar, and the customer receives a confirmation plus links to reschedule or cancel. You do not need a new website: use a public link or the widget.",
@@ -75,6 +70,8 @@ const answers: Partial<Record<CanonicalRouteKey, Record<SiteLanguage, string>>> 
 export const getAnswerForRoute = (
   routeKey: CanonicalRouteKey | undefined,
   language: SiteLanguage,
-): string | undefined => (routeKey ? answers[routeKey]?.[language] : undefined);
+): string | undefined => routeKey === "pricing"
+  ? getPricingSummary(language)
+  : (routeKey ? answers[routeKey]?.[language] : undefined);
 
-export const ANSWER_ROUTE_KEYS = Object.keys(answers) as CanonicalRouteKey[];
+export const ANSWER_ROUTE_KEYS: CanonicalRouteKey[] = ["pricing", ...Object.keys(answers) as CanonicalRouteKey[]];

@@ -1905,28 +1905,7 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         "Po izvedbi se obisk zabeleži v zgodovino udeleženca in po potrebi porabi članstvo ali paket obiskov.",
       ],
       detailsTitle: "Kako so skupinske rezervacije organizirane",
-      details: [
-        {
-          title: "Ali lahko nastavim največje število udeležencev?",
-          body:
-            "Da. Vsaki skupinski izvedbi določite kapaciteto. Spletno naročanje nato upošteva že prijavljene udeležence in prikazuje razpoložljiva mesta.",
-        },
-        {
-          title: "Ali so možni ponavljajoči se skupinski termini?",
-          body:
-            "Da. Redno vadbo, tečaj ali drugo skupino lahko ustvarite kot ponavljajočo se serijo. Spremembo lahko izvedete na posamezni izvedbi ali na prihodnjih terminih serije.",
-        },
-        {
-          title: "Ali lahko uporabljam članstva in pakete obiskov?",
-          body:
-            "Da. Članstva, paketi obiskov in druge ugodnosti lahko veljajo za izbrane storitve ali skupine storitev, ob zaključku obiska pa Calendra vodi porabo pravic udeleženca.",
-        },
-        {
-          title: "Ali lahko skupinske termine kombiniram z individualnimi?",
-          body:
-            "Da. Oboje je v istem koledarju. Tako lahko isti zaposleni ali prostor dopoldne sprejema individualne stranke, popoldne pa izvaja skupinsko storitev z omejeno kapaciteto.",
-        },
-      ],
+      details: [],
       faqTitle: "Pogosta vprašanja o skupinskih rezervacijah",
       finalTitle: "Poenostavite prijave na skupinske termine",
       finalBody:
@@ -1937,6 +1916,7 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         { question: "Ali Calendra podpira čakalno vrsto?", answer: "Da. Pri zapolnjeni skupini lahko dodatni interesenti ostanejo povezani s terminom prek čakalne vrste in sproščenih mest." },
         { question: "Ali lahko ustvarim ponavljajoče se skupinske termine?", answer: "Da. Redne termine lahko ustvarite kot serijo in nato spremenite eno izvedbo ali prihodnje termine." },
         { question: "Ali lahko skupina uporablja pakete obiskov ali članstva?", answer: "Da. Ugodnosti lahko določite za izbrane storitve oziroma skupine, obiski pa se ob izvedbi povežejo z udeležencem in njegovo razpoložljivo pravico." },
+        { question: "Ali lahko skupinske termine kombiniram z individualnimi?", answer: "Da. Oboje je v istem koledarju. Tako lahko isti zaposleni ali prostor dopoldne sprejema individualne stranke, popoldne pa izvaja skupinsko storitev z omejeno kapaciteto." },
       ],
     },
     en: {
@@ -1983,12 +1963,7 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         "After the session, attendance is stored in the participant history and can consume a membership or visit package where relevant.",
       ],
       detailsTitle: "How group bookings are organised",
-      details: [
-        { title: "Can I set a maximum participant count?", body: "Yes. Set capacity for each group occurrence. Online booking then takes current registrations into account and shows available places." },
-        { title: "Can group appointments repeat?", body: "Yes. A regular class, course or other group can be created as a recurring series, with changes applied to one occurrence or future appointments in the series." },
-        { title: "Can memberships and visit packages be used?", body: "Yes. Memberships, visit packages and other benefits can apply to selected services or service groups, and completed attendance can consume the participant's entitlement." },
-        { title: "Can group appointments be combined with individual appointments?", body: "Yes. Both live in the same calendar, so the same employee or room can be used for individual clients at one time and a capacity-limited group at another." },
-      ],
+      details: [],
       faqTitle: "Group booking questions",
       finalTitle: "Simplify registration for group appointments",
       finalBody: "Start a 14-day free trial and configure your first group, capacity, recurring schedule and online registration rules.",
@@ -1998,6 +1973,7 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         { question: "Does Calendra support waiting lists?", answer: "Yes. When a group is full, additional interest can remain connected to the appointment through the waiting-list flow and released places." },
         { question: "Can I create recurring group appointments?", answer: "Yes. Regular appointments can be created as a series, then one occurrence or future appointments can be changed." },
         { question: "Can a group use visit packages or memberships?", answer: "Yes. Benefits can apply to selected services or service groups, and completed visits can be connected to the participant and their available entitlement." },
+        { question: "Can group appointments be combined with individual appointments?", answer: "Yes. Both live in the same calendar, so the same employee or room can be used for individual clients at one time and a capacity-limited group at another." },
       ],
     },
   },
@@ -2150,7 +2126,7 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         {
           question: "V katerem paketu so integracije vključene?",
           answer:
-            "Integracije in spletna plačila so vključeni od paketa Profesionalno (34,90 EUR mesečno) naprej. Javna rezervacijska povezava deluje v vseh paketih.",
+            "Integracije in spletna plačila so vključeni od paketa Profesionalno naprej. Aktualne cene paketov in dodatkov so objavljene v ceniku. Javna rezervacijska povezava deluje v vseh paketih.",
         },
       ],
     },
@@ -2302,7 +2278,7 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         {
           question: "Which plan includes integrations?",
           answer:
-            "Integrations and online payments are included from the Professional plan (34.90 EUR per month) onwards. The public booking link works on every plan.",
+            "Integrations and online payments are included from the Professional plan onwards. Current plan and add-on prices are published on the pricing page. The public booking link works on every plan.",
         },
       ],
     },

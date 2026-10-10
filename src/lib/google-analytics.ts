@@ -23,6 +23,7 @@ const ensureGtag = () => {
 
   window.dataLayer = window.dataLayer || [];
   window.gtag = window.gtag || function gtag(..._args: unknown[]) {
+    // eslint-disable-next-line prefer-rest-params -- Preserve Google's documented gtag queue format.
     window.dataLayer?.push(arguments);
   };
 

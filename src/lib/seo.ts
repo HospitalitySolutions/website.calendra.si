@@ -13,6 +13,7 @@ import { LEGAL } from "@/lib/legal";
 import {
   AUTHOR_PROFILE_URLS,
   COMPANY_REGISTRATION_NUMBER,
+  COMPANY_TAX_ID,
   COMPANY_VAT_ID,
   OFFICIAL_PROFILE_URLS,
   WIKIDATA_ENTITY_ID,
@@ -299,7 +300,7 @@ const organizationSchema = {
   areaServed: { "@type": "Country", name: "Slovenia" },
   knowsLanguage: ["sl", "en"],
   vatID: COMPANY_VAT_ID,
-  taxID: COMPANY_VAT_ID,
+  taxID: COMPANY_TAX_ID,
   identifier: COMPANY_REGISTRATION_NUMBER
     ? {
         "@type": "PropertyValue",
@@ -347,9 +348,7 @@ const softwareSchema = (
     ? "Slovenska platforma za spletno naročanje, koledar terminov, skupinske rezervacije, opomnike, račune, davčno blagajno, plačila, analitiko, upravljanje strank in materialno poslovanje."
     : "A booking and appointment management platform for service businesses, including group bookings, reminders, invoicing, a fiscal cash register, payments, analytics, client management and inventory management.",
   offers,
-  // Set once a Wikidata item for Calendra exists. A Wikidata identifier is the
-  // reference most knowledge graphs and AI assistants reconcile entities
-  // against, so it is the single highest-value off-site signal.
+  // Optional link to an existing, verified Wikidata item for this product.
   sameAs: WIKIDATA_ENTITY_ID ? [`https://www.wikidata.org/wiki/${WIKIDATA_ENTITY_ID}`] : undefined,
   publisher: { "@id": `${SITE_URL}/#organization` },
 });

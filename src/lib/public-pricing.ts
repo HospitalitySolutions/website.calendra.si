@@ -176,8 +176,8 @@ export const FALLBACK_PUBLIC_PRICING: PublicPricingCatalog = {
       packageCode: "PROFESSIONAL",
       name: "Professional",
       nameSl: "Profesionalno",
-      monthlyGross: 34.9,
-      annualGross: 349,
+      monthlyGross: 28.9,
+      annualGross: 289,
       includedUsers: 1,
       popular: false,
       featureKeys: fallbackFeatures
@@ -189,8 +189,8 @@ export const FALLBACK_PUBLIC_PRICING: PublicPricingCatalog = {
       packageCode: "PREMIUM",
       name: "Premium",
       nameSl: "Premium",
-      monthlyGross: 54.9,
-      annualGross: 549,
+      monthlyGross: 47.9,
+      annualGross: 479,
       includedUsers: 1,
       popular: true,
       featureKeys: fallbackFeatures
@@ -410,12 +410,13 @@ export const PUBLIC_PRICING_ENDPOINT = `${APP_BASE_URL}/api/register/public-pric
  * deploy.
  */
 export const PRICING_CATALOG_SCRIPT_ID = "calendra-pricing-catalog";
+export const PRICING_CATALOG_UPDATED_EVENT = "calendra:pricing-catalog-updated";
 
 let initialCatalog: PublicPricingCatalog | undefined;
 
 /** Called by the prerender script before rendering, so SSR output matches the island. */
 export const setPrerenderedPricingCatalog = (catalog: PublicPricingCatalog) => {
-  initialCatalog = catalog;
+  initialCatalog = normalizePublicPricingCatalog(catalog);
 };
 
 export const getInitialPricingCatalog = (): PublicPricingCatalog => {
@@ -448,7 +449,17 @@ export const fetchPublicPricingCatalog = async (
     throw new Error(`Pricing endpoint returned ${response.status}`);
   }
 
-  return normalizePublicPricingCatalog(
+  const catalog = normalizePublicPricingCatalog(
     (await response.json()) as Partial<PublicPricingCatalog>,
   );
+
+  // Keep route metadata and subsequent page renders on the same catalog as
+  // the visible pricing cards when prices change after the last deployment.
+  const changed = JSON.stringify(catalog) !== JSON.stringify(getInitialPricingCatalog());
+  initialCatalog = catalog;
+  if (changed && typeof window !== "undefined") {
+    window.dispatchEvent(new Event(PRICING_CATALOG_UPDATED_EVENT));
+  }
+
+  return catalog;
 };

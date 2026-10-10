@@ -4,7 +4,7 @@ import { ALL_INDUSTRY_ROUTE_KEYS, getIndustryContent } from "@/lib/industry-page
 import { getItServiceContent, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import { LEGAL, LEGAL_FULL_ADDRESS } from "@/lib/legal";
 import { canonicalRoutes, type CanonicalRouteKey } from "@/lib/localized-routes";
-import { getInitialPricingCatalog } from "@/lib/public-pricing";
+import { getPricingSummary } from "@/lib/pricing-copy";
 import { absoluteUrl, AUTHOR, pageSeo } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 import type { SiteLanguage } from "@/lib/site-language";
@@ -76,13 +76,6 @@ const assertRouteCoverage = () => {
   }
 };
 
-const formatPrice = (value: number) => `${value.toFixed(2).replace(".", ",")} EUR`;
-
-const planSummary = (language: SiteLanguage) =>
-  getInitialPricingCatalog()
-    .plans.map((plan) => `${language === "sl" ? plan.nameSl : plan.name} ${formatPrice(plan.monthlyGross)}${language === "sl" ? "/mesec" : "/month"}`)
-    .join(", ");
-
 const summary: Record<SiteLanguage, string> = {
   sl: [
     `Calendra je slovenska spletna platforma (SaaS) za storitvena podjetja. Združuje spletno naročanje strank, koledar terminov, upravljanje strank, SMS in e-poštne opomnike, izdajo računov, plačila, analitiko ter materialno poslovanje na enem mestu.`,
@@ -97,26 +90,18 @@ const summary: Record<SiteLanguage, string> = {
 };
 
 const keyFacts = (language: SiteLanguage) => {
-  const catalog = getInitialPricingCatalog();
-
   return language === "sl"
     ? [
-        `Paketi: ${planSummary("sl")} (cene z DDV, en uporabnik vključen).`,
-        `Letno plačilo: plačate ${catalog.annualBilledMonths} mesecev za 12 mesecev uporabe.`,
-        `Dodatni uporabniki: ${formatPrice(catalog.additionalUserRules[0].monthlyGrossPerUser)} na uporabnika mesečno.`,
-        `Brezplačni preizkus: 14 dni, brez kreditne kartice.`,
+        getPricingSummary("sl"),
         `Jeziki: slovenščina in angleščina. Valuta: EUR. Trg: Slovenija.`,
         `Mobilna aplikacija za končne stranke: Calendra Connect (brezplačna, iOS in Android).`,
-        `Gostovanje in obdelava podatkov: EU regija, skladno z GDPR.`,
+        `Varnostni ukrepi: ${SITE_URL}${canonicalRoutes.security.sl}. Pogoji obdelave osebnih podatkov: ${SITE_URL}${canonicalRoutes.dpa.sl}.`,
       ]
     : [
-        `Plans: ${planSummary("en")} (VAT included, one user included).`,
-        `Annual billing: pay for ${catalog.annualBilledMonths} months and use the product for 12.`,
-        `Additional users: ${formatPrice(catalog.additionalUserRules[0].monthlyGrossPerUser)} per user per month.`,
-        `Free trial: 14 days, no credit card required.`,
+        getPricingSummary("en"),
         `Languages: Slovenian and English. Currency: EUR. Market: Slovenia.`,
         `Customer mobile app: Calendra Connect (free, iOS and Android).`,
-        `Hosting and data processing: EU region, GDPR compliant.`,
+        `Security measures: ${SITE_URL}${canonicalRoutes.security.en}. Personal data processing terms: ${SITE_URL}${canonicalRoutes.dpa.en}.`,
       ];
 };
 

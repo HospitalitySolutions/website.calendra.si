@@ -27,10 +27,9 @@ const { origin } = server;
 const failures = [];
 
 /**
- * AI crawlers (OAI-SearchBot, PerplexityBot, Claude-SearchBot and friends) do
- * not execute JavaScript, so they only ever see the prerendered HTML. Measuring
- * the visible text of the served document is the only way to catch a regression
- * where prerendering silently degrades to an empty SPA shell.
+ * Keep substantial page content in the initial HTML for visitors and crawlers.
+ * This check catches a regression to an empty SPA shell; the word threshold is
+ * a repository safeguard, not a search ranking or AI inclusion requirement.
  */
 const MINIMUM_VISIBLE_WORDS = 150;
 

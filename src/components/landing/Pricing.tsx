@@ -454,16 +454,14 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const configuratorRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLDivElement | null>(null);
 
-  // Real content-change date (the same one the sitemap and Product schema
-  // dateModified use), not a cosmetic "as of today" stamp, so it can't drift
-  // from what actually changed on the page.
+  // Share the sitemap's recorded content-change date for this pricing page.
   const pricingUpdatedLabel = useMemo(() => {
     const date = new Date(`${sitemapRouteMetadata.pricing.contentLastModified}T00:00:00Z`);
     if (language !== "sl") {
       return new Intl.DateTimeFormat("en-IE", { year: "numeric", month: "long", day: "numeric" }).format(date);
     }
-    // Intl only has the nominative month form ("julij"), but "veljaven od"
-    // takes the genitive ("julija") — there's no Intl option for Slovenian
+    // Intl only has the nominative month form ("julij"), but a date after
+    // "posodobljen" takes the genitive ("julija") — there's no Intl option for Slovenian
     // grammatical case, so the genitive names are spelled out here instead.
     const genitiveMonths = ["januarja", "februarja", "marca", "aprila", "maja", "junija", "julija", "avgusta", "septembra", "oktobra", "novembra", "decembra"];
     return `${date.getUTCDate()}. ${genitiveMonths[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
@@ -839,7 +837,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           <span className="marketing-eyebrow">{content.sectionEyebrow}</span>
           <HeadingTag>{standalone ? content.standaloneTitle : content.sectionTitle}</HeadingTag>
           <p className="pricing-intro-description">{content.sectionDescription}</p>
-          {standalone && <p className="pricing-updated">{sl ? "Cenik veljaven od " : "Pricing last updated "}{pricingUpdatedLabel}</p>}
+          {standalone && <p className="pricing-updated">{sl ? "Cenik posodobljen " : "Pricing last updated "}{pricingUpdatedLabel}</p>}
           <div className="pricing-billing-row">
             <div className="pricing-billing-switch" role="group" aria-label={sl ? "Obračunsko obdobje" : "Billing period"}>
               {(["monthly", "annual"] as const).map((period) => (

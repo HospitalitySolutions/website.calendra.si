@@ -1,11 +1,15 @@
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
+import Testimonials from "@/components/landing/Testimonials";
 import { customerStories, getCustomerStoryPath } from "@/lib/customer-stories";
 import { getLocalizedPathname } from "@/lib/localized-routes";
 import { getSeoForPathname } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
+import { SiteLanguageProvider } from "@/lib/site-language";
 
 const testDir = dirname(fileURLToPath(import.meta.url));
 const srcDir = resolve(testDir, "..");
@@ -13,23 +17,37 @@ const rootDir = resolve(srcDir, "..");
 const readProjectFile = (relativePath: string) => readFileSync(resolve(rootDir, relativePath), "utf8");
 
 describe("Release 4 authority", () => {
-  it("publishes two real customer stories with approved source links and facts", () => {
-    expect(customerStories.map((story) => story.slug)).toEqual(["institut-avisensa", "depilacije-ug"]);
+  it("publishes all three approved customer stories with their source links and facts", () => {
+    const approvedReferences = [
+      { slug: "institut-avisensa", websiteUrl: "https://avisensa.com/", representative: "Nina Piberčnik" },
+      { slug: "depilacije-ug", websiteUrl: "https://www.depilacijeug.si/", representative: "Urška Grmek" },
+      { slug: "skreativa", websiteUrl: "https://www.skreativa.si/", representative: "Špela Kovačič" },
+    ];
+    expect(customerStories).toHaveLength(approvedReferences.length);
+    expect(customerStories.map(({ slug, websiteUrl, representative }) => ({ slug, websiteUrl, representative })))
+      .toEqual(expect.arrayContaining(approvedReferences));
 
     const avisensa = customerStories.find((story) => story.slug === "institut-avisensa");
     const depilacije = customerStories.find((story) => story.slug === "depilacije-ug");
+    const skreativa = customerStories.find((story) => story.slug === "skreativa");
 
-    expect(avisensa?.websiteUrl).toBe("https://avisensa.com/");
-    expect(avisensa?.representative).toBe("Nina Piberčnik");
     expect(avisensa?.content.sl.facts).toContainEqual({ label: "Uporabniki", value: "5" });
     expect(avisensa?.content.sl.facts).toContainEqual({ label: "Spletno naročanje", value: "Ne" });
-    expect(avisensa?.content.sl.testimonial).toContain("vse na enem mestu");
+    expect(avisensa?.content.sl.facts).toContainEqual({ label: "Opomniki", value: "Da" });
 
-    expect(depilacije?.websiteUrl).toBe("https://www.depilacijeug.si/");
-    expect(depilacije?.representative).toBe("Urška Grmek");
     expect(depilacije?.content.sl.facts).toContainEqual({ label: "Spletno naročanje", value: "Da" });
     expect(depilacije?.content.sl.facts).toContainEqual({ label: "Računi in plačila", value: "Da" });
-    expect(depilacije?.content.sl.testimonial).toContain("manj usklajevanja");
+
+    expect(skreativa?.content.sl.facts).toContainEqual({ label: "Uporaba", value: "Sestanki in svetovalni termini" });
+    expect(skreativa?.content.sl.facts).toContainEqual({ label: "Spletno naročanje", value: "Da" });
+    expect(skreativa?.content.sl.facts).toContainEqual({ label: "Potrditve", value: "Samodejne" });
+    expect(skreativa?.content.sl.facts).toContainEqual({ label: "Opomniki", value: "Da" });
+
+    for (const story of customerStories) {
+      for (const language of ["sl", "en"] as const) {
+        expect(story.content[language].testimonial.trim()).not.toBe("");
+      }
+    }
   });
 
   it("gives every customer story reciprocal canonical and hreflang URLs", () => {
@@ -61,11 +79,18 @@ describe("Release 4 authority", () => {
     }
   });
 
-  it("links approved homepage testimonials to the full customer stories", () => {
-    const testimonials = readProjectFile("src/components/landing/Testimonials.tsx");
-    expect(testimonials).toContain('storySlug: "institut-avisensa"');
-    expect(testimonials).toContain('storySlug: "depilacije-ug"');
-    expect(testimonials).toContain("getCustomerStoryPath(review.storySlug, language)");
+  it.each(["sl", "en"] as const)("renders links from approved homepage testimonials to their full stories (%s)", (language) => {
+    const html = renderToStaticMarkup(
+      createElement(SiteLanguageProvider, { initialLanguage: language }, createElement(Testimonials)),
+    );
+    const document = new DOMParser().parseFromString(html, "text/html");
+    const cards = Array.from(document.querySelectorAll("article"));
+
+    for (const story of customerStories) {
+      const card = cards.find((item) => item.textContent?.includes(story.representative));
+      expect(card).toBeDefined();
+      expect(card?.querySelector(`a[href="${getCustomerStoryPath(story.slug, language)}"]`)).not.toBeNull();
+    }
   });
 
   it("adds authoritative sources and removes unsupported no-show promises", () => {

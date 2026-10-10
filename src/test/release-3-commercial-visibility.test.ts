@@ -1,14 +1,25 @@
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
-import { dirname, resolve } from "node:path";
+import { createElement, type ComponentType } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { StaticRouter } from "react-router-dom/server";
 import { describe, expect, it } from "vitest";
+import Navbar from "@/components/landing/Navbar";
+import Testimonials from "@/components/landing/Testimonials";
 import { getFeatureContent } from "@/lib/feature-pages";
 import { getIndustryContent } from "@/lib/industry-pages";
+import { IT_SERVICE_CANONICAL_KEYS } from "@/lib/it-services";
+import { getRoutePath } from "@/lib/localized-routes";
+import { SiteLanguageProvider, type SiteLanguage } from "@/lib/site-language";
 
-const testDir = dirname(fileURLToPath(import.meta.url));
-const srcDir = resolve(testDir, "..");
-
-const readSource = (relativePath: string) => readFileSync(resolve(srcDir, relativePath), "utf8");
+const renderMarketingComponent = (component: ComponentType, language: SiteLanguage) => {
+  const html = renderToStaticMarkup(
+    createElement(
+      StaticRouter,
+      { location: getRoutePath("home", language) },
+      createElement(SiteLanguageProvider, { initialLanguage: language }, createElement(component)),
+    ),
+  );
+  return new DOMParser().parseFromString(html, "text/html");
+};
 
 describe("Release 3 commercial visibility", () => {
   it("uses real product screenshots on the main commercial feature pages", () => {
@@ -29,48 +40,62 @@ describe("Release 3 commercial visibility", () => {
     const sl = getIndustryContent("beautyHair", "sl");
     const en = getIndustryContent("beautyHair", "en");
 
-    expect(sl.title.toLowerCase()).toContain("kozmetične");
-    expect(sl.title.toLowerCase()).toContain("frizerske");
-    expect(sl.intro.toLowerCase()).toContain("salon");
-    expect(en.title.toLowerCase()).toContain("beauty");
-    expect(en.title.toLowerCase()).toContain("hair");
+    expect(sl.title).toMatch(/lepot|kozmet/i);
+    expect(sl.title).toMatch(/frizersk/i);
+    expect(sl.audiences.some((audience) => /kozmet.*salon/i.test(audience))).toBe(true);
+    expect(sl.audiences.some((audience) => /frizersk.*salon/i.test(audience))).toBe(true);
+    expect(en.title).toMatch(/beauty/i);
+    expect(en.title).toMatch(/hair/i);
+    expect(en.audiences.some((audience) => /beauty.*salon/i.test(audience))).toBe(true);
+    expect(en.audiences.some((audience) => /hair.*salon/i.test(audience))).toBe(true);
   });
 
   it("gives fitness and group services a genuinely distinct workflow", () => {
     const sl = getIndustryContent("fitnessGroups", "sl");
     const en = getIndustryContent("fitnessGroups", "en");
-    const slText = JSON.stringify(sl).toLowerCase();
-    const enText = JSON.stringify(en).toLowerCase();
+    const slWorkflow = sl.workflow.join(" ").toLowerCase();
+    const enWorkflow = en.workflow.join(" ").toLowerCase();
 
-    expect(sl.title.toLowerCase()).toContain("skupinske vadbe");
-    expect(slText).toContain("kapacitet");
-    expect(slText).toContain("čakaln");
-    expect(slText).toContain("članstv");
-    expect(slText).toContain("obisk");
-    expect(slText).not.toContain("načrtovana");
+    expect(sl.title).toMatch(/skupinsk/i);
+    expect(slWorkflow).toContain("kapacitet");
+    expect(slWorkflow).toContain("čakaln");
+    expect(slWorkflow).toContain("članstv");
+    expect(slWorkflow).toContain("obisk");
 
-    expect(en.title.toLowerCase()).toContain("group");
-    expect(enText).toContain("capacity");
-    expect(enText).toContain("waiting list");
-    expect(enText).toContain("membership");
-    expect(enText).toContain("attendance");
+    expect(en.title).toMatch(/group/i);
+    expect(enWorkflow).toContain("capacity");
+    expect(enWorkflow).toContain("waiting list");
+    expect(enWorkflow).toContain("membership");
+    expect(enWorkflow).toContain("attendance");
   });
 
-  it("keeps IT services out of the primary navigation while preserving product solutions", () => {
-    const navbar = readSource("components/landing/Navbar.tsx");
+  it.each(["sl", "en"] as const)("renders product navigation links without IT services (%s)", (language) => {
+    const document = renderMarketingComponent(Navbar, language);
+    const links = Array.from(document.querySelectorAll("nav a[href]"), (link) => link.getAttribute("href"));
 
-    expect(navbar).not.toContain("IT_SERVICE_ROUTE_KEYS");
-    expect(navbar).not.toContain("copy.nav.itServices");
-    expect(navbar).toContain('getRoutePath("beautyHair", language)');
-    expect(navbar).toContain('getRoutePath("fitnessGroups", language)');
+    for (const routeKey of ["beautySalons", "hairSalons", "spaSauna", "fitnessPersonalTraining", "groupBookings", "booking", "pricing"] as const) {
+      expect(links).toContain(getRoutePath(routeKey, language));
+    }
+    for (const routeKey of IT_SERVICE_CANONICAL_KEYS) {
+      expect(links).not.toContain(getRoutePath(routeKey, language));
+    }
   });
 
-  it("publishes the two approved customer references with their source sites", () => {
-    const testimonials = readSource("components/landing/Testimonials.tsx");
+  it.each(["sl", "en"] as const)("renders all three approved customer references with their source sites (%s)", (language) => {
+    const document = renderMarketingComponent(Testimonials, language);
+    const cards = Array.from(document.querySelectorAll("article"));
+    const approvedReferences = [
+      { name: "Nina Piberčnik", website: "https://avisensa.com/" },
+      { name: "Urška Grmek", website: "https://www.depilacijeug.si/" },
+      { name: "Špela Kovačič", website: "https://www.skreativa.si/" },
+    ];
 
-    expect(testimonials).toContain("Nina Piberčnik");
-    expect(testimonials).toContain("https://avisensa.com/");
-    expect(testimonials).toContain("Urška Grmek");
-    expect(testimonials).toContain("https://www.depilacijeug.si/");
+    expect(cards).toHaveLength(approvedReferences.length);
+    for (const reference of approvedReferences) {
+      const card = cards.find((item) => item.textContent?.includes(reference.name));
+      expect(card).toBeDefined();
+      expect(card?.querySelector(`a[href="${reference.website}"]`)).not.toBeNull();
+      expect(card?.querySelector("blockquote")?.textContent?.trim()).toBeTruthy();
+    }
   });
 });

@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { PRICING_CATALOG_UPDATED_EVENT } from "@/lib/public-pricing";
 
 type SeoDescriptor = ReturnType<typeof import("@/lib/seo").getSeoForPathname>;
 
@@ -105,16 +106,20 @@ const SeoManager = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (isServerRenderedRoute(location.pathname)) return;
-
     let cancelled = false;
 
-    void import("@/lib/seo").then(({ DEFAULT_OG_IMAGE, getSeoForPathname }) => {
-      if (!cancelled) applySeo(getSeoForPathname(location.pathname), DEFAULT_OG_IMAGE);
-    });
+    const refreshSeo = () => {
+      void import("@/lib/seo").then(({ DEFAULT_OG_IMAGE, getSeoForPathname }) => {
+        if (!cancelled) applySeo(getSeoForPathname(location.pathname), DEFAULT_OG_IMAGE);
+      });
+    };
+
+    if (!isServerRenderedRoute(location.pathname)) refreshSeo();
+    window.addEventListener(PRICING_CATALOG_UPDATED_EVENT, refreshSeo);
 
     return () => {
       cancelled = true;
+      window.removeEventListener(PRICING_CATALOG_UPDATED_EVENT, refreshSeo);
     };
   }, [location.pathname]);
 

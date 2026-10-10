@@ -17,7 +17,8 @@ export const CUSTOMER_REGISTER_ROUTE = `${CUSTOMER_ACCOUNT_ROUTE}/registracija`;
 
 /** @deprecated Prefer BUSINESS_LOGIN_ROUTE or CUSTOMER_LOGIN_ROUTE for audience-specific CTAs. */
 export const LOGIN_ROUTE = BUSINESS_LOGIN_ROUTE;
-export const REGISTER_ROUTE = `${APP_BASE_URL}/signup`;
+// The app's legacy /signup redirect does not retain the registration query.
+export const REGISTER_ROUTE = `${APP_BASE_URL}/register`;
 export const TRIAL_SIGNUP_ROUTE = `${REGISTER_ROUTE}?flow=trial`;
 
 export type PricingSignupSummary = {
@@ -33,6 +34,9 @@ export type PricingSignupSummary = {
   firstInvoiceEstimate: number;
 };
 
+const clampRegistrationCount = (value: number, min: number, max: number, fallback: number) =>
+  Number.isFinite(value) ? Math.min(max, Math.max(min, Math.trunc(value))) : fallback;
+
 export const buildPackageSignupRoute = (packageType: string, summary?: PricingSignupSummary) => {
   const params = new URLSearchParams({
     flow: "register",
@@ -40,6 +44,18 @@ export const buildPackageSignupRoute = (packageType: string, summary?: PricingSi
   });
 
   if (summary) {
+    // Match the app's registerFlow query contract: users means total seats,
+    // SMS is a message count, and add-ons use catalog keys rather than codes.
+    params.set("users", String(clampRegistrationCount(summary.totalUsers, 1, 20, 1)));
+    const sms = clampRegistrationCount(summary.additionalSms, 0, 1000, 0);
+    params.set("sms", String(Math.round(sms / 50) * 50));
+    const addOnKeys = new Set((summary.selectedAddOnKeys ?? [])
+      .map((key) => key.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""))
+      .filter(Boolean));
+    for (const key of addOnKeys) params.append("addon", key);
+
+    // Preserve the existing estimate payload; the app must calculate payable
+    // prices from its own catalog, not treat these client totals as authority.
     params.set("summary", JSON.stringify(summary));
   }
 

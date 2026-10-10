@@ -243,7 +243,7 @@ const IndustryDetailPage = () => {
                 <ResponsiveScreenshot
                   image={MARKETING_IMAGES.bookingTime}
                   alt={language === "sl" ? "Izbira skupinske vadbe v Calendri z odprtimi termini in številom prostih mest" : "Group class selection in Calendra with open times and remaining places"}
-                  caption={language === "sl" ? "Udeleženec vidi aktualno kapaciteto še preden potrdi prijavo." : "Participants see live capacity before confirming their booking."}
+                  caption={language === "sl" ? "Udeleženec vidi aktualno kapaciteto, še preden potrdi prijavo." : "Participants see live capacity before confirming their booking."}
                 />
                 <div className="grid gap-6">
                   <ResponsiveScreenshot
