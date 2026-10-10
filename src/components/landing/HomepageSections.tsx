@@ -200,7 +200,7 @@ export const AudienceSection = () => {
                 <a
                   href={getRoutePath(audienceRoutes[index], language)}
                   className="audience-carousel-card group block overflow-hidden rounded-xl border border-border bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                  aria-label={item.cta}
+                  aria-label={`${item.title}: ${item.cta}`}
                 >
                   <span className="audience-service-scene" aria-hidden="true">
                     <img

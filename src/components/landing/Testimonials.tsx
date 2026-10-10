@@ -174,7 +174,7 @@ const Testimonials = () => {
                 target="_blank"
                 rel="noreferrer noopener"
                 className="group flex items-center gap-3 text-sm font-medium text-foreground"
-                aria-label={copy.viewAll}
+                aria-label={`${copy.rating}: ${copy.viewAll}`}
               >
                 <RatingStars label={copy.rating} />
                 <span>{copy.rating}</span>

@@ -5,6 +5,7 @@
       "startServerReadyPattern": "Serving dist on",
       "url": [
         "http://127.0.0.1:4173/",
+        "http://127.0.0.1:4173/en",
         "http://127.0.0.1:4173/cenik",
         "http://127.0.0.1:4173/narocanje",
         "http://127.0.0.1:4173/blog",
