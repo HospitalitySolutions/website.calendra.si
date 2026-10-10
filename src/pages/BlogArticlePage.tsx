@@ -139,8 +139,8 @@ const BlogArticlePage = () => {
             </div>
           </header>
 
-          <div className="container mx-auto grid max-w-6xl gap-12 px-4 py-14 lg:grid-cols-[minmax(0,1fr)_16rem] lg:px-8">
-            <div className="max-w-3xl">
+          <div className="container mx-auto grid max-w-6xl grid-cols-1 gap-12 px-4 py-14 lg:grid-cols-[minmax(0,1fr)_16rem] lg:px-8">
+            <div className="min-w-0 w-full max-w-3xl">
               <Suspense fallback={null}>
                 {Body ? <Body components={mdxComponents} /> : null}
               </Suspense>

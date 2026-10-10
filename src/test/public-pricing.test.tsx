@@ -96,12 +96,13 @@ const expectPublishedCatalog = (language: SiteLanguage, catalog: PublicPricingCa
       priceSpecification: expect.objectContaining({
         price: plan.monthlyGross.toFixed(2),
         priceCurrency: catalog.currency,
-        valueAddedTaxIncluded: catalog.vatIncluded,
         unitCode: "MON",
       }),
     })),
   };
   const pricingGraph = schemaGraph(getRoutePath("pricing", language));
+  expect(JSON.stringify(pricingGraph)).not.toContain("valueAddedTaxIncluded");
+  expect(JSON.stringify(pricingGraph)).not.toContain('"vatID"');
   const product = pricingGraph.find((node) => node["@type"] === "Product");
   const software = pricingGraph.find((node) => node["@type"] === "SoftwareApplication");
   expect(product).toMatchObject({ offers: expectedOffers });

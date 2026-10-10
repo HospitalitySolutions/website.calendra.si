@@ -841,6 +841,7 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
       finalBody:
         "Brezplačni preizkus traja 14 dni in ne zahteva kreditne kartice. Obstoječi seznam strank lahko prenesete iz preglednice.",
       faq: [
+        {"question":"Kaj lahko prenesem iz datoteke CSV?","answer":"Uvoz strank podpira pregled kontaktov, preverjanje vrstic in obravnavo podvojenih zapisov pred potrditvijo. Pred prenosom preverite preslikavo imena, priimka, e-pošte, telefona in jezika. Uvoz kontaktov ne pomeni samodejnega prenosa zgodovine terminov, računov, kart ali klinične dokumentacije; širši prenos najprej uskladimo na predstavitvi."},
         {
           question: "Ali lahko uvozim obstoječe stranke iz Excela?",
           answer:
@@ -998,6 +999,7 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
       finalBody:
         "The free trial lasts 14 days and requires no credit card. An existing client list can be imported from a spreadsheet.",
       faq: [
+        {"question":"What can I migrate from CSV?","answer":"Client import supports a contact preview, row validation and duplicate review before confirmation. Check the name, surname, email, phone and language mapping before importing. Contact import does not automatically migrate appointment history, invoices, passes or clinical records; discuss a broader migration during a demo."},
         {
           question: "Can I import existing clients from Excel?",
           answer:
@@ -1911,6 +1913,7 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
       finalBody:
         "Začnite s 14-dnevnim brezplačnim preizkusom in nastavite svojo prvo skupino, kapaciteto, ponovitve ter pravila spletne prijave.",
       faq: [
+        {"question":"Ali veljavnost karte odpravi omejitev naročanja vnaprej?","answer":"Ne. Termin mora biti znotraj veljavnosti karte ali članstva in hkrati znotraj nastavitve Največ dni vnaprej. Prestavitev na drugo skupinsko storitev je mogoča le, če jo krije ista ugodnost in imate omogočeno ustrezno nastavitev. Skupinske rezervacije, čakalna vrsta in druge možnosti so odvisne od paketa in nastavitev."},
         { question: "Ali lahko nastavim kapaciteto skupinskega termina?", answer: "Da. Določite največje število udeležencev, Calendra pa pri spletnih prijavah upošteva že zasedena in prosta mesta." },
         { question: "Ali se lahko stranke prijavijo prek spleta?", answer: "Da. Stranka izbere skupinsko storitev in odprto izvedbo, prijava pa se takoj zapiše na seznam udeležencev." },
         { question: "Ali Calendra podpira čakalno vrsto?", answer: "Da. Pri zapolnjeni skupini lahko dodatni interesenti ostanejo povezani s terminom prek čakalne vrste in sproščenih mest." },
@@ -1968,6 +1971,7 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
       finalTitle: "Simplify registration for group appointments",
       finalBody: "Start a 14-day free trial and configure your first group, capacity, recurring schedule and online registration rules.",
       faq: [
+        {"question":"Does pass validity override the advance-booking limit?","answer":"No. The appointment must be within both the pass or membership validity and Maximum days in advance. Moving to another group service requires coverage by the same benefit and the relevant setting. Group bookings, waiting lists and other options depend on your plan and configuration."},
         { question: "Can I set capacity for a group appointment?", answer: "Yes. Set the maximum participant count and Calendra uses current registrations to calculate occupied and remaining places." },
         { question: "Can customers register online?", answer: "Yes. The customer chooses the group service and an open occurrence, and the registration is added directly to the participant list." },
         { question: "Does Calendra support waiting lists?", answer: "Yes. When a group is full, additional interest can remain connected to the appointment through the waiting-list flow and released places." },

@@ -2,8 +2,11 @@ import { describe, expect, it } from "vitest";
 import { normalizeCompanyIdentifiers } from "@/lib/company-identifiers";
 
 describe("public company identifiers", () => {
+  it("omits a VAT ID for the confirmed non-registered entity", () => {
+    expect(normalizeCompanyIdentifiers({ vatId: "SI10550631" })).toMatchObject({ vatId: undefined, taxId: "10550631" });
+  });
   it("removes the accidentally pasted environment assignment from the configured VAT ID", () => {
-    expect(normalizeCompanyIdentifiers({ vatId: " VITE_COMPANY_VAT_ID=SI10550631 " })).toEqual({
+    expect(normalizeCompanyIdentifiers({ vatRegistered: true, vatId: " VITE_COMPANY_VAT_ID=SI10550631 " })).toEqual({
       vatId: "SI10550631",
       taxId: "10550631",
       registrationNumber: undefined,
@@ -11,7 +14,7 @@ describe("public company identifiers", () => {
   });
 
   it("keeps a configured VAT identifier separate from the domestic tax number", () => {
-    expect(normalizeCompanyIdentifiers({ vatId: " si10550631 " })).toEqual({
+    expect(normalizeCompanyIdentifiers({ vatRegistered: true, vatId: " si10550631 " })).toEqual({
       vatId: "SI10550631",
       taxId: "10550631",
       registrationNumber: undefined,

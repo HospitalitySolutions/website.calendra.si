@@ -495,7 +495,7 @@ const pricingAggregateOffer = (language: SiteLanguage) => {
         "@type": "UnitPriceSpecification",
         price: formatPrice(plan.monthlyGross),
         priceCurrency: catalog.currency,
-        valueAddedTaxIncluded: catalog.vatIncluded,
+        valueAddedTaxIncluded: LEGAL.vatRegistered ? catalog.vatIncluded : undefined,
         unitCode: "MON",
         billingIncrement: 1,
       },

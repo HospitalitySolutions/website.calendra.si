@@ -173,24 +173,10 @@ const pricingBlock = pricingCatalog
     <!-- CALENDRA_PRICING_END -->`
   : '<!-- CALENDRA_PRICING_START --><!-- CALENDRA_PRICING_END -->';
 
-/**
- * The cookieless Umami tracker is injected as a plain deferred script rather
- * than bundled, so it never blocks hydration and stays out of the JS graph.
- * Serving it from a first-party path keeps content blockers from dropping it.
- */
-const buildAnalyticsBlock = () => {
-  const websiteId = process.env.VITE_UMAMI_WEBSITE_ID ?? '';
-  if (!websiteId) return '<!-- CALENDRA_ANALYTICS_START --><!-- CALENDRA_ANALYTICS_END -->';
-
-  const scriptUrl = process.env.VITE_UMAMI_SCRIPT_URL ?? '/stats/script.js';
-  const hostUrl = (process.env.VITE_UMAMI_HOST_URL ?? '/stats').replace(/\/+$/, '');
-
-  return `<!-- CALENDRA_ANALYTICS_START -->
-    <script defer src="${escapeHtml(scriptUrl)}" data-website-id="${escapeHtml(websiteId)}" data-host-url="${escapeHtml(hostUrl)}"></script>
-    <!-- CALENDRA_ANALYTICS_END -->`;
-};
-
-const analyticsBlock = buildAnalyticsBlock();
+// The browser adapter loads Umami only on known marketing routes and supplies
+// sanitized page fields. A global automatic tracker would also collect tokens
+// and customer routes served through the SPA fallback.
+const analyticsBlock = '<!-- CALENDRA_ANALYTICS_START --><!-- CALENDRA_ANALYTICS_END -->';
 
 // Every route renders its H1/lede in Plus Jakarta Sans and its body copy in
 // DM Sans above the fold, so both are on the LCP critical path everywhere,

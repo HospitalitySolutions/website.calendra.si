@@ -1,5 +1,15 @@
 import { getInitialPricingCatalog, type PublicPricingCatalog } from "@/lib/public-pricing";
 import type { SiteLanguage } from "@/lib/site-language";
+import { LEGAL } from "@/lib/legal";
+
+export const getPricingTaxNote = (language: SiteLanguage, vatIncluded = true): string => {
+  if (!LEGAL.vatRegistered) return language === "sl"
+    ? "DDV se ne obračunava. Ponudnik ni zavezanec za DDV."
+    : "VAT is not charged. The provider is not VAT registered.";
+  return language === "sl"
+    ? vatIncluded ? "Cene vključujejo DDV." : "Cene ne vključujejo DDV."
+    : vatIncluded ? "Prices include VAT." : "Prices exclude VAT.";
+};
 
 /** Pricing prose uses the same catalog as the cards and structured offers. */
 export const getPricingSummary = (
@@ -18,7 +28,7 @@ export const getPricingSummary = (
   if (language === "sl") {
     return [
       `Mesečne cene paketov Calendra: ${plans}.`,
-      catalog.vatIncluded ? "Cene vključujejo DDV." : "Cene ne vključujejo DDV.",
+      getPricingTaxNote(language, catalog.vatIncluded),
       `Število uporabnikov v osnovni ceni: ${catalog.includedUsers}.`,
       `Vsak dodatni uporabnik stane ${additionalUserPrice} mesečno.`,
       `Pri letnem plačilu plačate ${catalog.annualBilledMonths} mesecev za 12 mesecev uporabe.`,
@@ -28,7 +38,7 @@ export const getPricingSummary = (
 
   return [
     `Calendra monthly plan prices: ${plans}.`,
-    catalog.vatIncluded ? "Prices include VAT." : "Prices exclude VAT.",
+    getPricingTaxNote(language, catalog.vatIncluded),
     `Users included in the base price: ${catalog.includedUsers}.`,
     `Each additional user costs ${additionalUserPrice} per month.`,
     `Annual billing charges ${catalog.annualBilledMonths} months for 12 months of use.`,

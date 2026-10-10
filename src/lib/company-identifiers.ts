@@ -10,24 +10,26 @@ export const normalizeCompanyIdentifiers = ({
   vatId,
   taxId,
   registrationNumber,
+  vatRegistered = false,
 }: {
   vatId?: string;
   taxId?: string;
   registrationNumber?: string;
+  vatRegistered?: boolean;
 }) => {
   const configuredVatId = readIdentifier(vatId, "VITE_COMPANY_VAT_ID")?.toUpperCase();
   const configuredTaxId = readIdentifier(taxId, "VITE_COMPANY_TAX_ID");
   const configuredRegistration = readIdentifier(registrationNumber, "VITE_COMPANY_REGISTRATION_NUMBER");
 
   // A domestic tax number does not establish VAT registration. Only preserve
-  // a VAT ID when its SI prefix was explicitly supplied in the configuration.
+  // a VAT ID when registration is confirmed and an SI-prefixed ID is configured.
   const normalizedVatId = configuredVatId && /^SI\d{8}$/.test(configuredVatId)
     ? configuredVatId
     : undefined;
   const taxNumber = configuredTaxId ?? normalizedVatId?.slice(2) ?? configuredVatId;
 
   return {
-    vatId: normalizedVatId,
+    vatId: vatRegistered ? normalizedVatId : undefined,
     taxId: taxNumber && /^\d{8}$/.test(taxNumber) ? taxNumber : undefined,
     registrationNumber: configuredRegistration && /^\d+$/.test(configuredRegistration)
       ? configuredRegistration

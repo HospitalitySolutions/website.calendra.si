@@ -1,3 +1,6 @@
+import { hasSearchQuery, isMarketingPath, sanitizeAnalyticsEvent } from "@/lib/analytics-policy";
+import { sanitizeAcquisition, safeReferrer } from "@/lib/acquisition";
+
 export const GOOGLE_ANALYTICS_ID = import.meta.env.VITE_GOOGLE_ANALYTICS_ID ?? "G-DVDT4W7BYS";
 
 export const GOOGLE_ANALYTICS_CONSENT_KEY = "calendra-google-analytics-consent";
@@ -17,6 +20,9 @@ declare global {
 
 let scriptRequested = false;
 let configured = false;
+let initialized = false;
+let memoryConsent: GoogleAnalyticsConsent | null = null;
+const allowedPage = () => isMarketingPath(window.location.pathname) && !hasSearchQuery(window.location.search);
 
 const ensureGtag = () => {
   if (typeof window === "undefined") return undefined;
@@ -47,6 +53,8 @@ const setDefaultConsent = () => {
 
 export const getGoogleAnalyticsConsent = (): GoogleAnalyticsConsent | null => {
   if (typeof window === "undefined") return null;
+
+  if (memoryConsent) return memoryConsent;
   try {
     const value = window.localStorage.getItem(GOOGLE_ANALYTICS_CONSENT_KEY);
     return value === "granted" || value === "denied" ? value : null;
@@ -80,6 +88,7 @@ const clearGoogleAnalyticsCookies = () => {
     undefined,
     hostname,
     hostname.includes(".") ? `.${hostname}` : undefined,
+    hostname === "calendra.si" || hostname.endsWith(".calendra.si") ? ".calendra.si" : undefined,
   ])];
 
   for (const name of cookieNames) {
@@ -91,6 +100,7 @@ const clearGoogleAnalyticsCookies = () => {
 
 export const loadGoogleAnalytics = () => {
   if (typeof document === "undefined" || !GOOGLE_ANALYTICS_ID || scriptRequested) return;
+  if (!allowedPage()) return;
 
   const gtag = ensureGtag();
   if (!gtag) return;
@@ -109,12 +119,20 @@ export const loadGoogleAnalytics = () => {
   if (!configured) {
     configured = true;
     gtag("js", new Date());
-    gtag("config", GOOGLE_ANALYTICS_ID);
+    gtag("config", GOOGLE_ANALYTICS_ID, {
+      ...safePageFields(),
+      cookie_domain: "auto",
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+    });
   }
 };
 
 export const initializeGoogleAnalytics = () => {
   if (typeof window === "undefined" || !GOOGLE_ANALYTICS_ID) return;
+  syncGoogleAnalyticsPage();
+  if (initialized || !allowedPage()) return;
+  initialized = true;
 
   // Advanced Consent Mode: establish a denied default before the Google tag
   // is requested. The tag may then send limited cookieless measurement pings,
@@ -122,16 +140,21 @@ export const initializeGoogleAnalytics = () => {
   setDefaultConsent();
 
   const consent = getGoogleAnalyticsConsent();
-  if (consent) updateConsentMode(consent);
+  if (consent) {
+    updateConsentMode(consent);
+
+  }
 
   // Unlike Basic Consent Mode, Advanced Consent Mode loads the Google tag even
   // while analytics_storage is denied. This also lets Google/Tag Assistant
   // detect the installation without needing to interact with the consent UI.
   loadGoogleAnalytics();
+
 };
 
 export const setGoogleAnalyticsConsent = (consent: GoogleAnalyticsConsent) => {
   if (typeof window === "undefined") return;
+  memoryConsent = consent;
 
   try {
     window.localStorage.setItem(GOOGLE_ANALYTICS_CONSENT_KEY, consent);
@@ -151,10 +174,31 @@ export const setGoogleAnalyticsConsent = (consent: GoogleAnalyticsConsent) => {
 
 export const trackGoogleAnalyticsEvent = (eventName: string, data: Record<string, unknown> = {}) => {
   if (typeof window === "undefined" || !GOOGLE_ANALYTICS_ID || getGoogleAnalyticsConsent() !== "granted") return;
+  if (!allowedPage()) return;
+  const sanitized = sanitizeAnalyticsEvent(eventName, data);
+  if (!sanitized) return;
 
   loadGoogleAnalytics();
-  const googleEventName = eventName.replace(/[^a-zA-Z0-9_]/g, "_").slice(0, 40);
-  if (!googleEventName) return;
+  ensureGtag()?.("event", sanitized.event, { ...sanitized.data, ...safePageFields() });
+};
 
-  ensureGtag()?.("event", googleEventName, data);
+const safePageFields = () => {
+  const path = window.location.pathname;
+  const query = sanitizeAcquisition(window.location.search).toString();
+  return {
+    page_location: `${window.location.origin}${isMarketingPath(path) ? path : "/"}${query ? `?${query}` : ""}`,
+    page_referrer: safeReferrer(document.referrer),
+    // Never derive a title from customer-entered or tenant-rendered content.
+    page_title: isMarketingPath(path) ? `Calendra ${path}` : "Calendra",
+  };
+};
+
+/** Enhanced measurement owns page views (verified in GA4 Admin on 10 Oct).
+ * No second React page_view emitter. Keep automatic events' URL fields clean.
+ */
+export const syncGoogleAnalyticsPage = () => {
+  if (typeof window === "undefined") return;
+  const allowed = allowedPage();
+  (window as unknown as Record<string, unknown>)[`ga-disable-${GOOGLE_ANALYTICS_ID}`] = !allowed;
+  if (allowed) ensureGtag()?.("set", safePageFields());
 };

@@ -22,8 +22,8 @@ const answers: Partial<Record<CanonicalRouteKey, Record<SiteLanguage, string>>> 
     en: "The Calendra provider directory lists public locations that have enabled directory visibility. Search by provider name, category or location, open the public profile and then continue directly to appointment booking at the selected location.",
   },
   calendar: {
-    sl: "Koledar terminov v Calendri prikaže termine vseh zaposlenih, prostorov in storitev na enem zaslonu. Pri vsaki rezervaciji samodejno preveri delovni čas, odsotnosti in obstoječe termine, zato dvojne rezervacije niso mogoče. Na voljo so dnevni, tedenski in mesečni pogled ter ponavljajoči se termini.",
-    en: "The Calendra appointment calendar shows appointments for every employee, room and service on one screen. Each booking automatically checks working hours, absences and existing appointments, so double bookings cannot happen. Daily, weekly and monthly views are available, along with recurring appointments.",
+    sl: "Koledar terminov v Calendri prikaže termine vseh zaposlenih, prostorov in storitev na enem zaslonu. Pri vsaki rezervaciji samodejno preveri delovni čas, odsotnosti in obstoječe termine, da pomaga preprečiti prekrivanje terminov. Na voljo so dnevni, tedenski in mesečni pogled ter ponavljajoči se termini.",
+    en: "The Calendra appointment calendar shows appointments for every employee, room and service on one screen. Each booking automatically checks working hours, absences and existing appointments, to help prevent scheduling conflicts. Daily, weekly and monthly views are available, along with recurring appointments.",
   },
   invoicing: {
     sl: "Calendra iz izvedenega termina ustvari račun v nekaj klikih, saj storitev, ceno in podatke stranke prevzame iz rezervacije. Podpira gotovino, kartice in spletna plačila, z dodatkom za davčno blagajno pa tudi davčno potrjevanje računov po slovenski zakonodaji.",
@@ -34,12 +34,12 @@ const answers: Partial<Record<CanonicalRouteKey, Record<SiteLanguage, string>>> 
     en: "A client profile in Calendra brings contact details, the full appointment history, notes, documents, issued invoices and custom fields together in one place. At every following booking you can see past services and agreements, so there is no need to search notebooks, email or messages.",
   },
   reminders: {
-    sl: "Calendra samodejno pošlje potrditev ob rezervaciji in opomnik pred terminom po SMS ali e-pošti, čas pošiljanja pa določite sami. Vsako sporočilo vsebuje povezavo za prestavitev ali odpoved, kar zmanjša število pozabljenih terminov in sprosti mesta za druge stranke.",
-    en: "Calendra automatically sends a confirmation when a booking is made and a reminder before the appointment by SMS or email, with the timing set by you. Every message includes a link to reschedule or cancel, which reduces missed appointments and frees the slot for another customer.",
+    sl: "Calendra samodejno pošlje potrditev ob rezervaciji in opomnik pred terminom po SMS ali e-pošti, čas pošiljanja pa določite sami. Sporočilom lahko dodate povezavo za prestavitev ali odpoved v okviru svojih pravil, kar zmanjša število pozabljenih terminov in sprosti mesta za druge stranke.",
+    en: "Calendra automatically sends a confirmation when a booking is made and a reminder before the appointment by SMS or email, with the timing set by you. Messages can include a rescheduling or cancellation link within your booking rules, which reduces missed appointments and frees the slot for another customer.",
   },
   integrations: {
-    sl: "Calendra se poveže z Google Koledarjem za dvosmerno sinhronizacijo, z Zoomom za samodejno ustvarjanje povezav do video srečanj in s Stripom za spletna plačila ter predplačila. Na svojo obstoječo spletno stran lahko dodate rezervacijski vtičnik brez programiranja.",
-    en: "Calendra connects to Google Calendar for two-way sync, to Zoom for automatically generated video meeting links and to Stripe for online payments and deposits. You can add the booking widget to your existing website without writing any code.",
+    sl: "Calendra se poveže z Google Koledarjem za dvosmerno sinhronizacijo, z Zoomom za samodejno ustvarjanje povezav do video srečanj in s Stripom za spletna plačila ter predplačila. Integracije zahtevajo povezan račun, ustrezna dovoljenja in omogočeno funkcijo; razpoložljivost preverite za svoj paket. Rezervacijski vtičnik lahko dodate na obstoječo spletno stran.",
+    en: "Calendra connects to Google Calendar for two-way sync, to Zoom for automatically generated video meeting links and to Stripe for online payments and deposits. Integrations require a connected account, suitable permissions and the enabled feature; check availability for your plan. Add the booking widget to your existing website.",
   },
   materialManagement: {
     sl: "Materialno poslovanje v Calendri združi artikle, zalogo, dobavitelje, nabavo, premike, inventuro in porabo materiala na enem mestu. Zalogo lahko spremljate po poslovalnicah, hitro opazite artikle pod minimalno zalogo ter pregledate premike in porabo brez ločenih preglednic.",
