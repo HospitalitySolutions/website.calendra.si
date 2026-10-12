@@ -125,6 +125,20 @@ Update that file if contact or entity information changes.
 
 ## SEO deployment notes
 
+Run `node scripts/test-caddy-seo.mjs` with Docker available to test real HTTP
+redirects, marketplace visibility and cache/security headers against Caddy.
+The check uses disposable localhost containers and fixtures, and also runs in CI.
+Keep redirects, the private-marketplace response and file handlers inside the
+same literal `route` block: sibling `handle` blocks run before `route` in Caddy
+and can hide redirects behind a file-server 404.
+
+The website Caddyfile is copied into the website Docker image. Publishing a Git
+commit alone does not activate it: rebuild/redeploy the website container on
+every serving node through the normal release process. The historical Avisensa
+`/ponudniki/institut-avisensa` exception also lives in the app repository's
+production edge Caddyfiles and must be deployed there. Check public HTTP status
+and `Location` headers after release before requesting Search Console validation.
+
 This build includes the immediate SEO foundation plus route prerendering:
 
 - Route-specific titles and meta descriptions are defined in `src/lib/seo.ts`.

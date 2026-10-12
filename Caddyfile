@@ -45,8 +45,9 @@
     query tenant=*
   }
 
-  # Keep this redirect group literal. A plain path redirect such as /booking
-  # would otherwise be sorted ahead of the more specific query-aware matcher.
+  # Keep redirects, the marketplace gate and file handlers in one literal
+  # route. Sibling handle blocks otherwise run before route and return a 404
+  # before any redirect is reached. Query-aware redirects must run first.
   route {
     redir @legacyTenantBookingWithLocation /narocanje/{http.request.uri.query.tenant}?locationId={http.request.uri.query.locationId} 308
     redir @legacyTenantBooking /narocanje/{http.request.uri.query.tenant} 308
@@ -113,76 +114,76 @@
     redir /zoom-integration /en/zoom-integration 308
     redir /ai-transparency /en/ai-transparency 308
     redir /account-deletion /en/account-deletion 308
-  }
 
-  # Keep the consumer marketplace private until launch. Build-time code uses
-  # the same switch to remove navigation and sitemap entries. Direct booking
-  # URLs under /narocanje/* remain public and are intentionally not matched.
-  @privateMarketplace {
-    path /za-stranke /za-stranke/* /en/for-customers /en/for-customers/*
-    expression `"{$CUSTOMER_MARKETPLACE_PUBLIC:false}" != "true"`
-  }
-  respond @privateMarketplace 404
+    # Keep the consumer marketplace private until launch. Build-time code uses
+    # the same switch to remove navigation and sitemap entries. Direct booking
+    # URLs under /narocanje/* remain public and are intentionally not matched.
+    @privateMarketplace {
+      path /za-stranke /za-stranke/* /en/for-customers /en/for-customers/*
+      expression `"{$CUSTOMER_MARKETPLACE_PUBLIC:false}" != "true"`
+    }
+    respond @privateMarketplace 404
 
-  # Cookieless analytics served first-party. Content blockers match on known
-  # third-party analytics hostnames, so proxying the tracker and its collect
-  # endpoint through our own domain is what keeps the data usable.
-  handle /stats/* {
-    reverse_proxy analytics:3000
-  }
+    # Cookieless analytics served first-party. Content blockers match on known
+    # third-party analytics hostnames, so proxying the tracker and its collect
+    # endpoint through our own domain is what keeps the data usable.
+    handle /stats/* {
+      reverse_proxy analytics:3000
+    }
 
-  # Vite fingerprints files in /assets, so they can be cached indefinitely.
-  @immutableAssets path /assets/*
-  header @immutableAssets Cache-Control "public, max-age=31536000, immutable"
+    # Vite fingerprints files in /assets, so they can be cached indefinitely.
+    @immutableAssets path /assets/*
+    header @immutableAssets Cache-Control "public, max-age=31536000, immutable"
 
-  # Public images and icons use stable names and a shorter browser cache.
-  # industries/screenshots/customer-stories used to fall through to this
-  # block's absence entirely -- no matcher meant no Cache-Control header at
-  # all, not a shorter one, so returning visitors re-downloaded them on
-  # every visit.
-  @staticImages path /hero/* /reviews/* /og/* /favicon.ico /favicon-*.png /apple-touch-icon.png /icon-*.png /calendra-logo.png /calendra-wordmark.webp /og-calendra.png /connect/* /industries/* /screenshots/* /customer-stories/*
-  header @staticImages Cache-Control "public, max-age=604800"
+    # Public images and icons use stable names and a shorter browser cache.
+    # industries/screenshots/customer-stories used to fall through to this
+    # block's absence entirely -- no matcher meant no Cache-Control header at
+    # all, not a shorter one, so returning visitors re-downloaded them on
+    # every visit.
+    @staticImages path /hero/* /reviews/* /og/* /favicon.ico /favicon-*.png /apple-touch-icon.png /icon-*.png /calendra-logo.png /calendra-wordmark.webp /og-calendra.png /connect/* /industries/* /screenshots/* /customer-stories/*
+    header @staticImages Cache-Control "public, max-age=604800"
 
-  # Font subsets are regenerated only when a family changes, and the filename
-  # changes with it, so they can be cached for a year.
-  @fonts path /fonts/*
-  header @fonts Cache-Control "public, max-age=31536000, immutable"
+    # Font subsets are regenerated only when a family changes, and the filename
+    # changes with it, so they can be cached for a year.
+    @fonts path /fonts/*
+    header @fonts Cache-Control "public, max-age=31536000, immutable"
 
-  # Prerendered HTML references fingerprinted assets, so a stale copy would keep
-  # pointing at a bundle that no longer exists. Left unset, browsers apply their
-  # own heuristic freshness; this makes them revalidate against the ETag every
-  # time, which is cheap because unchanged pages come back as 304.
-  # Extensionless routes plus any .html file; anything with another extension is
-  # a fingerprinted or long-lived asset already handled above.
-  @documents path_regexp ^(/[^.]*|.*\.html)$
-  header @documents Cache-Control "public, max-age=0, must-revalidate"
+    # Prerendered HTML references fingerprinted assets, so a stale copy would keep
+    # pointing at a bundle that no longer exists. Left unset, browsers apply their
+    # own heuristic freshness; this makes them revalidate against the ETag every
+    # time, which is cheap because unchanged pages come back as 304.
+    # Extensionless routes plus any .html file; anything with another extension is
+    # a fingerprinted or long-lived asset already handled above.
+    @documents path_regexp ^(/[^.]*|.*\.html)$
+    header @documents Cache-Control "public, max-age=0, must-revalidate"
 
-  # Crawler and AI-assistant entry points change on every deploy, and a stale
-  # sitemap or llms.txt is worse than a slightly slower fetch.
-  @crawlerFiles path /sitemap.xml /robots.txt /llms.txt /llms-full.txt
-  header @crawlerFiles Cache-Control "public, max-age=3600"
+    # Crawler and AI-assistant entry points change on every deploy, and a stale
+    # sitemap or llms.txt is worse than a slightly slower fetch.
+    @crawlerFiles path /sitemap.xml /robots.txt /llms.txt /llms-full.txt
+    header @crawlerFiles Cache-Control "public, max-age=3600"
 
-  # Public location profiles are created from live directory data, so not every
-  # /za-stranke/{locationCode} URL exists at build time. Prefer a real prerendered
-  # profile when one exists; otherwise serve the matching language-specific
-  # profile shell and let the client resolve the location code from the API.
-  @slCustomerProfile path /za-stranke/*
-  handle @slCustomerProfile {
-    try_files {path}/index.html /_dynamic-location-profile-sl.html
-    file_server
-  }
+    # Public location profiles are created from live directory data, so not every
+    # /za-stranke/{locationCode} URL exists at build time. Prefer a real prerendered
+    # profile when one exists; otherwise serve the matching language-specific
+    # profile shell and let the client resolve the location code from the API.
+    @slCustomerProfile path /za-stranke/*
+    handle @slCustomerProfile {
+      try_files {path}/index.html /_dynamic-location-profile-sl.html
+      file_server
+    }
 
-  @enCustomerProfile path /en/for-customers/*
-  handle @enCustomerProfile {
-    try_files {path}/index.html /_dynamic-location-profile-en.html
-    file_server
-  }
+    @enCustomerProfile path /en/for-customers/*
+    handle @enCustomerProfile {
+      try_files {path}/index.html /_dynamic-location-profile-en.html
+      file_server
+    }
 
-  # Serve any route that was actually prerendered by the build. Unknown paths
-  # remain unknown and are returned as 404 by file_server—there is no second
-  # manually maintained route whitelist to drift out of sync.
-  handle {
-    try_files {path}/index.html {path}
-    file_server
+    # Serve any route that was actually prerendered by the build. Unknown paths
+    # remain unknown and are returned as 404 by file_server—there is no second
+    # manually maintained route whitelist to drift out of sync.
+    handle {
+      try_files {path}/index.html {path}
+      file_server
+    }
   }
 }

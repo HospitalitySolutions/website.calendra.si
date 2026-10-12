@@ -41,6 +41,9 @@ jobs:
       - name: Prerender and crawler checks
         run: node scripts/test-sitemap-routes.mjs
 
+      - name: Caddy redirects and marketplace HTTP checks
+        run: node scripts/test-caddy-seo.mjs
+
       # Lighthouse runs against the same static server the crawl test uses, so a
       # score change reflects the build rather than a difference in serving.
       # `canonical` and `is-crawlable` are skipped in lighthouserc.json because
