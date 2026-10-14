@@ -275,3 +275,30 @@
 @media (prefers-reduced-motion: reduce) {
   .home-preview-trigger, .home-device-hint { transition: none; }
 }
+
+/* Present a loading state on slow connections while the demo module downloads. */
+.home-preview-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 1999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: hsl(216 55% 12% / .72);
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+}
+.home-preview-loading-spinner {
+  width: 23px;
+  height: 23px;
+  border: 3px solid hsl(0 0% 100% / .3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: home-preview-spin .8s linear infinite;
+}
+@keyframes home-preview-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .home-preview-loading-spinner { animation: none; }
+}
