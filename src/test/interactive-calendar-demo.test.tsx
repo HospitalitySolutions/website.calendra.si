@@ -1,6 +1,8 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import InteractiveCalendarDemo from "@/components/landing/InteractiveCalendarDemo";
+import Hero from "@/components/landing/Hero";
+import { SiteLanguageProvider } from "@/lib/site-language";
 import { generateDemoAppointments } from "@/components/landing/interactive-preview-data";
 
 afterEach(() => cleanup());
@@ -58,4 +60,19 @@ describe("homepage interactive calendar preview", () => {
     fireEvent.keyDown(document, { key: "Escape" });
     expect(close).toHaveBeenCalledOnce();
   });
+  it("opens the lazy preview from either homepage device screenshot", async () => {
+    window.history.replaceState({}, "", "/");
+    render(<SiteLanguageProvider initialLanguage="sl"><Hero /></SiteLanguageProvider>);
+
+    fireEvent.click(screen.getByRole("button", { name: "Odpri interaktivni predogled koledarja na računalniku" }));
+    const desktop = await screen.findByRole("dialog", { name: "Preizkusite Calendra koledar" });
+    expect(within(desktop).getByRole("button", { name: "Računalnik" })).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(within(desktop).getByRole("button", { name: "Zapri predogled" }));
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Odpri interaktivni predogled mobilnega koledarja" }));
+    const mobile = await screen.findByRole("dialog");
+    expect(within(mobile).getByRole("button", { name: "Telefon" })).toHaveAttribute("aria-pressed", "true");
+  });
+
 });
