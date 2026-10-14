@@ -72,7 +72,7 @@ const Hero = () => {
         </div>
       </div>
       {preview && (
-        <Suspense fallback={<div role="status" className="sr-only">{language === "sl" ? "Nalaganje interaktivnega predogleda" : "Loading interactive preview"}</div>}>
+        <Suspense fallback={<div role="status" className="home-preview-loading"><span className="home-preview-loading-spinner" aria-hidden="true" />{language === "sl" ? "Nalaganje interaktivnega predogleda…" : "Loading interactive preview…"}</div>}>
           <InteractiveCalendarDemo initialDevice={preview} language={language} onClose={() => setPreview(null)} />
         </Suspense>
       )}
