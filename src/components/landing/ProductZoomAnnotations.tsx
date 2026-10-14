@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import type { PreviewDevice } from "./ProductZoomLightbox";
 
 type Language = "sl" | "en";
@@ -173,7 +172,7 @@ export default function ProductZoomAnnotations({ device, language, visible }: Pr
           </marker>
         </defs>
         {features.map((feature, index) => (
-          <g className="product-zoom-annotation" style={{ "--annotation-index": index } as CSSProperties} key={feature.id}>
+          <g className="product-zoom-annotation" style={{ transitionDelay: `${index * 80}ms` }} key={feature.id}>
             <path d={feature.arrow} className="product-zoom-sketched-arrow" markerEnd={`url(#${arrowId})`} />
             <text x={feature.x} y={feature.y} className="product-zoom-handwriting">
               {feature.lines[language].map((line, lineIndex) => (
