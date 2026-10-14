@@ -33,6 +33,7 @@ const ProductZoomLightbox = ({ device, origin, language, onClose }: ProductZoomL
   const overlayRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
   const closingRef = useRef(false);
   const enterAnimation = useRef<Animation | null>(null);
   const originRef = useRef(origin);
@@ -118,10 +119,16 @@ const ProductZoomLightbox = ({ device, origin, language, onClose }: ProductZoomL
         event.preventDefault();
         requestClose();
       }
-      // The close button is the only focusable element. Keep Tab inside the modal.
+      // The two visible controls form a small keyboard focus loop.
+      // Let the browser handle Tab between them; wrap only at the ends.
       if (event.key === "Tab") {
-        event.preventDefault();
-        closeRef.current?.focus();
+        if (event.shiftKey && document.activeElement === closeRef.current) {
+          event.preventDefault();
+          toggleRef.current?.focus();
+        } else if (!event.shiftKey && document.activeElement === toggleRef.current) {
+          event.preventDefault();
+          closeRef.current?.focus();
+        }
       }
     };
 
@@ -159,6 +166,7 @@ const ProductZoomLightbox = ({ device, origin, language, onClose }: ProductZoomL
       <button
         type="button"
         className="product-zoom-toggle"
+        ref={toggleRef}
         aria-pressed={showAnnotations}
         onClick={() => setShowAnnotations((current) => !current)}
       >
