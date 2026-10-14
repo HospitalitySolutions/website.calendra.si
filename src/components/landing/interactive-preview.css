@@ -430,3 +430,18 @@
 @media (prefers-reduced-motion: reduce) {
   .cal-demo-dialog { animation: none; }
 }
+
+/* On narrow devices, the desktop inspector becomes a drawer instead of
+ * disappearing: tapping an appointment must still expose its actions. */
+@media (max-width: 520px) {
+  .cal-demo-workspace-content { position: relative; }
+  .cal-demo-stage-desktop .cal-demo-workspace-content:has(.cal-demo-details-inner) .cal-demo-inspector {
+    display: block;
+    position: absolute;
+    z-index: 8;
+    inset: 0 0 0 auto;
+    width: min(300px, 85%);
+    border-left: 1px solid #dce6f1;
+    box-shadow: -14px 0 30px rgb(20 39 73 / .15);
+  }
+}
