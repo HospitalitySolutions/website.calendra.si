@@ -1,13 +1,22 @@
-import { ArrowRight, CalendarClock, Check, CreditCard, ShieldCheck, Star } from "lucide-react";
+import { lazy, Suspense, useState } from "react";
+import { ArrowRight, CalendarClock, Check, CreditCard, MousePointerClick, ShieldCheck, Star, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
+import type { DemoDevice } from "./interactive-preview-data";
+
+// The interactive demo stays out of the initial homepage/SSR bundle.
+const InteractiveCalendarDemo = lazy(() => import("./InteractiveCalendarDemo"));
 
 const Hero = () => {
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).hero;
+  const [preview, setPreview] = useState<DemoDevice | null>(null);
+  const desktopLabel = language === "sl" ? "Odpri interaktivni predogled koledarja na računalniku" : "Open interactive desktop calendar preview";
+  const mobileLabel = language === "sl" ? "Odpri interaktivni predogled mobilnega koledarja" : "Open interactive mobile calendar preview";
+  const exploreLabel = language === "sl" ? "Kliknite na zaslon in preizkusite koledar z vzorčnimi podatki." : "Click a screen to explore the calendar with sample data.";
 
   return (
     <section className="home-hero" aria-labelledby="home-heading">
@@ -39,8 +48,8 @@ const Hero = () => {
         </div>
         <div className="home-hero-product">
           <div className="home-product-devices">
-            <div className="home-desktop-frame">
-              <div className="home-browser-bar" aria-hidden="true"><span /><span /><span /><small>app.calendra.si</small></div>
+            <button type="button" className="home-desktop-frame home-preview-trigger" onClick={() => setPreview("desktop")} aria-label={desktopLabel}>
+              <span className="home-browser-bar" aria-hidden="true"><span /><span /><span /><small>app.calendra.si</small></span>
               <img
                 src="/homepage/calendar-desktop.webp"
                 srcSet="/homepage/calendar-desktop-640.webp 640w, /homepage/calendar-desktop-960.webp 960w, /homepage/calendar-desktop-1280.webp 1280w, /homepage/calendar-desktop.webp 1912w"
@@ -48,17 +57,25 @@ const Hero = () => {
                 width={1912} height={914} {...{ fetchpriority: "high" }} decoding="async"
                 alt={language === "sl" ? "Dnevni koledar Calendra s termini treh zaposlenih" : "Calendra daily calendar with appointments for three employees"}
               />
-            </div>
-            <div className="home-mobile-frame">
+              <span className="home-device-hint" aria-hidden="true"><ZoomIn />{language === "sl" ? "Preizkusi koledar" : "Try the calendar"}</span>
+            </button>
+            <button type="button" className="home-mobile-frame home-preview-trigger" onClick={() => setPreview("mobile")} aria-label={mobileLabel}>
               <img src="/homepage/calendar-mobile.webp" width={367} height={819} decoding="async" alt={language === "sl" ? "Mobilni koledar Calendra s pregledom ekipe in prostorov" : "Calendra mobile calendar with team and room filters"} />
-            </div>
+              <span className="home-device-hint home-device-hint-mobile" aria-hidden="true"><ZoomIn />{language === "sl" ? "Ogled" : "Explore"}</span>
+            </button>
           </div>
+          <p className="home-preview-caption"><MousePointerClick aria-hidden="true" />{exploreLabel}</p>
           <div className="home-review-rating">
             <span className="flex gap-0.5" aria-hidden="true">{Array.from({ length: 5 }, (_, index) => <Star key={index} className="h-4 w-4 fill-accent text-accent" />)}</span>
             <span>{copy.reviewRating}</span>
           </div>
         </div>
       </div>
+      {preview && (
+        <Suspense fallback={<div role="status" className="sr-only">{language === "sl" ? "Nalaganje interaktivnega predogleda" : "Loading interactive preview"}</div>}>
+          <InteractiveCalendarDemo initialDevice={preview} language={language} onClose={() => setPreview(null)} />
+        </Suspense>
+      )}
     </section>
   );
 };
