@@ -503,6 +503,13 @@ export default function InteractiveCalendarDemo({ initialDevice, language, onClo
                 <h2>{t.calendar}</h2>
                 <button type="button" className="cal-demo-icon-button" aria-label={t.reset} onClick={() => resetDemo()}><RefreshCcw aria-hidden="true" /></button>
               </div>
+              <label className="cal-demo-mobile-staff-filter">
+                <Users aria-hidden="true" /><span>{t.employee}</span>
+                <select value={staff} onChange={(event) => setStaff(event.target.value)}>
+                  <option value="all">{t.allStaff}</option>
+                  {business.employees.map((employee) => <option key={employee}>{employee}</option>)}
+                </select>
+              </label>
               <div className="cal-demo-mobile-period">
                 <strong>{format(day, "LLLL yyyy", { locale })}</strong>{controls}
               </div>
