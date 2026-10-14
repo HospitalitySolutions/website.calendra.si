@@ -302,3 +302,9 @@
 @media (prefers-reduced-motion: reduce) {
   .home-preview-loading-spinner { animation: none; }
 }
+
+/* While the enlarged screenshot moves out from (or back to) this frame,
+ * hide its duplicate on the homepage underneath the overlay. */
+.home-preview-trigger.home-preview-origin-hidden {
+  visibility: hidden;
+}
