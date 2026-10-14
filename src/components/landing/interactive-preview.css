@@ -448,3 +448,19 @@
     box-shadow: -14px 0 30px rgb(20 39 73 / .15);
   }
 }
+
+.cal-demo-mobile-staff-filter {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 11px;
+  border: 1px solid #e2eaf3;
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: #657690;
+  background: #f8fbff;
+  font-size: 10px;
+  font-weight: 700;
+}
+.cal-demo-mobile-staff-filter svg { width: 14px; height: 14px; }
+.cal-demo-mobile-staff-filter select { flex: 1; min-width: 0; margin-left: auto; color: #32465d; background: transparent; text-align: right; font-size: 11px; }
