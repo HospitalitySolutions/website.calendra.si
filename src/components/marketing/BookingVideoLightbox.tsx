@@ -16,6 +16,7 @@ const BookingVideoLightbox = ({
   src,
   poster,
   language,
+  placement,
   title,
   onClose,
 }: BookingVideoLightboxProps) => {
@@ -29,6 +30,7 @@ const BookingVideoLightbox = ({
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
     const previousFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const video = videoRef.current;
     document.body.style.overflow = "hidden";
     closeRef.current?.focus();
 
@@ -54,7 +56,7 @@ const BookingVideoLightbox = ({
     document.addEventListener("keydown", onKeyDown);
     return () => {
       document.removeEventListener("keydown", onKeyDown);
-      videoRef.current?.pause();
+      video?.pause();
       document.body.style.overflow = previousOverflow;
       previousFocus?.focus();
     };
@@ -71,6 +73,7 @@ const BookingVideoLightbox = ({
       role="dialog"
       aria-modal="true"
       aria-labelledby={titleId}
+      data-video-placement={placement}
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
