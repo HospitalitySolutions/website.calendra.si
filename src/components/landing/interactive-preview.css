@@ -229,7 +229,10 @@
 .cal-demo-time-cell {
   position: relative;
   min-width: 0;
-  height: 74px;
+  min-height: 74px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   border-right: 1px solid #e5ebf3;
   border-bottom: 1px solid #e9eef5;
   padding: 3px;
