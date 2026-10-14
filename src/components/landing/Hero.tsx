@@ -1,20 +1,41 @@
-import { ArrowRight, CalendarClock, Check, CreditCard, ShieldCheck, Star } from "lucide-react";
+import { lazy, Suspense, useState, type MouseEvent } from "react";
+import { ArrowRight, CalendarClock, Check, CreditCard, MousePointerClick, ShieldCheck, Star, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
+import type { PreviewBounds, PreviewDevice } from "./ProductZoomLightbox";
+
+// Rendered only on click. No interactive calendar runtime or duplicate mock data.
+const ProductZoomLightbox = lazy(() => import("./ProductZoomLightbox"));
+
+type ActivePreview = { device: PreviewDevice; origin: PreviewBounds };
 
 const Hero = () => {
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).hero;
+  const [preview, setPreview] = useState<ActivePreview | null>(null);
+
+  const openPreview = (device: PreviewDevice, event: MouseEvent<HTMLButtonElement>) => {
+    const { left, top, width, height } = event.currentTarget.getBoundingClientRect();
+    setPreview({ device, origin: { left, top, width, height } });
+  };
+
+  const sl = language === "sl";
+  const desktopLabel = sl ? "Povečaj posnetek koledarja na računalniku" : "Enlarge desktop calendar screenshot";
+  const mobileLabel = sl ? "Povečaj posnetek mobilnega koledarja" : "Enlarge mobile calendar screenshot";
+  const zoomHint = sl ? "Kliknite za povečavo" : "Click to enlarge";
+  const exploreLabel = sl
+    ? "Kliknite na zaslon za večji in podrobnejši pogled."
+    : "Click a screen to see the calendar in more detail.";
 
   return (
     <section className="home-hero" aria-labelledby="home-heading">
       <div className="container home-hero-layout">
         <div className="home-hero-copy">
           <h1 id="home-heading" className="font-display">
-            {language === "sl" ? <>Program za naročanje strank, termine in račune <span className="text-primary">na enem mestu</span></> : <>Appointment booking, scheduling and invoicing <span className="text-primary">in one place</span></>}
+            {sl ? <>Program za naročanje strank, termine in račune <span className="text-primary">na enem mestu</span></> : <>Appointment booking, scheduling and invoicing <span className="text-primary">in one place</span></>}
             <span className="text-accent">.</span>
           </h1>
           <p className="home-hero-supporting">{copy.supportingTitle}</p>
@@ -26,7 +47,7 @@ const Hero = () => {
               </a>
             </Button>
             <Button variant="outline" size="lg" asChild>
-              <a href={language === "sl" ? "/predstavitev" : "/en/demo"} onClick={() => trackMarketingEvent("demo_booking_cta_clicked", { placement: "homepage_hero", language })}>
+              <a href={sl ? "/predstavitev" : "/en/demo"} onClick={() => trackMarketingEvent("demo_booking_cta_clicked", { placement: "homepage_hero", language })}>
                 <CalendarClock className="h-4 w-4" aria-hidden="true" />{copy.secondaryCta}
               </a>
             </Button>
@@ -39,26 +60,55 @@ const Hero = () => {
         </div>
         <div className="home-hero-product">
           <div className="home-product-devices">
-            <div className="home-desktop-frame">
-              <div className="home-browser-bar" aria-hidden="true"><span /><span /><span /><small>app.calendra.si</small></div>
+            <button
+              type="button"
+              className={`home-desktop-frame home-preview-trigger${preview?.device === "desktop" ? " home-preview-origin-hidden" : ""}`}
+              onClick={(event) => openPreview("desktop", event)}
+              aria-label={desktopLabel}
+              aria-haspopup="dialog"
+            >
+              <span className="home-browser-bar" aria-hidden="true"><span /><span /><span /><small>app.calendra.si</small></span>
               <img
                 src="/homepage/calendar-desktop.webp"
                 srcSet="/homepage/calendar-desktop-640.webp 640w, /homepage/calendar-desktop-960.webp 960w, /homepage/calendar-desktop-1280.webp 1280w, /homepage/calendar-desktop.webp 1912w"
                 sizes="(min-width: 1400px) 670px, (min-width: 1024px) 52vw, 88vw"
                 width={1912} height={914} {...{ fetchpriority: "high" }} decoding="async"
-                alt={language === "sl" ? "Dnevni koledar Calendra s termini treh zaposlenih" : "Calendra daily calendar with appointments for three employees"}
+                alt={sl ? "Dnevni koledar Calendra s termini treh zaposlenih" : "Calendra daily calendar with appointments for three employees"}
               />
-            </div>
-            <div className="home-mobile-frame">
-              <img src="/homepage/calendar-mobile.webp" width={367} height={819} decoding="async" alt={language === "sl" ? "Mobilni koledar Calendra s pregledom ekipe in prostorov" : "Calendra mobile calendar with team and room filters"} />
-            </div>
+              <span className="home-device-hint" aria-hidden="true"><ZoomIn />{zoomHint}</span>
+            </button>
+            <button
+              type="button"
+              className={`home-mobile-frame home-preview-trigger${preview?.device === "mobile" ? " home-preview-origin-hidden" : ""}`}
+              onClick={(event) => openPreview("mobile", event)}
+              aria-label={mobileLabel}
+              aria-haspopup="dialog"
+            >
+              <img
+                src="/homepage/calendar-mobile.webp"
+                width={367} height={819} decoding="async"
+                alt={sl ? "Mobilni koledar Calendra s pregledom ekipe in prostorov" : "Calendra mobile calendar with team and room filters"}
+              />
+              <span className="home-device-hint home-device-hint-mobile" aria-hidden="true"><ZoomIn />{sl ? "Povečaj" : "Zoom in"}</span>
+            </button>
           </div>
+          <p className="home-preview-caption"><MousePointerClick aria-hidden="true" />{exploreLabel}</p>
           <div className="home-review-rating">
             <span className="flex gap-0.5" aria-hidden="true">{Array.from({ length: 5 }, (_, index) => <Star key={index} className="h-4 w-4 fill-accent text-accent" />)}</span>
             <span>{copy.reviewRating}</span>
           </div>
         </div>
       </div>
+      {preview && (
+        <Suspense fallback={<div role="status" className="home-preview-loading"><span className="home-preview-loading-spinner" aria-hidden="true" />{sl ? "Odpiranje povečane slike…" : "Opening enlarged image…"}</div>}>
+          <ProductZoomLightbox
+            device={preview.device}
+            origin={preview.origin}
+            language={language}
+            onClose={() => setPreview(null)}
+          />
+        </Suspense>
+      )}
     </section>
   );
 };

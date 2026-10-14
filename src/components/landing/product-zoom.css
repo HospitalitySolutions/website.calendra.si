@@ -1,0 +1,330 @@
+/* Loaded only when a screenshot is opened. The first-page bundle has no
+ * animation dependency; the browser's native Web Animations API does the FLIP. */
+.product-zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 48px 24px 44px;
+  background: rgba(12, 24, 45, 0.73);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: product-zoom-backdrop-in 260ms ease-out both;
+}
+.product-zoom-stage {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+.product-zoom-frame {
+  position: relative;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: #fff;
+  pointer-events: auto;
+  transform-origin: top left;
+  will-change: transform;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, .35);
+}
+.product-zoom-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+.product-zoom-frame-desktop {
+  width: min(1200px, calc(100vw - 84px), calc((100dvh - 118px) * 1.94));
+  border: 1px solid #dbe5f2;
+  border-radius: 16px;
+}
+.product-zoom-frame-desktop .home-browser-bar {
+  height: 30px;
+  position: relative;
+  background: #fff;
+}
+.product-zoom-frame-mobile {
+  width: min(378px, calc(100vw - 72px), calc((100dvh - 105px) * .43));
+  padding: 5px;
+  border: 6px solid #303a4b;
+  border-radius: 34px;
+}
+.product-zoom-frame-mobile img { border-radius: 22px; }
+.product-zoom-close {
+  position: absolute;
+  top: clamp(12px, 3vw, 26px);
+  right: clamp(12px, 3vw, 28px);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: #fff;
+  color: #162339;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, .16);
+  cursor: pointer;
+}
+.product-zoom-close:hover { background: #edf4ff; color: #0766e6; }
+.product-zoom-close:focus-visible { outline: 3px solid #85bcff; outline-offset: 3px; }
+.product-zoom-close svg { width: 22px; height: 22px; }
+.product-zoom-description {
+  position: absolute;
+  bottom: 14px;
+  left: 12px;
+  right: 12px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
+  pointer-events: none;
+}
+@keyframes product-zoom-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (max-width: 639px) {
+  .product-zoom-overlay { padding: 55px 12px 40px; }
+  .product-zoom-frame-desktop {
+    width: min(calc(100vw - 24px), calc((100dvh - 126px) * 1.94));
+    border-radius: 10px;
+  }
+  .product-zoom-frame-desktop .home-browser-bar { height: 24px; }
+  .product-zoom-frame-mobile {
+    width: min(368px, calc(100vw - 46px), calc((100dvh - 132px) * .43));
+    border-width: 5px;
+    border-radius: 28px;
+    padding: 4px;
+  }
+  .product-zoom-frame-mobile img { border-radius: 18px; }
+  .product-zoom-close { top: 9px; right: 9px; width: 38px; height: 38px; }
+  .product-zoom-description { bottom: 10px; font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-zoom-overlay { animation: none; }
+}
+
+/* Annotation storyboard: the scene and the SVG share a viewBox-like aspect
+ * ratio. Text/arrows stay anchored when the preview scales with the viewport.
+ * Only the screenshot frame participates in the existing FLIP zoom. */
+.product-zoom-scene {
+  position: relative;
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+.product-zoom-scene-desktop {
+  width: min(1480px, calc(100vw - 44px), calc((100dvh - 112px) * 1.73));
+  aspect-ratio: 1480 / 850;
+}
+.product-zoom-scene-mobile {
+  width: min(1080px, calc(100vw - 48px), calc((100dvh - 112px) * 1.24));
+  aspect-ratio: 1080 / 880;
+}
+.product-zoom-scene-desktop .product-zoom-frame-desktop {
+  position: absolute;
+  left: 15.54%;
+  top: 22.82%;
+  width: 68.92%;
+}
+.product-zoom-scene-mobile .product-zoom-frame-mobile {
+  position: absolute;
+  left: 33.85%;
+  top: 4.2%;
+  width: 32.3%;
+}
+.product-zoom-annotation-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+.product-zoom-annotation {
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 340ms ease, transform 340ms ease;
+  pointer-events: none;
+}
+.product-zoom-scene.is-annotations-visible .product-zoom-annotation {
+  opacity: 1;
+  transform: translateY(0);
+}
+.product-zoom-handwriting {
+  fill: #f9fcff;
+  stroke: rgba(10, 28, 55, 0.5);
+  stroke-width: 1.15px;
+  paint-order: stroke fill;
+  font-size: 26px;
+  line-height: 1.3;
+  font-weight: 600;
+  font-family: "Segoe Print", "Bradley Hand", "Comic Sans MS", cursive;
+  filter: drop-shadow(0 2px 2px rgba(8, 24, 50, .45));
+}
+.product-zoom-sketched-arrow {
+  fill: none;
+  stroke: #74baff;
+  stroke-width: 3.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 550;
+  stroke-dashoffset: 550;
+  transition: stroke-dashoffset 660ms cubic-bezier(.25,.8,.25,1);
+}
+.product-zoom-scene.is-annotations-visible .product-zoom-sketched-arrow {
+  stroke-dashoffset: 0;
+}
+.product-zoom-accent-scribble {
+  fill: none;
+  stroke: #ffa32b;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.product-zoom-toggle {
+  position: absolute;
+  z-index: 3;
+  top: clamp(12px, 3vw, 26px);
+  left: clamp(12px, 3vw, 28px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 8px 12px;
+  color: #fff;
+  background: rgba(21, 43, 78, .76);
+  border: 1px solid rgba(255, 255, 255, .38);
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  backdrop-filter: blur(4px);
+}
+.product-zoom-toggle:hover { background: rgba(37, 74, 125, .9); }
+.product-zoom-toggle:focus-visible { outline: 3px solid #85bcff; outline-offset: 3px; }
+.product-zoom-toggle svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* The feature list stays accessible to assistive technology on large screens,
+ * where the surrounding handwritten callouts are visual decoration. */
+.product-zoom-feature-list {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.product-zoom-feature-list-hidden { display: none; }
+
+@media (max-width: 800px), (max-height: 580px) {
+  /* A narrow viewport cannot fit legible writing around an entire screenshot.
+   * Keep the original image zoomed, then provide readable explanatory notes
+   * underneath, in the same lightbox, with vertical scrolling. */
+  .product-zoom-overlay {
+    display: flex;
+    flex-direction: column;
+    padding: 53px 10px 15px;
+  }
+  .product-zoom-stage {
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .product-zoom-scene,
+  .product-zoom-scene-desktop,
+  .product-zoom-scene-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 19px;
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto;
+    padding: 12px 4px 28px;
+  }
+  .product-zoom-scene-desktop .product-zoom-frame-desktop,
+  .product-zoom-scene-mobile .product-zoom-frame-mobile {
+    position: relative;
+    left: auto;
+    top: auto;
+    flex: 0 0 auto;
+    margin-inline: auto;
+  }
+  .product-zoom-scene-desktop .product-zoom-frame-desktop {
+    width: min(680px, 100%);
+  }
+  .product-zoom-scene-mobile .product-zoom-frame-mobile {
+    width: min(300px, calc(100vw - 52px));
+  }
+  .product-zoom-annotation-svg { display: none; }
+  .product-zoom-feature-list {
+    position: relative;
+    flex: 0 0 auto;
+    display: block;
+    width: min(680px, 100%);
+    height: auto;
+    padding: 16px;
+    overflow: visible;
+    clip: auto;
+    clip-path: none;
+    white-space: normal;
+    color: #f8fbff;
+    border: 1px solid rgba(255, 255, 255, .22);
+    border-radius: 12px;
+    background: rgba(23, 44, 77, .8);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 240ms ease, transform 240ms ease;
+    pointer-events: auto;
+  }
+  .product-zoom-scene.is-annotations-visible .product-zoom-feature-list {
+    opacity: 1;
+    transform: none;
+  }
+  .product-zoom-feature-list-hidden { display: none; }
+  .product-zoom-feature-list-title {
+    margin-bottom: 12px;
+    font-weight: 750;
+    font-size: 14px;
+  }
+  .product-zoom-feature-list ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .product-zoom-feature-list li {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-left: 10px;
+    border-left: 3px solid #69b3ff;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .product-zoom-feature-list li:nth-child(even) { border-left-color: #ffa32b; }
+  .product-zoom-feature-list li strong { font-size: 12px; font-weight: 750; }
+  .product-zoom-feature-list li span { color: rgba(241, 247, 255, .82); }
+  .product-zoom-description { display: none; }
+  .product-zoom-toggle { top: 9px; left: 9px; min-height: 38px; }
+}
+@media (max-width: 500px) {
+  .product-zoom-feature-list ul { grid-template-columns: 1fr; }
+  .product-zoom-feature-list li { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .product-zoom-annotation,
+  .product-zoom-sketched-arrow,
+  .product-zoom-feature-list { transition: none; }
+  .product-zoom-scene.is-annotations-visible .product-zoom-sketched-arrow { stroke-dashoffset: 0; }
+}
