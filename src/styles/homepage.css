@@ -209,3 +209,69 @@
 @media (prefers-reduced-motion: reduce) {
   .homepage .audience-carousel-card, .homepage .audience-carousel-card svg { transition: none; }
 }
+
+/* Clickable product screenshots open the isolated, lazy-loaded calendar preview. */
+.home-desktop-frame.home-preview-trigger,
+.home-mobile-frame.home-preview-trigger {
+  display: block;
+  cursor: zoom-in;
+  text-align: left;
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+.home-desktop-frame.home-preview-trigger { width: 100%; }
+.home-mobile-frame.home-preview-trigger { z-index: 2; }
+.home-preview-trigger:hover { box-shadow: 0 22px 55px -18px hsl(214 81% 40% / 0.4); }
+.home-preview-trigger:focus-visible {
+  outline: 3px solid hsl(var(--primary));
+  outline-offset: 5px;
+}
+.home-device-hint {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  max-width: calc(100% - 12px);
+  padding: 9px 12px;
+  border: 1px solid hsl(0 0% 100% / 0.3);
+  border-radius: 8px;
+  background: hsl(215 72% 18% / 0.87);
+  color: white;
+  box-shadow: 0 5px 18px hsl(220 50% 14% / .17);
+  transform: translate(-50%, 7px);
+  opacity: 0;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+.home-device-hint svg { width: 15px; height: 15px; flex: 0 0 auto; }
+.home-device-hint-mobile { bottom: 12px; padding: 7px; font-size: 9px; }
+.home-device-hint-mobile svg { width: 12px; height: 12px; }
+.home-preview-trigger:hover .home-device-hint,
+.home-preview-trigger:focus-visible .home-device-hint { opacity: 1; transform: translate(-50%, 0); }
+.home-preview-caption {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 13px;
+  color: hsl(var(--primary));
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: center;
+}
+.home-preview-caption svg { width: 16px; height: 16px; flex-shrink: 0; }
+@media (max-width: 639px) {
+  .home-preview-caption { font-size: 11px; }
+  .home-device-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-preview-trigger, .home-device-hint { transition: none; }
+}
