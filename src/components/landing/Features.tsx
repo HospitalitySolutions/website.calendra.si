@@ -2,6 +2,7 @@ import { ArrowRight, Bell, CalendarCheck2, CalendarDays, CheckCheck, MessageCirc
 import { getRoutePath, type CanonicalRouteKey } from "@/lib/localized-routes";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
+import BookingDemoVideo from "@/components/marketing/BookingDemoVideo";
 import IntegrationMark from "./IntegrationMark";
 
 const features = [
@@ -41,7 +42,23 @@ const Features = () => {
                   <div><h3>{item.title}</h3><p>{item.description}</p></div>
                 </div>
                 <div className="home-feature-visual">
-                  {feature.image ? <div className="home-feature-screen"><img src={`/homepage/${feature.image}.webp`} width={feature.width} height={feature.height} alt={screenshotAlt[language][index]} loading="lazy" decoding="async" /></div> : (
+                  {feature.route === "booking" ? (
+                    <div className="home-feature-screen">
+                      <BookingDemoVideo
+                        language={language}
+                        placement="homepage_feature"
+                        posterSrc="/homepage/booking.webp"
+                        posterAlt={screenshotAlt[language][index]}
+                        width={feature.width}
+                        height={feature.height}
+                        loading="lazy"
+                      />
+                    </div>
+                  ) : feature.image ? (
+                    <div className="home-feature-screen">
+                      <img src={`/homepage/${feature.image}.webp`} width={feature.width} height={feature.height} alt={screenshotAlt[language][index]} loading="lazy" decoding="async" />
+                    </div>
+                  ) : (
                     <div className="home-feature-connections">
                       {["Google Calendar", "Zoom", "Stripe"].map((name, markIndex) => <div key={name}><IntegrationMark index={markIndex} /><span>{name}</span></div>)}
                     </div>
