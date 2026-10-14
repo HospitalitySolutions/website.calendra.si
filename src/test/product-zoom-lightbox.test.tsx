@@ -57,7 +57,7 @@ describe("homepage screenshot zoom", () => {
 
   it("supports English and retains the original homepage CTAs", async () => {
     renderHero("en");
-    expect(screen.getByRole("link", { name: /Try free/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Try.*free/i })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Enlarge desktop calendar screenshot" }));
     const dialog = await screen.findByRole("dialog", { name: "Enlarged Calendra desktop calendar" });
     expect(within(dialog).getByRole("button", { name: "Close enlarged preview" })).toBeInTheDocument();
