@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { X } from "lucide-react";
+import { Eye, EyeOff, X } from "lucide-react";
+import ProductZoomAnnotations from "./ProductZoomAnnotations";
 import "./product-zoom.css";
 
 export type PreviewDevice = "desktop" | "mobile";
@@ -35,6 +36,8 @@ const ProductZoomLightbox = ({ device, origin, language, onClose }: ProductZoomL
   const closingRef = useRef(false);
   const enterAnimation = useRef<Animation | null>(null);
   const originRef = useRef(origin);
+  const [annotationsReady, setAnnotationsReady] = useState(false);
+  const [showAnnotations, setShowAnnotations] = useState(true);
 
   const sl = language === "sl";
   const title = device === "desktop"
@@ -45,6 +48,7 @@ const ProductZoomLightbox = ({ device, origin, language, onClose }: ProductZoomL
   const requestClose = useCallback(() => {
     if (closingRef.current) return;
     closingRef.current = true;
+    setAnnotationsReady(false);
     enterAnimation.current?.cancel();
 
     const frame = frameRef.current;
@@ -74,10 +78,16 @@ const ProductZoomLightbox = ({ device, origin, language, onClose }: ProductZoomL
 
   useLayoutEffect(() => {
     const frame = frameRef.current;
-    if (!frame || getReducedMotion() || typeof frame.animate !== "function") return;
+    if (!frame || getReducedMotion() || typeof frame.animate !== "function") {
+      setAnnotationsReady(true);
+      return;
+    }
     const target = frame.getBoundingClientRect();
     const startTransform = originTransform(originRef.current, target);
-    if (startTransform === "none") return;
+    if (startTransform === "none") {
+      setAnnotationsReady(true);
+      return;
+    }
 
     const animation = frame.animate(
       [{ transform: startTransform, opacity: 0.97 }, { transform: "none", opacity: 1 }],
@@ -89,6 +99,7 @@ const ProductZoomLightbox = ({ device, origin, language, onClose }: ProductZoomL
         animation.cancel();
         enterAnimation.current = null;
       }
+      if (!closingRef.current) setAnnotationsReady(true);
     }, () => {});
     return () => {
       animation.cancel();
@@ -145,30 +156,51 @@ const ProductZoomLightbox = ({ device, origin, language, onClose }: ProductZoomL
         <X aria-hidden="true" />
       </button>
 
+      <button
+        type="button"
+        className="product-zoom-toggle"
+        aria-pressed={showAnnotations}
+        onClick={() => setShowAnnotations((current) => !current)}
+      >
+        {showAnnotations ? <EyeOff aria-hidden="true" /> : <Eye aria-hidden="true" />}
+        {sl
+          ? (showAnnotations ? "Skrij poudarke" : "Prikaži poudarke")
+          : (showAnnotations ? "Hide highlights" : "Show highlights")}
+      </button>
+
       <div className="product-zoom-stage">
         <div
-          className={`product-zoom-frame product-zoom-frame-${device}`}
-          ref={frameRef}
+          className={`product-zoom-scene product-zoom-scene-${device}${annotationsReady && showAnnotations ? " is-annotations-visible" : ""}`}
         >
-          {device === "desktop" && (
-            <div className="home-browser-bar" aria-hidden="true">
-              <span /><span /><span /><small>app.calendra.si</small>
-            </div>
-          )}
-          <img
-            src={device === "desktop"
-              ? "/homepage/calendar-desktop.webp"
-              : "/homepage/calendar-mobile.webp"}
-            alt={title}
-            width={device === "desktop" ? 1912 : 367}
-            height={device === "desktop" ? 914 : 819}
-            decoding="async"
-            draggable={false}
+          <div
+            className={`product-zoom-frame product-zoom-frame-${device}`}
+            ref={frameRef}
+          >
+            {device === "desktop" && (
+              <div className="home-browser-bar" aria-hidden="true">
+                <span /><span /><span /><small>app.calendra.si</small>
+              </div>
+            )}
+            <img
+              src={device === "desktop"
+                ? "/homepage/calendar-desktop.webp"
+                : "/homepage/calendar-mobile.webp"}
+              alt={title}
+              width={device === "desktop" ? 1912 : 367}
+              height={device === "desktop" ? 914 : 819}
+              decoding="async"
+              draggable={false}
+            />
+          </div>
+          <ProductZoomAnnotations
+            device={device}
+            language={language}
+            visible={annotationsReady && showAnnotations}
           />
         </div>
       </div>
       <p className="product-zoom-description" aria-hidden="true">
-        {sl ? "Posnetek zaslona aplikacije Calendra" : "Screenshot of the Calendra app"}
+        {sl ? "Označene so ključne funkcionalnosti aplikacije Calendra" : "Explore highlighted Calendra features"}
       </p>
     </div>,
     document.body,
