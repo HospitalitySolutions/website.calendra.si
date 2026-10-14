@@ -5,6 +5,7 @@ import AnswerSummary from "@/components/seo/AnswerSummary";
 import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
 import RelatedPages from "@/components/seo/RelatedPages";
 import ResponsiveScreenshot from "@/components/marketing/ResponsiveScreenshot";
+import BookingDemoVideo from "@/components/marketing/BookingDemoVideo";
 import { Button } from "@/components/ui/button";
 import { getFaqForRoute } from "@/lib/faq";
 import { getRoutePath } from "@/lib/localized-routes";
@@ -208,16 +209,18 @@ const ClientsPage = () => {
               </div>
             </div>
             <div className="relative rounded-[1.75rem] border border-white/80 bg-white/75 p-3 shadow-[0_30px_80px_-35px_hsl(var(--primary)/0.45)]">
-              <img
-                src={MARKETING_IMAGES.bookingService.src}
+              <BookingDemoVideo
+                language={language}
+                placement="booking_page_hero"
+                posterSrc={MARKETING_IMAGES.bookingService.src}
                 srcSet={MARKETING_IMAGES.bookingService.srcSet}
                 sizes="(min-width: 1024px) 55vw, 100vw"
-                alt={text.screenshotAlt}
+                posterAlt={text.screenshotAlt}
                 width={MARKETING_IMAGES.bookingService.width}
                 height={MARKETING_IMAGES.bookingService.height}
                 loading="eager"
-                decoding="async"
-                className="w-full rounded-[1.3rem] border border-border/60"
+                className="w-full"
+                imageClassName="w-full rounded-[1.3rem] border border-border/60"
               />
               <div className="absolute -bottom-6 left-6 hidden rounded-2xl border border-border/60 bg-card p-4 shadow-soft sm:flex sm:items-center sm:gap-3"><CheckCircle2 className="h-6 w-6 text-primary" /><span className="text-sm font-semibold text-foreground">{language === "sl" ? "Rezervacija se takoj zapiše v koledar" : "The booking is added to the calendar immediately"}</span></div>
             </div>
