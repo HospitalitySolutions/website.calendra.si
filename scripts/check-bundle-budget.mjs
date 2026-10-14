@@ -21,8 +21,10 @@ const distDir = path.join(root, 'dist');
 const BUDGETS = {
   /** Entry chunk and its static imports: the JS required before the homepage is interactive. */
   initialJs: 210,
-  /** Shared styles plus the scoped homepage and pricing designs (+3.5 KB for pricing). */
-  css: 21.5,
+  /** CSS fetched during initial hydration (homepage and shared styles). */
+  initialCss: 19,
+  /** CSS for optional, on-demand route/preview chunks, including pricing and product demos. */
+  onDemandCss: 9,
   /** Largest single lazily loaded route chunk, as an early warning for a runaway page. */
   largestRouteChunk: 50,
 };
@@ -64,9 +66,17 @@ for (const key of initialKeys) {
   initialJs += await gzipSize(path.join(distDir, manifest[key].file));
 }
 
-let css = 0;
-for (const file of new Set(Object.values(manifest).flatMap((chunk) => chunk.css ?? []))) {
-  css += await gzipSize(path.join(distDir, file));
+// CSS linked from static entry dependencies blocks the initial page.
+ // Other chunks (pricing, opened previews, etc.) should have their own budget:
+ // a visitor who never opens those chunks must not pay for their styles.
+const allCssFiles = new Set(Object.values(manifest).flatMap((chunk) => chunk.css ?? []));
+const initialCssFiles = new Set([...initialKeys].flatMap((key) => manifest[key]?.css ?? []));
+let initialCss = 0;
+let onDemandCss = 0;
+for (const file of allCssFiles) {
+  const size = await gzipSize(path.join(distDir, file));
+  if (initialCssFiles.has(file)) initialCss += size;
+  else onDemandCss += size;
 }
 
 let largestRouteChunk = 0;
@@ -82,13 +92,15 @@ for (const [key, chunk] of Object.entries(manifest)) {
 
 const measured = {
   initialJs: kb(initialJs),
-  css: kb(css),
+  initialCss: kb(initialCss),
+  onDemandCss: kb(onDemandCss),
   largestRouteChunk: kb(largestRouteChunk),
 };
 
 const labels = {
   initialJs: 'initial JS (entry + static imports)',
-  css: 'CSS',
+  initialCss: 'initial CSS (entry + static imports)',
+  onDemandCss: 'on-demand CSS (route and preview chunks)',
   largestRouteChunk: `largest route chunk (${largestRouteChunkName})`,
 };
 
