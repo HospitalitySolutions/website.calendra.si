@@ -71,4 +71,65 @@ describe("homepage screenshot zoom", () => {
     fireEvent.keyDown(document, { key: "Tab" });
     expect(close).toHaveFocus();
   });
+  it("draws handwritten desktop callouts that explain key functionality", async () => {
+    renderHero();
+    fireEvent.click(screen.getByRole("button", { name: "Povečaj posnetek koledarja na računalniku" }));
+    const dialog = await screen.findByRole("dialog");
+    const annotations = within(dialog).getByTestId("feature-arrows-desktop");
+
+    expect(annotations).toHaveAttribute("aria-hidden", "true");
+    expect(annotations.querySelectorAll("g.product-zoom-annotation")).toHaveLength(6);
+    expect(annotations.textContent).toContain("Menjava datumov");
+    expect(annotations.textContent).toContain("Več zaposlenih");
+    expect(annotations.textContent).toContain("Več prostorov");
+    expect(annotations.textContent).toContain("Skupinski termini");
+    expect(annotations.textContent).toContain("7/10");
+    expect(annotations.textContent).toContain("Pregleden koledar");
+
+    const list = dialog.querySelector(".product-zoom-feature-list");
+    expect(list).toHaveAttribute("aria-hidden", "false");
+    expect(list?.textContent).toContain("največjo kapaciteto");
+  });
+
+  it("draws mobile feature callouts and can hide or show them", async () => {
+    renderHero();
+    fireEvent.click(screen.getByRole("button", { name: "Povečaj posnetek mobilnega koledarja" }));
+    const dialog = await screen.findByRole("dialog");
+    const annotations = within(dialog).getByTestId("feature-arrows-mobile");
+
+    expect(annotations.textContent).toContain("Obvestila o novih");
+    expect(annotations.textContent).toContain("Vsa ekipa");
+    expect(annotations.textContent).toContain("Filtri za prostore");
+
+    fireEvent.click(within(dialog).getByRole("button", { name: "Skrij poudarke" }));
+    expect(within(dialog).getByRole("button", { name: "Prikaži poudarke" })).toHaveAttribute("aria-pressed", "false");
+    expect(dialog.querySelector(".product-zoom-feature-list")).toHaveAttribute("aria-hidden", "true");
+
+    fireEvent.click(within(dialog).getByRole("button", { name: "Prikaži poudarke" }));
+    expect(within(dialog).getByRole("button", { name: "Skrij poudarke" })).toHaveAttribute("aria-pressed", "true");
+    expect(dialog.querySelector(".product-zoom-feature-list")).toHaveAttribute("aria-hidden", "false");
+  });
+
+  it("translates callouts and the highlight toggle in English", async () => {
+    renderHero("en");
+    fireEvent.click(screen.getByRole("button", { name: "Enlarge mobile calendar screenshot" }));
+    const dialog = await screen.findByRole("dialog");
+    expect(within(dialog).getByTestId("feature-arrows-mobile").textContent).toContain("New booking");
+    expect(within(dialog).getByRole("button", { name: "Hide highlights" })).toBeInTheDocument();
+    expect(dialog.querySelector(".product-zoom-feature-list")?.textContent).toContain("Booking notifications");
+  });
+
+  it("wraps keyboard focus between the close button and the highlight toggle", async () => {
+    renderHero();
+    fireEvent.click(screen.getByRole("button", { name: "Povečaj posnetek koledarja na računalniku" }));
+    const dialog = await screen.findByRole("dialog");
+    const close = within(dialog).getByRole("button", { name: "Zapri povečan pogled" });
+    const toggle = within(dialog).getByRole("button", { name: "Skrij poudarke" });
+    expect(close).toHaveFocus();
+    fireEvent.keyDown(document, { key: "Tab", shiftKey: true });
+    expect(toggle).toHaveFocus();
+    fireEvent.keyDown(document, { key: "Tab" });
+    expect(close).toHaveFocus();
+  });
+
 });
