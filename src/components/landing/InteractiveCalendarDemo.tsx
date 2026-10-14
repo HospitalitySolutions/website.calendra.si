@@ -120,6 +120,15 @@ const hours = Array.from({ length: 11 }, (_, index) => index + 8);
 const dateKey = (date: Date) => format(date, "yyyy-MM-dd");
 const hourLabel = (hour: number) => String(hour).padStart(2, "0") + ":00";
 
+// The fixture IDs remain language-independent while visible demo names are localized.
+const demoCustomerName = (name: string, language: DemoLanguage) => {
+  if (language === "sl") return name;
+  if (name === "Skupinska vadba") return "Group class";
+  if (name === "Podporna skupina") return "Support group";
+  if (name.startsWith("Stranka ")) return "Client " + name.slice("Stranka ".length);
+  return name;
+};
+
 export default function InteractiveCalendarDemo({ initialDevice, language, onClose }: Props) {
   const t = words[language];
   const locale = language === "sl" ? sl : enUS;
@@ -205,6 +214,7 @@ export default function InteractiveCalendarDemo({ initialDevice, language, onClo
     setAppointments(generateDemoAppointments(targetScenario, anchor));
     setSelectedId(null);
     setDraft(null);
+    setDay(new Date());
   };
 
   const changeScenario = (next: DemoScenario) => {
@@ -292,10 +302,10 @@ export default function InteractiveCalendarDemo({ initialDevice, language, onClo
           event.dataTransfer.effectAllowed = "move";
         }}
         onClick={() => openBooking(appointment)}
-        aria-label={hourLabel(appointment.hour) + " " + service.title[language] + " – " + appointment.customer}
+        aria-label={hourLabel(appointment.hour) + " " + service.title[language] + " – " + demoCustomerName(appointment.customer, language)}
       >
         <strong>{service.title[language]}</strong>
-        <span>{hourLabel(appointment.hour)} · {isGroup ? appointment.participants?.length + " " + t.participants.toLowerCase() : appointment.customer}</span>
+        <span>{hourLabel(appointment.hour)} · {isGroup ? appointment.participants?.length + " " + t.participants.toLowerCase() : demoCustomerName(appointment.customer, language)}</span>
       </button>
     );
   };
@@ -350,7 +360,7 @@ export default function InteractiveCalendarDemo({ initialDevice, language, onClo
         <p className="cal-demo-inspector-date"><CalendarDays aria-hidden="true" />{format(parseISO(selected.date), "EEEE, d MMMM", { locale })}</p>
         <p className="cal-demo-inspector-date"><Clock3 aria-hidden="true" />{hourLabel(selected.hour)}–{hourLabel(selected.hour + 1)}</p>
         <div className="cal-demo-property"><span>{t.employee}</span><strong>{selected.employee}</strong></div>
-        <div className="cal-demo-property"><span>{t.customer}</span><strong>{selected.customer}</strong></div>
+        <div className="cal-demo-property"><span>{t.customer}</span><strong>{demoCustomerName(selected.customer, language)}</strong></div>
         <div className="cal-demo-property"><span>{participants ? t.participants : t.paid}</span>
           <strong>{participants ? paidCount + "/" + participants.length + " " + t.paid.toLowerCase() : (selected.paid ? t.paid : t.unpaid)}</strong>
         </div>
