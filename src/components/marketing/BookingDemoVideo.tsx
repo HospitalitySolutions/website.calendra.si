@@ -50,8 +50,8 @@ const BookingDemoVideo = ({
   const videoUrl = getBookingDemoVideoUrl();
   const isSlovenian = language === "sl";
   const title = isSlovenian
-    ? "Spletno naročanje – predstavitev (44 s)"
-    : "Online booking – video tour (Slovenian audio, 44 sec)";
+    ? "Spletno naročanje – predstavitev (42 s)"
+    : "Online booking – video tour (Slovenian audio, 42 sec)";
   const image = (
     <img
       src={posterSrc}
@@ -83,7 +83,7 @@ const BookingDemoVideo = ({
             </span>
           </span>
           <span className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-slate-950/80 px-3 py-1.5 text-xs font-semibold text-white shadow-md">
-            {isSlovenian ? "Oglejte si video · 44 s" : "Watch video · 44 sec (SL audio)"}
+            {isSlovenian ? "Oglejte si video · 42 s" : "Watch video · 42 sec (SL audio)"}
           </span>
         </button>
       ) : image}
