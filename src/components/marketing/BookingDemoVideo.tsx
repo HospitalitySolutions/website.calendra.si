@@ -22,12 +22,13 @@ type BookingDemoVideoProps = {
  * Keep the existing marketing screenshots as lightweight posters. This module
  * imports no player and downloads no MP4 until the visitor clicks Play.
  *
- * The video URL is intentionally configured at build time, rather than
- * pointing to a missing public file. Until the final video is hosted and the
- * URL is set, the original image remains in place with no broken play button.
+ * The recorded demo is bundled as a public asset and is enabled by default.
+ * A build-time URL can override the path, or the value "off" can disable it
+ * during a rollback. No MP4 bytes are downloaded until Play is clicked.
  */
 export const getBookingDemoVideoUrl = () => {
-  const configured = (import.meta.env.VITE_BOOKING_DEMO_VIDEO_URL || "").trim();
+  const configured = (import.meta.env.VITE_BOOKING_DEMO_VIDEO_URL || "/videos/calendra-spletno-narocanje.mp4").trim();
+  if (configured === "off") return "";
   return configured.startsWith("/") || configured.startsWith("https://")
     ? configured
     : "";

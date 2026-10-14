@@ -1,4 +1,6 @@
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { closeSync, openSync, readSync, statSync } from "node:fs";
+import { resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createElement } from "react";
 import { renderToString } from "react-dom/server";
@@ -75,14 +77,14 @@ describe("online booking product video", () => {
   it("labels Slovenian narration clearly on the English marketing page", async () => {
     renderPoster("en");
     const trigger = screen.getByRole("button", { name: /Online booking – video tour/i });
-    expect(within(trigger).getByText(/44 sec/)).toBeInTheDocument();
+    expect(within(trigger).getByText(/42 sec/)).toBeInTheDocument();
     fireEvent.click(trigger);
     const dialog = await screen.findByRole("dialog");
     expect(within(dialog).getByRole("button", { name: "Close video" })).toBeInTheDocument();
   });
 
-  it("falls back to the original screenshot if no hosted video URL is configured", () => {
-    vi.stubEnv("VITE_BOOKING_DEMO_VIDEO_URL", "");
+  it("falls back to the original screenshot when the video is explicitly disabled", () => {
+    vi.stubEnv("VITE_BOOKING_DEMO_VIDEO_URL", "off");
     renderPoster();
     expect(screen.getByRole("img", { name: poster.posterAlt })).toHaveAttribute("src", poster.posterSrc);
     expect(screen.queryByRole("button", { name: /predstavitev/i })).not.toBeInTheDocument();
@@ -95,6 +97,25 @@ describe("online booking product video", () => {
     expect(screen.getByRole("button", { name: /Spletno naročanje – predstavitev/i })).toBeInTheDocument();
     // Other feature links still work; only the booking poster becomes clickable.
     expect(screen.getByRole("link", { name: /Oglejte si spletno naročanje/ })).toHaveAttribute("href", "/narocanje");
+  });
+
+  it("bundles the uploaded MP4 at the URL configured for production", () => {
+    const localPath = resolve(process.cwd(), "public/videos/calendra-spletno-narocanje.mp4");
+    const fileStats = statSync(localPath);
+    expect(fileStats.isFile()).toBe(true);
+    expect(fileStats.size).toBeGreaterThan(1_000_000);
+    expect(fileStats.size).toBeLessThan(10_000_000);
+    const fd = openSync(localPath, "r");
+    const header = Buffer.alloc(12);
+    try { expect(readSync(fd, header, 0, 12, 0)).toBe(12); }
+    finally { closeSync(fd); }
+    expect(header.toString("ascii", 4, 8)).toBe("ftyp");
+  });
+
+  it("defaults to the bundled video path without an environment override", () => {
+    vi.stubEnv("VITE_BOOKING_DEMO_VIDEO_URL", "");
+    renderPoster();
+    expect(screen.getByRole("button", { name: /Spletno naročanje – predstavitev/i })).toBeInTheDocument();
   });
 
   it("keeps the server-rendered marketing HTML video-free", () => {
