@@ -33,7 +33,7 @@ describe("online booking product video", () => {
     renderPoster();
     const trigger = screen.getByRole("button", { name: /Spletno naročanje – predstavitev/i });
     expect(trigger).toHaveAttribute("aria-haspopup", "dialog");
-    expect(within(trigger).getByRole("img", { hidden: true })).toHaveAttribute("src", poster.posterSrc);
+    expect(trigger.querySelector("img")).toHaveAttribute("src", poster.posterSrc);
     expect(document.querySelectorAll("video, source")).toHaveLength(0);
 
     fireEvent.click(trigger);
