@@ -10,6 +10,16 @@ const languages = ["sl", "en"] as const;
 const readIndexHtml = () => fs.readFileSync(path.resolve(process.cwd(), "index.html"), "utf8");
 
 describe("SEO registry completeness", () => {
+  it("keeps demo management links non-indexable without putting their token into metadata", () => {
+    for (const pathname of ["/predstavitev/upravljanje/private-token", "/en/demo/manage/private-token"]) {
+      const seo = getSeoForPathname(pathname);
+      expect(seo.noindex).toBe(true);
+      expect(seo.alternateUrls).toBeUndefined();
+      expect(seo.structuredData).toBeUndefined();
+      expect(JSON.stringify(seo)).not.toContain("private-token");
+      expect(seo.title).not.toMatch(/not found|ni najdena/i);
+    }
+  });
   it("defines title and description for every canonical route in both languages", () => {
     for (const routeKey of routeKeys) {
       for (const language of languages) {

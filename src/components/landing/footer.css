@@ -1,0 +1,14 @@
+.site-footer-editorial.site-footer-light {
+  --foreground: 224 55% 12%;
+  --muted-foreground: 218 17% 43%;
+  --border: 214 46% 89%;
+  color: hsl(var(--foreground));
+  background: white;
+  border-color: hsl(var(--border));
+}
+.site-footer-light a:hover, .site-footer-light button:hover { color: hsl(var(--primary)); }
+.site-footer-light .text-sm { font-size: 0.78rem; }
+@media (max-width: 639px) {
+  .site-footer-light > .container > div { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 20px; }
+  .site-footer-light > .container > div > div:first-child { grid-column: 1 / -1; }
+}

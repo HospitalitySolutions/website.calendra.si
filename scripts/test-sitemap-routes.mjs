@@ -30,6 +30,7 @@ const staticStylesheets = (entryKey) => {
 const initialStylesheets = staticStylesheets('index.html');
 const pricingStylesheets = staticStylesheets('src/pages/PricingPage.tsx');
 const pricingOnlyStylesheets = [...pricingStylesheets].filter((file) => !initialStylesheets.has(file));
+const demoStylesheets = staticStylesheets('src/pages/DemoBookingPage.tsx');
 
 if (locations.length === 0) {
   throw new Error('No URLs were found in dist/sitemap.xml.');
@@ -103,6 +104,11 @@ const checkPricingStylesheets = (route, html) => {
   const head = html.slice(0, html.indexOf('</head>'));
   const linkedStylesheets = [...head.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["']([^"']+)["'][^>]*>/gi)]
     .map((match) => match[1]);
+  if (route === '/predstavitev' || route === '/en/demo') {
+    for (const file of demoStylesheets) {
+      if (linkedStylesheets.filter(href => href === file).length !== 1) failures.push(`${route}: missing initial booking stylesheet ${file}`);
+    }
+  }
   if (route === '/cenik' || route === '/en/pricing') {
     for (const file of pricingStylesheets) {
       if (linkedStylesheets.filter((href) => href === file).length !== 1) {

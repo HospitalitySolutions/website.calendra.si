@@ -48,6 +48,7 @@ jobs:
         run: |
           node scripts/test-demo-invitation-browser.mjs
           node scripts/test-inquiry-demo-browser.mjs
+          node scripts/test-demo-booking-browser.mjs
 
       - name: Caddy redirects and marketplace HTTP checks
         run: node scripts/test-caddy-seo.mjs

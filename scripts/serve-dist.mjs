@@ -39,6 +39,9 @@ const safeFileCandidates = (pathname) => {
   if (normalized.startsWith('..') || path.isAbsolute(normalized)) return [];
   if (!normalized || normalized === '.') return [path.join(distDir, 'index.html')];
 
+  if (/^predstavitev\/upravljanje\/[A-Za-z0-9_-]+\/?$/.test(pathname.replace(/^\//, ''))) return [path.join(distDir, '_demo-management-sl.html')];
+  if (/^en\/demo\/manage\/[A-Za-z0-9_-]+\/?$/.test(pathname.replace(/^\//, ''))) return [path.join(distDir, '_demo-management-en.html')];
+
   return [path.join(distDir, normalized, 'index.html'), path.join(distDir, normalized)];
 };
 
@@ -71,6 +74,7 @@ export const startDistServer = async (port = 0) => {
         'content-type': contentTypeFor(filePath),
         'vary': 'Accept-Encoding',
         ...(compress ? { 'content-encoding': 'gzip' } : {}),
+        ...(path.basename(filePath).startsWith('_demo-management-') ? { 'cache-control': 'no-store', 'x-robots-tag': 'noindex, nofollow', 'referrer-policy': 'no-referrer' } : {}),
       });
       // Match production Caddy's compression so mobile network simulation
       // measures shipped transfer sizes instead of uncompressed source sizes.

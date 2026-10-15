@@ -51,7 +51,7 @@ const Index = () => (
       <HomeFaq />
       <FinalCta />
     </main>
-    <Footer />
+    <Footer appearance="light" />
   </div>
 );
 

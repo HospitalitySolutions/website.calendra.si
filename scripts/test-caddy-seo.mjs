@@ -29,6 +29,8 @@ try {
     "za-stranke/existing/index.html": "prerendered profile",
     "_dynamic-location-profile-sl.html": "Slovenian profile shell",
     "_dynamic-location-profile-en.html": "English profile shell",
+    "_demo-management-sl.html": "Slovenian private demo shell",
+    "_demo-management-en.html": "English private demo shell",
     "assets/test.js": "export default 1;",
     "fonts/test.woff2": "font fixture",
     "hero/test.webp": "image fixture",
@@ -114,6 +116,15 @@ try {
         ["/robots.txt", "public, max-age=3600"],
       ]) assert.equal((await expect(pathname, 200)).headers.get("cache-control"), cache);
       await expect("/not-a-real-page", 404);
+      for (const [pathname, body] of [["/predstavitev/upravljanje/test-token", "Slovenian private demo shell"], ["/en/demo/manage/test-token", "English private demo shell"]]) {
+        const response = await expect(pathname, 200);
+        assert.equal(response.body, body);
+        assert.equal(response.headers.get("cache-control"), "no-store");
+        assert.equal(response.headers.get("x-robots-tag"), "noindex, nofollow");
+        assert.equal(response.headers.get("referrer-policy"), "no-referrer");
+      }
+      await expect("/predstavitev/upravljanje", 404);
+      await expect("/en/demo/manage/token/extra", 404);
       console.log(`Caddy HTTP checks passed with marketplace ${marketplacePublic ? "public" : "private"}.`);
     } finally {
       if (container) docker(["stop", container]);

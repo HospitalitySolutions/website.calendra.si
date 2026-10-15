@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { addDays, format } from "date-fns";
+import { format } from "date-fns";
 import { enGB, sl } from "date-fns/locale";
 import {
   ArrowLeft,
+  ArrowRight,
   CalendarDays,
   ChevronLeft,
   ChevronRight,
   Check,
   CheckCircle2,
   Clock3,
+  Globe2,
   Loader2,
   Mail,
   Phone,
@@ -19,32 +21,39 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
-import AnswerSummary from "@/components/seo/AnswerSummary";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { demoBookingApi, type DemoAvailability, type DemoBooking, type DemoHold, type DemoProfile, type DemoSlot } from "@/lib/demo-booking";
+import { demoBookingApi, type DemoBooking, type DemoHold, type DemoProfile, type DemoSlot } from "@/lib/demo-booking";
+import { useDemoAvailability } from "@/hooks/use-demo-availability";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { useSiteLanguage } from "@/lib/site-language";
 import { sanitizeAcquisition } from "@/lib/acquisition";
 import { safeDemoEntry } from "@/lib/demo-invitation";
+import "@/styles/demo-booking.css";
 
-const dateInput = (date: Date) => format(date, "yyyy-MM-dd");
 const detectedTimeZone = () => typeof Intl !== "undefined" ? Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Ljubljana" : "Europe/Ljubljana";
 
 const copy = {
   sl: {
     eyebrow: "Brezplačna predstavitev",
     title: "Rezervirajte osebno predstavitev Calendre",
-    subtitle: "Izberite termin, ki vam ustreza. Na video klicu vam pokažemo Calendro in odgovorimo na vaša vprašanja.",
+    subtitle: "Izberite termin za brezplačen video klic.",
     duration: "Trajanje",
     video: "Google Meet",
     timezone: "Časovni pas",
-    pickDate: "1. Izberite datum",
-    pickTime: "2. Izberite uro",
+    pickDate: "Izberite datum",
+    pickTime: "Izberite uro",
     noSlots: "Na ta dan ni prostih terminov.",
-    next: "Nadaljuj s podatki",
+    next: "Nadaljujte",
+    nextHelp: "Nato vnesete svoje podatke.",
+    steps: ["Termin", "Vaši podatki", "Potrditev"],
+    reassurance: "Brezplačno in brez obveznosti. Povezavo do klica prejmete po e-pošti.",
+    emptySelection: "Izberite datum in uro.",
+    noAvailability: "V tem obdobju ni prostih terminov. Pišite nam in skupaj poiščemo termin.",
+    loadingMore: "Nalagam naslednje termine …",
+    retry: "Poskusi znova",
     back: "Nazaj na termine",
     details: "Vaši podatki",
     detailsHelp: "Podatke potrebujemo za potrditev termina in koledarsko vabilo.",
@@ -78,22 +87,29 @@ const copy = {
     chooseNew: "Izberite nov termin",
     saveNew: "Potrdi novi termin",
     platform: "Platforma",
-    previousDates: "Prejšnjih 14 dni",
-    nextDates: "Naslednjih 14 dni",
+    previousDates: "Prejšnji datumi",
+    nextDates: "Naslednji datumi",
     bookedFor: "Rezervirano za",
     pageError: "Rezervacije ni bilo mogoče najti ali povezava ni več veljavna.",
   },
   en: {
     eyebrow: "Free product demo",
     title: "Book a personal Calendra demo",
-    subtitle: "Choose a convenient time. We will show you Calendra on a video call and answer your questions.",
+    subtitle: "Choose a time for a free video call.",
     duration: "Duration",
     video: "Google Meet",
     timezone: "Time zone",
-    pickDate: "1. Choose a date",
-    pickTime: "2. Choose a time",
+    pickDate: "Choose a date",
+    pickTime: "Choose a time",
     noSlots: "No available times on this day.",
-    next: "Continue to your details",
+    next: "Continue",
+    nextHelp: "Enter your details in the next step.",
+    steps: ["Time", "Your details", "Confirmation"],
+    reassurance: "Free, with no obligation. We will email you the call link.",
+    emptySelection: "Choose a date and time.",
+    noAvailability: "No times are available in this period. Email us to find a suitable time.",
+    loadingMore: "Loading later dates …",
+    retry: "Try again",
     back: "Back to times",
     details: "Your details",
     detailsHelp: "We need these details to confirm the call and send a calendar invitation.",
@@ -127,8 +143,8 @@ const copy = {
     chooseNew: "Choose a new time",
     saveNew: "Confirm new time",
     platform: "Platform",
-    previousDates: "Previous 14 days",
-    nextDates: "Next 14 days",
+    previousDates: "Previous dates",
+    nextDates: "Next dates",
     bookedFor: "Booked for",
     pageError: "The booking could not be found or this link is no longer valid.",
   },
@@ -142,7 +158,7 @@ const formatDateTime = (value: string, language: "sl" | "en", timeZone?: string)
   weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone,
 }).format(new Date(value));
 
-const DATE_PAGE_SIZE = 14;
+const DATE_PAGE_SIZE = 5;
 
 const formatSlotStart = (value: string, language: "sl" | "en", timeZone: string) => new Intl.DateTimeFormat(language === "sl" ? "sl-SI" : "en-GB", {
   hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone,
@@ -178,7 +194,6 @@ const DemoBookingPage = () => {
   const locale = language === "sl" ? sl : enGB;
   const timeZone = useMemo(detectedTimeZone, []);
   const [profile, setProfile] = useState<DemoProfile | null>(null);
-  const [availability, setAvailability] = useState<DemoAvailability | null>(null);
   const [selectedDate, setSelectedDate] = useState("");
   const [datePage, setDatePage] = useState(0);
   const [selectedSlot, setSelectedSlot] = useState<DemoSlot | null>(null);
@@ -187,28 +202,19 @@ const DemoBookingPage = () => {
   const [step, setStep] = useState<"slots" | "details" | "confirmed">("slots");
   const [rescheduling, setRescheduling] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [pageRevision, setPageRevision] = useState(0);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [confirmationFailed, setConfirmationFailed] = useState(false);
   const [form, setForm] = useState({ guestName: "", guestEmail: "", guestPhone: "", companyName: "", guestNote: "" });
   const selectedSummaryRef = useRef<HTMLElement | null>(null);
   const confirmationLocked = useRef(false);
-
-  const loadAvailability = async (bookingHorizonDays = profile?.bookingHorizonDays || 30) => {
-    const from = new Date();
-    const to = addDays(from, Math.max(DATE_PAGE_SIZE, bookingHorizonDays));
-    const response = await demoBookingApi.availability(dateInput(from), dateInput(to), timeZone);
-    setAvailability(response);
-    const first = response.days.find((day) => day.slots.length > 0);
-    const retainedDate = selectedDate && response.days.some((day) => day.date === selectedDate) ? selectedDate : "";
-    const nextDate = retainedDate || first?.date || response.days[0]?.date || "";
-    setSelectedDate(nextDate);
-    const selectedIndex = Math.max(0, response.days.findIndex((day) => day.date === nextDate));
-    setDatePage(Math.floor(selectedIndex / DATE_PAGE_SIZE));
-  };
+  const { days, loading: slotsLoading, loadingMore, error: availabilityError, refresh: refreshAvailability } = useDemoAvailability(profile, timeZone, !token || rescheduling);
+  const loadingSlots = loading || slotsLoading;
 
   useEffect(() => {
     let active = true;
+    const controller = new AbortController();
     setLoading(true);
     setError("");
     (async () => {
@@ -216,17 +222,16 @@ const DemoBookingPage = () => {
         if (token) {
           const [managed, currentProfile] = await Promise.all([
             demoBookingApi.manage(token),
-            demoBookingApi.profile().catch(() => null),
+            demoBookingApi.profile(controller.signal).catch(() => null),
           ]);
           if (!active) return;
           setBooking(managed);
           setProfile(currentProfile);
           setStep("confirmed");
         } else {
-          const currentProfile = await demoBookingApi.profile();
+          const currentProfile = await demoBookingApi.profile(controller.signal);
           if (!active) return;
           setProfile(currentProfile);
-          if (currentProfile.enabled) await loadAvailability(currentProfile.bookingHorizonDays);
           trackMarketingEvent("demo_booking_page_viewed", { language });
         }
       } catch (cause) {
@@ -235,13 +240,23 @@ const DemoBookingPage = () => {
         if (active) setLoading(false);
       }
     })();
-    return () => { active = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, language]);
+    return () => { active = false; controller.abort(); };
+  }, [token, language, pageRevision, t.error, t.pageError]);
 
-  const selectedDay = availability?.days.find((day) => day.date === selectedDate);
-  const datePageCount = Math.max(1, Math.ceil((availability?.days.length || 0) / DATE_PAGE_SIZE));
-  const visibleDays = availability?.days.slice(datePage * DATE_PAGE_SIZE, (datePage + 1) * DATE_PAGE_SIZE) || [];
+  useEffect(() => {
+    if (!days.length) return;
+    const index = days.findIndex((day) => day.date === selectedDate);
+    if (index < 0) {
+      setSelectedDate(days[0].date);
+      setDatePage(0);
+    } else {
+      setDatePage(Math.floor(index / DATE_PAGE_SIZE));
+    }
+  }, [days, selectedDate]);
+
+  const selectedDay = days.find((day) => day.date === selectedDate) || days[0];
+  const datePageCount = Math.max(1, Math.ceil(days.length / DATE_PAGE_SIZE));
+  const visibleDays = days.slice(datePage * DATE_PAGE_SIZE, (datePage + 1) * DATE_PAGE_SIZE);
   const visibleDateRange = visibleDays.length > 0
     ? `${format(new Date(`${visibleDays[0].date}T12:00:00`), "d. MMM", { locale })} – ${format(new Date(`${visibleDays[visibleDays.length - 1].date}T12:00:00`), "d. MMM", { locale })}`
     : "";
@@ -249,7 +264,7 @@ const DemoBookingPage = () => {
   const moveDatePage = (direction: -1 | 1) => {
     const nextPage = Math.min(datePageCount - 1, Math.max(0, datePage + direction));
     if (nextPage === datePage) return;
-    const nextDays = availability?.days.slice(nextPage * DATE_PAGE_SIZE, (nextPage + 1) * DATE_PAGE_SIZE) || [];
+    const nextDays = days.slice(nextPage * DATE_PAGE_SIZE, (nextPage + 1) * DATE_PAGE_SIZE);
     const firstAvailable = nextDays.find((day) => day.slots.length > 0) || nextDays[0];
     setDatePage(nextPage);
     setSelectedDate(firstAvailable?.date || "");
@@ -259,6 +274,7 @@ const DemoBookingPage = () => {
   const chooseSlot = async (slot: DemoSlot) => {
     setSaving(true);
     setError("");
+    setSelectedSlot(null);
     setConfirmationFailed(false);
     try {
       const nextHold = await demoBookingApi.hold(slot.startAt, timeZone, hold?.holdToken);
@@ -267,7 +283,7 @@ const DemoBookingPage = () => {
       trackMarketingEvent("demo_booking_slot_selected", { language });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : t.error);
-      await loadAvailability().catch(() => undefined);
+      refreshAvailability();
     } finally {
       setSaving(false);
     }
@@ -278,7 +294,7 @@ const DemoBookingPage = () => {
     if (typeof window === "undefined" || !window.matchMedia("(max-width: 1023px)").matches) return;
 
     const frame = window.requestAnimationFrame(() => {
-      selectedSummaryRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      selectedSummaryRef.current?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
     });
 
     return () => window.cancelAnimationFrame(frame);
@@ -349,10 +365,12 @@ const DemoBookingPage = () => {
   };
 
   const startReschedule = async () => {
-    setSaving(true);
     setError("");
+    setSaving(true);
     try {
-      await loadAvailability(profile?.bookingHorizonDays);
+      const currentProfile = profile || await demoBookingApi.profile();
+      if (!currentProfile.enabled) throw new Error(t.unavailable);
+      setProfile(currentProfile);
       setSelectedSlot(null);
       setHold(null);
       setRescheduling(true);
@@ -378,60 +396,60 @@ const DemoBookingPage = () => {
   };
 
   const slotPicker = (
-    <div className="grid gap-7">
+    <div className="demo-slot-picker" aria-busy={loadingSlots}>
       <section>
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 className="font-display text-lg font-bold text-foreground">{t.pickDate}</h2>
-            <span className="mt-1 block text-xs font-medium text-muted-foreground">{t.timezone}: {timeZone}</span>
-          </div>
-          <div className="flex items-center justify-between gap-2 sm:justify-end">
-            <Button type="button" variant="outline" size="icon" className="h-9 w-9 rounded-xl" disabled={datePage <= 0} onClick={() => moveDatePage(-1)} aria-label={t.previousDates}>
+        <div className="demo-date-heading">
+          <h2><span className="demo-heading-icon"><CalendarDays aria-hidden="true" /></span>{t.pickDate}</h2>
+          <div className="demo-date-navigation">
+            <Button type="button" variant="outline" size="icon" className="h-10 w-10 rounded-xl" disabled={loadingSlots || saving || datePage <= 0} onClick={() => moveDatePage(-1)} aria-label={t.previousDates}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            <span className="min-w-28 text-center text-sm font-semibold text-foreground">{visibleDateRange}</span>
-            <Button type="button" variant="outline" size="icon" className="h-9 w-9 rounded-xl" disabled={datePage >= datePageCount - 1} onClick={() => moveDatePage(1)} aria-label={t.nextDates}>
+            <span className="demo-date-range">{loadingSlots ? <span className="demo-skeleton demo-range-skeleton" /> : visibleDateRange || "—"}</span>
+            <Button type="button" variant="outline" size="icon" className="h-10 w-10 rounded-xl" disabled={loadingSlots || saving || datePage >= datePageCount - 1} onClick={() => moveDatePage(1)} aria-label={t.nextDates}>
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 lg:grid-cols-4 xl:grid-cols-5">
-          {visibleDays.map((day) => {
+        <div className="demo-date-grid">
+          {loadingSlots ? Array.from({ length: 5 }, (_, index) => <div key={index} className="demo-skeleton demo-date-skeleton" aria-hidden="true" />) : visibleDays.map((day) => {
             const parsed = new Date(`${day.date}T12:00:00`);
-            const active = selectedDate === day.date;
-            return <button key={day.date} type="button" disabled={day.slots.length === 0} onClick={() => { setSelectedDate(day.date); setSelectedSlot(null); }} className={`rounded-2xl border px-2 py-3 text-center transition ${active ? "border-primary bg-primary text-primary-foreground shadow-lg shadow-primary/20" : "border-border/70 bg-background hover:border-primary/40"} disabled:cursor-not-allowed disabled:opacity-35`}>
-              <span className="block text-[11px] font-semibold uppercase tracking-wide">{format(parsed, "EEE", { locale })}</span>
-              <strong className="mt-1 block text-xl">{format(parsed, "d")}</strong>
-              <span className="block text-xs">{format(parsed, "MMM", { locale })}</span>
+            const active = selectedDay?.date === day.date;
+            return <button key={day.date} type="button" disabled={saving} aria-pressed={active} aria-label={format(parsed, "EEEE, d. MMMM yyyy", { locale })} onClick={() => { setSelectedDate(day.date); setSelectedSlot(null); }} className={`demo-date ${active ? "is-selected" : ""}`}>
+              <span className="demo-weekday">{format(parsed, "EEE", { locale })}</span>
+              <span className="demo-day-number">{format(parsed, "d")}</span>
+              <span className="demo-month">{format(parsed, "MMM", { locale })}</span>
             </button>;
           })}
         </div>
       </section>
       <section>
-        <h2 className="mb-4 font-display text-lg font-bold text-foreground">{t.pickTime}</h2>
-        {selectedDay?.slots.length ? <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3">
-          {selectedDay.slots.map((slot) => <button key={slot.startAt} type="button" disabled={saving} onClick={() => void chooseSlot(slot)} className={`min-h-12 rounded-xl border px-4 font-bold transition ${selectedSlot?.startAt === slot.startAt ? "border-primary bg-primary/[0.09] text-primary ring-2 ring-primary/15" : "border-border bg-background text-foreground hover:border-primary/50 hover:text-primary"}`}>{formatSlotStart(slot.startAt, language, timeZone)}</button>)}
-        </div> : <div className="rounded-2xl border border-dashed border-border p-8 text-center text-muted-foreground">{t.noSlots}</div>}
+        <h2><span className="demo-heading-icon"><Clock3 aria-hidden="true" /></span>{t.pickTime}</h2>
+        {loadingSlots ? <><div className="demo-time-grid" aria-hidden="true">{Array.from({ length: 9 }, (_, index) => <div key={index} className="demo-skeleton demo-time-skeleton" />)}</div><p className="demo-loading-label" role="status">{t.loading}</p></> : selectedDay?.slots.length ? <div className="demo-time-grid">
+          {selectedDay.slots.map((slot) => <button key={slot.startAt} type="button" disabled={saving} aria-pressed={selectedSlot?.startAt === slot.startAt} onClick={() => void chooseSlot(slot)} className={`demo-time ${selectedSlot?.startAt === slot.startAt ? "is-selected" : ""}`}>{formatSlotStart(slot.startAt, language, timeZone)}{selectedSlot?.startAt === slot.startAt && <Check className="h-4 w-4" aria-hidden="true" />}</button>)}
+        </div> : !availabilityError && <div className="demo-empty">{t.noAvailability} <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a></div>}
       </section>
+      {error && <p role="alert" className="demo-availability-error">{error}</p>}
+      {availabilityError && <div role="alert" className="demo-availability-error"><p>{t.error}</p><Button variant="outline" onClick={refreshAvailability}><RefreshCw className="mr-2 h-4 w-4" />{t.retry}</Button></div>}
+      <div className="demo-picker-meta"><span><Globe2 aria-hidden="true" />{t.timezone}: {timeZone}</span>{loadingMore && <span role="status" className="demo-loading-more">{t.loadingMore}</span>}</div>
     </div>
   );
 
-  return <div className="marketing-page marketing-redesign min-h-screen bg-[radial-gradient(circle_at_top_right,hsl(var(--primary)/0.08),transparent_36%),linear-gradient(to_bottom,hsl(var(--background)),hsl(var(--muted)/0.35))]">
+  return <div className="marketing-page demo-booking-page min-h-screen bg-white">
     <Navbar />
-    <main className={`container mx-auto max-w-6xl px-4 ${step === "confirmed" ? "py-5 md:py-16" : "py-12 md:py-16"} lg:px-8`}>
-      {!token && step === "slots" && <header className="mx-auto mb-6 max-w-3xl text-center md:mb-10">
-        <span className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/[0.06] px-4 py-2 text-sm font-bold text-primary"><Video className="h-4 w-4" />{t.eyebrow}</span>
-        <h1 className="mt-5 font-display text-3xl font-extrabold tracking-tight text-foreground md:text-5xl">{t.title}</h1>
-        <p className="mx-auto mt-4 hidden max-w-2xl text-lg leading-8 text-muted-foreground md:block">{t.subtitle}</p>
-        <AnswerSummary routeKey="demo" className="mx-auto mt-6 hidden text-left md:block" />
-        <div className="mt-6 hidden flex-wrap justify-center gap-3 text-sm font-semibold text-foreground md:flex">
-          {(booking?.durationMinutes || profile?.durationMinutes) ? <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Clock3 className="h-4 w-4 text-primary" />{booking?.durationMinutes || profile?.durationMinutes} {language === "sl" ? "minut" : "minutes"}</span> : null}
-          <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span>
+    <main>
+      {!token && step !== "confirmed" && <header className="demo-intro demo-container">
+        <div><h1>{t.title}</h1><p>{t.subtitle}</p></div>
+        <div className="demo-intro-facts">
+          {profile?.durationMinutes ? <span><Clock3 aria-hidden="true" />{profile.durationMinutes} {language === "sl" ? "minut" : "minutes"}</span> : null}
+          {profile && <span><Video aria-hidden="true" />{meetingProviderLabel(profile.meetingProvider)}</span>}
         </div>
       </header>}
-      {!token && step === "details" && <h1 className="sr-only">{t.title}</h1>}
-
-      {loading ? <div className="flex min-h-[420px] items-center justify-center"><Loader2 className="h-9 w-9 animate-spin text-primary" /><span className="ml-3 text-muted-foreground">{t.loading}</span></div> : error && !profile && !booking ? <div className="mx-auto max-w-xl rounded-3xl border border-destructive/20 bg-card p-8 text-center shadow-soft"><XCircle className="mx-auto h-12 w-12 text-destructive" />{token ? <h1 className="mt-4 font-display text-2xl font-bold">{t.pageError}</h1> : <h2 className="mt-4 font-display text-2xl font-bold">{t.unavailable}</h2>}<p className="mt-2 text-muted-foreground">{error}</p></div> : !token && profile && !profile.enabled ? <div className="mx-auto max-w-xl rounded-3xl border bg-card p-10 text-center shadow-soft"><CalendarDays className="mx-auto h-12 w-12 text-muted-foreground" /><h2 className="mt-4 font-display text-2xl font-bold">{t.unavailable}</h2></div> : step === "confirmed" && booking ? (
+      <section className="demo-booking-band"><div className="demo-container">
+      {!token && <ol className="demo-steps" aria-label={language === "sl" ? "Koraki rezervacije" : "Booking steps"}>{t.steps.map((label, index) => {
+        const active = index === (step === "slots" ? 0 : step === "details" ? 1 : 2);
+        return <li key={label} aria-current={active ? "step" : undefined}><span>{index + 1}</span>{label}</li>;
+      })}</ol>}
+      {loading && token ? <div className="demo-management-loading" role="status"><Loader2 className="h-6 w-6 animate-spin text-primary motion-reduce:animate-none" />{t.loading}</div> : error && !profile && !booking ? <div className="mx-auto max-w-xl rounded-3xl border border-destructive/20 bg-card p-8 text-center shadow-soft"><XCircle className="mx-auto h-12 w-12 text-destructive" />{token ? <h1 className="mt-4 font-display text-2xl font-medium">{t.pageError}</h1> : <h2 className="mt-4 font-display text-xl font-medium">{t.unavailable}</h2>}<p className="mt-2 text-muted-foreground">{error}</p><Button variant="outline" className="mt-4" onClick={() => setPageRevision((value) => value + 1)}>{t.retry}</Button></div> : !token && profile && !profile.enabled ? <div className="mx-auto max-w-xl rounded-3xl border bg-card p-10 text-center shadow-soft"><CalendarDays className="mx-auto h-12 w-12 text-muted-foreground" /><h2 className="mt-4 font-display text-xl font-medium">{t.unavailable}</h2></div> : step === "confirmed" && booking ? (
         <div className="mx-auto max-w-3xl rounded-[2rem] border border-border/70 bg-card p-4 shadow-[0_28px_80px_-40px_hsl(var(--primary)/0.5)] sm:p-6 md:p-10">
           <div className="text-center">
             <span className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full sm:h-16 sm:w-16 ${booking.status === "CANCELLED" ? "bg-destructive/10 text-destructive" : "bg-emerald-500/10 text-emerald-600"}`}>{booking.status === "CANCELLED" ? <XCircle className="h-7 w-7 sm:h-9 sm:w-9" /> : <CheckCircle2 className="h-7 w-7 sm:h-9 sm:w-9" />}</span>
@@ -454,8 +472,8 @@ const DemoBookingPage = () => {
           </div>}
         </div>
       ) : (
-        <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-start">
-          <section className="rounded-[2rem] border border-border/70 bg-card p-5 shadow-[0_28px_80px_-45px_hsl(var(--primary)/0.45)] md:p-8">
+        <div className="demo-booking-card">
+          <section className="demo-booking-content">
             {step === "slots" ? slotPicker : (
               <form onSubmit={confirm} className="grid gap-5">
                 <div>
@@ -471,8 +489,8 @@ const DemoBookingPage = () => {
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     {t.back}
                   </Button>
-                  <h2 className="font-display text-2xl font-bold text-foreground">{t.details}</h2>
-                  <p className="mt-2 text-muted-foreground">{t.detailsHelp}</p>
+                  <h2 className="text-xl font-medium text-foreground">{t.details}</h2>
+                  <p className="mt-2 text-sm text-muted-foreground">{t.detailsHelp}</p>
                 </div>
 
                 <div className="grid gap-5 sm:grid-cols-2">
@@ -550,15 +568,18 @@ const DemoBookingPage = () => {
               </form>
             )}
           </section>
-          <aside ref={selectedSummaryRef} className="scroll-mt-24 rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-card to-card p-6 shadow-soft lg:sticky lg:top-28 md:p-7">
-            <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground"><CalendarDays className="h-6 w-6" /></span>
-            <h2 className="mt-5 font-display text-xl font-bold text-foreground">{t.selected}</h2>
-            {selectedSlot ? <><p className="mt-3 text-lg font-bold text-foreground">{formatDateTime(selectedSlot.startAt, language, timeZone)}</p><div className="mt-5 grid gap-3 text-sm text-muted-foreground"><span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-primary" />{profile?.durationMinutes} min</span><span className="flex items-center gap-2"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span></div>{step === "slots" && <Button variant="hero" className="mt-7 h-12 w-full rounded-xl" disabled={!hold || saving} onClick={openDetails}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t.next}</Button>}</> : <p className="mt-3 leading-7 text-muted-foreground">{language === "sl" ? "Najprej izberite datum in prost termin." : "Choose a date and available time first."}</p>}
+          <aside ref={selectedSummaryRef} className="demo-selection" aria-live="polite">
+            <h2>{t.selected}</h2>
+            {selectedSlot ? <><p className="demo-selection-date">{new Intl.DateTimeFormat(language === "sl" ? "sl-SI" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone }).format(new Date(selectedSlot.startAt))}</p><p className="demo-selection-time">{formatSlotStart(selectedSlot.startAt, language, timeZone)}–{formatSlotStart(selectedSlot.endAt, language, timeZone)}</p></> : <p className="demo-selection-empty">{saving ? t.loading : t.emptySelection}</p>}
+            {profile && <div className="demo-selection-facts"><span><Clock3 aria-hidden="true" />{profile.durationMinutes} min</span><span><Video aria-hidden="true" />{meetingProviderLabel(profile.meetingProvider)}</span></div>}
+            {step === "slots" && <><Button className="demo-continue" disabled={!selectedSlot || !hold || saving} onClick={openDetails}>{saving ? <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" /> : null}{t.next}<ArrowRight className="h-4 w-4" aria-hidden="true" /></Button><p className="demo-next-help">{t.nextHelp}</p></>}
           </aside>
         </div>
       )}
+      {!token && step !== "confirmed" && <p className="demo-reassurance">{t.reassurance}</p>}
+      </div></section>
     </main>
-    <Footer />
+    <Footer appearance="light" />
   </div>;
 };
 

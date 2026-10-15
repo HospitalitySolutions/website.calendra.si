@@ -51,7 +51,7 @@ try {
     await expect(page).toHaveURL(`${origin}/predstavitev`);
     const time=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Ljubljana',hour:'2-digit',minute:'2-digit'}).format(new Date(slot.startAt));
     await page.getByRole('button',{name:time,exact:true}).click();
-    await page.getByRole('button',{name:'Nadaljuj s podatki',exact:true}).click();
+    await page.getByRole('button',{name:'Nadaljujte',exact:true}).click();
     await page.locator('#demo-name').fill('Test person');
     await page.locator('#demo-email').fill('private@example.invalid');
     await page.locator('#demo-company').fill('Test company');

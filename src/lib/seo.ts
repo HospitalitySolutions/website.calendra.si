@@ -893,6 +893,18 @@ const getCustomerStorySeo = (pathname: string, language: SiteLanguage) => {
 
 export const getSeoForPathname = (pathname: string) => {
   const language = getLanguageFromPathname(pathname);
+  if (/^\/(predstavitev\/upravljanje|en\/demo\/manage)\/[^/]+\/?$/.test(pathname)) {
+    return {
+      language,
+      title: language === "sl" ? "Vaša predstavitev Calendre" : "Your Calendra demo",
+      description: language === "sl" ? "Upravljajte svojo rezervacijo predstavitve." : "Manage your demo booking.",
+      ogImage: DEFAULT_OG_IMAGE,
+      canonicalUrl: absoluteUrl(canonicalRoutes.demo[language]),
+      alternateUrls: undefined,
+      noindex: true,
+      structuredData: undefined,
+    };
+  }
   const profileSeo = getProfileSeo(pathname, language);
   if (profileSeo) return profileSeo;
 

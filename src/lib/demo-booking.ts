@@ -52,7 +52,7 @@ const parseError = async (response: Response) => {
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${BASE}${path}`, {
     ...init,
-    headers: { "Content-Type": "application/json", ...(init?.headers || {}) },
+    headers: { ...(init?.body ? { "Content-Type": "application/json" } : {}), ...(init?.headers || {}) },
   });
   if (!response.ok) throw new Error(await parseError(response));
   return response.json() as Promise<T>;
@@ -60,9 +60,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 
 export const demoBookingApi = {
   profile: (signal?: AbortSignal) => request<DemoProfile>("/profile", { signal }),
-  availability: (from: string, to: string, timeZone: string) => {
+  availability: (from: string, to: string, timeZone: string, signal?: AbortSignal) => {
     const query = new URLSearchParams({ from, to, timeZone });
-    return request<DemoAvailability>(`/availability?${query.toString()}`);
+    return request<DemoAvailability>(`/availability?${query.toString()}`, { signal });
   },
   hold: (startAt: string, guestTimeZone: string, previousHoldToken?: string) =>
     request<DemoHold>("/holds", {

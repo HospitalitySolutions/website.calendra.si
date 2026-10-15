@@ -209,6 +209,8 @@ const buildRoutePreloads = (routePath) => {
 const routeStyleEntries = new Map([
   ['/cenik', 'src/pages/PricingPage.tsx'],
   ['/en/pricing', 'src/pages/PricingPage.tsx'],
+  ['/predstavitev', 'src/pages/DemoBookingPage.tsx'],
+  ['/en/demo', 'src/pages/DemoBookingPage.tsx'],
 ]);
 const templateStylesheets = new Set(
   [...template.matchAll(/<link\b(?=[^>]*\brel=["']stylesheet["'])[^>]*\bhref=["']([^"']+)["'][^>]*>/gi)]
@@ -216,7 +218,9 @@ const templateStylesheets = new Set(
 );
 
 const buildRouteStylesheets = (routePath) => {
-  const entryKey = routeStyleEntries.get(routePath);
+  const entryKey = /^\/(predstavitev\/upravljanje|en\/demo\/manage)\//.test(routePath)
+    ? 'src/pages/DemoBookingPage.tsx'
+    : routeStyleEntries.get(routePath);
   if (!entryKey) return '';
 
   const visited = new Set();
@@ -293,6 +297,23 @@ const writeDynamicLocationProfileShell = async (language) => {
 await writeDynamicLocationProfileShell('sl');
 await writeDynamicLocationProfileShell('en');
 console.log('Generated dynamic customer location profile shells');
+
+// Management tokens are created after deployment. Render only the loading UI;
+// no token or guest data belongs in these shared, non-indexable shells.
+for (const language of ['sl', 'en']) {
+  const routePath = language === 'sl' ? '/predstavitev/upravljanje/__demo__' : '/en/demo/manage/__demo__';
+  const { appHtml, seo } = renderPage(routePath);
+  const output = template
+    .replace('<html lang="sl">', `<html lang="${language}">`)
+    .replace(routePreloadsPattern, buildRoutePreloads(routePath))
+    .replace(analyticsBlockPattern, analyticsBlock)
+    .replace(pricingBlockPattern, pricingBlock)
+    .replace(seoBlockPattern, buildSeoHead(seo, DEFAULT_OG_IMAGE, language === 'sl' ? '/predstavitev' : '/en/demo'))
+    .replace('</head>', `${buildRouteStylesheets(routePath)}<meta name="referrer" content="no-referrer" /></head>`)
+    .replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+  await fs.writeFile(path.join(distDir, `_demo-management-${language}.html`), output);
+}
+console.log('Generated private demo management shells');
 
 for (const routePath of routesToPrerender) {
   const { appHtml, seo } = renderPage(routePath);

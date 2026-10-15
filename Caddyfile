@@ -23,10 +23,12 @@
   #   - The inline JSON-LD block (<script type="application/ld+json">) needs no
   #     allowance at all: CSP's script-src only governs executable script
   #     types, and ld+json isn't one.
+  # Keep this immediate so private demo handlers can override it. The security
+  # block below is deferred by its -Server operation.
+  header Referrer-Policy "strict-origin-when-cross-origin"
   header {
     Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
     X-Content-Type-Options "nosniff"
-    Referrer-Policy "strict-origin-when-cross-origin"
     Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()"
     X-Frame-Options "SAMEORIGIN"
     Content-Security-Policy "default-src 'self'; script-src 'self' https://www.googletagmanager.com https://app.calendra.si; connect-src 'self' https://app.calendra.si https://www.google-analytics.com https://*.google-analytics.com https://www.googletagmanager.com; img-src 'self' data: https://www.google-analytics.com https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'"
@@ -175,6 +177,25 @@
     @enCustomerProfile path /en/for-customers/*
     handle @enCustomerProfile {
       try_files {path}/index.html /_dynamic-location-profile-en.html
+      file_server
+    }
+
+    # Demo management links are issued at booking time, after this static build.
+    # Only these token routes receive a private shell; other unknown URLs stay 404.
+    @slDemoManagement path_regexp ^/predstavitev/upravljanje/[A-Za-z0-9_-]+/?$
+    handle @slDemoManagement {
+      header Cache-Control "no-store"
+      header X-Robots-Tag "noindex, nofollow"
+      header Referrer-Policy "no-referrer"
+      rewrite * /_demo-management-sl.html
+      file_server
+    }
+    @enDemoManagement path_regexp ^/en/demo/manage/[A-Za-z0-9_-]+/?$
+    handle @enDemoManagement {
+      header Cache-Control "no-store"
+      header X-Robots-Tag "noindex, nofollow"
+      header Referrer-Policy "no-referrer"
+      rewrite * /_demo-management-en.html
       file_server
     }
 
