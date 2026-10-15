@@ -18,6 +18,7 @@ const StickySalesCtaBar = ({ anchorRef, placement, threshold = 420 }: StickySale
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).hero;
   const [isVisible, setIsVisible] = useState(false);
+  const analyticsPlacement = placement.startsWith("industry_") ? "industry_page_sticky" : "feature_page_sticky";
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -49,6 +50,7 @@ const StickySalesCtaBar = ({ anchorRef, placement, threshold = 420 }: StickySale
 
   return (
     <motion.div
+      data-sales-sticky="true"
       className="fixed inset-x-0 bottom-0 z-[80] px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-6"
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
@@ -64,7 +66,7 @@ const StickySalesCtaBar = ({ anchorRef, placement, threshold = 420 }: StickySale
         >
           <a
             href={TRIAL_SIGNUP_ROUTE}
-            onClick={() => trackMarketingEvent("trial_cta_click", { placement: `${placement}_sticky`, language })}
+            onClick={() => trackMarketingEvent("trial_cta_click", { placement: analyticsPlacement, language })}
           >
             {copy.primaryCta}
             <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
@@ -79,7 +81,7 @@ const StickySalesCtaBar = ({ anchorRef, placement, threshold = 420 }: StickySale
         >
           <a
             href={getRoutePath("demo", language)}
-            onClick={() => trackMarketingEvent("demo_booking_cta_clicked", { placement: `${placement}_sticky`, language })}
+            onClick={() => trackMarketingEvent("demo_booking_cta_clicked", { placement: analyticsPlacement, language })}
           >
             <CalendarClock className="mr-2 h-4 w-4" aria-hidden="true" />
             {copy.secondaryCta}

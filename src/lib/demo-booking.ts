@@ -59,7 +59,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const demoBookingApi = {
-  profile: () => request<DemoProfile>("/profile"),
+  profile: (signal?: AbortSignal) => request<DemoProfile>("/profile", { signal }),
   availability: (from: string, to: string, timeZone: string) => {
     const query = new URLSearchParams({ from, to, timeZone });
     return request<DemoAvailability>(`/availability?${query.toString()}`);

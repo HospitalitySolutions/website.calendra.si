@@ -15,6 +15,7 @@ dist-ssr
 # Local screenshots produced by the pricing browser check.
 /output/pricing-implementation/
 /output/visibility-audit/
+/.lighthouseci/
 
 # Local secrets (analytics database password, app secret, IndexNow key)
 .env

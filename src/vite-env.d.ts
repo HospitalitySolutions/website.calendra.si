@@ -12,6 +12,7 @@ interface ImportMetaEnv {
   readonly VITE_UMAMI_HOST_URL?: string;
   readonly VITE_GOOGLE_ANALYTICS_ID?: string;
   readonly VITE_BOOKING_DEMO_VIDEO_URL?: string;
+  readonly VITE_DEMO_PROMPT_ENABLED?: string;
 }
 
 interface ImportMeta {

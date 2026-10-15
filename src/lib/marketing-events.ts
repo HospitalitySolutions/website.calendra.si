@@ -7,6 +7,8 @@ export type MarketingEventName =
   | "public_profile_viewed"
   | "public_booking_started"
   | "demo_booking_cta_clicked"
+  | "demo_prompt_impression"
+  | "demo_prompt_dismissed"
   | "demo_booking_page_viewed"
   | "demo_booking_slot_selected"
   | "demo_booking_form_started"

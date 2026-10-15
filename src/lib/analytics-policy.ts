@@ -21,7 +21,8 @@ export const isMarketingPath = (pathname: string): boolean => {
 
 const enumFields: Record<string, readonly string[]> = {
   language: ["sl", "en"],
-  placement: ["homepage", "homepage_hero", "pricing_page", "navbar", "footer", "feature_page"],
+  placement: ["homepage", "homepage_hero", "homepage_final", "pricing_page", "navbar", "footer", "feature_page", "feature_page_sticky", "industry_page_sticky", "demo_popup_desktop", "demo_banner_mobile"],
+  entry_point: ["popup_desktop", "banner_mobile"],
   package_key: ["basic", "pro", "premium", "business", "enterprise"],
   currency: ["EUR"],
   lead_type: ["calendra", "it", "enterprise"],
@@ -35,6 +36,7 @@ const events = new Set([
   "trial_cta_click", "pricing_package_selected", "contact_path_selected", "generate_lead",
   "demo_booking_cta_clicked", "demo_booking_page_viewed", "demo_booking_slot_selected",
   "demo_booking_form_started", "demo_booking_confirmed", "demo_booking_cancelled", "demo_booking_rescheduled",
+  "demo_prompt_impression", "demo_prompt_dismissed",
   "web_vitals",
 ]);
 

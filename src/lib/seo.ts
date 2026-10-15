@@ -74,8 +74,8 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     en: { title: "Customer stories and real use cases | Calendra", description: "See how real service businesses use Calendra for appointments, client management, online booking, reminders, invoicing and payments." },
   },
   demo: {
-    sl: { title: "Rezervirajte predstavitev Calendre | 30-minutni video klic", description: "Izberite prost termin za 30-minutno spletno predstavitev Calendre in prejmite potrdilo ter povezavo do video klica po e-pošti." },
-    en: { title: "Book a Calendra demo | 30-minute video call", description: "Choose an available time for a 30-minute Calendra demo and receive the confirmation and video-call link by email." },
+    sl: { title: "Rezervirajte predstavitev Calendre | Brezplačen video klic", description: "Izberite prost termin za brezplačno spletno predstavitev Calendre in prejmite potrdilo ter povezavo do video klica po e-pošti." },
+    en: { title: "Book a Calendra demo | Free video call", description: "Choose an available time for a free Calendra demo and receive the confirmation and video-call link by email." },
   },
   calendar: {
     sl: { title: "Koledar terminov za storitvena podjetja | Calendra", description: "Pregleden koledar terminov za zaposlene, delovni čas, odsotnosti, prostore in ponavljajoče se rezervacije brez dvojnega vnašanja." },

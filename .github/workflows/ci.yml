@@ -41,6 +41,14 @@ jobs:
       - name: Prerender and crawler checks
         run: node scripts/test-sitemap-routes.mjs
 
+      - name: Install Chromium for marketing browser checks
+        run: npx playwright install --with-deps chromium
+
+      - name: Invitation and conversion browser checks
+        run: |
+          node scripts/test-demo-invitation-browser.mjs
+          node scripts/test-inquiry-demo-browser.mjs
+
       - name: Caddy redirects and marketplace HTTP checks
         run: node scripts/test-caddy-seo.mjs
 

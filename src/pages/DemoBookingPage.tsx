@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { addDays, format } from "date-fns";
 import { enGB, sl } from "date-fns/locale";
 import {
@@ -28,16 +28,17 @@ import { demoBookingApi, type DemoAvailability, type DemoBooking, type DemoHold,
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { useSiteLanguage } from "@/lib/site-language";
 import { sanitizeAcquisition } from "@/lib/acquisition";
+import { safeDemoEntry } from "@/lib/demo-invitation";
 
 const dateInput = (date: Date) => format(date, "yyyy-MM-dd");
 const detectedTimeZone = () => typeof Intl !== "undefined" ? Intl.DateTimeFormat().resolvedOptions().timeZone || "Europe/Ljubljana" : "Europe/Ljubljana";
 
 const copy = {
   sl: {
-    eyebrow: "30-minutna predstavitev",
+    eyebrow: "Brezplačna predstavitev",
     title: "Rezervirajte osebno predstavitev Calendre",
     subtitle: "Izberite termin, ki vam ustreza. Na video klicu vam pokažemo Calendro in odgovorimo na vaša vprašanja.",
-    duration: "30 minut",
+    duration: "Trajanje",
     video: "Google Meet",
     timezone: "Časovni pas",
     pickDate: "1. Izberite datum",
@@ -83,10 +84,10 @@ const copy = {
     pageError: "Rezervacije ni bilo mogoče najti ali povezava ni več veljavna.",
   },
   en: {
-    eyebrow: "30-minute product demo",
+    eyebrow: "Free product demo",
     title: "Book a personal Calendra demo",
     subtitle: "Choose a convenient time. We will show you Calendra on a video call and answer your questions.",
-    duration: "30 minutes",
+    duration: "Duration",
     video: "Google Meet",
     timezone: "Time zone",
     pickDate: "1. Choose a date",
@@ -170,6 +171,8 @@ const downloadIcs = (booking: DemoBooking) => {
 
 const DemoBookingPage = () => {
   const { token } = useParams();
+  const { state } = useLocation();
+  const entryPoint = safeDemoEntry(state?.demoEntry);
   const { language } = useSiteLanguage();
   const t = copy[language];
   const locale = language === "sl" ? sl : enGB;
@@ -321,7 +324,7 @@ const DemoBookingPage = () => {
       setBooking(result);
       setConfirmationFailed(false);
       setStep("confirmed");
-      trackMarketingEvent("demo_booking_confirmed", { language, meeting_provider: result.meetingProvider });
+      trackMarketingEvent("demo_booking_confirmed", { language, meeting_provider: result.meetingProvider, entry_point: entryPoint });
     } catch (cause) {
       confirmationLocked.current = false;
       setConfirmationFailed(true);
@@ -422,7 +425,7 @@ const DemoBookingPage = () => {
         <p className="mx-auto mt-4 hidden max-w-2xl text-lg leading-8 text-muted-foreground md:block">{t.subtitle}</p>
         <AnswerSummary routeKey="demo" className="mx-auto mt-6 hidden text-left md:block" />
         <div className="mt-6 hidden flex-wrap justify-center gap-3 text-sm font-semibold text-foreground md:flex">
-          <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Clock3 className="h-4 w-4 text-primary" />{profile?.durationMinutes || 30} {language === "sl" ? "minut" : "minutes"}</span>
+          {(booking?.durationMinutes || profile?.durationMinutes) ? <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Clock3 className="h-4 w-4 text-primary" />{booking?.durationMinutes || profile?.durationMinutes} {language === "sl" ? "minut" : "minutes"}</span> : null}
           <span className="inline-flex items-center gap-2 rounded-full bg-card px-4 py-2 shadow-sm"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span>
         </div>
       </header>}
@@ -550,7 +553,7 @@ const DemoBookingPage = () => {
           <aside ref={selectedSummaryRef} className="scroll-mt-24 rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/[0.08] via-card to-card p-6 shadow-soft lg:sticky lg:top-28 md:p-7">
             <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary text-primary-foreground"><CalendarDays className="h-6 w-6" /></span>
             <h2 className="mt-5 font-display text-xl font-bold text-foreground">{t.selected}</h2>
-            {selectedSlot ? <><p className="mt-3 text-lg font-bold text-foreground">{formatDateTime(selectedSlot.startAt, language, timeZone)}</p><div className="mt-5 grid gap-3 text-sm text-muted-foreground"><span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-primary" />{profile?.durationMinutes || 30} min</span><span className="flex items-center gap-2"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span></div>{step === "slots" && <Button variant="hero" className="mt-7 h-12 w-full rounded-xl" disabled={!hold || saving} onClick={openDetails}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t.next}</Button>}</> : <p className="mt-3 leading-7 text-muted-foreground">{language === "sl" ? "Najprej izberite datum in prost termin." : "Choose a date and available time first."}</p>}
+            {selectedSlot ? <><p className="mt-3 text-lg font-bold text-foreground">{formatDateTime(selectedSlot.startAt, language, timeZone)}</p><div className="mt-5 grid gap-3 text-sm text-muted-foreground"><span className="flex items-center gap-2"><Clock3 className="h-4 w-4 text-primary" />{profile?.durationMinutes} min</span><span className="flex items-center gap-2"><Video className="h-4 w-4 text-primary" />{meetingProviderLabel(profile?.meetingProvider)}</span></div>{step === "slots" && <Button variant="hero" className="mt-7 h-12 w-full rounded-xl" disabled={!hold || saving} onClick={openDetails}>{saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{t.next}</Button>}</> : <p className="mt-3 leading-7 text-muted-foreground">{language === "sl" ? "Najprej izberite datum in prost termin." : "Choose a date and available time first."}</p>}
           </aside>
         </div>
       )}

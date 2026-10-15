@@ -166,7 +166,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
           "Pregled strank",
           "Analitika",
           "Enosmerno e-mail sporočanje",
-          "30-minutni predstavitveni klic",
+          "Osebni predstavitveni klic",
           "E-poštna podpora",
         ],
         cta: "Izberi Osnovno",
@@ -300,7 +300,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
           "Customer overview",
           "Analytics",
           "One-way email messaging",
-          "30-minute introductory call",
+          "Personal introductory call",
           "Email support",
         ],
         cta: "Choose Basic",
@@ -1026,7 +1026,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       </>}
 
       {standalone && showStickySummary && selectedTier.key !== "enterprise" && (
-        <aside className="pricing-sticky-summary" aria-label={content.summaryTitle}>
+        <aside data-sales-sticky="true" className="pricing-sticky-summary" aria-label={content.summaryTitle}>
           <div className="container mx-auto">
             <div className="pricing-sticky-selection"><span className="marketing-eyebrow">{content.selectedPackageLabel}</span><strong>{selectedTier.name}</strong><p>{userCountLabel} · {[additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null, ...selectedAddOns.map(addOnLabel)].filter(Boolean).join(" · ") || content.noExtras}</p></div>
             <div className="pricing-sticky-total"><span>{content.monthlyLabel}</span><strong>{formatter.format(monthlyTotal)}</strong></div>

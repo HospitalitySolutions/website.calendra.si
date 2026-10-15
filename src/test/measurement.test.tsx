@@ -103,6 +103,22 @@ describe("confirmed inquiries", () => {
 });
 
 describe("optional tracker failures", () => {
+  it("preserves cookieless Umami prompt events while GA consent is denied", async () => {
+    vi.resetModules();
+    vi.stubEnv("VITE_UMAMI_WEBSITE_ID", "test-website");
+    window.history.replaceState({}, "", "/?email=private@example.invalid");
+    localStorage.setItem("calendra-google-analytics-consent", "denied");
+    window.gtag = vi.fn();
+    window.umami = { track: vi.fn() };
+    try {
+      const { trackMarketingEvent } = await import("@/lib/marketing-events");
+      trackMarketingEvent("demo_prompt_impression", { placement: "demo_banner_mobile", language: "sl", email: "private@example.invalid" });
+      expect(window.umami.track).toHaveBeenCalledOnce();
+      expect(window.umami.track).toHaveBeenCalledWith(expect.objectContaining({ name: "demo_prompt_impression", url: "/", data: { placement: "demo_banner_mobile", language: "sl" } }));
+      expect(vi.mocked(window.gtag).mock.calls.filter(call => call[0] === "event")).toHaveLength(0);
+      expect(JSON.stringify(vi.mocked(window.umami.track).mock.calls)).not.toContain("private@example.invalid");
+    } finally { delete window.umami; }
+  });
   it("does not throw from a confirmed demo when Google tracking fails", async () => {
     vi.resetModules();
     window.history.replaceState({}, "", "/predstavitev");

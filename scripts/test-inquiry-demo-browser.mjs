@@ -3,7 +3,9 @@
 import { chromium, expect } from '@playwright/test';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
-const origin=process.env.AUDIT_ORIGIN||'http://127.0.0.1:4173';
+import { startDistServer } from './serve-dist.mjs';
+const server=process.env.AUDIT_ORIGIN?null:await startDistServer(0);
+const origin=process.env.AUDIT_ORIGIN||server.origin;
 const browser=await chromium.launch();
 const results=[];
 const events=page=>page.evaluate(()=>Array.from(window.dataLayer||[],args=>Array.from(args)).filter(args=>args[0]==='event'));
@@ -15,14 +17,14 @@ try {
     await context.route(/googletagmanager\.com|google-analytics\.com|analytics\.google\.com/,route=>route.fulfill({status:200,body:''}));
     let inquiries=0,confirmations=0;
     const date=new Date(Date.now()+2*86400000).toISOString().slice(0,10);
-    const slot={startAt:`${date}T12:00:00Z`,endAt:`${date}T12:30:00Z`};
-    const booking={...slot,id:123,status:'CONFIRMED',title:'Demo',durationMinutes:30,timeZone:'Europe/Ljubljana',guestTimeZone:'Europe/Ljubljana',guestName:'Test person',guestEmail:'private@example.invalid',companyName:'Test company',meetingProvider:'ZOOM',manageToken:'private-test-token',canModify:true};
+    const slot={startAt:`${date}T12:00:00Z`,endAt:`${date}T12:15:00Z`};
+    const booking={...slot,id:123,status:'CONFIRMED',title:'Demo',durationMinutes:15,timeZone:'Europe/Ljubljana',guestTimeZone:'Europe/Ljubljana',guestName:'Test person',guestEmail:'private@example.invalid',companyName:'Test company',meetingProvider:'GOOGLE_MEET',manageToken:'private-test-token',canModify:true};
     await context.route(/\/api\//,async route=>{
       const pathname=new URL(route.request().url()).pathname;
       let body={},status=200;
       if(pathname==='/api/auth/csrf')body={token:'test-csrf'};
       else if(pathname==='/api/register/contact') {inquiries++;status=inquiries===1?503:200;body={sent:inquiries>1};}
-      else if(pathname.endsWith('/demo-bookings/profile'))body={enabled:true,durationMinutes:30,timeZone:'Europe/Ljubljana',meetingProvider:'ZOOM',bookingHorizonDays:30};
+      else if(pathname.endsWith('/demo-bookings/profile'))body={enabled:true,durationMinutes:15,timeZone:'Europe/Ljubljana',meetingProvider:'GOOGLE_MEET',bookingHorizonDays:30};
       else if(pathname.endsWith('/demo-bookings/availability'))body={timeZone:'Europe/Ljubljana',days:[{date,slots:[slot]}]};
       else if(pathname.endsWith('/demo-bookings/holds'))body={...slot,holdToken:'private-hold',expiresAt:new Date(Date.now()+600000).toISOString()};
       else if(pathname.endsWith('/demo-bookings/confirm')) {confirmations++;status=confirmations===1?503:200;body=confirmations===1?{message:'Test failure'}:booking;}
@@ -42,7 +44,11 @@ try {
     await expect(page.getByText('Hvala. Vaše sporočilo smo prejeli.',{exact:true})).toBeVisible();
     assert.equal(inquiries,2,'one failure and one successful POST, no double submit');
     assert.equal(await count(page,'generate_lead'),consent==='granted'?1:0);
-    await page.goto(`${origin}/predstavitev`);
+    await page.goto(`${origin}/`);
+    await page.evaluate(()=>scrollTo(0,1200));
+    await expect(page.locator('[data-demo-invitation]')).toBeVisible({timeout:15_000});
+    await page.locator('[data-demo-invitation] a').click();
+    await expect(page).toHaveURL(`${origin}/predstavitev`);
     const time=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Ljubljana',hour:'2-digit',minute:'2-digit'}).format(new Date(slot.startAt));
     await page.getByRole('button',{name:time,exact:true}).click();
     await page.getByRole('button',{name:'Nadaljuj s podatki',exact:true}).click();
@@ -56,6 +62,18 @@ try {
     await expect(page.locator('form')).toHaveCount(0);
     assert.equal(confirmations,2);
     assert.equal(await count(page,'demo_booking_confirmed'),consent==='granted'?1:0);
+    if(consent==='granted') {
+      const confirmed=(await events(page)).find(args=>args[1]==='demo_booking_confirmed');
+      assert.equal(confirmed[2].entry_point,width<640?'banner_mobile':'popup_desktop');
+    }
+    await expect(page.getByText('15 min',{exact:true})).toBeVisible();
+    const downloadPromise=page.waitForEvent('download');
+    await page.getByRole('button',{name:'Dodaj v koledar',exact:true}).click();
+    const download=await downloadPromise;
+    const {readFile}=await import('node:fs/promises');
+    const ics=await readFile(await download.path(),'utf8');
+    assert.ok(ics.includes(`DTSTART:${date.replaceAll('-','')}T120000Z`));
+    assert.ok(ics.includes(`DTEND:${date.replaceAll('-','')}T121500Z`));
     const wire=JSON.stringify(await events(page));
     for(const privateValue of ['private@example.invalid','private-test-token','private-hold','Test person',slot.startAt])assert.ok(!wire.includes(privateValue));
     await expect(page.locator('h1')).toHaveCount(1);
@@ -65,7 +83,7 @@ try {
     results.push({width,consent,inquiryPosts:inquiries,demoPosts:confirmations,successEvents:consent==='granted'?2:0});
     await context.close();
   }
-} finally {await browser.close();}
+} finally {await browser.close();await server?.close();}
 await mkdir('output/visibility-audit',{recursive:true});
 await writeFile('output/visibility-audit/inquiry-demo-browser.json',JSON.stringify(results,null,2));
 console.log('Inquiry/demo desktop + mobile, granted + denied: passed. All API writes intercepted.');

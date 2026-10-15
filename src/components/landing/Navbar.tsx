@@ -305,6 +305,7 @@ const Navbar = () => {
 
   return (
     <nav
+      data-demo-invitation-blocker={open || accountOpen ? "true" : undefined}
       className="site-navbar-editorial sticky top-0 isolate border-b border-border/45 bg-white/90 backdrop-blur-xl supports-[backdrop-filter]:bg-white/84"
       style={{ zIndex: 1000 }}
     >

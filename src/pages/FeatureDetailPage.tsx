@@ -10,6 +10,7 @@ import { getFeatureContent, isFeatureRouteKey } from "@/lib/feature-pages";
 import { getRoutePath, getRouteKeyFromPathname } from "@/lib/localized-routes";
 import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
 import { useSiteLanguage } from "@/lib/site-language";
+import { trackMarketingEvent } from "@/lib/marketing-events";
 import { ArrowRight, Check, CheckCircle2, Link2, X } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useRef } from "react";
@@ -57,7 +58,7 @@ const FeatureDetailPage = () => {
 
             <div ref={heroCtaRef} className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button variant="hero" size="lg" className="rounded-xl" asChild>
-                <a href={TRIAL_SIGNUP_ROUTE}>
+                <a href={TRIAL_SIGNUP_ROUTE} onClick={() => trackMarketingEvent("trial_cta_click", { placement: "feature_page", language })}>
                   {language === "sl" ? "Preizkusite brezplačno" : "Try it free"}
                   <ArrowRight className="h-4 w-4" />
                 </a>
@@ -213,7 +214,7 @@ const FeatureDetailPage = () => {
           <h2 className="font-display text-3xl font-bold text-foreground">{page.finalTitle}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">{page.finalBody}</p>
           <Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild>
-            <a href={TRIAL_SIGNUP_ROUTE}>
+            <a href={TRIAL_SIGNUP_ROUTE} onClick={() => trackMarketingEvent("trial_cta_click", { placement: "feature_page", language })}>
               {language === "sl" ? "Začnite brezplačno" : "Start free"}
               <ArrowRight className="h-4 w-4" />
             </a>

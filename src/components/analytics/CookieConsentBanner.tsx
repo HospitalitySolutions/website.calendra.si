@@ -31,6 +31,12 @@ const CookieConsentBanner = () => {
   const c = copy[language];
 
   useEffect(() => {
+    if (open) document.documentElement.dataset.cookieBannerOpen = "true";
+    else delete document.documentElement.dataset.cookieBannerOpen;
+    return () => { delete document.documentElement.dataset.cookieBannerOpen; };
+  }, [open]);
+
+  useEffect(() => {
     setOpen(getGoogleAnalyticsConsent() === null);
 
     const openSettings = () => setOpen(true);

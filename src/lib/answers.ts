@@ -62,8 +62,8 @@ const answers: Partial<Record<CanonicalRouteKey, Record<SiteLanguage, string>>> 
     en: "Calendra's IT services are a standalone offer for small businesses in Slovenia and do not require a Calendra subscription. They cover IT support, website design and maintenance, business email, backups and automation. Work is delivered as a project, hourly or as monthly support.",
   },
   demo: {
-    sl: "Predstavitev Calendre je 30-minutni video klic, na katerem skupaj pregledamo vaš način dela in nastavitve, ki jih potrebujete. Prost termin izberete sami, potrditev in povezavo do klica pa prejmete po e-pošti. Predstavitev je brezplačna in ne zahteva odločitve o nakupu.",
-    en: "A Calendra demo is a 30-minute video call where we review how you work today and the setup you need. You pick an available slot yourself and receive the confirmation and the call link by email. The demo is free and requires no purchase decision.",
+    sl: "Predstavitev Calendre je brezplačen video klic, na katerem skupaj pregledamo vaš način dela in nastavitve, ki jih potrebujete. Prost termin izberete sami, potrditev in povezavo do klica pa prejmete po e-pošti. Predstavitev je brezplačna in ne zahteva odločitve o nakupu.",
+    en: "A Calendra demo is a free video call where we review how you work today and the setup you need. You pick an available slot yourself and receive the confirmation and the call link by email. The demo is free and requires no purchase decision.",
   },
 };
 
