@@ -21,7 +21,7 @@ import {
 } from "@/lib/blog";
 import { AUTHOR_PATH } from "@/lib/blog";
 import { getRoutePath } from "@/lib/localized-routes";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { AUTHOR } from "@/lib/seo";
 import { ArrowRight, CalendarDays, Clock3, ListTree, Tag } from "lucide-react";
 import { Suspense } from "react";
@@ -150,10 +150,10 @@ const BlogArticlePage = () => {
                 <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">{text.ctaBody}</p>
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                   <Button variant="hero" size="lg" className="rounded-xl" asChild>
-                    <a href={TRIAL_SIGNUP_ROUTE}>
+                    <TrialSignupLink>
                       {text.ctaButton}
                       <ArrowRight className="h-4 w-4" />
-                    </a>
+                    </TrialSignupLink>
                   </Button>
                   <Button variant="outline" size="lg" className="rounded-xl" asChild>
                     <a href={getRoutePath("pricing", article.language)}>{text.ctaSecondary}</a>

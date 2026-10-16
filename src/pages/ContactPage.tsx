@@ -8,7 +8,7 @@ import { LEGAL } from "@/lib/legal";
 import { useInquiry } from "@/lib/use-inquiry";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { getRoutePath } from "@/lib/localized-routes";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { useSiteLanguage } from "@/lib/site-language";
 import {
   ArrowRight,
@@ -263,7 +263,7 @@ const ContactPage = () => {
                 </ul>
                 <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                   <Button type="button" variant="hero" className="rounded-xl" onClick={() => selectFlow("calendra")}>{page.calendraQuestion}<ArrowRight className="h-4 w-4" /></Button>
-                  <Button variant="outline" className="rounded-xl" asChild><a href={TRIAL_SIGNUP_ROUTE}>{page.calendraTrial}</a></Button>
+                  <Button variant="outline" className="rounded-xl" asChild><TrialSignupLink>{page.calendraTrial}</TrialSignupLink></Button>
                 </div>
               </article>
 

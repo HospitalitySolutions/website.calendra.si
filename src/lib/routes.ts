@@ -1,4 +1,5 @@
-import { APP_BASE_URL } from "@/lib/site";
+import type { SiteLanguage } from "@/lib/site-language";
+import { APP_BASE_URL, SITE_URL } from "@/lib/site";
 
 /**
  * Central route & URL configuration for CTA buttons.
@@ -17,9 +18,33 @@ export const CUSTOMER_REGISTER_ROUTE = `${CUSTOMER_ACCOUNT_ROUTE}/registracija`;
 
 /** @deprecated Prefer BUSINESS_LOGIN_ROUTE or CUSTOMER_LOGIN_ROUTE for audience-specific CTAs. */
 export const LOGIN_ROUTE = BUSINESS_LOGIN_ROUTE;
-// The app's legacy /signup redirect does not retain the registration query.
-export const REGISTER_ROUTE = `${APP_BASE_URL}/register`;
-export const TRIAL_SIGNUP_ROUTE = `${REGISTER_ROUTE}?flow=trial`;
+// Business signup is hosted on the public site; staff login remains on APP_BASE_URL.
+export const REGISTER_ROUTE = `${SITE_URL}/registriraj`;
+const attributionKeys = ["via", "ref", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "fbclid"];
+
+function registrationTarget(language: SiteLanguage, search = "") {
+  const target = new URL(language === "sl" ? "/registriraj" : "/register", SITE_URL);
+  const incoming = new URLSearchParams(search);
+  for (const key of attributionKeys) {
+    const value = incoming.get(key);
+    if (value) target.searchParams.set(key, value);
+  }
+  target.searchParams.set("locale", language);
+  return target;
+}
+
+export function buildTrialSignupRoute(language: SiteLanguage = "sl", search = "") {
+  const target = registrationTarget(language, search);
+  target.searchParams.set("flow", "trial");
+  return target.toString();
+}
+
+export function isBusinessRegistrationUrl(href: string) {
+  try {
+    const target = new URL(href, SITE_URL);
+    return target.origin === new URL(SITE_URL).origin && ["/registriraj", "/register"].includes(target.pathname);
+  } catch { return false; }
+}
 
 export type PricingSignupSummary = {
   totalUsers: number;
@@ -37,7 +62,7 @@ export type PricingSignupSummary = {
 const clampRegistrationCount = (value: number, min: number, max: number, fallback: number) =>
   Number.isFinite(value) ? Math.min(max, Math.max(min, Math.trunc(value))) : fallback;
 
-export const buildPackageSignupRoute = (packageType: string, summary?: PricingSignupSummary) => {
+export const buildPackageSignupRoute = (packageType: string, summary?: PricingSignupSummary, language: SiteLanguage = "sl", search = "") => {
   const params = new URLSearchParams({
     flow: "register",
     package: packageType.toUpperCase(),
@@ -59,7 +84,9 @@ export const buildPackageSignupRoute = (packageType: string, summary?: PricingSi
     params.set("summary", JSON.stringify(summary));
   }
 
-  return `${REGISTER_ROUTE}?${params.toString()}`;
+  const target = registrationTarget(language, search);
+  params.forEach((value, key) => target.searchParams.append(key, value));
+  return target.toString();
 };
 
 export const FEATURES_SECTION = "/#funkcionalnosti";

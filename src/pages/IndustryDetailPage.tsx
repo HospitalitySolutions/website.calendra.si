@@ -13,7 +13,7 @@ import {
 import { getRouteKeyFromPathname, getRoutePath } from "@/lib/localized-routes";
 import { MARKETING_IMAGES } from "@/lib/marketing-images";
 import { getCustomerStoryPath } from "@/lib/customer-stories";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { useSiteLanguage } from "@/lib/site-language";
 import {
   ArrowRight,
@@ -131,7 +131,7 @@ const IndustryDetailPage = () => {
               </ul>
               <div ref={heroCtaRef} className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Button variant="hero" size="lg" className="rounded-xl" asChild>
-                  <a href={TRIAL_SIGNUP_ROUTE}>{primaryLabel}<ArrowRight className="h-4 w-4" /></a>
+                  <TrialSignupLink>{primaryLabel}<ArrowRight className="h-4 w-4" /></TrialSignupLink>
                 </Button>
                 <Button variant="outline" size="lg" className="rounded-xl" asChild>
                   <a href="#funkcionalnosti-panoge">{featuresLabel}</a>
@@ -371,7 +371,7 @@ const IndustryDetailPage = () => {
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
                   <Button size="lg" variant="secondary" className="rounded-xl" asChild>
-                    <a href={TRIAL_SIGNUP_ROUTE}>{primaryLabel}<ArrowRight className="h-4 w-4" /></a>
+                    <TrialSignupLink>{primaryLabel}<ArrowRight className="h-4 w-4" /></TrialSignupLink>
                   </Button>
                   <Button size="lg" variant="outline" className="rounded-xl border-primary-foreground/35 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground" asChild>
                     <a href={getRoutePath("pricing", language)}>{pricingLabel}</a>

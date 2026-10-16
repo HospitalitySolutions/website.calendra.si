@@ -1,3 +1,4 @@
+import { MemoryRouter } from "react-router-dom";
 import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import Hero from "@/components/landing/Hero";
@@ -6,9 +7,9 @@ import { SiteLanguageProvider } from "@/lib/site-language";
 const renderHero = (language: "sl" | "en" = "sl") => {
   window.history.replaceState({}, "", language === "sl" ? "/" : "/en");
   return render(
-    <SiteLanguageProvider initialLanguage={language}>
+    <MemoryRouter><SiteLanguageProvider initialLanguage={language}>
       <Hero />
-    </SiteLanguageProvider>,
+    </SiteLanguageProvider></MemoryRouter>,
   );
 };
 

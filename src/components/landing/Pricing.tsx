@@ -1,3 +1,4 @@
+import { useRegistrationSearch } from "@/lib/use-registration-search";
 import { getRelatedPages } from "@/lib/related-pages";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -440,6 +441,7 @@ const scrollToElement = (element: HTMLElement | null) => {
 
 const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const { language } = useSiteLanguage();
+  const registrationSearch = useRegistrationSearch();
   const inquiry = useInquiry(language);
   const baseContent = useMemo(() => translations[language], [language]);
   const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(getInitialPricingCatalog);
@@ -715,7 +717,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     ],
   );
 
-  const signupRoute = `${buildPackageSignupRoute(selectedTier.key, signupSummary)}&billing=${billingPeriod}`;
+  const signupRoute = `${buildPackageSignupRoute(selectedTier.key, signupSummary, language, registrationSearch)}&billing=${billingPeriod}`;
 
   const handleTierSelect = (tierKey: PlanKey) => {
     const tier = content.tiers.find((item) => item.key === tierKey);
@@ -729,7 +731,9 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     });
 
     if (!standalone) {
-      const query = `plan=${tierKey}&billing=${billingPeriod}`;
+      const query = new URLSearchParams(registrationSearch);
+      query.set("plan", tierKey);
+      query.set("billing", billingPeriod);
       const target = `${getRoutePath("pricing", language)}?${query}${tierKey === "enterprise" ? "#contact-form" : "#pricing-configurator"}`;
       window.location.assign(target);
       return;

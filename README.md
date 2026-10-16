@@ -86,7 +86,7 @@ To dodajte v obstoječi Caddy, ki že streže `app.calendra.si`.
 
 ## Prilagoditev povezav za aplikacijo
 
-CTA gumba za prijavo in registracijo privzeto kažeta na `https://app.calendra.si`.
+Prijava za podjetja privzeto kaže na `https://app.calendra.si/login`. Registracijski gumbi kažejo na enostranski obrazec na javni strani: `https://calendra.si/registriraj` (SL) ali `https://calendra.si/register` (EN). Ohranjajo jezik, parametre kampanje in izbrani paket. Javno domeno določa `VITE_SITE_URL`.
 Če želite drugo ciljno aplikacijo, ob build-u nastavite `VITE_APP_BASE_URL`.
 
 Primer:

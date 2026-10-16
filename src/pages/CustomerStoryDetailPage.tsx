@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { getCustomerStoryFromPathname } from "@/lib/customer-stories";
 import { getRoutePath } from "@/lib/localized-routes";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { useSiteLanguage } from "@/lib/site-language";
 import { ArrowRight, CheckCircle2, ExternalLink, Quote } from "lucide-react";
 import { useLocation } from "react-router-dom";
@@ -209,7 +209,7 @@ const CustomerStoryDetailPage = () => {
                   <p className="mt-4 max-w-3xl text-lg leading-8 text-primary-foreground/85">{text.nextBody}</p>
                 </div>
                 <Button variant="secondary" size="lg" className="rounded-xl" asChild>
-                  <a href={TRIAL_SIGNUP_ROUTE}>{text.trial}<ArrowRight className="h-4 w-4" /></a>
+                  <TrialSignupLink>{text.trial}<ArrowRight className="h-4 w-4" /></TrialSignupLink>
                 </Button>
               </div>
             </div>

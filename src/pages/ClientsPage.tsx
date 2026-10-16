@@ -11,7 +11,7 @@ import { getFaqForRoute } from "@/lib/faq";
 import { getRoutePath } from "@/lib/localized-routes";
 import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
 import { MARKETING_IMAGES } from "@/lib/marketing-images";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { useSiteLanguage } from "@/lib/site-language";
 import { getCustomerStory, getCustomerStoryPath } from "@/lib/customer-stories";
 import {
@@ -202,7 +202,7 @@ const ClientsPage = () => {
               <p className="mt-6 max-w-2xl text-lg leading-8 text-muted-foreground md:text-xl">{text.intro}</p>
               <AnswerSummary routeKey="booking" className="mt-6" />
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Button variant="hero" size="lg" className="rounded-xl" asChild><a href={TRIAL_SIGNUP_ROUTE}>{text.heroPrimary}<ArrowRight className="h-4 w-4" /></a></Button>
+                <Button variant="hero" size="lg" className="rounded-xl" asChild><TrialSignupLink>{text.heroPrimary}<ArrowRight className="h-4 w-4" /></TrialSignupLink></Button>
                 {CUSTOMER_MARKETPLACE_PUBLIC && (
                   <Button variant="outline" size="lg" className="rounded-xl" asChild><a href={customerSearchPath}>{text.heroSecondary}</a></Button>
                 )}
@@ -342,7 +342,7 @@ const ClientsPage = () => {
         <RelatedPages routeKey="booking" />
 
         <section className="container mx-auto max-w-7xl px-4 py-16 lg:px-8 md:py-24">
-          <div className="overflow-hidden rounded-[2rem] border border-primary/10 bg-gradient-to-br from-primary/[0.10] via-card to-accent/[0.08] p-8 shadow-soft md:p-12"><div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center"><div><p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{text.ctaEyebrow}</p><h2 className="mt-3 font-display text-3xl font-extrabold text-foreground md:text-4xl">{text.ctaTitle}</h2><p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{text.ctaDescription}</p></div><Button variant="hero" size="lg" className="rounded-xl" asChild><a href={TRIAL_SIGNUP_ROUTE}>{text.ctaButton}<ArrowRight className="h-4 w-4" /></a></Button></div></div>
+          <div className="overflow-hidden rounded-[2rem] border border-primary/10 bg-gradient-to-br from-primary/[0.10] via-card to-accent/[0.08] p-8 shadow-soft md:p-12"><div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center"><div><p className="text-sm font-extrabold uppercase tracking-[0.18em] text-primary">{text.ctaEyebrow}</p><h2 className="mt-3 font-display text-3xl font-extrabold text-foreground md:text-4xl">{text.ctaTitle}</h2><p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">{text.ctaDescription}</p></div><Button variant="hero" size="lg" className="rounded-xl" asChild><TrialSignupLink>{text.ctaButton}<ArrowRight className="h-4 w-4" /></TrialSignupLink></Button></div></div>
         </section>
       </main>
       <Footer />

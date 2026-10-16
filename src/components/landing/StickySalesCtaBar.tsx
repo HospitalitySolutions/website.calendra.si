@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { getRoutePath } from "@/lib/localized-routes";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { motion } from "framer-motion";
@@ -64,13 +64,12 @@ const StickySalesCtaBar = ({ anchorRef, placement, threshold = 420 }: StickySale
           className="h-12 w-full rounded-[13px] px-5 text-sm font-semibold shadow-lg shadow-primary/20 sm:text-base"
           asChild
         >
-          <a
-            href={TRIAL_SIGNUP_ROUTE}
+          <TrialSignupLink
             onClick={() => trackMarketingEvent("trial_cta_click", { placement: analyticsPlacement, language })}
           >
             {copy.primaryCta}
             <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
-          </a>
+          </TrialSignupLink>
         </Button>
 
         <Button

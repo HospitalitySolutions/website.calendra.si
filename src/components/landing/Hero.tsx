@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState, type MouseEvent } from "react";
 import { ArrowRight, CalendarClock, Check, CreditCard, MousePointerClick, ShieldCheck, Star, ZoomIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { trackMarketingEvent } from "@/lib/marketing-events";
@@ -42,9 +42,9 @@ const Hero = () => {
           <p className="home-hero-description">{copy.description}</p>
           <div className="home-hero-actions">
             <Button variant="hero" size="lg" asChild>
-              <a href={TRIAL_SIGNUP_ROUTE} onClick={() => trackMarketingEvent("trial_cta_click", { placement: "homepage_hero", language })}>
+              <TrialSignupLink onClick={() => trackMarketingEvent("trial_cta_click", { placement: "homepage_hero", language })}>
                 {copy.primaryCta}<ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </a>
+              </TrialSignupLink>
             </Button>
             <Button variant="outline" size="lg" asChild>
               <a href={sl ? "/predstavitev" : "/en/demo"} onClick={() => trackMarketingEvent("demo_booking_cta_clicked", { placement: "homepage_hero", language })}>

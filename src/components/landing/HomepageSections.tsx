@@ -10,7 +10,7 @@ import {
 import { StepWatermark } from "@/components/ui/step-watermark";
 import { getRoutePath } from "@/lib/localized-routes";
 import { getFaqForRoute } from "@/lib/faq";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
   fetchPublicPricingCatalog,
@@ -352,5 +352,5 @@ export const HomeFaq = () => {
 };
 
 export const HomeTrialLink = ({ children }: { children: React.ReactNode }) => (
-    <a href={TRIAL_SIGNUP_ROUTE}>{children}</a>
+    <TrialSignupLink>{children}</TrialSignupLink>
 );

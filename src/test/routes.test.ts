@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { buildPackageSignupRoute, REGISTER_ROUTE, TRIAL_SIGNUP_ROUTE, type PricingSignupSummary } from "@/lib/routes";
-import { APP_BASE_URL } from "@/lib/site";
+import { buildPackageSignupRoute, REGISTER_ROUTE, buildTrialSignupRoute, isBusinessRegistrationUrl, type PricingSignupSummary } from "@/lib/routes";
+import { SITE_URL } from "@/lib/site";
 
 const summary: PricingSignupSummary = {
   totalUsers: 7,
@@ -16,9 +16,9 @@ const summary: PricingSignupSummary = {
 };
 
 describe("business registration handoff", () => {
-  it("opens the canonical app entry without the query-dropping signup redirect", () => {
-    expect(REGISTER_ROUTE).toBe(`${APP_BASE_URL}/register`);
-    const trial = new URL(TRIAL_SIGNUP_ROUTE);
+  it("opens the canonical public entry without the query-dropping signup redirect", () => {
+    expect(REGISTER_ROUTE).toBe(`${SITE_URL}/registriraj`);
+    const trial = new URL(buildTrialSignupRoute());
     expect(trial.pathname).toBe(new URL(REGISTER_ROUTE).pathname);
     expect(trial.searchParams.get("flow")).toBe("trial");
   });
@@ -73,5 +73,30 @@ describe("business registration handoff", () => {
     }));
     expect(target.searchParams.get("users")).toBe(expectedUsers);
     expect(target.searchParams.get("sms")).toBe(expectedSms);
+  });
+});
+
+describe("localized registration links", () => {
+  it.each(["sl", "en"] as const)("retains %s and existing attribution for trial and pricing", language => {
+    const search = "?via=sales-owner&ref=friend&utm_source=newsletter&utm_campaign=launch&fbclid=existing&email=private&token=secret";
+    for (const href of [buildTrialSignupRoute(language, search), buildPackageSignupRoute("premium", summary, language, search)]) {
+      const target = new URL(href);
+      expect(target.origin).toBe(new URL(SITE_URL).origin);
+      expect(target.pathname).toBe(language === "sl" ? "/registriraj" : "/register");
+      expect(target.searchParams.get("locale")).toBe(language);
+      expect(target.searchParams.get("via")).toBe("sales-owner");
+      expect(target.searchParams.get("ref")).toBe("friend");
+      expect(target.searchParams.get("utm_source")).toBe("newsletter");
+      expect(target.searchParams.get("utm_campaign")).toBe("launch");
+      expect(target.searchParams.get("fbclid")).toBe("existing");
+      expect(target.searchParams.has("email")).toBe(false);
+      expect(target.searchParams.has("token")).toBe(false);
+      expect(isBusinessRegistrationUrl(href)).toBe(true);
+    }
+  });
+  it("recognizes registration CTAs with attribution without matching customer or external URLs", () => {
+    expect(isBusinessRegistrationUrl("/registriraj?ref=friend")).toBe(true);
+    expect(isBusinessRegistrationUrl("/racun/registracija")).toBe(false);
+    expect(isBusinessRegistrationUrl("https://unrelated.invalid/register")).toBe(false);
   });
 });

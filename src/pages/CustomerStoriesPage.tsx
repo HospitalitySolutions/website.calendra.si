@@ -4,7 +4,7 @@ import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
 import { Button } from "@/components/ui/button";
 import { customerStories, getCustomerStoryPath } from "@/lib/customer-stories";
 import { getRoutePath } from "@/lib/localized-routes";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { useSiteLanguage } from "@/lib/site-language";
 import { ArrowRight, ExternalLink, Quote, Sparkles } from "lucide-react";
 
@@ -131,7 +131,7 @@ const CustomerStoriesPage = () => {
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row lg:flex-col xl:flex-row">
                   <Button variant="secondary" size="lg" className="rounded-xl" asChild>
-                    <a href={TRIAL_SIGNUP_ROUTE}>{text.ctaPrimary}<ArrowRight className="h-4 w-4" /></a>
+                    <TrialSignupLink>{text.ctaPrimary}<ArrowRight className="h-4 w-4" /></TrialSignupLink>
                   </Button>
                   <Button variant="outline" size="lg" className="rounded-xl border-primary-foreground/35 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground" asChild>
                     <a href={getRoutePath("beautyHair", language)}>{text.ctaSecondary}</a>

@@ -54,10 +54,10 @@ const expectPublishedCatalog = (language: SiteLanguage, catalog: PublicPricingCa
   });
   const decimal = new Intl.NumberFormat(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const html = renderToStaticMarkup(
-    <SiteLanguageProvider initialLanguage={language}>
+    <MemoryRouter><SiteLanguageProvider initialLanguage={language}>
       <Pricing standalone />
       <div id="pricing-answer"><AnswerSummary routeKey="pricing" /></div>
-    </SiteLanguageProvider>,
+    </SiteLanguageProvider></MemoryRouter>,
   );
   const page = new DOMParser().parseFromString(html, "text/html");
   const cards = Array.from(page.querySelectorAll(".pricing-plan-grid article"));

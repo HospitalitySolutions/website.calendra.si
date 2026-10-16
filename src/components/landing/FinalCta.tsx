@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { ArrowRight, Check } from "lucide-react";
 import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
@@ -19,7 +19,7 @@ const FinalCta = () => {
           <h2 className="marketing-section-title text-4xl sm:text-5xl">{copy.title}</h2>
           <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">{copy.description}</p>
           <Button variant="hero" size="lg" className="mt-8 h-14 rounded-[13px] px-9 text-base font-semibold shadow-[0_16px_36px_-16px_hsl(var(--primary)/0.55)]" asChild>
-            <a href={TRIAL_SIGNUP_ROUTE} onClick={() => trackMarketingEvent("trial_cta_click", { placement: "homepage_final", language })}>{copy.button}<ArrowRight className="ml-2 h-5 w-5" /></a>
+            <TrialSignupLink onClick={() => trackMarketingEvent("trial_cta_click", { placement: "homepage_final", language })}>{copy.button}<ArrowRight className="ml-2 h-5 w-5" /></TrialSignupLink>
           </Button>
           <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs font-medium text-muted-foreground sm:text-sm">
             {benefits.map((benefit) => <span key={benefit} className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-primary" />{benefit}</span>)}

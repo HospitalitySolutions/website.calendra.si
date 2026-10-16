@@ -8,7 +8,7 @@ import { StepWatermark } from "@/components/ui/step-watermark";
 import { getCalendraConnectCopy } from "@/lib/calendra-connect";
 import { getRoutePath } from "@/lib/localized-routes";
 import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { useSiteLanguage } from "@/lib/site-language";
 import {
   ArrowRight,
@@ -161,7 +161,7 @@ const CalendraConnectPage = () => {
                   <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">{copy.business.body}</p>
                   <div className="mt-8 flex flex-wrap gap-3">
                     <Button variant="hero" size="lg" className="rounded-xl" asChild>
-                      <a href={TRIAL_SIGNUP_ROUTE}>{copy.business.primary}<ArrowRight className="h-4 w-4" aria-hidden="true" /></a>
+                      <TrialSignupLink>{copy.business.primary}<ArrowRight className="h-4 w-4" aria-hidden="true" /></TrialSignupLink>
                     </Button>
                     <Button variant="outline" size="lg" className="rounded-xl" asChild>
                       <a href={getRoutePath("booking", language)}>{copy.business.secondary}</a>

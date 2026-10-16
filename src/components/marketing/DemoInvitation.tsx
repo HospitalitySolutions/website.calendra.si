@@ -7,7 +7,7 @@ import { demoInvitationSession, isDemoInvitationPath } from "@/lib/demo-invitati
 import { getLanguageFromPathname, getRoutePath } from "@/lib/localized-routes";
 import { getGoogleAnalyticsConsent, GOOGLE_ANALYTICS_CONSENT_EVENT } from "@/lib/google-analytics";
 import { trackMarketingEvent } from "@/lib/marketing-events";
-import { TRIAL_SIGNUP_ROUTE } from "@/lib/routes";
+import { isBusinessRegistrationUrl } from "@/lib/routes";
 import "./demo-invitation.css";
 
 const copy = {
@@ -53,7 +53,8 @@ const hasMobileCtaCollision = () => {
   if (window.innerHeight < 480) return true;
   const bannerTop = document.querySelector('[data-demo-invitation="mobile"]')?.getBoundingClientRect().top ?? window.innerHeight - 230;
   return Array.from(document.querySelectorAll<HTMLAnchorElement | HTMLButtonElement>("main a[href], main button[type=submit]")).some(element => {
-    const isPrimary = element.tagName === "BUTTON" || [TRIAL_SIGNUP_ROUTE, "/predstavitev", "/en/demo"].includes(element.getAttribute("href") || "");
+    const href = element.getAttribute("href") || "";
+    const isPrimary = element.tagName === "BUTTON" || isBusinessRegistrationUrl(href) || ["/predstavitev", "/en/demo"].includes(href);
     const box = element.getBoundingClientRect();
     return isPrimary && isVisible(element) && box.bottom > bannerTop && box.top < window.innerHeight;
   });
