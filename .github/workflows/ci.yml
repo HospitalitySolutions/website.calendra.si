@@ -11,11 +11,16 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    # Never run an untrusted fork PR on a personal self-hosted machine.
+    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: [self-hosted, Linux]
     timeout-minutes: 20
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Enforce self-hosted runner policy
+        run: node scripts/check-self-hosted-runners.mjs
 
       - uses: actions/setup-node@v4
         with:
@@ -42,7 +47,7 @@ jobs:
         run: node scripts/test-sitemap-routes.mjs
 
       - name: Install Chromium for marketing browser checks
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
 
       - name: Invitation and conversion browser checks
         run: |
