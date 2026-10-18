@@ -317,7 +317,7 @@ const Navbar = () => {
               alt="Calendra"
               width={WORDMARK.width}
               height={WORDMARK.height}
-              className="h-8 w-auto"
+              className="site-brand-wordmark h-8 w-auto"
             />
           </a>
 

@@ -130,7 +130,7 @@ const FooterLegalColumn = ({ links, language }: { links: FooterLink[]; language:
   </nav>
 );
 
-const Footer = ({ appearance }: { appearance?: "light" } = {}) => {
+const Footer = () => {
   const { language } = useSiteLanguage();
   const copy = getSiteCopy(language).footer;
   const homePath = getRoutePath("home", language);
@@ -142,7 +142,7 @@ const Footer = ({ appearance }: { appearance?: "light" } = {}) => {
   ];
 
   return (
-    <footer className={`site-footer-editorial ${appearance === "light" ? "site-footer-light" : ""} border-t border-white/10 py-14 md:py-20`}>
+    <footer className="site-footer-editorial border-t py-14 md:py-20">
       <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.1fr_0.7fr_1fr_1.1fr_1fr_0.8fr_1.2fr]">
           <div>
@@ -154,7 +154,7 @@ const Footer = ({ appearance }: { appearance?: "light" } = {}) => {
                 height={WORDMARK.height}
                 loading="lazy"
                 decoding="async"
-                className="h-10 w-auto"
+                className="site-brand-wordmark h-10 w-auto"
               />
             </a>
             <p className="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">© {new Date().getFullYear()} Calendra. {copy.rights}</p>

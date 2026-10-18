@@ -167,9 +167,6 @@
 .pricing-faq details > p { padding: 0 54px 24px 0; color: hsl(var(--muted-foreground)); line-height: 1.75; font-size: .95rem; }
 .pricing-it-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 64px; align-items: center; }
 .pricing-it-band .pricing-info-card ul { margin-top: 22px; }
-.pricing-page .site-footer-editorial { --foreground: 224 55% 12%; --muted-foreground: 218 17% 43%; --border: 214 46% 89%; background: white; color: hsl(var(--foreground)); border-color: hsl(var(--border)); }
-.pricing-page .site-footer-editorial .text-sm { font-size: .78rem; }
-.pricing-page .site-footer-editorial a:hover, .pricing-page .site-footer-editorial button:hover { color: hsl(var(--primary)); }
 .pricing-sticky-summary { position: fixed; inset: auto 0 0; z-index: 35; border-top: 1px solid hsl(var(--border)); background: #fffffffa; box-shadow: 0 -5px 25px #18385808; padding-block: 15px; padding-bottom: max(15px, env(safe-area-inset-bottom)); }
 .pricing-sticky-summary > .container { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 36px; }
 .pricing-sticky-selection > strong { display: block; font-size: 1.1rem; margin-top: 2px; }
@@ -228,6 +225,4 @@
   .pricing-faq details > p { padding-right: 0; }
   .pricing-sticky-summary .pricing-button { font-size: .75rem; padding: 10px 12px; max-width: 180px; }
   .pricing-sticky-total strong { font-size: 1.4rem; }
-  .pricing-page .site-footer-editorial > .container > div { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 20px; }
-  .pricing-page .site-footer-editorial > .container > div > div:first-child { grid-column: 1 / -1; }
 }

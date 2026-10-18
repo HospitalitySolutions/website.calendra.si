@@ -556,17 +556,24 @@ All colors MUST be HSL.
     box-shadow: none !important;
   }
 
+  .site-brand-wordmark {
+    display: block;
+    object-fit: contain;
+    background: transparent;
+  }
+
   .site-footer-editorial {
-    --foreground: 0 0% 100%;
-    --muted-foreground: 215 25% 76%;
-    --border: 215 28% 31%;
-    background: hsl(216 78% 14%);
+    --foreground: 224 55% 12%;
+    --muted-foreground: 218 17% 43%;
+    --border: 214 46% 89%;
+    background: white;
     color: hsl(var(--foreground));
+    border-color: hsl(var(--border));
   }
 
   .site-footer-editorial a:hover,
   .site-footer-editorial button:hover {
-    color: hsl(0 0% 100%);
+    color: hsl(var(--primary));
   }
 
   @media (max-width: 767px) {

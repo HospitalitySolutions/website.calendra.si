@@ -1,14 +1,31 @@
-.site-footer-editorial.site-footer-light {
+/* Unified light footer for all public website pages. */
+.site-footer-editorial {
   --foreground: 224 55% 12%;
   --muted-foreground: 218 17% 43%;
   --border: 214 46% 89%;
-  color: hsl(var(--foreground));
   background: white;
+  color: hsl(var(--foreground));
   border-color: hsl(var(--border));
 }
-.site-footer-light a:hover, .site-footer-light button:hover { color: hsl(var(--primary)); }
-.site-footer-light .text-sm { font-size: 0.78rem; }
+.site-footer-editorial .text-sm { font-size: 0.78rem; }
+
+/* Brand-blue links remain readable on hover and keyboard focus. */
+.site-footer-editorial nav a:is(:hover, :focus-visible),
+.site-footer-editorial nav button:is(:hover, :focus-visible) {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+.site-footer-editorial a:focus-visible,
+.site-footer-editorial button:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 3px;
+}
 @media (max-width: 639px) {
-  .site-footer-light > .container > div { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 20px; }
-  .site-footer-light > .container > div > div:first-child { grid-column: 1 / -1; }
+  .site-footer-editorial > .container > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 20px;
+  }
+  .site-footer-editorial > .container > div > div:first-child { grid-column: 1 / -1; }
 }
