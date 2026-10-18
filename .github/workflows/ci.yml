@@ -63,6 +63,9 @@ jobs:
       # `canonical` and `is-crawlable` are skipped in lighthouserc.json because
       # the pages canonicalise to calendra.si, not to the local test origin.
       - name: Lighthouse CI
-        run: npx lhci autorun
+        run: |
+          export CHROME_PATH="$(node -p \"require('@playwright/test').chromium.executablePath()\")"
+          test -x "$CHROME_PATH"
+          npx lhci autorun
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
