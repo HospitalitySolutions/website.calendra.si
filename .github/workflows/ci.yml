@@ -64,7 +64,7 @@ jobs:
       # the pages canonicalise to calendra.si, not to the local test origin.
       - name: Lighthouse CI
         run: |
-          export CHROME_PATH="$(node -p \"require('@playwright/test').chromium.executablePath()\")"
+          export CHROME_PATH="$(node -p 'require("@playwright/test").chromium.executablePath()')"
           test -x "$CHROME_PATH"
           npx lhci autorun
         env:
