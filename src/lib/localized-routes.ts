@@ -151,7 +151,7 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   integrations: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-10-10" },
   materialManagement: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-08-12" },
   fiscalCashRegister: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-08-20" },
-  groupBookings: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-10-10" },
+  groupBookings: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-10-21" },
   beautyHair: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-10-10" },
   consultantsEducators: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },
   healthWellbeing: { changeFrequency: "monthly", priority: { sl: 0.85, en: 0.75 }, contentLastModified: "2026-07-15" },

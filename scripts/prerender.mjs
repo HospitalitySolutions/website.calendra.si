@@ -207,6 +207,8 @@ const buildRoutePreloads = (routePath) => {
 // from the initial HTML. Keep it on pricing routes and after the entry styles
 // to preserve the same cascade order as client-side navigation.
 const routeStyleEntries = new Map([
+  ['/skupinske-rezervacije', 'src/pages/FeatureDetailPage.tsx'],
+  ['/en/group-bookings', 'src/pages/FeatureDetailPage.tsx'],
   ['/cenik', 'src/pages/PricingPage.tsx'],
   ['/en/pricing', 'src/pages/PricingPage.tsx'],
   ['/predstavitev', 'src/pages/DemoBookingPage.tsx'],

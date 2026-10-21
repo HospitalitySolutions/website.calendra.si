@@ -1,6 +1,7 @@
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import StickySalesCtaBar from "@/components/landing/StickySalesCtaBar";
+import { GroupBookingHero, GroupBookingUseCases } from "@/components/marketing/GroupBookingSections";
 import AnswerSummary from "@/components/seo/AnswerSummary";
 import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
 import RelatedPages from "@/components/seo/RelatedPages";
@@ -24,6 +25,7 @@ const FeatureDetailPage = () => {
   if (!isFeatureRouteKey(routeKey)) return null;
 
   const page = getFeatureContent(routeKey, language);
+  const isGroupBookingPage = routeKey === "groupBookings";
   const faq = getFaqForRoute(routeKey, language) ?? [];
   const screenshotWidthClass = routeKey === "clientManagement"
     ? "mx-auto max-w-2xl"
@@ -32,9 +34,12 @@ const FeatureDetailPage = () => {
       : "";
 
   return (
-    <div className="marketing-page marketing-redesign min-h-screen bg-background">
+    <div className={`marketing-page marketing-redesign min-h-screen bg-background${isGroupBookingPage ? " group-bookings-page" : ""}`}>
       <Navbar />
       <main>
+        {isGroupBookingPage ? (
+          <GroupBookingHero page={page} language={language} ctaRef={heroCtaRef} />
+        ) : (
         <section className="border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.05] py-16 md:py-24">
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">
             <PageBreadcrumbs routeKey={routeKey} />
@@ -71,7 +76,11 @@ const FeatureDetailPage = () => {
             </div>
           </div>
         </section>
+        )}
 
+        {isGroupBookingPage ? (
+          <GroupBookingUseCases page={page} />
+        ) : (
         <section className="container mx-auto max-w-6xl px-4 py-16 lg:px-8 md:py-24">
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.useCasesTitle}</h2>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-muted-foreground">{page.useCasesIntro}</p>
@@ -84,6 +93,7 @@ const FeatureDetailPage = () => {
             ))}
           </div>
         </section>
+        )}
 
         <section className="bg-card py-16 md:py-24">
           <div className="container mx-auto max-w-6xl px-4 lg:px-8">

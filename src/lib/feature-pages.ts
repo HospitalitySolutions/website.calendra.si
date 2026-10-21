@@ -1837,35 +1837,35 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
       eyebrow: "Skupinske rezervacije",
       title: "Skupinske rezervacije in termini na enem mestu",
       intro:
-        "Calendra omogoča spletne prijave na skupinske termine z omejeno kapaciteto, seznamom udeležencev, ponavljajočimi se izvedbami, čakalno vrsto ter povezavo s članstvi in paketi obiskov.",
+        "Spletne prijave, pregled zasedenosti, ponavljajoči se termini in paketi obiskov – povezani v enem koledarju.",
       heroPoints: [
-        "Kapaciteta in število prostih mest pri vsaki izvedbi",
-        "Spletne prijave, seznam udeležencev in čakalna vrsta",
-        "Ponavljajoči termini, članstva in paketi obiskov",
+        "Kapaciteta in prosta mesta za vsak termin",
+        "Spletne prijave in seznam udeležencev",
+        "Članstva, paketi obiskov in čakalna vrsta",
       ],
-      useCasesTitle: "Za katere skupinske storitve je Calendra primerna",
+      useCasesTitle: "Za katere skupinske storitve je Calendra primerna?",
       useCasesIntro:
-        "Skupinske rezervacije niso namenjene samo fitnesu. Enak način dela uporabljajo studii, tečaji, delavnice in druge storitve z omejenim številom mest.",
+        "Za vadbe, tečaje, delavnice in druge storitve z omejenim številom mest.",
       useCases: [
         {
-          title: "Joga, pilates in skupinske vadbe",
+          title: "Joga, pilates in vadbe",
           body:
-            "Za vsako uro določite trenerja, prostor in največje število udeležencev. Stranke se prijavijo prek spleta, vidijo prosta mesta, ekipa pa ima na terminu vedno aktualen seznam prijavljenih.",
+            "Nastavite število mest in spremljajte prijave na posamezne termine.",
         },
         {
           title: "Tečaji in delavnice",
           body:
-            "Redno izvedbo ustvarite kot ponavljajočo se serijo, posamezen datum pa po potrebi prestavite ali odpoveste. Udeleženci ostanejo povezani z ustrezno izvedbo in prejmejo obvestilo o spremembi.",
+            "Povežite ponavljajoče se termine v pregleden urnik.",
         },
         {
-          title: "Programi s članstvi ali paketi obiskov",
+          title: "Članstva in paketi obiskov",
           body:
-            "Pri prijavi lahko preverjate pravice iz članstva ali paketa obiskov. Po izvedbi se obisk poveže z udeležencem, zato je preostalo število obiskov vidno brez ločenih seznamov.",
+            "Spremljajte koriščenje obiskov in veljavnost ugodnosti.",
         },
         {
-          title: "Polna skupina in čakalna vrsta",
+          title: "Čakalna vrsta",
           body:
-            "Ko je kapaciteta zapolnjena, dodatni interesenti lahko ostanejo na čakalni vrsti. Če se mesto sprosti, ga lahko ponudite naslednjemu interesentu glede na nastavljen potek.",
+            "Ko je skupina polna, zbirajte dodatne prijave.",
         },
       ],
       benefitsTitle: "Kaj pridobite z urejenimi skupinskimi prijavami",
@@ -1926,19 +1926,19 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
       eyebrow: "Group bookings",
       title: "Group bookings and appointments in one place",
       intro:
-        "Calendra supports online registration for capacity-limited group appointments with participant lists, recurring sessions, waiting lists and links to memberships and visit packages.",
+        "Online registration, live availability, recurring sessions and visit packages – connected in one calendar.",
       heroPoints: [
-        "Capacity and remaining-place counts for every session",
-        "Online registration, participant lists and waiting lists",
-        "Recurring appointments, memberships and visit packages",
+        "Capacity and available places for every session",
+        "Online registration and participant lists",
+        "Memberships, visit packages and waiting lists",
       ],
-      useCasesTitle: "Which group services Calendra works for",
-      useCasesIntro: "Group booking is not only for fitness. The same workflow suits studios, courses, workshops and other services with a limited number of places.",
+      useCasesTitle: "Which group services is Calendra for?",
+      useCasesIntro: "For classes, courses, workshops and other services with a limited number of places.",
       useCases: [
-        { title: "Yoga, Pilates and group classes", body: "Set an instructor, room and maximum participant count for every class. Customers register online and see remaining places while the team always has an up-to-date participant list." },
-        { title: "Courses and workshops", body: "Create a regular programme as a recurring series and reschedule or cancel an individual date when needed. Participants stay linked to the relevant occurrence and can be informed about changes." },
-        { title: "Programmes with memberships or visit packages", body: "Bookings can use entitlements from a membership or visit package. After the session, attendance stays connected to the participant so remaining visits are visible without separate lists." },
-        { title: "A full class and a waiting list", body: "Once capacity is reached, additional interest can remain on a waiting list. When a place becomes available, it can be offered to the next person according to the configured workflow." },
+        { title: "Yoga, Pilates and classes", body: "Set capacity and track registrations for each session." },
+        { title: "Courses and workshops", body: "Organise recurring sessions in one clear schedule." },
+        { title: "Memberships and visit packages", body: "Track visit usage and entitlement validity." },
+        { title: "Waiting lists", body: "Collect additional interest when a group is full." },
       ],
       benefitsTitle: "What organised group registration gives you",
       benefits: [
