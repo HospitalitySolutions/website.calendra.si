@@ -593,3 +593,17 @@ All colors MUST be HSL.
     }
   }
 }
+
+/* Shared group/psychology layout essentials remain in the initial stylesheet. */
+.group-bookings-page .container {
+  width: 100%;
+  max-width: 1380px;
+  margin-inline: auto;
+  padding-inline: clamp(20px, 4vw, 48px);
+}
+
+/* Psychology uses the group-booking layout, without decorative artwork behind the video. */
+.group-bookings-page.marketing-redesign main > .group-bookings-hero.psychology-hero {
+  background-color: #fff !important;
+  background-image: none !important;
+}
