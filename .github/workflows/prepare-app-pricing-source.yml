@@ -14,34 +14,32 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: fix/app-owned-pricing-20261023
-      - name: Remove dormant English amounts and audit remaining pricing references
+      - name: Remove stale explanatory rates
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
           p = Path('src/components/landing/Pricing.tsx')
           s = p.read_text()
-          for amount in ('14.90', '24.90', '39.90'):
-              old = 'price: "' + amount + '€",'
+          changes = {
+              'Dodatni uporabniki: 5,90 € / mesec': 'Dodatni uporabniki po ceniku aplikacije',
+              'Dodatna SMS sporočila: 0,06 € / sporočilo': 'SMS po porabi in ceniku aplikacije',
+              'Additional users: €5.90 / month': 'Additional users at application-catalog rates',
+              'Additional SMS messages: €0.06 / message': 'SMS usage at application-catalog rates',
+          }
+          for old, new in changes.items():
               assert s.count(old) == 1, old
-              s = s.replace(old, 'price: "",')
+              s = s.replace(old, new)
           p.write_text(s)
           p = Path('src/test/app-owned-pricing.test.tsx')
           s = p.read_text()
           needle = '    expect(read("vite.config.ts")).toContain("pricingSnapshotPlugin()");'
           assert s.count(needle) == 1
-          s = s.replace(needle, '    expect(read("src/components/landing/Pricing.tsx")).not.toMatch(/price:\\s*"[0-9€]/);\n' + needle)
+          s = s.replace(needle, '    expect(read("src/components/landing/Pricing.tsx")).not.toMatch(/5[.,]90|0[.,]06/);\n' + needle)
           p.write_text(s)
-          for root in ('src', 'content'):
-              for p in Path(root).rglob('*'):
-                  if not p.is_file() or p.suffix not in ('.ts', '.tsx', '.mdx') or '/test/' in str(p): continue
-                  for i, line in enumerate(p.read_text().splitlines(), 1):
-                      if re.search(r'(?:17[.,]90|15[.,]90|28[.,]90|52[.,]50|5[.,]90|monthlyGross\s*:\s*\d)', line):
-                          print(str(p) + ':' + str(i) + ': ' + line[:500])
           PY
           git diff --check
           git config user.name 'Calendra pricing maintenance'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add src/components/landing/Pricing.tsx src/test/app-owned-pricing.test.tsx
-          git commit -m 'fix: remove remaining dormant English price literals'
+          git commit -m 'fix: remove fixed rates from pricing explanatory copy'
           git push origin HEAD:refs/heads/fix/app-owned-pricing-20261023
