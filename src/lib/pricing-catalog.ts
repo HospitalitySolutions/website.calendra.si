@@ -1,5 +1,4 @@
 export type PublicPricingPlanKey = "basic" | "pro" | "business";
-
 export type PublicPricingPlan = {
   key: PublicPricingPlanKey;
   packageCode: "BASIC" | "PROFESSIONAL" | "PREMIUM";
@@ -11,7 +10,6 @@ export type PublicPricingPlan = {
   popular: boolean;
   featureKeys: string[];
 };
-
 export type PublicPricingFeature = {
   key: string;
   name: string;
@@ -21,13 +19,7 @@ export type PublicPricingFeature = {
   minimumPlan: PublicPricingPlanKey;
   includedPlans: PublicPricingPlanKey[];
 };
-
-export type PublicAdditionalUserRule = {
-  fromUser: number;
-  toUser: number | null;
-  monthlyGrossPerUser: number;
-};
-
+export type PublicAdditionalUserRule = { fromUser: number; toUser: number | null; monthlyGrossPerUser: number };
 export type PublicPricingAddOn = {
   key: string;
   code: string;
@@ -38,10 +30,9 @@ export type PublicPricingAddOn = {
   monthlyGross: number;
   availablePlans: PublicPricingPlanKey[];
 };
-
 export type PublicPricingCatalog = {
   catalogVersion: number;
-  currency: "EUR" | string;
+  currency: string;
   vatIncluded: boolean;
   includedUsers: number;
   annualBilledMonths: number;
@@ -53,8 +44,7 @@ export type PublicPricingCatalog = {
   smsPerMessageGross: number;
 };
 
-
-/** Validate the app contract. Missing money is an error, never a local price. */
+/** Missing monetary fields are errors, never instructions to invent a website price. */
 const fail = (field: string): never => { throw new Error(`Invalid app pricing catalog: ${field}`); };
 const record = (value: unknown, field: string): Record<string, unknown> =>
   value !== null && typeof value === "object" && !Array.isArray(value)
@@ -98,7 +88,8 @@ export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCata
     const feature = record(item, "feature");
     const key = text(feature.key);
     if (!key || !isPlanKey(feature.minimumPlan)) return fail("feature key/minimumPlan");
-    return { key, name: text(feature.name, key), nameSl: text(feature.nameSl, text(feature.name, key)),
+    return {
+      key, name: text(feature.name, key), nameSl: text(feature.nameSl, text(feature.name, key)),
       description: text(feature.description), descriptionSl: text(feature.descriptionSl, text(feature.description)),
       minimumPlan: feature.minimumPlan,
       includedPlans: array(feature.includedPlans, "feature.includedPlans").filter(isPlanKey),
@@ -110,16 +101,17 @@ export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCata
     const toUser = rule.toUser === null ? null : integer(rule.toUser, "toUser", fromUser);
     return { fromUser, toUser, monthlyGrossPerUser: money(rule.monthlyGrossPerUser, "monthlyGrossPerUser") };
   }).sort((a, b) => a.fromUser - b.fromUser);
-  if (!additionalUserRules.length || additionalUserRules[0].fromUser !== includedUsers + 1 || additionalUserRules.at(-1)?.toUser !== null) return fail("user rules must cover all additional users");
+  if (!additionalUserRules.length || additionalUserRules[0].fromUser !== includedUsers + 1 || additionalUserRules[additionalUserRules.length - 1].toUser !== null) return fail("user rules must cover all additional users");
   additionalUserRules.forEach((rule, index) => {
     if (index && additionalUserRules[index - 1].toUser !== rule.fromUser - 1) fail("user rules overlap or contain gaps");
   });
-  // An empty or absent add-on list does NOT resurrect discontinued website add-ons.
+  // Empty/absent add-ons must not resurrect discontinued website add-ons.
   const addOns: PublicPricingAddOn[] = array(raw.addOns ?? raw.addons ?? [], "addOns").map((item) => {
     const addOn = record(item, "addOn");
     const key = text(addOn.key ?? addOn.code ?? addOn.addOnCode);
     if (!key) return fail("addOn.key");
-    return { key, code: text(addOn.code ?? addOn.addOnCode, key.toUpperCase().replace(/[^A-Z0-9]+/g, "_")),
+    return {
+      key, code: text(addOn.code ?? addOn.addOnCode, key.toUpperCase().replace(/[^A-Z0-9]+/g, "_")),
       name: text(addOn.name ?? addOn.title, key), nameSl: text(addOn.nameSl ?? addOn.titleSl, text(addOn.name ?? addOn.title, key)),
       description: text(addOn.description), descriptionSl: text(addOn.descriptionSl, text(addOn.description)),
       monthlyGross: money(addOn.monthlyGross ?? addOn.priceGross ?? addOn.monthlyPriceGross ?? addOn.monthlyPrice ?? addOn.price, "addOn.monthlyGross"),
@@ -131,7 +123,7 @@ export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCata
     includedUsers, annualBilledMonths: integer(raw.annualBilledMonths, "annualBilledMonths", 1),
     annualSavingsMonths: integer(raw.annualSavingsMonths, "annualSavingsMonths"),
     plans, features, additionalUserRules, addOns,
-    // Preserve the API's SMS unit precision; round totals, not unit prices.
+    // Preserve SMS unit precision. Currency rounding belongs on totals, not units.
     smsPerMessageGross: money(raw.smsPerMessageGross, "smsPerMessageGross"),
   };
 };
