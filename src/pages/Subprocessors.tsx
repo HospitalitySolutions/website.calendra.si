@@ -6,9 +6,9 @@ import { useSiteLanguage } from "@/lib/site-language";
 const Subprocessors = () => {
   const { language } = useSiteLanguage();
   const providers = SUBPROCESSORS.map((provider) => provider.name === "OpenAI" ? { ...provider,
-    purpose: { sl: "Aktivní besedilna podpora za uporabo Calendre. Glasovni sistem ni v uporabi.", en: "Live text-based assistance with using Calendra. The voice system is not live." },
+    purpose: { sl: "Aktivna besedilna podpora za uporabo Calendre. Glasovni sistem ni v uporabi.", en: "Live text-based assistance with using Calendra. The voice system is not live." },
     dataCategories: { sl: "Oddano vprašanje, omejen pogovorni kontekst in navodila za produkt; ločeno se pri Calendri shranjujejo uporabniška podporna vprašanja.", en: "Submitted question, limited conversation context and product instructions; Calendra separately saves user support questions." },
-    safeguard: { sl: "Preveriti je treba dejansko pogodbeno osebo, regijo, pogoje prenosa in nastavitve ponudnikove hrambe. Ne zatrjujemo posebej odobrene ničelne hrambe ali samodejne uporabe klientskih opomb za AI.", en: "The actual contracting entity, region, transfer terms and provider-retention settings require verification. No specially approved zero-retention arrangement or automatic use of client notes for AI is asserted." },
+    safeguard: { sl: "Preveriti je treba dejansko pogodbeno osebo, regijo, pogoje prenosa in nastavitve ponudnikove hrambe. Ne zatrjujemo posebej odobrene ničelne hrambe ali samodejne uporabe opomb strank za AI.", en: "The actual contracting entity, region, transfer terms and provider-retention settings require verification. No specially approved zero-retention arrangement or automatic use of client notes for AI is asserted." },
   } : provider.name === "Amazon Web Services (AWS)" ? { ...provider,
     purpose: { sl: "Gostovanje, podatkovne baze, varnostne kopije in ponujeno shranjevanje opomb/datotek na Amazon S3.", en: "Hosting, databases, backups and offered note/file storage on Amazon S3." },
   } : provider);
