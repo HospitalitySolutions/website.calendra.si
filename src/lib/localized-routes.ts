@@ -163,7 +163,7 @@ export const sitemapRouteMetadata: Record<CanonicalRouteKey, SitemapRouteMetadat
   tattooPiercing: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-10-10" },
   fitnessPersonalTraining: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-10-10" },
   physiotherapy: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-10-10" },
-  psychologyCounselling: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-10-10" },
+  psychologyCounselling: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-10-23" },
   yogaPilates: { changeFrequency: "monthly", priority: { sl: 0.84, en: 0.74 }, contentLastModified: "2026-10-10" },
   petServices: { changeFrequency: "monthly", priority: { sl: 0.8, en: 0.7 }, contentLastModified: "2026-10-10" },
   educationCoaching: { changeFrequency: "monthly", priority: { sl: 0.82, en: 0.72 }, contentLastModified: "2026-10-10" },

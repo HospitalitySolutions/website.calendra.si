@@ -1803,16 +1803,16 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       navLabel: "Psihologija & svetovanje",
       cardCta: "Calendra za psihologe & svetovalce",
       eyebrow: "Calendra za psihologijo in svetovanje",
-      title: "Program za naročanje za psihologe in svetovalce",
-      intro: "Calendra pomaga pri organizaciji individualnih terminov, spletnih srečanj, ponavljajočih se obiskov, opomnikov, profilov strank, plačil in računov. Termine lahko vnaša samo osebje; javno samostojno naročanje je vaša izbira. Dostopi zaposlenih se prilagodijo vlogam ekipe.",
-      heroPoints: ["Individualni, ponavljajoči in spletni termini", "Opomniki, Zoom povezave in urejen profil stranke", "Vloge in dovoljenja, plačila ter računi"],
+      title: "Program za naročanje in upravljanje terminov za psihologe",
+      intro: "Calendra je program za naročanje, koledar in poslovno administracijo v samostojni psihološki praksi ali svetovalnem centru z več izvajalci. Organizirajte individualne in spletne termine, opomnike, plačila ter račune. Termine lahko vnaša samo osebje – javno naročanje ni obvezno. Calendra ni namenjena vodenju klinične dokumentacije.",
+      heroPoints: ["Za samostojne psihologe in manjše ekipe z 2–5 izvajalci", "Notranje naročanje ali spletne rezervacije po vaši izbiri", "Opomniki, pravice dostopa, plačila in računi"],
       problemsEyebrow: "Manj administracije",
       problemsTitle: "Manj usklajevanja, boljši pregled nad termini",
       problemsIntro: "Calendra poveže naročanje, razpoložljivost in podatke o strankah v en delovni tok.",
       problems: [
         {
           title: "Ročno usklajevanje terminov",
-          description: "Klici in sporočila za uvodni pogovor, svetovalni termin ali spletno srečanje vzamejo čas. Spletno naročanje omogoči izbiro prostega termina tudi takrat, ko se ne morete oglasiti."
+          description: "Termine lahko vpisuje osebje po telefonu ali e-pošti. Če je primerno za vašo prakso, omogočite tudi samostojno spletno naročanje izbranih storitev."
         },
         {
           title: "Prekrivanje razpoložljivosti",
@@ -1849,7 +1849,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
         },
         {
           title: "Profil stranke",
-          description: "Kontaktni podatki, zgodovina terminov, opombe, dokumenti in polja po meri ostanejo na enem mestu."
+          description: "Kontaktni podatki, zgodovina terminov in podatki za račune so na enem mestu. Občutljive vsebine svetovanja in klinično dokumentacijo vodite ločeno v namenskem sistemu."
         },
         {
           title: "Spletni termini, vloge in dovoljenja",
@@ -1860,8 +1860,8 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       workflowTitle: "Kako poteka naročanje v Calendri",
       workflow: ["Določite storitve, trajanje, razpoložljivost svetovalcev in dostop zaposlenih.", "Osebje vnese dogovorjeni termin ali serijo ponavljajočih se obiskov. Če želite, omogočite tudi javno naročanje.", "Za spletni termin uporabite povezani račun za videoklice; osebna srečanja razporedite glede na prostore.", "Nastavite obvestila in dovoljena pravila spremembe ali odpovedi. V sporočila ne vključujte občutljivih vsebin svetovanja.", "Po izvedbi uredite evidenco obiska in račun. Klinično dokumentacijo vodite v namenskem sistemu."],
       screenshotEyebrow: "Pregleden urnik",
-      screenshotTitle: "Individualni in spletni termini v enem koledarju",
-      screenshotDescription: "Izvajalci hitro vidijo svoje termine in razpoložljivost, podatki poslovnega procesa pa ostanejo urejeni na profilu stranke.",
+      screenshotTitle: "Kako poteka naročanje: koledar, opomniki in račun",
+      screenshotDescription: "Primer prikazuje dejanski vmesnik Calendra: ekipa organizira termine, pošlje administrativni opomnik in po izvedbi pripravi račun. Prikazi niso podatki strank Inštituta Avisensa.",
       audienceEyebrow: "Primerno za",
       audienceTitle: "Za psihologe, svetovalce in centre z več izvajalci",
       audiences: ["Psihološko svetovanje", "Karierno svetovanje", "Partnersko svetovanje", "Coaching ena na ena", "Centri z več svetovalci", "Spletno svetovanje", "Samostojni svetovalci", "Izvajalci na več lokacijah"],
@@ -1878,7 +1878,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
         },
         {
           question: "Ali lahko Calendro uporablja več zaposlenih?",
-          answer: "Da. Dodate lahko več uporabnikov in njihove urnike, lokacije ter vloge prilagodite organizaciji podjetja."
+          answer: "Da. Vsakemu izvajalcu določite urnik in dodelite ustrezno vlogo ter pravice dostopa. Calendra lahko uporablja tudi manjša ekipa z 2–5 psihologi, kot je prikazano v zgodbi Inštituta Avisensa."
         },
         {
           question: "Ali Calendra pošilja opomnike?",
@@ -1886,7 +1886,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
         },
         {
           question: "Ali je Calendra namenjena vodenju klinične dokumentacije?",
-          answer: "Ne. Calendra je platforma za naročanje, termine, poslovne podatke o strankah, komunikacijo, plačila in račune. Za zakonsko zahtevano zdravstveno dokumentacijo uporabite ustrezen namenski sistem."
+          answer: "Ne. Calendra je namenjena organizaciji terminov, komunikaciji o rezervacijah in poslovni administraciji, ne hrambi diagnoz, terapevtskih zapiskov ali zakonsko zahtevane klinične dokumentacije. Preverite ustrezno pravno podlago, omejite dostop in uporabljajte nevtralna besedila opomnikov."
         }
       ],
       finalTitle: "Uredite naročanje za svetovalno prakso na miren in pregleden način",
@@ -1896,16 +1896,16 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       navLabel: "Psychology & counselling",
       cardCta: "Calendra for psychologists & counsellors",
       eyebrow: "Calendra for psychology and counselling",
-      title: "Booking software for psychologists and counsellors",
-      intro: "Calendra helps organise individual appointments, online meetings, recurring visits, reminders, client profiles, payments and invoices. Staff can manage all appointments internally; public self-booking is optional. Employee access can be adapted to team roles.",
-      heroPoints: ["Individual, recurring and online appointments", "Reminders, Zoom links and organised client profiles", "Roles and permissions, payments and invoices"],
+      title: "Appointment booking and team scheduling for psychologists",
+      intro: "Calendra is scheduling and business administration software for independent psychologists and counselling teams. Manage individual and online appointments, reminders, payments and invoices in one place. Staff can book internally; public self-booking is optional. Calendra is not a clinical record system.",
+      heroPoints: ["For independent psychologists and teams of 2–5 providers", "Staff-managed or public self-booking, depending on your practice", "Reminders, permissions, payments and invoicing"],
       problemsEyebrow: "Less administration",
       problemsTitle: "Less coordination and a clearer appointment workflow",
       problemsIntro: "Calendra connects booking, availability and client information in one workflow.",
       problems: [
         {
           title: "Manual appointment coordination",
-          description: "Calls and messages around an introductory call, counselling appointment or online meeting take time. Online booking lets clients choose an available appointment even when you cannot answer immediately."
+          description: "Your team can enter appointments agreed by phone or email. If suitable for your practice, enable public self-booking for selected services."
         },
         {
           title: "Availability overlaps",
@@ -1942,7 +1942,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
         },
         {
           title: "Client profile",
-          description: "Contact details, appointment history, notes, documents and custom fields stay together."
+          description: "Contact details, appointment history and billing information stay together. Keep sensitive counselling notes and clinical records in an appropriate separate system."
         },
         {
           title: "Online appointments, roles and permissions",
@@ -1953,8 +1953,8 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       workflowTitle: "How booking works in Calendra",
       workflow: ["Set up services, duration, counsellor availability and staff access.", "Staff enter an agreed appointment or recurring series. Enable public self-booking only if it suits your practice.", "Use a connected video account for online appointments and allocate rooms for in-person meetings.", "Configure notifications and rescheduling or cancellation rules. Keep sensitive counselling content out of messages.", "Record the visit and issue an invoice after delivery. Keep clinical documentation in a dedicated system."],
       screenshotEyebrow: "A clear schedule",
-      screenshotTitle: "Individual and online appointments in one calendar",
-      screenshotDescription: "Providers can quickly see their appointments and availability while business-process information stays organised on the client profile.",
+      screenshotTitle: "The workflow: calendar, reminders and invoicing",
+      screenshotDescription: "These are real Calendra interface examples: organise an appointment, prepare an administrative reminder and invoice a visit. They do not show clients of Inštitut Avisensa.",
       audienceEyebrow: "Suitable for",
       audienceTitle: "For psychologists, counsellors and multi-provider centres",
       audiences: ["Psychological counselling", "Career counselling", "Relationship counselling", "One-to-one coaching", "Multi-counsellor centres", "Online counselling", "Independent counsellors", "Multi-location providers"],
@@ -1971,7 +1971,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
         },
         {
           question: "Can several employees use Calendra?",
-          answer: "Yes. Add multiple users and configure their schedules, locations and roles around your organisation."
+          answer: "Yes. Each provider can have their own schedule, role and permissions. Calendra also works for small teams of two to five psychologists, as illustrated by the Inštitut Avisensa customer story."
         },
         {
           question: "Does Calendra send reminders?",
@@ -1979,7 +1979,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
         },
         {
           question: "Is Calendra intended for clinical records?",
-          answer: "No. Calendra is a platform for booking, appointments, business client information, communication, payments and invoices. Use an appropriate dedicated system for legally required medical records."
+          answer: "No. Calendra handles appointments, booking communication and business administration, not diagnoses, clinical session notes or legally required health records. Check your lawful basis, limit staff access and use neutral reminder messages."
         }
       ],
       finalTitle: "Organise counselling bookings in a calm, clear workflow",

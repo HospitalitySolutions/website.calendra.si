@@ -13,6 +13,7 @@ import {
 import { getRouteKeyFromPathname, getRoutePath } from "@/lib/localized-routes";
 import { MARKETING_IMAGES } from "@/lib/marketing-images";
 import { getCustomerStoryPath } from "@/lib/customer-stories";
+import { ADDITIONAL_USER_MONTHLY_GROSS, FALLBACK_PUBLIC_PRICING } from "@/lib/public-pricing";
 import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { useSiteLanguage } from "@/lib/site-language";
 import {
@@ -46,6 +47,16 @@ const IndustryDetailPage = () => {
   if (!isIndustryRouteKey(routeKey)) return null;
 
   const page = getIndustryContent(routeKey, language);
+  const isPsychologyPage = routeKey === "psychologyCounselling";
+  // An illustrative quote from the same committed baseline as the public pricing
+  // calculator. Always link to /cenik for the current offer and optional charges.
+  const professionalPlan = FALLBACK_PUBLIC_PRICING.plans.find((plan) => plan.key === "pro");
+  const psychologyMonthlyExample = professionalPlan
+    ? professionalPlan.monthlyGross + (5 - professionalPlan.includedUsers) * ADDITIONAL_USER_MONTHLY_GROSS
+    : null;
+  const formatEuro = (amount: number) => new Intl.NumberFormat(
+    language === "sl" ? "sl-SI" : "en-IE", { style: "currency", currency: "EUR" },
+  ).format(amount);
   const legacyChildren: Partial<Record<IndustryRouteKey, IndustryRouteKey[]>> = {
     beautyHair: ["hairSalons", "beautySalons", "tattooPiercing"],
     consultantsEducators: ["psychologyCounselling", "educationCoaching", "otherServices"],
@@ -265,6 +276,38 @@ const IndustryDetailPage = () => {
               </div>
             </div>
           </section>
+        ) : isPsychologyPage ? (
+          <section className="bg-card py-20 md:py-28" aria-labelledby="psychology-workflow-title">
+            <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+              <div className="mx-auto max-w-3xl text-center">
+                <span className="marketing-eyebrow">{page.screenshotEyebrow}</span>
+                <h2 id="psychology-workflow-title" className="mt-3 font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.screenshotTitle}</h2>
+                <p className="mt-5 text-lg leading-8 text-muted-foreground">{page.screenshotDescription}</p>
+              </div>
+              <div className="mt-12 grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
+                <ResponsiveScreenshot
+                  image={MARKETING_IMAGES.calendar}
+                  alt={language === "sl" ? "Tedenski koledar Calendra s termini več izvajalcev" : "Calendra weekly calendar showing multiple staff schedules"}
+                  caption={language === "sl" ? "1. Uredite urnike izvajalcev in individualne termine." : "1. Organise individual appointments and provider availability."}
+                />
+                <div className="grid gap-6">
+                  <ResponsiveScreenshot
+                    image={MARKETING_IMAGES.reminders}
+                    alt={language === "sl" ? "Nastavitev predlog za obvestila o terminu v Calendri" : "Appointment reminder template editor in Calendra"}
+                    caption={language === "sl" ? "2. Pripravite nevtralno besedilo opomnika brez občutljivih podrobnosti." : "2. Prepare neutral reminders without sensitive appointment details."}
+                  />
+                  <ResponsiveScreenshot
+                    image={MARKETING_IMAGES.invoicing}
+                    alt={language === "sl" ? "Pregled obračunavanja in priprave računa v Calendri" : "Calendra invoicing workflow"}
+                    caption={language === "sl" ? "3. Po terminu pripravite račun v okviru izbranega paketa." : "3. Prepare an invoice after the appointment, subject to plan."}
+                  />
+                </div>
+              </div>
+              <p className="mt-6 text-center text-sm text-muted-foreground">{language === "sl"
+                ? "Prikazani so primeri uporabniškega vmesnika Calendra, ne podatki strank Inštituta Avisensa."
+                : "These are Calendra interface examples, not records belonging to Inštitut Avisensa."}</p>
+            </div>
+          </section>
         ) : (
           <section className="bg-card py-20 md:py-28">
             <div className="container mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:px-8">
@@ -341,6 +384,65 @@ const IndustryDetailPage = () => {
             </div>
           </div>
         </section>
+
+        {isPsychologyPage ? (
+          <section className="bg-background py-20 md:py-24" aria-labelledby="psychology-data-title">
+            <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+              <span className="marketing-eyebrow">{language === "sl" ? "Zasebnost v praksi" : "Practical privacy boundaries"}</span>
+              <h2 id="psychology-data-title" className="mt-3 max-w-3xl font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                {language === "sl" ? "Podatki za naročanje niso klinična dokumentacija" : "Scheduling records are not clinical records"}
+              </h2>
+              <p className="mt-5 max-w-3xl text-lg leading-8 text-muted-foreground">
+                {language === "sl"
+                  ? "Calendra je administrativno orodje. Za vsako vrsto podatkov v vaši praksi določite pravno podlago, obseg dostopa in rok hrambe. Pri občutljivih podatkih uporabite ustrezen namenski sistem."
+                  : "Calendra is an administrative tool. Define the legal basis, access scope and retention period for each data category in your practice. Use an appropriate dedicated system for sensitive clinical data."}
+              </p>
+              <div className="mt-9 grid gap-5 md:grid-cols-2">
+                <div className="rounded-3xl border border-primary/20 bg-card p-7">
+                  <CheckCircle2 className="h-7 w-7 text-primary" aria-hidden="true" />
+                  <h3 className="mt-4 text-xl font-bold text-foreground">{language === "sl" ? "Administracija v Calendri" : "Administration in Calendra"}</h3>
+                  <p className="mt-3 leading-7 text-muted-foreground">{language === "sl"
+                    ? "Organizacija terminov, izvajalcev, razpoložljivosti, kontaktnih podatkov, nevtralnih obvestil ter računov in plačil."
+                    : "Manage appointments, staff schedules, availability, contact details, neutral notifications, invoices and payments."}</p>
+                </div>
+                <div className="rounded-3xl border border-border/70 bg-card p-7">
+                  <ShieldCheck className="h-7 w-7 text-primary" aria-hidden="true" />
+                  <h3 className="mt-4 text-xl font-bold text-foreground">{language === "sl" ? "Klinični zapisi ostanejo ločeno" : "Keep clinical records separate"}</h3>
+                  <p className="mt-3 leading-7 text-muted-foreground">{language === "sl"
+                    ? "Diagnoz, terapevtskih zapiskov, kliničnih ocen in zakonsko zahtevanih zdravstvenih evidenc ne vodite v Calendri. Pravice zaposlenih omejite glede na naloge."
+                    : "Do not use Calendra to store diagnoses, therapy notes, clinical assessments or legally required health records. Restrict staff permissions by role."}</p>
+                </div>
+              </div>
+              <nav aria-label={language === "sl" ? "Dokumenti o varstvu podatkov" : "Privacy documentation"} className="mt-6 flex flex-wrap gap-5 text-sm font-semibold text-primary">
+                <a className="underline underline-offset-4" href={getRoutePath("security", language)}>{language === "sl" ? "Varnost in pravice dostopa" : "Security and permissions"}</a>
+                <a className="underline underline-offset-4" href={getRoutePath("dpa", language)}>{language === "sl" ? "Pogodba o obdelavi podatkov" : "Data Processing Agreement"}</a>
+                <a className="underline underline-offset-4" href={getRoutePath("subprocessors", language)}>{language === "sl" ? "Podobdelovalci" : "Subprocessors"}</a>
+              </nav>
+            </div>
+          </section>
+        ) : null}
+
+        {isPsychologyPage && professionalPlan && psychologyMonthlyExample !== null ? (
+          <section className="bg-card py-16 md:py-20" aria-labelledby="psychology-price-title">
+            <div className="container mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-[1fr_auto] lg:items-center lg:px-8">
+              <div>
+                <span className="marketing-eyebrow">{language === "sl" ? "Primer cene za ekipo" : "Example team pricing"}</span>
+                <h2 id="psychology-price-title" className="mt-3 font-display text-3xl font-bold text-foreground">{language === "sl"
+                  ? "Koliko stane Calendra za pet psihologov?"
+                  : "How much does Calendra cost for five psychologists?"}</h2>
+                <p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{language === "sl"
+                  ? `Primer mesečne naročnine: Profesionalno ${formatEuro(professionalPlan.monthlyGross)} + 4 dodatni uporabniki × ${formatEuro(ADDITIONAL_USER_MONTHLY_GROSS)} = ${formatEuro(psychologyMonthlyExample)} na mesec. SMS, dodatni moduli in morebitne provizije se obračunajo posebej.`
+                  : `Illustrative monthly price: Professional ${formatEuro(professionalPlan.monthlyGross)} + 4 additional users × ${formatEuro(ADDITIONAL_USER_MONTHLY_GROSS)} = ${formatEuro(psychologyMonthlyExample)} per month. SMS, optional modules and potential payment fees are extra.`}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{language === "sl"
+                  ? "Primer temelji na osnovnem ceniku; za najnovejše pogoje uporabite kalkulator na strani Cenik."
+                  : "Based on the published baseline catalog; check the pricing calculator for current terms."}</p>
+              </div>
+              <Button variant="hero" size="lg" asChild>
+                <a href={getRoutePath("pricing", language)}>{pricingLabel}<ArrowRight className="h-4 w-4" /></a>
+              </Button>
+            </div>
+          </section>
+        ) : null}
 
         <RelatedPages routeKey={routeKey} />
 
