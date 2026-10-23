@@ -7,7 +7,7 @@ import { trackMarketingEvent } from "@/lib/marketing-events";
 import type { IndustryContent } from "@/lib/industry-pages";
 import type { SiteLanguage } from "@/lib/site-language";
 import PsychologyVideo from "./PsychologyVideo";
-import "@/styles/psychology.css";
+import "@/styles/group-bookings.css";
 
 type PsychologyHeroProps = {
   page: IndustryContent;
@@ -22,21 +22,21 @@ export const PsychologyHero = ({ page, language, ctaRef }: PsychologyHeroProps) 
     : ["Appointment booking", "and team scheduling", "for psychologists"];
 
   return (
-    <section className="psychology-hero" aria-labelledby="psychology-hero-title">
+    <section className="group-bookings-hero psychology-hero" aria-labelledby="psychology-hero-title">
       <div className="container">
         <PageBreadcrumbs routeKey="psychologyCounselling" />
-        <div className="psychology-hero-layout">
-          <div className="psychology-hero-copy">
+        <div className="group-bookings-hero-layout">
+          <div className="group-bookings-hero-copy">
             <span className="marketing-eyebrow">{page.eyebrow}</span>
-            <h1 id="psychology-hero-title" className="font-display">
+            <h1 id="psychology-hero-title" className="font-display text-3xl font-bold tracking-tight">
               {titleLines.map((line, index) => (
                 <span key={line} className={index === 2 ? "text-primary" : undefined}>
                   {index > 0 ? " " : ""}{line}
                 </span>
               ))}
             </h1>
-            <p className="psychology-hero-intro">{page.intro}</p>
-            <ul className="psychology-hero-points">
+            <p className="group-bookings-intro">{page.intro}</p>
+            <ul className="group-bookings-points">
               {page.heroPoints.map((point) => (
                 <li key={point}>
                   <span><Check aria-hidden="true" /></span>
@@ -44,7 +44,7 @@ export const PsychologyHero = ({ page, language, ctaRef }: PsychologyHeroProps) 
                 </li>
               ))}
             </ul>
-            <div ref={ctaRef} className="psychology-hero-actions mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <div ref={ctaRef} className="group-bookings-actions mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button variant="hero" size="lg" asChild>
                 <TrialSignupLink onClick={() => trackMarketingEvent("trial_cta_click", { placement: "industry_page", language })}>
                   {sl ? "Preizkusite brezplačno" : "Try it free"}
@@ -80,22 +80,22 @@ export const PsychologyUseCases = ({ language }: { language: SiteLanguage }) => 
   ];
   const icons = [CalendarDays, UsersRound, CreditCard, BellRing];
   return (
-    <section className="psychology-benefit-grid psychology-benefit-grid--blue" aria-labelledby="psychology-why-title">
+    <section className="group-bookings-use-cases" aria-labelledby="psychology-why-title">
       <div className="container">
-        <h2 id="psychology-why-title" className="font-display">
+        <h2 id="psychology-why-title" className="font-display text-3xl font-bold tracking-tight">
           {sl ? "Zakaj psihologi in svetovalci izberejo Calendro?" : "Why do psychologists and counsellors choose Calendra?"}
         </h2>
-        <p className="psychology-benefit-grid__intro">
+        <p className="mt-3 text-base leading-7 text-muted-foreground">
           {sl ? "Vse, kar potrebujete za učinkovito vodenje terminov in strank – na enem mestu." : "Everything you need to manage appointments and clients in one place."}
         </p>
-        <div className="psychology-benefit-grid__cards">
+        <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {cards.map((item, index) => {
             const Icon = icons[index];
             return (
-              <article key={item.title} className="psychology-benefit-card">
-                <span className="psychology-benefit-card__icon"><Icon aria-hidden="true" /></span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
+              <article key={item.title} className="rounded-xl border border-border bg-white p-5">
+                <span className="mb-4 grid h-11 w-11 place-items-center rounded-full bg-primary/10 text-primary"><Icon className="h-5 w-5" aria-hidden="true" /></span>
+                <h3 className="font-display text-base font-bold leading-6 tracking-tight">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
               </article>
             );
           })}
@@ -120,22 +120,22 @@ export const PsychologyBenefits = ({ language }: { language: SiteLanguage }) => 
   ];
   const icons = [Clock3, FileText, ShieldCheck, BarChart3];
   return (
-    <section className="psychology-benefit-grid psychology-benefit-grid--white" aria-labelledby="psychology-benefits-title">
+    <section className="psychology-benefits bg-background py-12 md:py-14" aria-labelledby="psychology-benefits-title">
       <div className="container">
-        <h2 id="psychology-benefits-title" className="font-display">
+        <h2 id="psychology-benefits-title" className="font-display text-3xl font-bold tracking-tight">
           {sl ? "Kaj pridobite z urejenimi termini in strankami?" : "What do you gain from better organised appointments?"}
         </h2>
-        <p className="psychology-benefit-grid__intro">
+        <p className="mt-3 text-base leading-7 text-muted-foreground">
           {sl ? "Calendra vam pomaga pri vsakdanjem delu, da se lahko osredotočite na to, kar je najpomembnejše – na svoje stranke." : "Calendra simplifies administration so you can focus on what matters most: your clients."}
         </p>
-        <div className="psychology-benefit-grid__cards">
+        <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {cards.map((item, index) => {
             const Icon = icons[index];
             return (
-              <article key={item.title} className="psychology-benefit-card">
-                <span className="psychology-benefit-card__icon"><Icon aria-hidden="true" /></span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
+              <article key={item.title} className="rounded-xl border border-border bg-white p-5">
+                <span className="mb-4 grid h-11 w-11 place-items-center rounded-full bg-primary/10 text-primary"><Icon className="h-5 w-5" aria-hidden="true" /></span>
+                <h3 className="font-display text-base font-bold leading-6 tracking-tight">{item.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{item.body}</p>
               </article>
             );
           })}

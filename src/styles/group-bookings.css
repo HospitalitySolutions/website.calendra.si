@@ -82,3 +82,9 @@
   .group-bookings-actions a { width: 100%; font-size: 0.875rem; }
   .group-bookings-page.marketing-redesign main > .group-bookings-use-cases { padding-block: 36px 40px; }
 }
+
+/* Psychology uses the group-booking layout, without decorative artwork behind the video. */
+.group-bookings-page.marketing-redesign main > .group-bookings-hero.psychology-hero {
+  background-color: #fff !important;
+  background-image: none !important;
+}

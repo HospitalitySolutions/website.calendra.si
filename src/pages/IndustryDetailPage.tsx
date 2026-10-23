@@ -129,7 +129,7 @@ const IndustryDetailPage = () => {
       : null;
 
   return (
-    <div className={isPsychologyPage ? "marketing-page marketing-redesign psychology-page min-h-screen bg-background" : "marketing-page marketing-redesign min-h-screen bg-background"}>
+    <div className={isPsychologyPage ? "marketing-page marketing-redesign psychology-page group-bookings-page min-h-screen bg-background" : "marketing-page marketing-redesign min-h-screen bg-background"}>
       <Navbar />
       <main>
         {isPsychologyPage ? (
