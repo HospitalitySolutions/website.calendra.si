@@ -60,6 +60,7 @@ describe("application-owned pricing", () => {
     for (const file of ["src/lib/public-pricing.ts", "src/lib/pricing-catalog.ts"]) {
       expect(read(file)).not.toMatch(/monthlyGross\s*:\s*\d|annualGross\s*:\s*\d|monthlyGrossPerUser\s*:\s*\d/);
     }
+    expect(read("src/components/landing/Pricing.tsx")).not.toMatch(/price:\s*"[0-9€]/);
     expect(read("vite.config.ts")).toContain("pricingSnapshotPlugin()");
     expect(read("vite.config.ts")).not.toContain("test/fixtures");
     expect(read("vitest.config.ts")).toContain("test/fixtures/public-pricing-snapshot.ts");

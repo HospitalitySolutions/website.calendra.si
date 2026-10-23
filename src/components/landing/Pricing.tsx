@@ -288,7 +288,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "basic",
         name: "Basic",
-        price: "14.90€",
+        price: "",
         priceSuffix: "/ month",
         description: "For individuals who are just getting started.",
         features: [
@@ -305,7 +305,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "professional",
         name: "Professional",
-        price: "24.90€",
+        price: "",
         priceSuffix: "/ month",
         description: "For growing businesses.",
         features: [
@@ -322,7 +322,7 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "premium",
         name: "Premium",
-        price: "39.90€",
+        price: "",
         priceSuffix: "/ month",
         description: "All advanced features for demanding teams.",
         features: [
