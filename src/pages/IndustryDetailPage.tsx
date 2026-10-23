@@ -48,6 +48,17 @@ const IndustryDetailPage = () => {
 
   const page = getIndustryContent(routeKey, language);
   const isPsychologyPage = routeKey === "psychologyCounselling";
+  const psychologyGuides = language === "sl"
+    ? [
+        { slug: "narocanje-terminov-za-psihologe", title: "Kako organizirati naročanje v psihološki praksi", description: "Od prvega stika do urnikov izvajalcev, opomnikov in varstva podatkov." },
+        { slug: "spletno-ali-rocno-narocanje-psihologi", title: "Spletno ali ročno naročanje pri psihologu?", description: "Primerjava različnih načinov naročanja in kombiniranega modela." },
+        { slug: "program-za-2-do-5-psihologov", title: "Program za ekipo z 2–5 psihologi", description: "Kontrolni seznam za skupni koledar, pravice dostopa in stroške." },
+      ]
+    : [
+        { slug: "appointments-for-psychologists", title: "Organising appointments in a psychology practice", description: "First contact, provider schedules, reminders and privacy boundaries." },
+        { slug: "online-vs-staff-booking-psychology", title: "Online or staff-managed booking?", description: "When either approach—or a hybrid process—may make sense." },
+        { slug: "software-for-small-psychology-teams", title: "Software for teams of 2–5 psychologists", description: "A checklist for team calendars, permissions and total costs." },
+      ];
   // An illustrative quote from the same committed baseline as the public pricing
   // calculator. Always link to /cenik for the current offer and optional charges.
   const professionalPlan = FALLBACK_PUBLIC_PRICING.plans.find((plan) => plan.key === "pro");
@@ -440,6 +451,33 @@ const IndustryDetailPage = () => {
               <Button variant="hero" size="lg" asChild>
                 <a href={getRoutePath("pricing", language)}>{pricingLabel}<ArrowRight className="h-4 w-4" /></a>
               </Button>
+            </div>
+          </section>
+        ) : null}
+
+        {isPsychologyPage ? (
+          <section className="bg-background py-16 md:py-20" aria-labelledby="psychology-guides-title">
+            <div className="container mx-auto max-w-7xl px-4 lg:px-8">
+              <span className="marketing-eyebrow">{language === "sl" ? "Praktični vodniki" : "Practical guides"}</span>
+              <h2 id="psychology-guides-title" className="mt-3 max-w-3xl font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                {language === "sl" ? "Kako izbrati ustrezen način naročanja za psihološko prakso" : "Choose the right booking workflow for your psychology practice"}
+              </h2>
+              <div className="mt-8 grid gap-5 md:grid-cols-3">
+                {psychologyGuides.map((guide) => (
+                  <a
+                    key={guide.slug}
+                    href={`${getRoutePath("blog", language)}/${guide.slug}`}
+                    className="group flex flex-col rounded-3xl border border-border/70 bg-card p-7 shadow-soft transition hover:-translate-y-1 hover:border-primary/30 hover:shadow-lg"
+                  >
+                    <h3 className="text-lg font-bold text-foreground">{guide.title}</h3>
+                    <p className="mt-3 flex-1 leading-7 text-muted-foreground">{guide.description}</p>
+                    <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                      {language === "sl" ? "Preberite vodnik" : "Read the guide"}
+                      <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                    </span>
+                  </a>
+                ))}
+              </div>
             </div>
           </section>
         ) : null}
