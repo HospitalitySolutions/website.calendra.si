@@ -13,7 +13,9 @@ import {
 import { getRouteKeyFromPathname, getRoutePath } from "@/lib/localized-routes";
 import { MARKETING_IMAGES } from "@/lib/marketing-images";
 import { getCustomerStoryPath } from "@/lib/customer-stories";
-import { ADDITIONAL_USER_MONTHLY_GROSS, FALLBACK_PUBLIC_PRICING } from "@/lib/public-pricing";
+import { additionalUsersTotal } from "@/lib/public-pricing";
+import { usePublicPricingCatalog } from "@/hooks/use-public-pricing-catalog";
+import { getPricingTaxNote } from "@/lib/pricing-copy";
 import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { useSiteLanguage } from "@/lib/site-language";
 import {
@@ -43,6 +45,7 @@ const IndustryDetailPage = () => {
   const { language } = useSiteLanguage();
   const routeKey = getRouteKeyFromPathname(pathname);
   const heroCtaRef = useRef<HTMLDivElement | null>(null);
+  const pricingCatalog = usePublicPricingCatalog();
 
   if (!isIndustryRouteKey(routeKey)) return null;
 
@@ -59,15 +62,11 @@ const IndustryDetailPage = () => {
         { slug: "online-vs-staff-booking-psychology", title: "Online or staff-managed booking?", description: "When either approach—or a hybrid process—may make sense." },
         { slug: "software-for-small-psychology-teams", title: "Software for teams of 2–5 psychologists", description: "A checklist for team calendars, permissions and total costs." },
       ];
-  // An illustrative quote from the same committed baseline as the public pricing
-  // calculator. Always link to /cenik for the current offer and optional charges.
-  const professionalPlan = FALLBACK_PUBLIC_PRICING.plans.find((plan) => plan.key === "pro");
-  const psychologyMonthlyExample = professionalPlan
-    ? professionalPlan.monthlyGross + (5 - professionalPlan.includedUsers) * ADDITIONAL_USER_MONTHLY_GROSS
-    : null;
-  const formatEuro = (amount: number) => new Intl.NumberFormat(
-    language === "sl" ? "sl-SI" : "en-IE", { style: "currency", currency: "EUR" },
-  ).format(amount);
+  const professionalPlan = pricingCatalog.plans.find((plan) => plan.key === "pro");
+  const teamAdditionalUsers = professionalPlan ? Math.max(0, 5 - professionalPlan.includedUsers) : 0;
+  const teamAdditionalCost = professionalPlan ? additionalUsersTotal(5, professionalPlan.includedUsers, pricingCatalog.additionalUserRules) : 0;
+  const psychologyMonthlyExample = professionalPlan ? Math.round((professionalPlan.monthlyGross + teamAdditionalCost) * 100) / 100 : null;
+  const formatEuro = (amount: number) => new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-IE", { style: "currency", currency: pricingCatalog.currency }).format(amount);
   const legacyChildren: Partial<Record<IndustryRouteKey, IndustryRouteKey[]>> = {
     beautyHair: ["hairSalons", "beautySalons", "tattooPiercing"],
     consultantsEducators: ["psychologyCounselling", "educationCoaching", "otherServices"],
@@ -442,11 +441,11 @@ const IndustryDetailPage = () => {
                   ? "Koliko stane Calendra za pet psihologov?"
                   : "How much does Calendra cost for five psychologists?"}</h2>
                 <p className="mt-4 max-w-3xl leading-7 text-muted-foreground">{language === "sl"
-                  ? `Primer mesečne naročnine: Profesionalno ${formatEuro(professionalPlan.monthlyGross)} + 4 dodatni uporabniki × ${formatEuro(ADDITIONAL_USER_MONTHLY_GROSS)} = ${formatEuro(psychologyMonthlyExample)} na mesec. SMS, dodatni moduli in morebitne provizije se obračunajo posebej.`
-                  : `Illustrative monthly price: Professional ${formatEuro(professionalPlan.monthlyGross)} + 4 additional users × ${formatEuro(ADDITIONAL_USER_MONTHLY_GROSS)} = ${formatEuro(psychologyMonthlyExample)} per month. SMS, optional modules and potential payment fees are extra.`}</p>
+                  ? `Primer mesečne naročnine: ${professionalPlan.nameSl} ${formatEuro(professionalPlan.monthlyGross)} + dodatni uporabniki (${teamAdditionalUsers}): ${formatEuro(teamAdditionalCost)} = ${formatEuro(psychologyMonthlyExample)} na mesec. SMS, dodatni moduli in morebitne provizije se obračunajo posebej.`
+                  : `Illustrative monthly price: ${professionalPlan.name} ${formatEuro(professionalPlan.monthlyGross)} + additional users (${teamAdditionalUsers}): ${formatEuro(teamAdditionalCost)} = ${formatEuro(psychologyMonthlyExample)} per month. SMS, optional modules and potential payment fees are extra.`}</p>
                 <p className="mt-2 text-sm text-muted-foreground">{language === "sl"
-                  ? "Primer temelji na osnovnem ceniku; za najnovejše pogoje uporabite kalkulator na strani Cenik."
-                  : "Based on the published baseline catalog; check the pricing calculator for current terms."}</p>
+                  ? `Primer uporablja cenik aplikacije. ${getPricingTaxNote(language, pricingCatalog.vatIncluded)} Končni obseg preverite v kalkulatorju.`
+                  : `This example uses the application catalog. ${getPricingTaxNote(language, pricingCatalog.vatIncluded)} Confirm your requirements in the pricing calculator.`}</p>
               </div>
               <Button variant="hero" size="lg" asChild>
                 <a href={getRoutePath("pricing", language)}>{pricingLabel}<ArrowRight className="h-4 w-4" /></a>

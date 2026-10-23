@@ -114,10 +114,10 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     enterprisePanelCta: "Pošljite povpraševanje",
     enterprisePanelResponse: "Skupaj določimo naslednje korake.",
     usersLabel: "2. Uporabniki",
-    usersHint: "Vsak dodatni uporabnik: 5,90 € / mesec",
+    usersHint: "",
     usersCountLabel: "uporabnikov",
     smsLabel: "3. Dodatna SMS sporočila",
-    smsHint: "Vsako dodatno SMS sporočilo: 0,06€",
+    smsHint: "",
     smsCountLabel: "SMS sporočil",
     optionsLabel: "4. Dodatni moduli",
     optionFiscal: "Davčna blagajna",
@@ -157,9 +157,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "basic",
         name: "Osnovno",
-        price: "14,90€",
+        price: "",
         priceSuffix: "/ mesec",
-        baseMonthly: 14.9,
         description: "Za posameznike, ki začenjajo.",
         features: [
           "1 uporabnik (možen dokup dodatnih)",
@@ -175,9 +174,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "professional",
         name: "Profesionalno",
-        price: "24,90€",
+        price: "",
         priceSuffix: "/ mesec",
-        baseMonthly: 24.9,
         description: "Za rastoča podjetja.",
         features: [
           "Vse iz osnovnega paketa +",
@@ -193,9 +191,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "premium",
         name: "Premium",
-        price: "39,90€",
+        price: "",
         priceSuffix: "/ mesec",
-        baseMonthly: 39.9,
         description: "Vse funkcionalnosti za zahtevne.",
         features: [
           "Vse iz profesionalnega paketa +",
@@ -248,10 +245,10 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     enterprisePanelCta: "Send an enquiry",
     enterprisePanelResponse: "Agree the next steps together.",
     usersLabel: "2. Additional users",
-    usersHint: "Each additional user: €5.90 / month",
+    usersHint: "",
     usersCountLabel: "users",
     smsLabel: "3. Additional SMS messages",
-    smsHint: "Each additional SMS message: €0.06",
+    smsHint: "",
     smsCountLabel: "SMS messages",
     optionsLabel: "4. Add-on modules",
     optionFiscal: "Fiscal cash register",
@@ -293,7 +290,6 @@ const translations: Record<SiteLanguage, TranslationSet> = {
         name: "Basic",
         price: "14.90€",
         priceSuffix: "/ month",
-        baseMonthly: 14.9,
         description: "For individuals who are just getting started.",
         features: [
           "1 user (additional users can be purchased)",
@@ -311,7 +307,6 @@ const translations: Record<SiteLanguage, TranslationSet> = {
         name: "Professional",
         price: "24.90€",
         priceSuffix: "/ month",
-        baseMonthly: 24.9,
         description: "For growing businesses.",
         features: [
           "Everything in the Basic plan +",
@@ -329,7 +324,6 @@ const translations: Record<SiteLanguage, TranslationSet> = {
         name: "Premium",
         price: "39.90€",
         priceSuffix: "/ month",
-        baseMonthly: 39.9,
         description: "All advanced features for demanding teams.",
         features: [
           "Everything in the Professional plan +",

@@ -22,6 +22,6 @@ export default defineConfig({
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
   },
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: { "@": path.resolve(__dirname, "./src"), "virtual:app-pricing-snapshot": path.resolve(__dirname, "./src/test/fixtures/public-pricing-snapshot.ts") },
   },
 });

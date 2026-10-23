@@ -20,7 +20,6 @@ import {
 import { getSeoForPathname } from "@/lib/seo";
 import { SiteLanguageProvider, type SiteLanguage } from "@/lib/site-language";
 
-const additionalUserRule = [{ fromUser: 2, toUser: null, monthlyGrossPerUser: 5.9 }];
 const legacyCatalog: PublicPricingCatalog = {
   ...FALLBACK_PUBLIC_PRICING,
   additionalUserRules: [
@@ -69,8 +68,7 @@ const expectPublishedCatalog = (language: SiteLanguage, catalog: PublicPricingCa
     name: language === "sl" ? plan.nameSl : plan.name,
     price: currency.format(plan.monthlyGross),
   })));
-  expect(page.querySelector(".pricing-control-header p")?.textContent).toContain(currency.format(5.9));
-  expect(page.querySelector(".pricing-control-header p")?.textContent).not.toContain(currency.format(3.9));
+  for (const rule of catalog.additionalUserRules) expect(page.querySelector(".pricing-control-header p")?.textContent).toContain(currency.format(rule.monthlyGrossPerUser));
 
   const summary = page.querySelector("#pricing-answer")?.textContent;
   expect(summary).toBe(getPricingSummary(language));
@@ -78,7 +76,7 @@ const expectPublishedCatalog = (language: SiteLanguage, catalog: PublicPricingCa
     const name = language === "sl" ? plan.nameSl : plan.name;
     expect(summary).toContain(`${name} ${decimal.format(plan.monthlyGross)} ${catalog.currency}`);
   }
-  expect(summary).toContain(`${decimal.format(5.9)} ${catalog.currency}`);
+  for (const rule of catalog.additionalUserRules) expect(summary).toContain(`${decimal.format(rule.monthlyGrossPerUser)} ${catalog.currency}`);
   expect(buildLlmsTxt()).toContain(summary);
 
   const prices = catalog.plans.map((plan) => plan.monthlyGross);
@@ -124,32 +122,29 @@ afterEach(() => {
   document.documentElement.lang = originalLanguage;
 });
 
-describe("confirmed public pricing", () => {
-  it("keeps the confirmed monthly and annual prices available without an API response", () => {
-    expect(getInitialPricingCatalog().plans.map(({ key, monthlyGross, annualGross }) => ({ key, monthlyGross, annualGross })))
-      .toEqual([
-        { key: "basic", monthlyGross: 17.9, annualGross: 179 },
-        { key: "pro", monthlyGross: 28.9, annualGross: 289 },
-        { key: "business", monthlyGross: 47.9, annualGross: 479 },
-      ]);
-    expect(getInitialPricingCatalog()).toMatchObject({ currency: "EUR", vatIncluded: true, includedUsers: 1 });
+describe("app-owned pricing contract", () => {
+  it("starts from an API snapshot rather than a production price table", () => {
+    expect(getInitialPricingCatalog()).toEqual(FALLBACK_PUBLIC_PRICING);
   });
-
-  it.each([
-    { label: "legacy tiers", rules: legacyCatalog.additionalUserRules },
-    { label: "reversed legacy tiers", rules: [...legacyCatalog.additionalUserRules].reverse() },
-    { label: "a stale free rate", rules: apiCatalog.additionalUserRules },
-    { label: "missing rules", rules: undefined },
-  ])("preserves the confirmed €5.90 rate when normalizing $label", ({ rules }) => {
-    const catalog = normalizePublicPricingCatalog({ ...apiCatalog, additionalUserRules: rules });
-    expect(catalog.additionalUserRules).toEqual(additionalUserRule);
-    expect(catalog.plans).toEqual(apiCatalog.plans);
+  it.each([legacyCatalog, apiCatalog])("preserves provider rates, including zero", (catalog) => {
+    expect(normalizePublicPricingCatalog(catalog).additionalUserRules).toEqual(catalog.additionalUserRules);
   });
-
-  it.each(["sl", "en"] as const)("renders matching cards, answers and structured offers from an old snapshot in %s", (language) => {
+  it("sorts valid tiers without replacing their prices", () => {
+    expect(normalizePublicPricingCatalog({ ...legacyCatalog, additionalUserRules: [...legacyCatalog.additionalUserRules].reverse() }).additionalUserRules).toEqual(legacyCatalog.additionalUserRules);
+  });
+  it("rejects missing or corrupt price fields instead of filling in website values", () => {
+    for (const raw of [undefined, {}, { ...apiCatalog, additionalUserRules: undefined }, { ...apiCatalog, plans: [] }, { ...apiCatalog, smsPerMessageGross: null }]) expect(() => normalizePublicPricingCatalog(raw)).toThrow();
+  });
+  it("preserves empty add-ons, zero annual savings and SMS unit precision", () => {
+    const result = normalizePublicPricingCatalog({ ...apiCatalog, addOns: [], annualSavingsMonths: 0, smsPerMessageGross: 0.0485, vatIncluded: false });
+    expect(result.addOns).toEqual([]);
+    expect(result.annualSavingsMonths).toBe(0);
+    expect(result.smsPerMessageGross).toBe(0.0485);
+    expect(result.vatIncluded).toBe(false);
+  });
+  it.each(["sl", "en"] as const)("uses the verified initial snapshot in %s", (language) => {
     setPrerenderedPricingCatalog(legacyCatalog);
-    expect(getInitialPricingCatalog().additionalUserRules).toEqual(additionalUserRule);
-    expectPublishedCatalog(language, FALLBACK_PUBLIC_PRICING);
+    expectPublishedCatalog(language, legacyCatalog);
   });
 });
 
@@ -158,19 +153,20 @@ describe("current public API snapshot", () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => apiCatalog }));
     const catalog = await fetchPublicPricingCatalog();
     expect(catalog.plans).toEqual(apiCatalog.plans);
-    expect(catalog.additionalUserRules).toEqual(additionalUserRule);
+    expect(catalog.additionalUserRules).toEqual(apiCatalog.additionalUserRules);
     expect(getInitialPricingCatalog()).toBe(catalog);
     expectPublishedCatalog(language, catalog);
   });
 
-  it.each(["HTTP", "network"] as const)("keeps the last successful snapshot when the %s request fails", async (failure) => {
+  it.each(["HTTP", "network", "invalid catalog"] as const)("keeps the last successful snapshot when the %s request fails", async (failure) => {
     const fetchMock = vi.fn().mockResolvedValueOnce({ ok: true, json: async () => apiCatalog });
     if (failure === "HTTP") fetchMock.mockResolvedValueOnce({ ok: false, status: 503 });
+    else if (failure === "invalid catalog") fetchMock.mockResolvedValueOnce({ ok: true, json: async () => ({}) });
     else fetchMock.mockRejectedValueOnce(new TypeError("Network unavailable"));
     vi.stubGlobal("fetch", fetchMock);
 
     const savedCatalog = await fetchPublicPricingCatalog();
-    await expect(fetchPublicPricingCatalog()).rejects.toThrow(failure === "HTTP" ? "503" : "Network unavailable");
+    await expect(fetchPublicPricingCatalog()).rejects.toThrow(failure === "HTTP" ? "503" : failure === "invalid catalog" ? "Invalid app pricing catalog" : "Network unavailable");
     expect(getInitialPricingCatalog()).toBe(savedCatalog);
     expectPublishedCatalog("sl", savedCatalog);
   });
@@ -192,7 +188,7 @@ describe("current public API snapshot", () => {
     const catalogAtRefresh = vi.fn(() => getInitialPricingCatalog());
     window.addEventListener(PRICING_CATALOG_UPDATED_EVENT, catalogAtRefresh);
     vi.stubGlobal("fetch", vi.fn()
-      .mockResolvedValueOnce({ ok: true, json: async () => legacyCatalog })
+      .mockResolvedValueOnce({ ok: true, json: async () => FALLBACK_PUBLIC_PRICING })
       .mockResolvedValueOnce({ ok: true, json: async () => apiCatalog })
       .mockResolvedValueOnce({ ok: true, json: async () => apiCatalog }));
 

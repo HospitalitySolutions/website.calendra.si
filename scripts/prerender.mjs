@@ -121,14 +121,12 @@ if (!serverEntryPath) {
 const {
   DEFAULT_OG_IMAGE,
   PRICING_CATALOG_SCRIPT_ID,
-  PUBLIC_PRICING_ENDPOINT,
   buildLlmsFullTxt,
   buildLlmsTxt,
   getSitemapEntries,
-  normalizePublicPricingCatalog,
+  getInitialPricingCatalog,
   renderPage,
   routesToPrerender,
-  setPrerenderedPricingCatalog,
 } = await import(pathToFileURL(serverEntryPath));
 
 const seoBlockPattern = /<!-- CALENDRA_SEO_START -->[\s\S]*?<!-- CALENDRA_SEO_END -->/;
@@ -136,36 +134,8 @@ const routePreloadsPattern = /<!-- CALENDRA_ROUTE_PRELOADS_START -->[\s\S]*?<!--
 const analyticsBlockPattern = /<!-- CALENDRA_ANALYTICS_START -->[\s\S]*?<!-- CALENDRA_ANALYTICS_END -->/;
 const pricingBlockPattern = /<!-- CALENDRA_PRICING_START -->[\s\S]*?<!-- CALENDRA_PRICING_END -->/;
 
-/**
- * Snapshot the live pricing catalog into every page.
- *
- * The configurator otherwise renders the committed fallback and then swaps in
- * the fetched catalog after mount; when the two differ the tier grid changes
- * height and the page visibly reflows. Embedding the catalog makes the
- * prerendered markup, the Product/Offer JSON-LD and the first client render
- * agree, so there is nothing left to shift. A build without network access
- * simply keeps the fallback, which is the behaviour we had before.
- */
-const loadPricingCatalog = async () => {
-  try {
-    const response = await fetch(PUBLIC_PRICING_ENDPOINT, {
-      headers: { Accept: 'application/json' },
-      signal: AbortSignal.timeout(10_000),
-    });
-
-    if (!response.ok) throw new Error(`Pricing endpoint returned ${response.status}`);
-
-    const catalog = normalizePublicPricingCatalog(await response.json());
-    setPrerenderedPricingCatalog(catalog);
-    console.log(`Embedded live pricing catalog (version ${catalog.catalogVersion}) into the prerendered HTML`);
-    return catalog;
-  } catch (error) {
-    console.warn(`Could not reach ${PUBLIC_PRICING_ENDPOINT}; prerendering with the built-in fallback catalog.`, error.message);
-    return undefined;
-  }
-};
-
-const pricingCatalog = await loadPricingCatalog();
+// The Vite build already obtained and validated this app-owned catalog.
+const pricingCatalog = getInitialPricingCatalog();
 
 const pricingBlock = pricingCatalog
   ? `<!-- CALENDRA_PRICING_START -->

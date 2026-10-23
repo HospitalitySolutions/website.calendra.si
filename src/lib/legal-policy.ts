@@ -5,7 +5,6 @@ export const LEGAL_POLICY = {
   taxNumber: "10550631",
   vatId: "SI10550631",
   vatEffectiveFrom: "2026-11-01",
-  basicMonthlyNetFromNovember: 15.9,
   renewalNoticeDays: 30,
   invoiceDueDays: 14,
   reminderDaysOverdue: 7,
