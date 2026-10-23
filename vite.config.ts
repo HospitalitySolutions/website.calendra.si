@@ -7,6 +7,7 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import { componentTagger } from "lovable-tagger";
 import { blogManifestPlugin } from "./plugins/blog-manifest";
+import { pricingSnapshotPlugin } from "./plugins/pricing-snapshot";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -21,6 +22,7 @@ export default defineConfig(({ mode }) => ({
     // MDX must run before the React plugin so it sees JSX rather than markdown.
     { enforce: "pre", ...mdx({ remarkPlugins: [remarkFrontmatter, remarkGfm], rehypePlugins: [rehypeSlug] }) },
     blogManifestPlugin(),
+    pricingSnapshotPlugin(),
     react(),
     mode === "development" && componentTagger(),
   ].filter(Boolean),

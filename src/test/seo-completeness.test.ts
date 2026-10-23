@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { canonicalRoutes, getSitemapLastModified, SHARED_SITE_LAST_MODIFIED, type CanonicalRouteKey, sitemapRouteMetadata } from "@/lib/localized-routes";
-import { ENTRY_PLAN_MONTHLY_PRICE, getSeoForPathname, pageSeo } from "@/lib/seo";
+import { getSeoForPathname, pageSeo } from "@/lib/seo";
 
 const routeKeys = Object.keys(canonicalRoutes) as CanonicalRouteKey[];
 const languages = ["sl", "en"] as const;
@@ -118,8 +118,8 @@ describe("index.html fallback shell", () => {
     }
   });
 
-  it("advertises the same entry price as the pricing catalog", () => {
+  it("does not invent an offer price before app-backed prerendering", () => {
     const html = readIndexHtml();
-    expect(html).toContain(`"price":"${ENTRY_PLAN_MONTHLY_PRICE}"`);
+    expect(html).not.toMatch(/"price"\s*:/);
   });
 });

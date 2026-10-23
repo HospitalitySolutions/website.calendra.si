@@ -15,6 +15,7 @@ import {
   normalizePublicPricingCatalog,
   setPrerenderedPricingCatalog,
 } from "@/lib/public-pricing";
+export { getInitialPricingCatalog } from "@/lib/public-pricing";
 
 const publicProfilePathnames = CUSTOMER_MARKETPLACE_PUBLIC
   ? indexablePublicCompanyProfiles.flatMap((profile) => [
@@ -85,7 +86,6 @@ export const getSitemapEntries = () =>
           lastModified: getSitemapLastModified(seo.articleDates?.modified),
         };
       }
-
 
       if ("profileSlug" in seo && seo.profileSlug) {
         const profile = indexablePublicCompanyProfiles.find((item) => item.slug === seo.profileSlug);

@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { getIndustryContent } from "@/lib/industry-pages";
 import { getSeoForPathname } from "@/lib/seo";
 import { getCustomerStory } from "@/lib/customer-stories";
-import { ADDITIONAL_USER_MONTHLY_GROSS, FALLBACK_PUBLIC_PRICING } from "@/lib/public-pricing";
+import { additionalUsersTotal, FALLBACK_PUBLIC_PRICING } from "@/lib/public-pricing";
 
 describe("psychology search visibility", () => {
   it("has localized, indexable SEO with a concrete administrative product scope", () => {
@@ -32,11 +32,11 @@ describe("psychology search visibility", () => {
     expect(avisensa?.content.sl.facts).toContainEqual({ label: "Spletno naročanje", value: "Ne" });
   });
 
-  it("derives the five-user pricing example from the same baseline catalog as pricing", () => {
+  it("derives the five-user pricing example from the same app-supplied catalog as pricing", () => {
     const plan = FALLBACK_PUBLIC_PRICING.plans.find((candidate) => candidate.key === "pro");
     expect(plan).toBeDefined();
     if (!plan) return;
-    const example = plan.monthlyGross + (5 - plan.includedUsers) * ADDITIONAL_USER_MONTHLY_GROSS;
+    const example = plan.monthlyGross + additionalUsersTotal(5, plan.includedUsers, FALLBACK_PUBLIC_PRICING.additionalUserRules);
     expect(example).toBeGreaterThan(plan.monthlyGross);
     expect(Number.isFinite(example)).toBe(true);
   });

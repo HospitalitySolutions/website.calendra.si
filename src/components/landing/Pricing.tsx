@@ -114,10 +114,10 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     enterprisePanelCta: "Pošljite povpraševanje",
     enterprisePanelResponse: "Skupaj določimo naslednje korake.",
     usersLabel: "2. Uporabniki",
-    usersHint: "Vsak dodatni uporabnik: 5,90 € / mesec",
+    usersHint: "",
     usersCountLabel: "uporabnikov",
     smsLabel: "3. Dodatna SMS sporočila",
-    smsHint: "Vsako dodatno SMS sporočilo: 0,06€",
+    smsHint: "",
     smsCountLabel: "SMS sporočil",
     optionsLabel: "4. Dodatni moduli",
     optionFiscal: "Davčna blagajna",
@@ -157,9 +157,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "basic",
         name: "Osnovno",
-        price: "14,90€",
+        price: "",
         priceSuffix: "/ mesec",
-        baseMonthly: 14.9,
         description: "Za posameznike, ki začenjajo.",
         features: [
           "1 uporabnik (možen dokup dodatnih)",
@@ -175,9 +174,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "professional",
         name: "Profesionalno",
-        price: "24,90€",
+        price: "",
         priceSuffix: "/ mesec",
-        baseMonthly: 24.9,
         description: "Za rastoča podjetja.",
         features: [
           "Vse iz osnovnega paketa +",
@@ -193,9 +191,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "premium",
         name: "Premium",
-        price: "39,90€",
+        price: "",
         priceSuffix: "/ mesec",
-        baseMonthly: 39.9,
         description: "Vse funkcionalnosti za zahtevne.",
         features: [
           "Vse iz profesionalnega paketa +",
@@ -248,10 +245,10 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     enterprisePanelCta: "Send an enquiry",
     enterprisePanelResponse: "Agree the next steps together.",
     usersLabel: "2. Additional users",
-    usersHint: "Each additional user: €5.90 / month",
+    usersHint: "",
     usersCountLabel: "users",
     smsLabel: "3. Additional SMS messages",
-    smsHint: "Each additional SMS message: €0.06",
+    smsHint: "",
     smsCountLabel: "SMS messages",
     optionsLabel: "4. Add-on modules",
     optionFiscal: "Fiscal cash register",
@@ -291,9 +288,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "basic",
         name: "Basic",
-        price: "14.90€",
+        price: "",
         priceSuffix: "/ month",
-        baseMonthly: 14.9,
         description: "For individuals who are just getting started.",
         features: [
           "1 user (additional users can be purchased)",
@@ -309,9 +305,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "professional",
         name: "Professional",
-        price: "24.90€",
+        price: "",
         priceSuffix: "/ month",
-        baseMonthly: 24.9,
         description: "For growing businesses.",
         features: [
           "Everything in the Basic plan +",
@@ -327,9 +322,8 @@ const translations: Record<SiteLanguage, TranslationSet> = {
       {
         key: "premium",
         name: "Premium",
-        price: "39.90€",
+        price: "",
         priceSuffix: "/ month",
-        baseMonthly: 39.9,
         description: "All advanced features for demanding teams.",
         features: [
           "Everything in the Professional plan +",
@@ -377,7 +371,7 @@ const standaloneExtras = {
     includedTitle: "Vključeno v mesečni paket",
     included: ["Funkcionalnosti izbranega paketa", "1 uporabnik", "14-dnevni brezplačni preizkus", "Posodobitve in varnostne izboljšave"],
     extraTitle: "Dodatni stroški po izbiri ali porabi",
-    extra: ["Dodatni uporabniki: 5,90 € / mesec", "Dodatna SMS sporočila: 0,06 € / sporočilo", "Izbrani dodatni moduli"],
+    extra: ["Dodatni uporabniki po ceniku aplikacije", "SMS po porabi in ceniku aplikacije", "Izbrani dodatni moduli"],
     trialTitle: "Pogoji brezplačnega preizkusa",
     trialBody: "Brezplačni preizkus traja 14 dni, začne se z Osnovnim paketom in ne zahteva kreditne kartice. Izbira na ceniku se prenese v registracijo, plačljivi dodatki pa s tem še niso aktivirani. Pred potrditvijo plačljivega paketa vidite izbrani paket, dodatke ter ocenjeni mesečni in prvi račun.",
     relatedTitle: "Preverite povezane funkcionalnosti",
@@ -395,7 +389,7 @@ const standaloneExtras = {
     includedTitle: "Included in the monthly plan",
     included: ["Features in the selected plan", "1 user", "14-day free trial", "Product updates and security improvements"],
     extraTitle: "Optional or usage-based costs",
-    extra: ["Additional users: €5.90 / month", "Additional SMS messages: €0.06 / message", "Selected add-on modules"],
+    extra: ["Additional users at application-catalog rates", "SMS usage at application-catalog rates", "Selected add-on modules"],
     trialTitle: "Free-trial terms",
     trialBody: "The free trial lasts 14 days, starts on the Basic plan and does not require a credit card. Your pricing selection carries into registration; it does not activate paid add-ons. Before confirming a paid plan, you can review the selected package, add-ons and estimated monthly and first invoice.",
     relatedTitle: "Explore related features",

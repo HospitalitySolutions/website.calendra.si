@@ -32,3 +32,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated, verified application catalog; never a committed price list.
+.calendra-cache/

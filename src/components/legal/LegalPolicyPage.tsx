@@ -7,6 +7,7 @@ import { LEGAL } from "@/lib/legal";
 import { LOGIN_ROUTE } from "@/lib/routes";
 
 export const LEGAL_NAVIGATION: Array<{ key: CanonicalRouteKey; sl: string; en: string }> = [
+  { key: "pricing", sl: "Aktualni cenik", en: "Current pricing" },
   { key: "terms", sl: "Pogoji uporabe", en: "Terms of Service" },
   { key: "dpa", sl: "Pogodba o obdelavi podatkov", en: "Data Processing Agreement" },
   { key: "privacy", sl: "Politika zasebnosti", en: "Privacy Policy" },

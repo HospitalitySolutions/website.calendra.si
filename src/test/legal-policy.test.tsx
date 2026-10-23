@@ -12,8 +12,9 @@ describe("owner-confirmed legal policy v0.4", () => {
   it("records the dated VAT change without inventing an annual Basic price", () => {
     expect(LEGAL_POLICY.vatEffectiveFrom).toBe("2026-11-01");
     expect(LEGAL_POLICY.vatId).toBe("SI10550631");
-    expect(LEGAL_POLICY.basicMonthlyNetFromNovember).toBe(15.9);
-    expect(Math.round(LEGAL_POLICY.basicMonthlyNetFromNovember * 1.22 * 100) / 100).toBe(19.4);
+    expect(LEGAL_POLICY).not.toHaveProperty("basicMonthlyNetFromNovember");
+    const prices = LEGAL_DOCUMENTS.terms.sections.find((section) => section.id === "ddv");
+    expect(JSON.stringify(prices)).not.toMatch(/15[.,]90|17[.,]90|19[.,]40/);
     expect(LEGAL_POLICY).not.toHaveProperty("basicAnnualNet");
   });
   it("distinguishes due date, overdue reminder and restriction after receipt", () => {
