@@ -6,6 +6,7 @@ import { ALL_INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
 import {
   BarChart3,
   Bell,
+  BrainCircuit,
   Briefcase,
   BriefcaseBusiness,
   CalendarDays,
@@ -214,6 +215,11 @@ const Navbar = () => {
         title: language === "sl" ? "Vadbe & trenerji" : "Classes & trainers",
         href: getRoutePath("fitnessPersonalTraining", language),
         icon: BarChart3,
+      },
+      {
+        title: language === "sl" ? "Psihologija in svetovanje" : "Psychology & counselling",
+        href: getRoutePath("psychologyCounselling", language),
+        icon: BrainCircuit,
       },
       {
         title: language === "sl" ? "Po meri" : "Custom",

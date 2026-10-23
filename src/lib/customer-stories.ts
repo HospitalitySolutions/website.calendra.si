@@ -59,8 +59,8 @@ export const customerStories: CustomerStory[] = [
       height: 250,
       alt: "Inštitut Avisensa",
     },
-    industryRouteKey: "healthWellbeing",
-    lastModified: "2026-10-06",
+    industryRouteKey: "psychologyCounselling",
+    lastModified: "2026-10-23",
     content: {
       sl: {
         eyebrow: "Zgodba stranke · psihološke storitve",
@@ -100,7 +100,7 @@ export const customerStories: CustomerStory[] = [
           "Calendra nam omogoča, da imamo termine, stranke in organizacijo dela pregledno na enem mestu. Posebej nam je pomembno, da je sistem enostaven za uporabo tako za našo ekipo kot za stranke, ki se naročajo na termine.",
         representativeRole: "Ustanoviteljica, Inštitut Avisensa",
         websiteLabel: "Obiščite spletno stran Inštituta Avisensa",
-        industryCta: "Calendra za zdravje in dobro počutje",
+        industryCta: "Calendra za psihologe in svetovalce",
       },
       en: {
         eyebrow: "Customer story · psychological services",
@@ -140,7 +140,7 @@ export const customerStories: CustomerStory[] = [
           "Calendra lets us keep appointments, clients and work organisation clearly in one place. It is especially important to us that the system is easy to use both for our team and for clients booking appointments.",
         representativeRole: "Founder, Inštitut Avisensa",
         websiteLabel: "Visit the Inštitut Avisensa website",
-        industryCta: "Calendra for health and wellbeing",
+        industryCta: "Calendra for psychology and counselling",
       },
     },
   },

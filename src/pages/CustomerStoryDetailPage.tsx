@@ -1,5 +1,7 @@
 import Footer from "@/components/landing/Footer";
 import Navbar from "@/components/landing/Navbar";
+import ResponsiveScreenshot from "@/components/marketing/ResponsiveScreenshot";
+import { MARKETING_IMAGES } from "@/lib/marketing-images";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -148,6 +150,24 @@ const CustomerStoryDetailPage = () => {
             </div>
           </div>
         </section>
+
+        {story.slug === "institut-avisensa" ? (
+          <section className="bg-card py-16 md:py-20" aria-labelledby="avisensa-ui-title">
+            <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+              <h2 id="avisensa-ui-title" className="font-display text-3xl font-bold text-foreground">
+                {language === "sl" ? "Kako je videti skupni koledar" : "What the shared calendar looks like"}
+              </h2>
+              <p className="mb-8 mt-4 max-w-3xl leading-7 text-muted-foreground">{language === "sl"
+                ? "Primer vmesnika Calendra za delo z več urniki. Posnetek zaslona je demonstracijski in ne prikazuje terminov ali drugih osebnih podatkov strank Avisense."
+                : "A Calendra interface example for coordinating multiple schedules. This is a demonstration screenshot, not Avisensa's appointment records or client data."}</p>
+              <ResponsiveScreenshot
+                image={MARKETING_IMAGES.calendar}
+                alt={language === "sl" ? "Primer tedenskega koledarja Calendra z urniki več izvajalcev" : "Example Calendra weekly calendar with several staff schedules"}
+                caption={language === "sl" ? "V eni aplikaciji je mogoče organizirati urnike več izvajalcev." : "Multiple providers can organise their schedules in one application."}
+              />
+            </div>
+          </section>
+        ) : null}
 
         <section className="bg-background py-16 md:py-24">
           <div className="container mx-auto grid max-w-6xl gap-8 px-4 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">

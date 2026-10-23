@@ -154,8 +154,8 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     en: { title: "Physiotherapy booking and appointment software | Calendra", description: "Physiotherapist schedules, rooms, recurring visits, online booking, reminders, payments, invoices and role-based access." },
   },
   psychologyCounselling: {
-    sl: { title: "Program za naročanje za psihologe in svetovalce | Calendra", description: "Individualni in spletni termini, ponavljajoči obiski, opomniki, Zoom, profili strank, plačila, računi ter vloge in dovoljenja." },
-    en: { title: "Psychology and counselling booking software | Calendra", description: "Individual and online appointments, recurrence, reminders, Zoom, client profiles, payments, invoices, roles and permissions." },
+    sl: { title: "Program za psihologe: termini in naročanje | Calendra", description: "Program za naročanje za psihologe in svetovalne centre: koledar ekip z 2–5 izvajalci, opomniki, spletni termini, računi in nadzor dostopa." },
+    en: { title: "Booking software for psychologists and counsellors | Calendra", description: "Appointment software for independent psychologists and counselling teams: staff scheduling, optional online booking, reminders, permissions and invoicing." },
   },
   yogaPilates: {
     sl: { title: "Program za jogo in pilates | Calendra", description: "Ponavljajoče vadbe, kapaciteta, spletne prijave, čakalna vrsta, članstva, paketi obiskov in evidenca udeležbe za joga in pilates studie." },

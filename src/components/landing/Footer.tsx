@@ -180,7 +180,7 @@ const Footer = () => {
           <nav aria-label={language === "sl" ? "Rešitve po dejavnostih" : "Solutions by industry"}>
             <p className="text-sm font-semibold text-foreground">{language === "sl" ? "Po dejavnostih" : "By industry"}</p>
             <div className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
-              {INDUSTRY_ROUTE_KEYS.map((routeKey) => (
+              {([...INDUSTRY_ROUTE_KEYS, "psychologyCounselling"] as const).map((routeKey) => (
                 <a key={routeKey} href={getRoutePath(routeKey, language)} className="transition-colors hover:text-foreground">
                   {getIndustryContent(routeKey, language).navLabel}
                 </a>

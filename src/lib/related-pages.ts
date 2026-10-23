@@ -123,14 +123,14 @@ const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>>
   // link path into the industry verticals that make it a genuinely broader
   // page than a single-feature one. beautyHair/healthWellbeing/fitnessGroups
   // give it that breadth instead of only linking within the feature cluster.
-  booking: ["customers", "customerStories", "beautyHair", "healthWellbeing", "fitnessGroups", "calendar", "reminders", "pricing"],
+  booking: ["customers", "customerStories", "beautyHair", "healthWellbeing", "psychologyCounselling", "fitnessGroups", "calendar", "reminders", "pricing"],
   customers: ["connect", "booking"],
   businesses: ["customers", "connect", "booking", "customerStories"],
   demo: ["pricing", "booking", "calendar"],
 
   calendar: ["booking", "groupBookings", "reminders", "clientManagement", "beautyHair", "pricing"],
   invoicing: ["fiscalCashRegister", "clientManagement", "booking", "integrations", "beautyHair", "pricing"],
-  clientManagement: ["calendar", "invoicing", "booking", "healthWellbeing", "beautyHair", "pricing"],
+  clientManagement: ["calendar", "invoicing", "booking", "healthWellbeing", "psychologyCounselling", "beautyHair", "pricing"],
   reminders: ["calendar", "booking", "clientManagement", "beautyHair", "fitnessGroups", "pricing"],
   integrations: ["zoom", "calendar", "invoicing", "consultantsEducators", "booking", "pricing"],
   materialManagement: ["beautyHair", "invoicing", "calendar", "clientManagement", "pricing", "booking"],
@@ -138,8 +138,8 @@ const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>>
   groupBookings: ["fitnessGroups", "calendar", "booking", "reminders", "clientManagement", "pricing"],
 
   beautyHair: ["customerStories", "calendar", "reminders", "clientManagement", "materialManagement", "invoicing"],
-  consultantsEducators: ["calendar", "integrations", "zoom", "invoicing", "booking", "pricing"],
-  healthWellbeing: ["customerStories", "calendar", "clientManagement", "reminders", "invoicing", "booking"],
+  consultantsEducators: ["psychologyCounselling", "calendar", "integrations", "zoom", "invoicing", "booking", "pricing"],
+  healthWellbeing: ["psychologyCounselling", "customerStories", "calendar", "clientManagement", "reminders", "invoicing", "booking"],
   fitnessGroups: ["groupBookings", "calendar", "reminders", "booking", "clientManagement", "pricing"],
 
   hairSalons: ["beautySalons", "calendar", "booking", "reminders", "materialManagement", "pricing"],
@@ -159,7 +159,7 @@ const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>>
   zoom: ["integrations", "calendar", "consultantsEducators", "booking"],
 
   blog: ["customerStories", "booking", "reminders", "invoicing", "pricing", "author"],
-  customerStories: ["beautyHair", "healthWellbeing", "booking", "clientManagement", "reminders", "pricing"],
+  customerStories: ["beautyHair", "psychologyCounselling", "healthWellbeing", "booking", "clientManagement", "reminders", "pricing"],
   author: ["blog", "itServices", "booking", "contact"],
 
   itServices: [...IT_SERVICE_ROUTE_KEYS],
