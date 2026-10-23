@@ -46,9 +46,11 @@ try {
     const { page, context, errors } = await setup({ width, path: language === 'sl' ? '/' : '/en' });
     // Avoid primary CTA collision on the initial narrow viewport. Scrolling must never advance time.
     await page.evaluate(() => scrollTo(0, 1200));
-    await page.clock.runFor(9_900);
-    await expect(prompt(page)).toHaveCount(0);
-    await page.clock.runFor(101);
+    // Keep a margin before the 10-second deadline: Playwright's clock
+    // continues advancing in real time while assertions execute.
+    await page.clock.runFor(9_000);
+    assert.equal(await prompt(page).count(), 0, 'prompt must not appear before 10 seconds');
+    await page.clock.runFor(1_001);
     await expect(prompt(page)).toBeVisible();
     assert.equal(await prompt(page).getAttribute('data-demo-invitation'), width < 640 ? 'mobile' : 'desktop');
     assert.equal(await prompt(page).evaluate(el => getComputedStyle(el).animationName), 'none');
