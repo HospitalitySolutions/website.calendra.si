@@ -7,13 +7,6 @@
   --border: 214 46% 89%;
 }
 
-.group-bookings-page .container {
-  width: 100%;
-  max-width: 1380px;
-  margin-inline: auto;
-  padding-inline: clamp(20px, 4vw, 48px);
-}
-
 .group-bookings-page.marketing-redesign main > .group-bookings-hero {
   padding-block: 32px 64px;
   background-image: radial-gradient(ellipse at 83% 36%, hsl(211 100% 96%), transparent 58%) !important;

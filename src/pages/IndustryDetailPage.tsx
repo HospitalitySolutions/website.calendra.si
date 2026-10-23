@@ -3,6 +3,7 @@ import Navbar from "@/components/landing/Navbar";
 import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
 import RelatedPages from "@/components/seo/RelatedPages";
 import ResponsiveScreenshot from "@/components/marketing/ResponsiveScreenshot";
+import { PsychologyHero, PsychologyUseCases, PsychologyBenefits } from "@/components/marketing/PsychologySections";
 import { Button } from "@/components/ui/button";
 import {
   getIndustryContent,
@@ -128,9 +129,12 @@ const IndustryDetailPage = () => {
       : null;
 
   return (
-    <div className="marketing-page marketing-redesign min-h-screen bg-background">
+    <div className={isPsychologyPage ? "marketing-page marketing-redesign psychology-page group-bookings-page min-h-screen bg-background" : "marketing-page marketing-redesign min-h-screen bg-background"}>
       <Navbar />
       <main>
+        {isPsychologyPage ? (
+          <PsychologyHero page={page} language={language} ctaRef={heroCtaRef} />
+        ) : (
         <section className="overflow-hidden border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.07] py-14 md:py-20 lg:py-24">
           <div className="container mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:px-8">
             <div>
@@ -185,7 +189,14 @@ const IndustryDetailPage = () => {
             </div>
           </div>
         </section>
+        )}
 
+        {isPsychologyPage ? (
+          <>
+            <PsychologyUseCases language={language} />
+            <PsychologyBenefits language={language} />
+          </>
+        ) : (
         <section className="bg-background py-20 md:py-28">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">
             <div className="max-w-3xl">
@@ -209,6 +220,7 @@ const IndustryDetailPage = () => {
             </div>
           </div>
         </section>
+        )}
 
         <section id="funkcionalnosti-panoge" className="scroll-mt-24 bg-card py-20 md:py-28">
           <div className="container mx-auto max-w-7xl px-4 lg:px-8">

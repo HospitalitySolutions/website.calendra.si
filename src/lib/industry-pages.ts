@@ -1805,7 +1805,7 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       eyebrow: "Calendra za psihologijo in svetovanje",
       title: "Program za naročanje in upravljanje terminov za psihologe",
       intro: "Calendra je program za naročanje, koledar in poslovno administracijo v samostojni psihološki praksi ali svetovalnem centru z več izvajalci. Organizirajte individualne in spletne termine, opomnike, plačila ter račune. Termine lahko vnaša samo osebje – javno naročanje ni obvezno. Calendra ni namenjena vodenju klinične dokumentacije.",
-      heroPoints: ["Za samostojne psihologe in manjše ekipe z 2–5 izvajalci", "Notranje naročanje ali spletne rezervacije po vaši izbiri", "Opomniki, pravice dostopa, plačila in računi"],
+      heroPoints: ["Za samostojne psihologe in manjše ekipe 2–5 izvajalcev", "Notranje naročanje ali spletne rezervacije po vaši izbiri", "Opomniki, pravice dostopa, plačila in računi"],
       problemsEyebrow: "Manj administracije",
       problemsTitle: "Manj usklajevanja, boljši pregled nad termini",
       problemsIntro: "Calendra poveže naročanje, razpoložljivost in podatke o strankah v en delovni tok.",
