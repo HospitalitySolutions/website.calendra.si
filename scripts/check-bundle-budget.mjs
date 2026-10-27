@@ -23,8 +23,12 @@ const BUDGETS = {
   initialJs: 210,
   /** CSS fetched during initial hydration (homepage and shared styles). */
   initialCss: 19,
-  /** CSS for optional, on-demand route/preview chunks, including pricing and product demos. */
-  onDemandCss: 9,
+  /**
+   * Sum of all optional route/preview stylesheets, not a per-page download.
+   * Fitness redesign adds 0.6 KB gzip of isolated responsive layout CSS;
+   * reserve 1 KB for that new page without raising either initial-load budget.
+   */
+  onDemandCss: 10,
   /** Largest single lazily loaded route chunk, as an early warning for a runaway page. */
   largestRouteChunk: 50,
 };

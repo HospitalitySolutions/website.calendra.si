@@ -55,6 +55,18 @@ jobs:
           node scripts/test-inquiry-demo-browser.mjs
           node scripts/test-demo-booking-browser.mjs
 
+      - name: Fitness landing desktop and mobile checks
+        run: node scripts/test-fitness-landing-browser.mjs
+
+      - name: Fitness landing previews
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fitness-landing-preview
+          path: output/fitness-landing/
+          if-no-files-found: ignore
+          retention-days: 7
+
       - name: Caddy redirects and marketplace HTTP checks
         run: node scripts/test-caddy-seo.mjs
 

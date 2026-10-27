@@ -1,0 +1,29 @@
+/* Fitness-only additions; shared typography, buttons and hero come from the
+   homepage/group-booking design system. Do not affect other industry pages. */
+.fitness-page.marketing-redesign main > .fitness-section { padding-block: 48px; background: white !important; }
+.fitness-page.marketing-redesign main > .fitness-tint { background: hsl(210 100% 97%) !important; }
+.fitness-page .fitness-section h2 { font-size: clamp(1.6rem, 2.6vw, 2.25rem); line-height: 1.25; letter-spacing: -0.04em; }
+.fitness-product { position: relative; min-width: 0; padding: 18px 36px 136px 0; }
+.fitness-calendar { position: relative; }
+.fitness-booking { position: absolute; width: 46%; right: 0; top: 32%; }
+.fitness-membership { position: absolute; width: 28%; bottom: 0; left: 24%; }
+.fitness-product figure { overflow: hidden; }
+.fitness-audience-image { height: 144px; }
+.fitness-step { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.fitness-step-visual { display: flex; justify-content: center; align-items: center; height: 220px; margin-top: auto; }
+.fitness-step-visual img { max-height: 100%; width: auto; max-width: 100%; object-fit: contain; }
+.fitness-final { display: grid; gap: 28px; background: linear-gradient(120deg, hsl(210 100% 97%), white); }
+.fitness-page summary::-webkit-details-marker { display: none; }
+@media (min-width: 1280px) {
+  .fitness-final { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+}
+@media (max-width: 1023px) {
+  .fitness-product { width: 100%; max-width: 680px; margin-inline: auto; }
+}
+@media (max-width: 639px) {
+  .fitness-page.marketing-redesign main > .fitness-section { padding-block: 36px; }
+  .fitness-product { padding: 0 0 190px; }
+  .fitness-booking { top: auto; bottom: 20px; width: 52%; }
+  .fitness-membership { left: 4%; width: 34%; }
+  .fitness-step-visual { height: 240px; }
+}
