@@ -33,7 +33,7 @@ describe("application-owned pricing", () => {
     expect(section?.textContent).toContain(format.format(31.27));
     expect(section?.textContent).toContain(format.format(6.15));
     expect(section?.textContent).toContain(format.format(37.42));
-    expect(section?.textContent).toContain(getPricingTaxNote(language, false));
+    expect(section?.textContent).toContain(getPricingTaxNote(language));
     expect(section?.textContent).not.toContain(format.format(52.5));
   });
 

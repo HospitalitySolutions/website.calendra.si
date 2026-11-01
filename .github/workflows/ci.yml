@@ -36,8 +36,8 @@ jobs:
       - run: npm test
 
       # Builds once and reuses dist/ for every check below. The pricing catalog
-      # fetch inside the prerender falls back to the committed catalog when the
-      # runner cannot reach app.calendra.si, so this does not depend on it.
+      # snapshot comes from the app; an unavailable/invalid catalogue blocks
+      # publication instead of inventing fallback prices.
       - run: npm run build
 
       - name: Bundle budget
@@ -54,6 +54,7 @@ jobs:
           node scripts/test-demo-invitation-browser.mjs
           node scripts/test-inquiry-demo-browser.mjs
           node scripts/test-demo-booking-browser.mjs
+          node scripts/test-pricing-vat-browser.mjs
 
       - name: Fitness landing desktop and mobile checks
         run: node scripts/test-fitness-landing-browser.mjs

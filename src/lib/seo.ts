@@ -335,6 +335,14 @@ const softwareSchema = (
     priceCurrency: getInitialPricingCatalog().currency,
     availability: "https://schema.org/InStock",
     url: absoluteUrl(canonicalRoutes.pricing[language]),
+    priceSpecification: {
+      "@type": "UnitPriceSpecification",
+      price: formatPrice(cheapestPlan().monthlyGross),
+      priceCurrency: getInitialPricingCatalog().currency,
+      valueAddedTaxIncluded: getInitialPricingCatalog().vatIncluded,
+      unitCode: "MON",
+      billingIncrement: 1,
+    },
   },
 ) => ({
   "@type": "SoftwareApplication",

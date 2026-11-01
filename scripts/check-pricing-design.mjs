@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import { chromium } from '@playwright/test';
+import { startDistServer } from './serve-dist.mjs';
 
-// Run against `npm run build` + `node scripts/serve-dist.mjs 5176`.
+// Run after `npm run build`; PRICING_URL may select an existing preview.
 // Reuse the build's public catalogue so external updates cannot make this flaky.
-const base = process.env.PRICING_URL || 'http://127.0.0.1:5176';
+const server = process.env.PRICING_URL ? null : await startDistServer(0);
+const base = process.env.PRICING_URL || server.origin;
 const output = 'output/pricing-implementation';
 const html = await fs.readFile('dist/cenik/index.html', 'utf8');
 const island = html.match(/<script[^>]*id="calendra-pricing-catalog"[^>]*>([\s\S]*?)<\/script>/);
@@ -13,12 +15,16 @@ const catalog = JSON.parse(island[1]);
 await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 }, locale: 'sl-SI', timezoneId: 'Europe/Ljubljana', reducedMotion: 'reduce' });
+await context.route(/googletagmanager\.com|google-analytics\.com|analytics\.google\.com|\/stats\//, route => route.fulfill({ status: 200, body: '' }));
+await context.route(/\/api\//, route => route.fulfill({ status: 503, json: {} }));
 await context.route('**/api/register/public-pricing', route => route.fulfill({ json: catalog }));
 const page = await context.newPage();
 const errors = [];
 page.on('pageerror', error => errors.push(error.message));
 const money = value => new Intl.NumberFormat('sl-SI', { style: 'currency', currency: 'EUR' }).format(value).replace(/\s/g, '');
 const compact = value => value.replace(/\s/g, '');
+const round = value => Math.round((value + Number.EPSILON) * 100) / 100;
+const withVat = value => round(round(value) + round(round(value) * .22));
 const summary = () => page.locator('.pricing-summary-card');
 const signupData = async () => {
   const url = new URL(await summary().locator('[data-pricing-signup]').getAttribute('href'));
@@ -68,17 +74,19 @@ try {
   assert.equal(await page.getByRole('button', { name: 'Letno', exact: true }).getAttribute('aria-pressed'), 'true');
   assert.match(await summary().locator('h3').innerText(), /Osnovno/);
   const basic = catalog.plans.find(plan => plan.key === 'basic');
-  assert.equal(compact(await summary().locator('[data-pricing-total]').innerText()), money(Math.round(basic.annualGross / 12 * 100) / 100));
+  assert.equal(compact(await summary().locator('[data-pricing-total]').innerText()), money(withVat(basic.annualGross)));
   await page.getByRole('button', { name: 'Mesečno', exact: true }).click();
   await page.getByRole('button', { name: 'Izberi Profesionalno', exact: true }).click();
   const professional = catalog.plans.find(plan => plan.key === 'pro');
-  assert.equal(compact(await summary().locator('[data-pricing-total]').innerText()), money(professional.monthlyGross));
+  assert.equal(compact(await summary().locator('[data-pricing-total]').innerText()), money(withVat(professional.monthlyGross)));
   await page.getByRole('button', { name: 'Dodaj uporabnika', exact: true }).click();
   await page.getByRole('spinbutton', { name: 'Število dodatnih SMS sporočil', exact: true }).fill('100');
   const addon = catalog.addOns.find(item => item.code === 'FISCAL');
   assert.ok(addon, 'The public catalogue should offer the fiscal add-on used by the design');
   await page.getByRole('checkbox', { name: /Davčna blagajna/ }).check();
-  const expected = Math.round((professional.monthlyGross + 5.9 + 100 * catalog.smsPerMessageGross + addon.monthlyGross) * 100) / 100;
+  const userRule = catalog.additionalUserRules.find(rule => rule.fromUser <= catalog.includedUsers + 1 && (rule.toUser === null || rule.toUser >= catalog.includedUsers + 1));
+  assert.ok(userRule, 'The next additional user must have a catalogue price');
+  const expected = withVat(professional.monthlyGross + userRule.monthlyGrossPerUser + 100 * catalog.smsPerMessageGross + addon.monthlyGross);
   assert.equal(compact(await summary().locator('[data-pricing-total]').innerText()), money(expected));
   const selected = await signupData();
   assert.equal(selected.url.searchParams.get('package'), 'PROFESSIONAL');
@@ -119,4 +127,5 @@ try {
   console.log('PASS: five viewport sizes, full-width bands, FAQ, monthly/yearly billing, query selection, user/SMS controls, add-ons, signup payload, Enterprise, module eligibility, English, no browser errors.');
 } finally {
   await browser.close();
+  await server?.close();
 }

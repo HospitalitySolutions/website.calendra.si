@@ -14,6 +14,7 @@ dist-ssr
 
 # Local screenshots produced by the pricing browser check.
 /output/pricing-implementation/
+/output/vat-pricing/
 /output/visibility-audit/
 /.lighthouseci/
 

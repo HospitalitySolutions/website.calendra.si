@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { buildPackageSignupRoute, type PricingSignupSummary } from "@/lib/routes";
 import { LEGAL } from "@/lib/legal";
 import { getPricingTaxNote } from "@/lib/pricing-copy";
+import { calculatePricingQuote, priceWithVat, pricingTaxLabels, roundPrice, PRICING_TAX } from "@/lib/pricing-tax";
 import { useInquiry } from "@/lib/use-inquiry";
 import { getFaqForRoute } from "@/lib/faq";
 import { trackMarketingEvent } from "@/lib/marketing-events";
@@ -373,7 +374,7 @@ const standaloneExtras = {
     extraTitle: "Dodatni stroški po izbiri ali porabi",
     extra: ["Dodatni uporabniki po ceniku aplikacije", "SMS po porabi in ceniku aplikacije", "Izbrani dodatni moduli"],
     trialTitle: "Pogoji brezplačnega preizkusa",
-    trialBody: "Brezplačni preizkus traja 14 dni, začne se z Osnovnim paketom in ne zahteva kreditne kartice. Izbira na ceniku se prenese v registracijo, plačljivi dodatki pa s tem še niso aktivirani. Pred potrditvijo plačljivega paketa vidite izbrani paket, dodatke ter ocenjeni mesečni in prvi račun.",
+    trialBody: "Brezplačni preizkus traja 14 dni, začne se z Osnovnim paketom in ne zahteva kreditne kartice. Izbira na ceniku se prenese v registracijo, plačljivi dodatki pa s tem še niso aktivirani. Pred potrditvijo plačljivega paketa vidite izbrani paket, dodatke, ceno brez DDV, DDV in končni znesek.",
     relatedTitle: "Preverite povezane funkcionalnosti",
     faqTitle: "Pogosta vprašanja o ceniku",
   },
@@ -391,7 +392,7 @@ const standaloneExtras = {
     extraTitle: "Optional or usage-based costs",
     extra: ["Additional users at application-catalog rates", "SMS usage at application-catalog rates", "Selected add-on modules"],
     trialTitle: "Free-trial terms",
-    trialBody: "The free trial lasts 14 days, starts on the Basic plan and does not require a credit card. Your pricing selection carries into registration; it does not activate paid add-ons. Before confirming a paid plan, you can review the selected package, add-ons and estimated monthly and first invoice.",
+    trialBody: "The free trial lasts 14 days, starts on the Basic plan and does not require a credit card. Your pricing selection carries into registration; it does not activate paid add-ons. Before confirming a paid plan, you can review the selected package, add-ons, price excluding VAT, VAT and final total.",
     relatedTitle: "Explore related features",
     faqTitle: "Pricing questions",
   },
@@ -667,13 +668,19 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     };
   }, [standalone, selectedTier.key]);
 
-  const monthlyTotal =
-    (selectedTier.baseMonthly ?? 0) +
-    additionalUsersPrice +
-    additionalSms * pricingCatalog.smsPerMessageGross +
-    selectedAddOns.reduce((total, addOn) => total + addOn.monthlyGross, 0);
+  const taxLabels = pricingTaxLabels(language);
+  const selectedPlan = pricingCatalog.plans.find((plan) => plan.key === selectedApiPlanKey);
+  const quote = calculatePricingQuote({
+    annual: billingPeriod === "annual", monthlyPlan: selectedPlan?.monthlyGross ?? 0,
+    annualPlan: selectedPlan?.annualGross ?? 0, annualBilledMonths,
+    monthlyUsers: additionalUsersPrice,
+    monthlyAddOns: selectedAddOns.reduce((total, addOn) => total + addOn.monthlyGross, 0),
+    smsCount: additionalSms, smsUnit: pricingCatalog.smsPerMessageGross,
+  });
+  const monthlyTotal = roundPrice(quote.monthlyEquivalent + (billingPeriod === "annual" ? quote.sms.gross : 0));
   const oneTimeTotal = 0;
-  const firstInvoiceEstimate = monthlyTotal;
+  const firstInvoiceEstimate = quote.total.gross;
+  const totalLabel = billingPeriod === "annual" ? taxLabels.annualTotal : taxLabels.monthlyTotal;
 
   const addOnLabel = (addOn: PublicPricingAddOn) =>
     language === "sl" ? addOn.nameSl || addOn.name : addOn.name;
@@ -700,6 +707,11 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       monthlyTotal,
       oneTimeTotal,
       firstInvoiceEstimate,
+      vatRatePercent: PRICING_TAX.ratePercent,
+      priceBasis: "net",
+      periodNet: quote.total.net,
+      periodVat: quote.total.vat,
+      periodTotal: quote.total.gross,
     }),
     [
       additionalUsers,
@@ -708,6 +720,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       monthlyTotal,
       oneTimeTotal,
       firstInvoiceEstimate,
+      quote.total.net, quote.total.vat, quote.total.gross,
     ],
   );
 
@@ -751,7 +764,10 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       `${content.contactEmail}: ${contactEmail || "-"}`,
       `${content.contactPhone}: ${contactPhone || "-"}`,
       `${content.selectedItemsLabel}: ${selectedItems.length > 0 ? selectedItems.join(", ") : content.noExtras}`,
-      `${content.monthlyLabel}: ${formatter.format(monthlyTotal)}`,
+      `${taxLabels.subtotal}: ${formatter.format(quote.total.net)}`,
+      `${taxLabels.vat}: ${formatter.format(quote.total.vat)}`,
+      `${totalLabel}: ${formatter.format(quote.total.gross)}`,
+      ...(billingPeriod === "annual" ? [`${taxLabels.annualUsage} ${formatter.format(quote.sms.gross)}`] : []),
       "",
       `${content.contactMessage}:`,
       contactMessage || "-",
@@ -770,7 +786,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     comparison: "Poiščite funkcionalnosti, ki jih potrebuje vaše podjetje.",
     trial: "14 dni brezplačno", noCard: "Brez kreditne kartice",
     configure: "Prilagodite svoj paket",
-    calculatorDescription: "Izberite paket, uporabnike in dodatke. Končno ceno vidite takoj.",
+    calculatorDescription: "Izberite paket, uporabnike in dodatke. DDV je prikazan ločeno.",
     selected: "Vaš izbrani paket", package: "Paket", users: "Dodatni uporabniki",
     sms: "SMS sporočila", modules: "Dodatni moduli", included: "Vključeno",
     unavailable: "Ni vključeno", perMonth: "mesec", perMessage: "sporočilo",
@@ -788,7 +804,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     comparison: "Find the features your business needs.",
     trial: "14 days free", noCard: "No credit card required",
     configure: "Make it your plan",
-    calculatorDescription: "Choose your plan, users and extras. See your total right away.",
+    calculatorDescription: "Choose your plan, users and extras. VAT is shown separately.",
     selected: "Your selected plan", package: "Plan", users: "Additional users",
     sms: "SMS messages", modules: "Add-on modules", included: "Included",
     unavailable: "Not included", perMonth: "month", perMessage: "message",
@@ -809,7 +825,6 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const includedUserLabel = sl
     ? includedUsers === 1 ? "1 uporabnik je vključen." : `Vključeni uporabniki: ${includedUsers}.`
     : `${includedUsers} ${includedUsers === 1 ? "user is" : "users are"} included.`;
-  const modulesPrice = selectedAddOns.reduce((total, addOn) => total + addOn.monthlyGross, 0);
   const story = getCustomerStory("institut-avisensa")!;
   const storyContent = story.content[language];
   const relatedPages = getRelatedPages("pricing", language, 8);
@@ -852,7 +867,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             <span className="pricing-savings">{content.billingAnnualSavingsLabel.replace("{months}", String(annualSavingsMonths))}</span>
           </div>
           {trustLine}
-          <p className="mt-4 text-sm text-muted-foreground">{getPricingTaxNote(language, pricingCatalog.vatIncluded)}</p>
+          <p className="pricing-tax-note">{getPricingTaxNote(language)}</p>
         </header>
 
         <div className="pricing-plan-grid">
@@ -865,7 +880,9 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   {tier.popular && <span className="pricing-popular-badge"><Star aria-hidden="true" />{content.badge}</span>}
                 </div>
                 <p className="pricing-plan-price"><strong>{tier.price}</strong><span>{tier.priceSuffix}</span></p>
-                {billingPeriod === "annual" && plan && <p className="pricing-annual-price">{ui.annualPackage}: {formatter.format(plan.annualGross)}</p>}
+                <p className="pricing-plan-tax">{taxLabels.net}</p>
+                <p className="pricing-plan-gross">{formatter.format(billingPeriod === "annual" && plan ? roundPrice(priceWithVat(plan.annualGross).gross / 12) : priceWithVat(tier.baseMonthly ?? 0).gross)} {taxLabels.gross}{billingPeriod === "annual" ? (sl ? " · povprečno na mesec" : " · monthly equivalent") : ""}</p>
+                {billingPeriod === "annual" && plan && <p className="pricing-annual-price">{ui.annualPackage}: {formatter.format(plan.annualGross)} {taxLabels.net}<br />{formatter.format(priceWithVat(plan.annualGross).gross)} {taxLabels.gross}</p>}
                 <p className="pricing-plan-description">{tier.description}</p>
                 {tier.inheritedLabel && <p className="pricing-inherited">{tier.inheritedLabel}</p>}
                 <ul className="pricing-plan-features">
@@ -917,6 +934,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   <div><dt>{ui.sms}</dt><dd><strong>{formatter.format(pricingCatalog.smsPerMessageGross)}</strong> / {ui.perMessage}</dd></div>
                   {availableAddOns.length > 0 && <div><dt>{ui.modules}</dt><dd>{ui.byPrice}</dd></div>}
                 </dl>
+                <p className="pricing-tax-caption">{taxLabels.items}</p>
               </article>
             </div>
           </section>
@@ -942,7 +960,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   <fieldset className="pricing-control">
                     <legend>{content.usersLabel}</legend>
                     <div className="pricing-control-header">
-                      <p>{includedUserLabel} {content.usersHint}</p>
+                      <p>{includedUserLabel} {content.usersHint} <span>{taxLabels.items}</span></p>
                       <div className="pricing-stepper">
                         <button type="button" aria-label={ui.removeUser} disabled={additionalUsers <= includedUsers} onClick={() => setUserCount(additionalUsers - 1)}><Minus aria-hidden="true" /></button>
                         <Input type="number" aria-label={ui.userCount} min={includedUsers} max={USER_SLIDER_MAX} step={1} value={additionalUsers} onChange={(event) => setUserCount(Number(event.target.value))} />
@@ -953,7 +971,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   </fieldset>
                   <fieldset className="pricing-control">
                     <legend>{content.smsLabel}</legend>
-                    <div className="pricing-control-header"><p>{content.smsHint}</p><Input className="pricing-sms-input" type="number" aria-label={ui.smsCount} min={0} max={SMS_SLIDER_MAX} step={1} value={additionalSms} onChange={(event) => setSmsCount(Number(event.target.value))} /></div>
+                    <div className="pricing-control-header"><p>{content.smsHint} {taxLabels.net}</p><Input className="pricing-sms-input" type="number" aria-label={ui.smsCount} min={0} max={SMS_SLIDER_MAX} step={1} value={additionalSms} onChange={(event) => setSmsCount(Number(event.target.value))} /></div>
                     <Slider aria-label={ui.smsCount} min={0} max={SMS_SLIDER_MAX} step={SMS_SLIDER_STEP} value={[additionalSms]} onValueChange={([value]) => setSmsCount(value)} />
                   </fieldset>
                   {visibleAddOns.length > 0 && <fieldset className="pricing-control">
@@ -961,7 +979,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                     <div className="pricing-addons">{visibleAddOns.map((addOn) => (
                       <label key={addOn.key} className="pricing-addon">
                         <Checkbox checked={selectedAddOnKeys.includes(addOn.key)} onCheckedChange={(checked) => setSelectedAddOnKeys((current) => checked === true ? [...current.filter((key) => key !== addOn.key), addOn.key] : current.filter((key) => key !== addOn.key))} />
-                        <span><span className="pricing-addon-heading"><strong>{addOnLabel(addOn)}</strong><span>{formatter.format(addOn.monthlyGross)} / {ui.perMonth}</span></span>{addOnDescription(addOn) && <small>{addOnDescription(addOn)}</small>}</span>
+                        <span><span className="pricing-addon-heading"><strong>{addOnLabel(addOn)}</strong><span>{formatter.format(addOn.monthlyGross)} / {ui.perMonth} {taxLabels.net}</span></span>{addOnDescription(addOn) && <small>{addOnDescription(addOn)}</small>}</span>
                       </label>
                     ))}</div>
                   </fieldset>}
@@ -969,14 +987,23 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
               </div>
               <aside className="pricing-summary-card" aria-label={content.summaryTitle}>
                 <span className="marketing-eyebrow">{ui.selected}</span><h3>{selectedTier.name}</h3>
+                <p className="pricing-summary-period">{billingPeriod === "annual" ? ui.annualBilling : ui.monthlyBilling}</p>
                 {selectedTier.key === "enterprise" ? <><p>{ui.enterprise}</p><Button variant="hero" className="pricing-button" onClick={() => scrollToElement(contactRef.current)}>{content.enterprisePanelCta}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Button></> : <>
                   <dl className="pricing-breakdown">
-                    <div><dt>{ui.package}</dt><dd>{formatter.format(selectedTier.baseMonthly ?? 0)}</dd></div>
-                    <div><dt>{ui.users}</dt><dd>{formatter.format(additionalUsersPrice)}</dd></div>
-                    <div><dt>{ui.sms}</dt><dd>{formatter.format(additionalSms * pricingCatalog.smsPerMessageGross)}</dd></div>
-                    <div><dt>{ui.modules}</dt><dd>{formatter.format(modulesPrice)}</dd></div>
+                    <div><dt>{ui.package}</dt><dd>{formatter.format(quote.plan)}</dd></div>
+                    <div><dt>{ui.users}</dt><dd>{formatter.format(quote.users)}</dd></div>
+                    {billingPeriod === "monthly" && <div><dt>{ui.sms}</dt><dd>{formatter.format(quote.sms.net)}</dd></div>}
+                    <div><dt>{ui.modules}</dt><dd>{formatter.format(quote.addOns)}</dd></div>
                   </dl>
-                  <div className="pricing-total" aria-live="polite" aria-atomic="true"><span>{content.monthlyLabel}</span><strong data-pricing-total>{formatter.format(monthlyTotal)}</strong></div>
+                  <p className="pricing-tax-caption">{taxLabels.items}</p>
+                  <div aria-live="polite" aria-atomic="true">
+                    <dl className="pricing-vat-breakdown">
+                      <div><dt>{taxLabels.subtotal}</dt><dd data-pricing-net>{formatter.format(quote.total.net)}</dd></div>
+                      <div><dt>{taxLabels.vat}</dt><dd data-pricing-vat>{formatter.format(quote.total.vat)}</dd></div>
+                    </dl>
+                    <div className="pricing-total"><span>{totalLabel}</span><strong data-pricing-total>{formatter.format(quote.total.gross)}</strong></div>
+                    {billingPeriod === "annual" && <p className="pricing-annual-estimate">{taxLabels.monthlyEquivalent}: {formatter.format(quote.monthlyEquivalent)}<br />{taxLabels.annualUsage} <strong>{formatter.format(quote.sms.gross)}</strong></p>}
+                  </div>
                   {signupButton}{trustLine}
                 </>}
               </aside>
@@ -1027,7 +1054,11 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
         <aside data-sales-sticky="true" className="pricing-sticky-summary" aria-label={content.summaryTitle}>
           <div className="container mx-auto">
             <div className="pricing-sticky-selection"><span className="marketing-eyebrow">{content.selectedPackageLabel}</span><strong>{selectedTier.name}</strong><p>{userCountLabel} · {[additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null, ...selectedAddOns.map(addOnLabel)].filter(Boolean).join(" · ") || content.noExtras}</p></div>
-            <div className="pricing-sticky-total"><span>{content.monthlyLabel}</span><strong>{formatter.format(monthlyTotal)}</strong></div>
+            <div className="pricing-sticky-taxes" aria-live="polite" aria-atomic="true">
+              <div><span>{taxLabels.net}</span><strong>{formatter.format(quote.total.net)}</strong></div>
+              <div><span>{taxLabels.vat}</span><strong>{formatter.format(quote.total.vat)}</strong></div>
+              <div className="pricing-sticky-total"><span>{totalLabel}</span><strong>{formatter.format(quote.total.gross)}</strong></div>
+            </div>
             {signupButton}
           </div>
         </aside>

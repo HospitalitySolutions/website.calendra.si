@@ -99,8 +99,8 @@ const expectPublishedCatalog = (language: SiteLanguage, catalog: PublicPricingCa
     })),
   };
   const pricingGraph = schemaGraph(getRoutePath("pricing", language));
-  expect(JSON.stringify(pricingGraph)).not.toContain("valueAddedTaxIncluded");
-  expect(JSON.stringify(pricingGraph)).not.toContain('"vatID"');
+  expect(JSON.stringify(pricingGraph)).toContain('"valueAddedTaxIncluded":false');
+  expect(JSON.stringify(pricingGraph)).toContain('"vatID":"SI10550631"');
   const product = pricingGraph.find((node) => node["@type"] === "Product");
   const software = pricingGraph.find((node) => node["@type"] === "SoftwareApplication");
   expect(product).toMatchObject({ offers: expectedOffers });
@@ -108,7 +108,10 @@ const expectPublishedCatalog = (language: SiteLanguage, catalog: PublicPricingCa
   expect(software?.offers).toEqual(product?.offers);
   expect(schemaGraph(getRoutePath("home", language))).toContainEqual(expect.objectContaining({
     "@type": "SoftwareApplication",
-    offers: expect.objectContaining({ price: Math.min(...prices).toFixed(2), priceCurrency: catalog.currency }),
+    offers: expect.objectContaining({
+      price: Math.min(...prices).toFixed(2), priceCurrency: catalog.currency,
+      priceSpecification: expect.objectContaining({ valueAddedTaxIncluded: false }),
+    }),
   }));
 };
 

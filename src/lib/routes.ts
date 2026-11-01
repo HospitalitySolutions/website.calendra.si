@@ -57,6 +57,11 @@ export type PricingSignupSummary = {
   monthlyTotal: number;
   oneTimeTotal: number;
   firstInvoiceEstimate: number;
+  priceBasis?: "net";
+  vatRatePercent?: number;
+  periodNet?: number;
+  periodVat?: number;
+  periodTotal?: number;
 };
 
 const clampRegistrationCount = (value: number, min: number, max: number, fallback: number) =>

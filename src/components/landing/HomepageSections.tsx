@@ -10,6 +10,7 @@ import {
 import { StepWatermark } from "@/components/ui/step-watermark";
 import { getRoutePath } from "@/lib/localized-routes";
 import { getFaqForRoute } from "@/lib/faq";
+import { priceWithVat } from "@/lib/pricing-tax";
 import { TrialSignupLink } from "@/components/TrialSignupLink";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import {
@@ -69,9 +70,9 @@ const copy = {
       eyebrow: "Prilagodljivi paketi",
       title: "Paketi in cenik Calendra",
       introPrefix: "Paketi se začnejo pri",
-      introSuffix: "na mesec. Izberite raven funkcionalnosti, nato dodajte uporabnike, SMS sporočila ali dodatne module.",
+      introSuffix: "na mesec brez DDV. Izberite raven funkcionalnosti, nato dodajte uporabnike, SMS sporočila ali dodatne module.",
       fromPrefix: "od",
-      perMonth: "/ mesec",
+      perMonth: "/ mesec brez DDV",
       items: ["14-dnevni brezplačni preizkus", "Brez kreditne kartice", "Jasno prikazani dodatni stroški"],
       cta: "Primerjajte pakete",
     },
@@ -120,9 +121,9 @@ const copy = {
       eyebrow: "Flexible plans",
       title: "Calendra plans and pricing",
       introPrefix: "Plans start at",
-      introSuffix: "per month. Choose the right feature level, then add users, SMS messages or optional modules.",
+      introSuffix: "per month excluding VAT. Choose the right feature level, then add users, SMS messages or optional modules.",
       fromPrefix: "from",
-      perMonth: "/ month",
+      perMonth: "/ month excl. VAT",
       items: ["14-day free trial", "No credit card required", "Clearly shown additional costs"],
       cta: "Compare plans",
     },
@@ -290,6 +291,10 @@ export const PricingOverview = () => {
     }).format(value);
   }, [language, pricingCatalog]);
 
+  const basicPriceWithVat = new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-IE", {
+    style: "currency", currency: pricingCatalog.currency,
+  }).format(priceWithVat((pricingCatalog.plans.find((plan) => plan.key === "basic") ?? pricingCatalog.plans[0]).monthlyGross).gross);
+
   return (
     <section id="cenik" className="editorial-pricing-band relative scroll-mt-20 overflow-hidden py-16 md:py-20 lg:py-24">
       <div className="container relative mx-auto max-w-[1380px] px-4 sm:px-6 lg:px-8">
@@ -311,6 +316,7 @@ export const PricingOverview = () => {
               <span className="home-price-amount">{basicMonthlyPrice}</span>
               <span className="home-price-period">{section.perMonth}</span>
             </p>
+            <p className="mt-2 text-sm text-muted-foreground">{basicPriceWithVat} {language === "sl" ? "/ mesec z DDV" : "/ month incl. VAT"}</p>
             <ul className="mt-6 grid gap-4">
               {section.items.map((item) => (
                 <li key={item} className="flex items-center gap-3 text-base font-medium text-foreground sm:text-lg">

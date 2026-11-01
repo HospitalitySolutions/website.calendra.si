@@ -1,5 +1,6 @@
 import { normalizeCompanyIdentifiers } from "@/lib/company-identifiers";
 import { LEGAL } from "@/lib/legal";
+import { LEGAL_POLICY } from "@/lib/legal-policy";
 
 export const GOOGLE_BUSINESS_PROFILE_URL =
   "https://www.google.com/maps/search/?api=1&query=Calendra&query_place_id=ChIJm6_tDR93b0cRZhhgh_KBCd0";
@@ -64,7 +65,7 @@ export const AUTHOR_PROFILE_URLS = parseProfileList(import.meta.env.VITE_AUTHOR_
  * omitted entirely when not.
  */
 const companyIdentifiers = normalizeCompanyIdentifiers({
-  vatId: import.meta.env.VITE_COMPANY_VAT_ID,
+  vatId: import.meta.env.VITE_COMPANY_VAT_ID || LEGAL_POLICY.vatId,
   vatRegistered: LEGAL.vatRegistered,
   taxId: import.meta.env.VITE_COMPANY_TAX_ID,
   registrationNumber: import.meta.env.VITE_COMPANY_REGISTRATION_NUMBER,

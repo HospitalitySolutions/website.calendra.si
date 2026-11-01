@@ -1,3 +1,5 @@
+import { PRICING_TAX } from "./pricing-tax";
+
 export type PublicPricingPlanKey = "basic" | "pro" | "business";
 export type PublicPricingPlan = {
   key: PublicPricingPlanKey;
@@ -119,7 +121,9 @@ export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCata
     };
   });
   return {
-    catalogVersion: integer(raw.catalogVersion, "catalogVersion", 1), currency, vatIncluded: raw.vatIncluded,
+    // Preserve app amounts exactly. The owner-confirmed November B2B tax basis
+    // supersedes the legacy API flag, including cached builds and live refreshes.
+    catalogVersion: integer(raw.catalogVersion, "catalogVersion", 1), currency, vatIncluded: PRICING_TAX.included,
     includedUsers, annualBilledMonths: integer(raw.annualBilledMonths, "annualBilledMonths", 1),
     annualSavingsMonths: integer(raw.annualSavingsMonths, "annualSavingsMonths"),
     plans, features, additionalUserRules, addOns,

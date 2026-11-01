@@ -456,8 +456,8 @@ const IndustryDetailPage = () => {
                   ? `Primer mesečne naročnine: ${professionalPlan.nameSl} ${formatEuro(professionalPlan.monthlyGross)} + dodatni uporabniki (${teamAdditionalUsers}): ${formatEuro(teamAdditionalCost)} = ${formatEuro(psychologyMonthlyExample)} na mesec. SMS, dodatni moduli in morebitne provizije se obračunajo posebej.`
                   : `Illustrative monthly price: ${professionalPlan.name} ${formatEuro(professionalPlan.monthlyGross)} + additional users (${teamAdditionalUsers}): ${formatEuro(teamAdditionalCost)} = ${formatEuro(psychologyMonthlyExample)} per month. SMS, optional modules and potential payment fees are extra.`}</p>
                 <p className="mt-2 text-sm text-muted-foreground">{language === "sl"
-                  ? `Primer uporablja cenik aplikacije. ${getPricingTaxNote(language, pricingCatalog.vatIncluded)} Končni obseg preverite v kalkulatorju.`
-                  : `This example uses the application catalog. ${getPricingTaxNote(language, pricingCatalog.vatIncluded)} Confirm your requirements in the pricing calculator.`}</p>
+                  ? `Primer uporablja cenik aplikacije. ${getPricingTaxNote(language)} Končni obseg preverite v kalkulatorju.`
+                  : `This example uses the application catalog. ${getPricingTaxNote(language)} Confirm your requirements in the pricing calculator.`}</p>
               </div>
               <Button variant="hero" size="lg" asChild>
                 <a href={getRoutePath("pricing", language)}>{pricingLabel}<ArrowRight className="h-4 w-4" /></a>

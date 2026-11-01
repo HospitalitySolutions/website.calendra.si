@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { normalizeCompanyIdentifiers } from "@/lib/company-identifiers";
 
 describe("public company identifiers", () => {
-  it("omits a VAT ID for the confirmed non-registered entity", () => {
+  it("omits a VAT ID when registration has not been confirmed", () => {
     expect(normalizeCompanyIdentifiers({ vatId: "SI10550631" })).toMatchObject({ vatId: undefined, taxId: "10550631" });
   });
   it("removes the accidentally pasted environment assignment from the configured VAT ID", () => {

@@ -579,7 +579,7 @@ const DemoBookingPage = () => {
       {!token && step !== "confirmed" && <p className="demo-reassurance">{t.reassurance}</p>}
       </div></section>
     </main>
-    <Footer appearance="light" />
+    <Footer />
   </div>;
 };
 

@@ -18,6 +18,21 @@
 .pricing-intro h1, .pricing-intro h2 { max-width: 900px; margin: 16px auto 0; font-size: clamp(2.15rem, 4.1vw, 3.65rem); font-weight: 750; line-height: 1.1; letter-spacing: -.045em; text-wrap: balance; }
 .pricing-intro-description { margin-top: 20px; color: hsl(var(--muted-foreground)); font-size: 1.15rem; line-height: 1.6; }
 .pricing-updated { margin-top: 10px; font-size: .82rem; color: hsl(var(--muted-foreground)); }
+.pricing-tax-note { max-width: 940px; margin: 24px auto 0; font-size: .9rem; line-height: 1.75; font-weight: 400; color: hsl(var(--muted-foreground)); }
+.pricing-plan-tax { font-size: .85rem; margin-top: 2px; }
+.pricing-plan-gross { margin: 5px 0 8px; font-size: .82rem; color: hsl(var(--muted-foreground)); }
+.pricing-tax-caption, .pricing-summary-card > .pricing-tax-caption { color: hsl(var(--muted-foreground)); font-size: .78rem; line-height: 1.6; margin: 8px 0 20px; }
+.pricing-summary-card > .pricing-summary-period { margin: 8px 0 0; font-size: .85rem; }
+.pricing-vat-breakdown { border-top: 1px solid hsl(var(--border)); padding: 15px 0; }
+.pricing-vat-breakdown > div { display: flex; justify-content: space-between; gap: 16px; padding: 6px 0; font-size: .88rem; }
+.pricing-vat-breakdown dd { white-space: nowrap; font-variant-numeric: tabular-nums; font-weight: 600; }
+.pricing-summary-card .pricing-total { background: var(--pricing-surface); padding: 16px 20px; border: 0; border-radius: 10px; }
+.pricing-annual-estimate { color: hsl(var(--muted-foreground)); font-size: .8rem; line-height: 1.7; margin: -8px 0 20px; }
+.pricing-sticky-taxes { display: grid; grid-template-columns: auto auto auto; align-items: center; gap: 24px; }
+.pricing-sticky-taxes > div { border-left: 1px solid hsl(var(--border)); padding-left: 24px; }
+.pricing-sticky-taxes span { display: block; font-size: .73rem; color: hsl(var(--muted-foreground)); }
+.pricing-sticky-taxes strong { display: block; font-size: 1.1rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pricing-sticky-taxes .pricing-sticky-total strong { font-size: 1.5rem; }
 .pricing-billing-row { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 20px; margin-top: 30px; }
 .pricing-billing-switch { display: inline-flex; padding: 4px; border: 1px solid hsl(var(--border)); border-radius: 30px; }
 .pricing-billing-switch button { border-radius: 24px; padding: 9px 26px; font-size: .875rem; font-weight: 600; min-height: 42px; }
@@ -175,6 +190,9 @@
 .pricing-sticky-total span { display: block; color: hsl(var(--muted-foreground)); font-size: .75rem; }
 .pricing-sticky-total strong { display: block; font-size: 1.65rem; letter-spacing: -.04em; white-space: nowrap; font-variant-numeric: tabular-nums; }
 @media (max-width: 1100px) {
+  .pricing-sticky-summary > .container { grid-template-columns: minmax(0, 1fr) auto; gap: 20px; }
+  .pricing-sticky-selection { display: none; }
+  .pricing-sticky-taxes > div { border: 0; padding-left: 0; }
   .pricing-plan { padding: 23px; }
   .pricing-enterprise-banner { grid-template-columns: 1.2fr 1fr; }
   .pricing-enterprise-banner > div:last-child { grid-column: 1 / -1; justify-self: start; }
@@ -206,6 +224,13 @@
   .pricing-page { padding-bottom: 90px; }
 }
 @media (max-width: 540px) {
+  .pricing-page { padding-bottom: 148px; }
+  .pricing-sticky-summary { padding-top: 10px; padding-bottom: max(10px, env(safe-area-inset-bottom)); }
+  .pricing-sticky-summary > .container { grid-template-columns: 1fr; gap: 8px; }
+  .pricing-sticky-taxes { grid-template-columns: 1fr 1fr 1.35fr; gap: 10px; }
+  .pricing-sticky-taxes span { font-size: .65rem; }
+  .pricing-sticky-taxes strong { font-size: 1rem; }
+  .pricing-sticky-taxes .pricing-sticky-total strong { font-size: 1.2rem; }
   .pricing-billing-row { gap: 12px; }
   .pricing-info-grid, .pricing-form-fields { grid-template-columns: 1fr; }
   .pricing-info-card, .pricing-plan, .pricing-controls, .pricing-summary-card { padding: 24px 20px; }
@@ -223,6 +248,6 @@
   .pricing-testimonial { margin-top: 44px; }
   .pricing-faq summary { gap: 16px; }
   .pricing-faq details > p { padding-right: 0; }
-  .pricing-sticky-summary .pricing-button { font-size: .75rem; padding: 10px 12px; max-width: 180px; }
+  .pricing-sticky-summary .pricing-button { font-size: .8rem; padding: 10px 12px; width: 100%; min-height: 42px; }
   .pricing-sticky-total strong { font-size: 1.4rem; }
 }

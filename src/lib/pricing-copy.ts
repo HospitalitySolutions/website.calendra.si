@@ -1,16 +1,9 @@
 import { getInitialPricingCatalog, type PublicPricingCatalog } from "@/lib/public-pricing";
 import type { SiteLanguage } from "@/lib/site-language";
-import { LEGAL } from "@/lib/legal";
 
-export const getPricingTaxNote = (language: SiteLanguage, vatIncluded = true): string => {
-  if (!vatIncluded) return language === "sl" ? "Cene ne vključujejo DDV." : "Prices exclude VAT.";
-  if (!LEGAL.vatRegistered) return language === "sl"
-    ? "DDV se ne obračunava. Ponudnik ni zavezanec za DDV."
-    : "VAT is not charged. The provider is not VAT registered.";
-  return language === "sl"
-    ? vatIncluded ? "Cene vključujejo DDV." : "Cene ne vključujejo DDV."
-    : vatIncluded ? "Prices include VAT." : "Prices exclude VAT.";
-};
+export const getPricingTaxNote = (language: SiteLanguage): string => language === "sl"
+  ? "Vse navedene cene na spletnem mestu in v aplikaciji so brez DDV. Skladno z Zakonom o davku na dodano vrednost (ZDDV-1) se tako na vse cene obračuna DDV v višini 22,00 %."
+  : "All prices listed on the website and in the application exclude VAT. In accordance with the Slovenian Value Added Tax Act (ZDDV-1), VAT at a rate of 22.00% is added to all prices.";
 
 /** Pricing prose uses the same catalog as the cards and structured offers. */
 export const getPricingSummary = (
@@ -31,7 +24,7 @@ export const getPricingSummary = (
   if (language === "sl") {
     return [
       `Mesečne cene paketov Calendra: ${plans}.`,
-      getPricingTaxNote(language, catalog.vatIncluded),
+      getPricingTaxNote(language),
       `Število uporabnikov v osnovni ceni: ${catalog.includedUsers}.`,
       `Cene dodatnih uporabnikov: ${userPrices}.`,
       `Pri letnem plačilu plačate ${catalog.annualBilledMonths} mesecev za 12 mesecev uporabe.`,
@@ -41,7 +34,7 @@ export const getPricingSummary = (
 
   return [
     `Calendra monthly plan prices: ${plans}.`,
-    getPricingTaxNote(language, catalog.vatIncluded),
+    getPricingTaxNote(language),
     `Users included in the base price: ${catalog.includedUsers}.`,
     `Additional-user prices: ${userPrices}.`,
     `Annual billing charges ${catalog.annualBilledMonths} months for 12 months of use.`,
