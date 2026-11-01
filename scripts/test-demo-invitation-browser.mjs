@@ -190,13 +190,18 @@ try {
     const { page, context } = await setup({ width: 390 });
     await page.evaluate(() => {
       scrollTo(0, 1200);
+      // Keep the test fixture outside React's hydrated root. Appending to its
+      // prerendered <main> can make hydration discard the simulated CTA.
+      const fixture = document.createElement('main'); fixture.id = 'audit-primary-fixture';
       const link = document.createElement('a'); link.href = '/predstavitev'; link.textContent = 'Primary demo CTA';
       link.id = 'audit-primary'; link.style.cssText = 'position:fixed;bottom:0;left:0;padding:20px;background:white';
-      document.querySelector('main').append(link);
+      fixture.append(link); document.body.append(fixture);
     });
+    await expect(page.locator('#audit-primary')).toBeInViewport();
     await page.clock.runFor(12_000);
+    await expect(page.locator('#audit-primary')).toBeInViewport();
     await expect(prompt(page)).toHaveCount(0);
-    await page.evaluate(() => document.getElementById('audit-primary').remove());
+    await page.evaluate(() => document.getElementById('audit-primary-fixture').remove());
     await expect(prompt(page)).toBeVisible();
     await context.close();
     results.push({ primaryCtaCollisionDeferral: true });
