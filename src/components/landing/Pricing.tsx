@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { buildPackageSignupRoute, type PricingSignupSummary } from "@/lib/routes";
 import { LEGAL } from "@/lib/legal";
 import { getPricingTaxNote } from "@/lib/pricing-copy";
-import { calculatePricingQuote, priceWithVat, pricingTaxLabels, roundPrice, PRICING_TAX } from "@/lib/pricing-tax";
+import { calculatePricingQuote, pricingTaxLabels, roundPrice, PRICING_TAX } from "@/lib/pricing-tax";
 import { useInquiry } from "@/lib/use-inquiry";
 import { getFaqForRoute } from "@/lib/faq";
 import { trackMarketingEvent } from "@/lib/marketing-events";
@@ -880,9 +880,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   {tier.popular && <span className="pricing-popular-badge"><Star aria-hidden="true" />{content.badge}</span>}
                 </div>
                 <p className="pricing-plan-price"><strong>{tier.price}</strong><span>{tier.priceSuffix}</span></p>
-                <p className="pricing-plan-tax">{taxLabels.net}</p>
-                <p className="pricing-plan-gross">{formatter.format(billingPeriod === "annual" && plan ? roundPrice(priceWithVat(plan.annualGross).gross / 12) : priceWithVat(tier.baseMonthly ?? 0).gross)} {taxLabels.gross}{billingPeriod === "annual" ? (sl ? " · povprečno na mesec" : " · monthly equivalent") : ""}</p>
-                {billingPeriod === "annual" && plan && <p className="pricing-annual-price">{ui.annualPackage}: {formatter.format(plan.annualGross)} {taxLabels.net}<br />{formatter.format(priceWithVat(plan.annualGross).gross)} {taxLabels.gross}</p>}
+                {billingPeriod === "annual" && plan && <p className="pricing-annual-price">{ui.annualPackage}: {formatter.format(plan.annualGross)}</p>}
                 <p className="pricing-plan-description">{tier.description}</p>
                 {tier.inheritedLabel && <p className="pricing-inherited">{tier.inheritedLabel}</p>}
                 <ul className="pricing-plan-features">
@@ -934,7 +932,6 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   <div><dt>{ui.sms}</dt><dd><strong>{formatter.format(pricingCatalog.smsPerMessageGross)}</strong> / {ui.perMessage}</dd></div>
                   {availableAddOns.length > 0 && <div><dt>{ui.modules}</dt><dd>{ui.byPrice}</dd></div>}
                 </dl>
-                <p className="pricing-tax-caption">{taxLabels.items}</p>
               </article>
             </div>
           </section>
@@ -960,7 +957,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   <fieldset className="pricing-control">
                     <legend>{content.usersLabel}</legend>
                     <div className="pricing-control-header">
-                      <p>{includedUserLabel} {content.usersHint} <span>{taxLabels.items}</span></p>
+                      <p>{includedUserLabel} {content.usersHint}</p>
                       <div className="pricing-stepper">
                         <button type="button" aria-label={ui.removeUser} disabled={additionalUsers <= includedUsers} onClick={() => setUserCount(additionalUsers - 1)}><Minus aria-hidden="true" /></button>
                         <Input type="number" aria-label={ui.userCount} min={includedUsers} max={USER_SLIDER_MAX} step={1} value={additionalUsers} onChange={(event) => setUserCount(Number(event.target.value))} />
@@ -971,7 +968,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   </fieldset>
                   <fieldset className="pricing-control">
                     <legend>{content.smsLabel}</legend>
-                    <div className="pricing-control-header"><p>{content.smsHint} {taxLabels.net}</p><Input className="pricing-sms-input" type="number" aria-label={ui.smsCount} min={0} max={SMS_SLIDER_MAX} step={1} value={additionalSms} onChange={(event) => setSmsCount(Number(event.target.value))} /></div>
+                    <div className="pricing-control-header"><p>{content.smsHint}</p><Input className="pricing-sms-input" type="number" aria-label={ui.smsCount} min={0} max={SMS_SLIDER_MAX} step={1} value={additionalSms} onChange={(event) => setSmsCount(Number(event.target.value))} /></div>
                     <Slider aria-label={ui.smsCount} min={0} max={SMS_SLIDER_MAX} step={SMS_SLIDER_STEP} value={[additionalSms]} onValueChange={([value]) => setSmsCount(value)} />
                   </fieldset>
                   {visibleAddOns.length > 0 && <fieldset className="pricing-control">
@@ -979,7 +976,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                     <div className="pricing-addons">{visibleAddOns.map((addOn) => (
                       <label key={addOn.key} className="pricing-addon">
                         <Checkbox checked={selectedAddOnKeys.includes(addOn.key)} onCheckedChange={(checked) => setSelectedAddOnKeys((current) => checked === true ? [...current.filter((key) => key !== addOn.key), addOn.key] : current.filter((key) => key !== addOn.key))} />
-                        <span><span className="pricing-addon-heading"><strong>{addOnLabel(addOn)}</strong><span>{formatter.format(addOn.monthlyGross)} / {ui.perMonth} {taxLabels.net}</span></span>{addOnDescription(addOn) && <small>{addOnDescription(addOn)}</small>}</span>
+                        <span><span className="pricing-addon-heading"><strong>{addOnLabel(addOn)}</strong><span>{formatter.format(addOn.monthlyGross)} / {ui.perMonth}</span></span>{addOnDescription(addOn) && <small>{addOnDescription(addOn)}</small>}</span>
                       </label>
                     ))}</div>
                   </fieldset>}
@@ -995,7 +992,6 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                     {billingPeriod === "monthly" && <div><dt>{ui.sms}</dt><dd>{formatter.format(quote.sms.net)}</dd></div>}
                     <div><dt>{ui.modules}</dt><dd>{formatter.format(quote.addOns)}</dd></div>
                   </dl>
-                  <p className="pricing-tax-caption">{taxLabels.items}</p>
                   <div aria-live="polite" aria-atomic="true">
                     <dl className="pricing-vat-breakdown">
                       <div><dt>{taxLabels.subtotal}</dt><dd data-pricing-net>{formatter.format(quote.total.net)}</dd></div>

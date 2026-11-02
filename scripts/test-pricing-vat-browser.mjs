@@ -45,8 +45,11 @@ try {
       const key = { basic: 'basic', pro: 'professional', business: 'premium' }[plan.key];
       const card = page.locator(`[data-plan="${key}"]`);
       assert.equal(compact(await card.locator('.pricing-plan-price strong').innerText()), format(plan.monthlyGross));
-      assert.ok(compact(await card.locator('.pricing-plan-gross').innerText()).includes(format(gross(plan.monthlyGross))));
+      // VAT is stated once in the pricing note and in the calculator totals, not per card.
+      assert.doesNotMatch(await card.innerText(), /DDV|VAT/);
     }
+    assert.doesNotMatch(await page.locator('.pricing-controls').innerText(), /DDV|VAT/);
+    assert.doesNotMatch(await page.locator('.pricing-info-grid').first().innerText(), /DDV|VAT/);
     const summary = page.locator('.pricing-summary-card');
     const pro = catalog.plans.find(p => p.key === 'pro');
     await expect.poll(async () => compact(await summary.locator('[data-pricing-total]').innerText())).toBe(format(gross(pro.monthlyGross)));
@@ -85,7 +88,8 @@ try {
     assert.equal(signup.searchParams.get('billing'), 'monthly');
     assert.equal(signup.searchParams.get('users'), String(catalog.includedUsers + 1));
     await page.goto(server.origin + (language === 'sl' ? '/' : '/en'), { waitUntil: 'networkidle' });
-    await expect(page.locator('.home-price-period')).toContainText(language === 'sl' ? 'brez DDV' : 'excl. VAT');
+    await expect(page.locator('.home-price-period')).toHaveText(language === 'sl' ? '/ mesec' : '/ month');
+    assert.doesNotMatch(await page.locator('#cenik').innerText(), /DDV|VAT/);
     assert.deepEqual(errors, []);
     results.push({ language, width, ...dimensions, passed: true });
     await context.close();

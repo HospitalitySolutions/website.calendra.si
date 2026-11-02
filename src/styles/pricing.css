@@ -19,9 +19,6 @@
 .pricing-intro-description { margin-top: 20px; color: hsl(var(--muted-foreground)); font-size: 1.15rem; line-height: 1.6; }
 .pricing-updated { margin-top: 10px; font-size: .82rem; color: hsl(var(--muted-foreground)); }
 .pricing-tax-note { max-width: 940px; margin: 24px auto 0; font-size: .9rem; line-height: 1.75; font-weight: 400; color: hsl(var(--muted-foreground)); }
-.pricing-plan-tax { font-size: .85rem; margin-top: 2px; }
-.pricing-plan-gross { margin: 5px 0 8px; font-size: .82rem; color: hsl(var(--muted-foreground)); }
-.pricing-tax-caption, .pricing-summary-card > .pricing-tax-caption { color: hsl(var(--muted-foreground)); font-size: .78rem; line-height: 1.6; margin: 8px 0 20px; }
 .pricing-summary-card > .pricing-summary-period { margin: 8px 0 0; font-size: .85rem; }
 .pricing-vat-breakdown { border-top: 1px solid hsl(var(--border)); padding: 15px 0; }
 .pricing-vat-breakdown > div { display: flex; justify-content: space-between; gap: 16px; padding: 6px 0; font-size: .88rem; }

@@ -35,13 +35,13 @@ export const calculatePricingQuote = (input: {
 };
 
 export const pricingTaxLabels = (language: "sl" | "en") => language === "sl" ? {
-  net: "brez DDV", gross: "z DDV", subtotal: "Skupaj brez DDV", vat: "DDV (22 %)",
+  net: "brez DDV", subtotal: "Skupaj brez DDV", vat: "DDV (22 %)",
   monthlyTotal: "Mesečno skupaj z DDV", annualTotal: "Letno skupaj z DDV",
-  monthlyEquivalent: "Povprečno na mesec z DDV", items: "Postavke so brez DDV.",
+  monthlyEquivalent: "Povprečno na mesec z DDV",
   annualUsage: "SMS se obračunajo mesečno po porabi; prikazan je mesečni izračun z DDV.",
 } : {
-  net: "excl. VAT", gross: "incl. VAT", subtotal: "Subtotal excl. VAT", vat: "VAT (22%)",
+  net: "excl. VAT", subtotal: "Subtotal excl. VAT", vat: "VAT (22%)",
   monthlyTotal: "Monthly total incl. VAT", annualTotal: "Annual total incl. VAT",
-  monthlyEquivalent: "Monthly equivalent incl. VAT", items: "Line items exclude VAT.",
+  monthlyEquivalent: "Monthly equivalent incl. VAT",
   annualUsage: "SMS are billed monthly based on usage; the monthly estimate includes VAT.",
 };

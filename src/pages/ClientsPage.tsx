@@ -281,7 +281,7 @@ const ClientsPage = () => {
                 <div className="flex items-center gap-3">
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-primary/[0.08] text-primary"><BadgeEuro className="h-5 w-5" /></span>
                   <p className="font-display text-2xl font-extrabold text-foreground">
-                    {text.pricingFromPrefix} <span className="text-primary">{fromMonthlyPrice}</span> <span className="text-base font-semibold text-muted-foreground">{text.pricingPerMonth} {language === "sl" ? "brez DDV" : "excl. VAT"}</span>
+                    {text.pricingFromPrefix} <span className="text-primary">{fromMonthlyPrice}</span> <span className="text-base font-semibold text-muted-foreground">{text.pricingPerMonth}</span>
                   </p>
                 </div>
                 <Button variant="outline" size="lg" className="rounded-xl" asChild>
