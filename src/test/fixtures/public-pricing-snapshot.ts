@@ -101,6 +101,8 @@ export const FALLBACK_PUBLIC_PRICING: PublicPricingCatalog = {
   includedUsers: 1,
   annualBilledMonths: 10,
   annualSavingsMonths: 2,
+  annualDiscountPercent: 16.7,
+  spacePricing: null,
   plans: [
     {
       key: "basic",

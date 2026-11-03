@@ -66,6 +66,8 @@ type TranslationSet = {
   usersLabel: string;
   usersHint: string;
   usersCountLabel: string;
+  spacesLabel: string;
+  spacesCountLabel: string;
   smsLabel: string;
   smsHint: string;
   smsCountLabel: string;
@@ -109,18 +111,20 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     addOnsTitle: "Dodatne možnosti",
     billingMonthlyLabel: "Mesečno",
     billingAnnualLabel: "Letno",
-    billingAnnualSavingsLabel: "Pri letnem obračunu prihranite {months} meseca",
+    billingAnnualSavingsLabel: "Pri letnem obračunu prihranite {percent} %",
     enterprisePanelTitle: "Za večje ekipe ali posebne zahteve",
     enterprisePanelDescription: "Enterprise paket prilagodimo vašemu poslovanju.",
     enterprisePanelCta: "Pošljite povpraševanje",
     enterprisePanelResponse: "Skupaj določimo naslednje korake.",
-    usersLabel: "2. Uporabniki",
+    usersLabel: "Uporabniki",
     usersHint: "",
     usersCountLabel: "uporabnikov",
-    smsLabel: "3. Dodatna SMS sporočila",
+    spacesLabel: "Prostori",
+    spacesCountLabel: "dodatnih prostorov",
+    smsLabel: "Dodatna SMS sporočila",
     smsHint: "",
     smsCountLabel: "SMS sporočil",
-    optionsLabel: "4. Dodatni moduli",
+    optionsLabel: "Dodatni moduli",
     optionFiscal: "Davčna blagajna",
     optionPremises: "Poslovni prostor",
     monthlyLabel: "Mesečno skupaj",
@@ -240,18 +244,20 @@ const translations: Record<SiteLanguage, TranslationSet> = {
     addOnsTitle: "Additional options",
     billingMonthlyLabel: "Monthly",
     billingAnnualLabel: "Yearly",
-    billingAnnualSavingsLabel: "Save {months} months with annual billing",
+    billingAnnualSavingsLabel: "Save {percent}% with annual billing",
     enterprisePanelTitle: "For larger teams or special requirements",
     enterprisePanelDescription: "We tailor the Enterprise plan to your business.",
     enterprisePanelCta: "Send an enquiry",
     enterprisePanelResponse: "Agree the next steps together.",
-    usersLabel: "2. Additional users",
+    usersLabel: "Additional users",
     usersHint: "",
     usersCountLabel: "users",
-    smsLabel: "3. Additional SMS messages",
+    spacesLabel: "Rooms",
+    spacesCountLabel: "additional rooms",
+    smsLabel: "Additional SMS messages",
     smsHint: "",
     smsCountLabel: "SMS messages",
-    optionsLabel: "4. Add-on modules",
+    optionsLabel: "Add-on modules",
     optionFiscal: "Fiscal cash register",
     optionPremises: "Business premises",
     monthlyLabel: "Monthly total",
@@ -401,6 +407,9 @@ const standaloneExtras = {
 const USER_SLIDER_MAX = 20;
 const SMS_SLIDER_MAX = 1000;
 const SMS_SLIDER_STEP = 50;
+const ADDITIONAL_SPACES_MAX = 20;
+/** The app's catalog key for the "Prostori" (rooms) feature. */
+const SPACES_FEATURE_KEY = "integrations";
 
 const HIDDEN_PRICING_ADD_ON_CODES = new Set([
   "FISCAL_CASH_REGISTER",
@@ -443,6 +452,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const [selectedTierKey, setSelectedTierKey] = useState<PlanKey>("professional");
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("monthly");
   const [additionalUsers, setAdditionalUsers] = useState(() => getInitialPricingCatalog().includedUsers);
+  const [additionalSpaces, setAdditionalSpaces] = useState(0);
   const [additionalSms, setAdditionalSms] = useState(0);
   const [selectedAddOnKeys, setSelectedAddOnKeys] = useState<string[]>([]);
   const [contactCompany, setContactCompany] = useState("");
@@ -490,7 +500,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   );
 
   const annualBilledMonths = pricingCatalog.annualBilledMonths || 10;
-  const annualSavingsMonths = pricingCatalog.annualSavingsMonths || Math.max(0, 12 - annualBilledMonths);
+  const annualDiscountLabel = new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-IE", { maximumFractionDigits: 1 }).format(pricingCatalog.annualDiscountPercent);
 
   const content = useMemo<TranslationSet>(() => {
     const featureLabel = (feature: PublicPricingFeature) =>
@@ -670,10 +680,14 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
 
   const taxLabels = pricingTaxLabels(language);
   const selectedPlan = pricingCatalog.plans.find((plan) => plan.key === selectedApiPlanKey);
+  const spacePricing = pricingCatalog.spacePricing;
+  const spacesAvailable = Boolean(spacePricing && selectedPlan?.featureKeys.includes(SPACES_FEATURE_KEY));
+  const chargedSpaces = spacesAvailable ? additionalSpaces : 0;
   const quote = calculatePricingQuote({
     annual: billingPeriod === "annual", monthlyPlan: selectedPlan?.monthlyGross ?? 0,
     annualPlan: selectedPlan?.annualGross ?? 0, annualBilledMonths,
     monthlyUsers: additionalUsersPrice,
+    monthlySpaces: chargedSpaces * (spacePricing?.monthlyGross ?? 0),
     monthlyAddOns: selectedAddOns.reduce((total, addOn) => total + addOn.monthlyGross, 0),
     smsCount: additionalSms, smsUnit: pricingCatalog.smsPerMessageGross,
   });
@@ -691,6 +705,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
 
   const selectedItems = [
     additionalUsers > includedUsers ? `${additionalUsers} ${content.usersCountLabel}` : null,
+    chargedSpaces > 0 ? `${chargedSpaces} ${content.spacesCountLabel}` : null,
     additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null,
     ...selectedAddOns.map((addOn) => `${addOnLabel(addOn)} (${content.monthlyLabel.toLowerCase()})`),
   ].filter(Boolean) as string[];
@@ -698,6 +713,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const signupSummary = useMemo<PricingSignupSummary>(
     () => ({
       totalUsers: additionalUsers,
+      additionalSpaces: chargedSpaces,
       additionalSms,
       fiscalCashRegister: selectedAddOns.some((addOn) => ["FISCAL", "FISCAL_CASH_REGISTER"].includes(addOn.code)),
       websiteCreation: false,
@@ -715,6 +731,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     }),
     [
       additionalUsers,
+      chargedSpaces,
       additionalSms,
       selectedAddOns,
       monthlyTotal,
@@ -791,12 +808,14 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     sms: "SMS sporočila", modules: "Dodatni moduli", included: "Vključeno",
     unavailable: "Ni vključeno", perMonth: "mesec", perMessage: "sporočilo",
     user: "Dodatni uporabnik", fromSecond: "Od 2. uporabnika dalje.",
+    space: "Dodatni prostor", spaces: "Dodatni prostori",
     optional: "Dodatno po izbiri ali porabi", byPrice: "Po ceniku",
     custom: "Ponudba po meri", team: "Rešitev za vašo ekipo.",
     teamDescription: "Za večje ekipe, več lokacij ali posebne zahteve pripravimo ponudbo po meri.",
     benefits: ["Prilagoditev vašemu poslovanju", "Povezovanje z drugimi orodji", "Skupaj določimo naslednje korake."],
     inquiry: "Povpraševanje za Enterprise", removeUser: "Odstrani uporabnika", addUser: "Dodaj uporabnika",
     userCount: "Število uporabnikov", smsCount: "Število dodatnih SMS sporočil",
+    removeSpace: "Odstrani prostor", addSpace: "Dodaj prostor", spaceCount: "Število prostorov",
     monthlyBilling: "Mesečni obračun", annualBilling: "Letni obračun",
     annualPackage: "Letno za paket", enterprise: "Za Enterprise pripravimo izračun po meri.",
     readStory: "Preberite celotno zgodbo", swipe: "Za vse pakete podrsajte po tabeli.",
@@ -809,12 +828,14 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     sms: "SMS messages", modules: "Add-on modules", included: "Included",
     unavailable: "Not included", perMonth: "month", perMessage: "message",
     user: "Additional user", fromSecond: "From the second user.",
+    space: "Additional room", spaces: "Additional rooms",
     optional: "Optional or usage-based costs", byPrice: "As listed",
     custom: "A tailored offer", team: "A solution for your team.",
     teamDescription: "For larger teams, multiple locations or special requirements, we prepare a tailored offer.",
     benefits: ["Tailored to your business", "Connect your existing tools", "Agree the next steps together."],
     inquiry: "Enterprise enquiry", removeUser: "Remove a user", addUser: "Add a user",
     userCount: "Number of users", smsCount: "Number of additional SMS messages",
+    removeSpace: "Remove a room", addSpace: "Add a room", spaceCount: "Number of rooms",
     monthlyBilling: "Monthly billing", annualBilling: "Annual billing",
     annualPackage: "Annual plan price", enterprise: "We prepare a custom estimate for Enterprise.",
     readStory: "Read the full story", swipe: "Scroll the table to compare all plans.",
@@ -825,6 +846,17 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const includedUserLabel = sl
     ? includedUsers === 1 ? "1 uporabnik je vključen." : `Vključeni uporabniki: ${includedUsers}.`
     : `${includedUsers} ${includedUsers === 1 ? "user is" : "users are"} included.`;
+  const includedSpaces = spacePricing?.includedPerLocation ?? 0;
+  const includedSpaceLabel = sl
+    ? includedSpaces === 1 ? "1 prostor na lokacijo je vključen." : `Vključeni prostori na lokacijo: ${includedSpaces}.`
+    : `${includedSpaces} ${includedSpaces === 1 ? "room per location is" : "rooms per location are"} included.`;
+  const spacePriceHint = spacePricing
+    ? sl ? `Vsak dodatni prostor: ${formatter.format(spacePricing.monthlyGross)} / mesec.` : `Each additional room: ${formatter.format(spacePricing.monthlyGross)} / month.`
+    : "";
+  const spaceFromLabel = sl ? `Od ${includedSpaces + 1}. prostora na lokacijo dalje.` : `From room ${includedSpaces + 1} per location.`;
+  // Step numbers follow the steps shown for the selected plan.
+  const calculatorSteps = [content.usersLabel, ...(spacesAvailable ? [content.spacesLabel] : []), content.smsLabel, ...(visibleAddOns.length > 0 ? [content.optionsLabel] : [])];
+  const stepLabel = (label: string) => `${calculatorSteps.indexOf(label) + 2}. ${label}`;
   const story = getCustomerStory("institut-avisensa")!;
   const storyContent = story.content[language];
   const relatedPages = getRelatedPages("pricing", language, 8);
@@ -832,6 +864,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const TierHeadingTag = standalone ? "h2" : "h3";
   const SectionHeading = standalone ? "h2" : "h3";
   const setUserCount = (value: number) => setAdditionalUsers(Math.min(USER_SLIDER_MAX, Math.max(includedUsers, Math.trunc(value) || includedUsers)));
+  const setSpaceCount = (value: number) => setAdditionalSpaces(Math.min(ADDITIONAL_SPACES_MAX, Math.max(0, Math.trunc(value) || 0)));
   const setSmsCount = (value: number) => setAdditionalSms(Math.min(SMS_SLIDER_MAX, Math.max(0, Math.trunc(value) || 0)));
 
   const trustLine = (
@@ -864,7 +897,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 </button>
               ))}
             </div>
-            <span className="pricing-savings">{content.billingAnnualSavingsLabel.replace("{months}", String(annualSavingsMonths))}</span>
+            <span className="pricing-savings">{content.billingAnnualSavingsLabel.replace("{percent}", annualDiscountLabel)}</span>
           </div>
           {trustLine}
           <p className="pricing-tax-note">{getPricingTaxNote(language)}</p>
@@ -929,6 +962,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 <span className="pricing-icon"><Receipt aria-hidden="true" /></span><h3>{ui.optional}</h3>
                 <dl className="pricing-cost-list">
                   {pricingCatalog.additionalUserRules.map((rule) => <div key={rule.fromUser}><dt>{ui.user}<small>{rule.fromUser === 2 && rule.toUser == null ? ui.fromSecond : sl ? `Uporabniki: ${rule.fromUser}–${rule.toUser ?? "+"}` : `Users: ${rule.fromUser}–${rule.toUser ?? "+"}`}</small></dt><dd><strong>{formatter.format(rule.monthlyGrossPerUser)}</strong> / {ui.perMonth}</dd></div>)}
+                  {spacePricing && <div><dt>{ui.space}<small>{spaceFromLabel}</small></dt><dd><strong>{formatter.format(spacePricing.monthlyGross)}</strong> / {ui.perMonth}</dd></div>}
                   <div><dt>{ui.sms}</dt><dd><strong>{formatter.format(pricingCatalog.smsPerMessageGross)}</strong> / {ui.perMessage}</dd></div>
                   {availableAddOns.length > 0 && <div><dt>{ui.modules}</dt><dd>{ui.byPrice}</dd></div>}
                 </dl>
@@ -955,7 +989,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 </fieldset>
                 {selectedTier.key === "enterprise" ? <p className="pricing-enterprise-note">{ui.enterprise}</p> : <>
                   <fieldset className="pricing-control">
-                    <legend>{content.usersLabel}</legend>
+                    <legend>{stepLabel(content.usersLabel)}</legend>
                     <div className="pricing-control-header">
                       <p>{includedUserLabel} {content.usersHint}</p>
                       <div className="pricing-stepper">
@@ -966,13 +1000,25 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                     </div>
                     <Slider aria-label={ui.userCount} min={includedUsers} max={USER_SLIDER_MAX} step={1} value={[additionalUsers]} onValueChange={([value]) => setUserCount(value)} />
                   </fieldset>
+                  {spacesAvailable && <fieldset className="pricing-control">
+                    <legend>{stepLabel(content.spacesLabel)}</legend>
+                    <div className="pricing-control-header">
+                      <p>{includedSpaceLabel} {spacePriceHint}</p>
+                      <div className="pricing-stepper">
+                        <button type="button" aria-label={ui.removeSpace} disabled={additionalSpaces <= 0} onClick={() => setSpaceCount(additionalSpaces - 1)}><Minus aria-hidden="true" /></button>
+                        <Input type="number" aria-label={ui.spaceCount} min={includedSpaces} max={includedSpaces + ADDITIONAL_SPACES_MAX} step={1} value={includedSpaces + additionalSpaces} onChange={(event) => setSpaceCount(Number(event.target.value) - includedSpaces)} />
+                        <button type="button" aria-label={ui.addSpace} disabled={additionalSpaces >= ADDITIONAL_SPACES_MAX} onClick={() => setSpaceCount(additionalSpaces + 1)}><Plus aria-hidden="true" /></button>
+                      </div>
+                    </div>
+                    <Slider aria-label={ui.spaceCount} min={includedSpaces} max={includedSpaces + ADDITIONAL_SPACES_MAX} step={1} value={[includedSpaces + additionalSpaces]} onValueChange={([value]) => setSpaceCount(value - includedSpaces)} />
+                  </fieldset>}
                   <fieldset className="pricing-control">
-                    <legend>{content.smsLabel}</legend>
+                    <legend>{stepLabel(content.smsLabel)}</legend>
                     <div className="pricing-control-header"><p>{content.smsHint}</p><Input className="pricing-sms-input" type="number" aria-label={ui.smsCount} min={0} max={SMS_SLIDER_MAX} step={1} value={additionalSms} onChange={(event) => setSmsCount(Number(event.target.value))} /></div>
                     <Slider aria-label={ui.smsCount} min={0} max={SMS_SLIDER_MAX} step={SMS_SLIDER_STEP} value={[additionalSms]} onValueChange={([value]) => setSmsCount(value)} />
                   </fieldset>
                   {visibleAddOns.length > 0 && <fieldset className="pricing-control">
-                    <legend>{content.optionsLabel}</legend>
+                    <legend>{stepLabel(content.optionsLabel)}</legend>
                     <div className="pricing-addons">{visibleAddOns.map((addOn) => (
                       <label key={addOn.key} className="pricing-addon">
                         <Checkbox checked={selectedAddOnKeys.includes(addOn.key)} onCheckedChange={(checked) => setSelectedAddOnKeys((current) => checked === true ? [...current.filter((key) => key !== addOn.key), addOn.key] : current.filter((key) => key !== addOn.key))} />
@@ -989,6 +1035,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   <dl className="pricing-breakdown">
                     <div><dt>{ui.package}</dt><dd>{formatter.format(quote.plan)}</dd></div>
                     <div><dt>{ui.users}</dt><dd>{formatter.format(quote.users)}</dd></div>
+                    {spacesAvailable && <div><dt>{ui.spaces}</dt><dd>{formatter.format(quote.spaces)}</dd></div>}
                     {billingPeriod === "monthly" && <div><dt>{ui.sms}</dt><dd>{formatter.format(quote.sms.net)}</dd></div>}
                     <div><dt>{ui.modules}</dt><dd>{formatter.format(quote.addOns)}</dd></div>
                   </dl>
@@ -1049,7 +1096,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       {standalone && showStickySummary && selectedTier.key !== "enterprise" && (
         <aside data-sales-sticky="true" className="pricing-sticky-summary" aria-label={content.summaryTitle}>
           <div className="container mx-auto">
-            <div className="pricing-sticky-selection"><span className="marketing-eyebrow">{content.selectedPackageLabel}</span><strong>{selectedTier.name}</strong><p>{userCountLabel} · {[additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null, ...selectedAddOns.map(addOnLabel)].filter(Boolean).join(" · ") || content.noExtras}</p></div>
+            <div className="pricing-sticky-selection"><span className="marketing-eyebrow">{content.selectedPackageLabel}</span><strong>{selectedTier.name}</strong><p>{userCountLabel} · {[chargedSpaces > 0 ? `${chargedSpaces} ${content.spacesCountLabel}` : null, additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null, ...selectedAddOns.map(addOnLabel)].filter(Boolean).join(" · ") || content.noExtras}</p></div>
             <div className="pricing-sticky-taxes" aria-live="polite" aria-atomic="true">
               <div><span>{taxLabels.net}</span><strong>{formatter.format(quote.total.net)}</strong></div>
               <div><span>{taxLabels.vat}</span><strong>{formatter.format(quote.total.vat)}</strong></div>

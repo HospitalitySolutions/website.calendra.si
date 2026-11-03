@@ -48,6 +48,7 @@ export function isBusinessRegistrationUrl(href: string) {
 
 export type PricingSignupSummary = {
   totalUsers: number;
+  additionalSpaces?: number;
   additionalSms: number;
   fiscalCashRegister: boolean;
   websiteCreation: boolean;

@@ -151,6 +151,46 @@ describe("app-owned pricing contract", () => {
   });
 });
 
+describe("admin-managed annual discount and rooms", () => {
+  // Shape of the app's catalog once the admin set a 15 % annual discount and room pricing.
+  const adminCatalog = {
+    ...apiCatalog, annualBilledMonths: 10.2, annualSavingsMonths: 1.8, annualDiscountPercent: 15,
+    includedSpacesPerLocation: 1, additionalSpaceMonthlyGross: 2.9,
+  };
+  const renderPricing = (catalog: PublicPricingCatalog) => {
+    setPrerenderedPricingCatalog(catalog);
+    const html = renderToStaticMarkup(
+      <MemoryRouter><SiteLanguageProvider initialLanguage="sl"><Pricing standalone /></SiteLanguageProvider></MemoryRouter>,
+    );
+    return new DOMParser().parseFromString(html, "text/html");
+  };
+  it("accepts fractional annual months and reads the discount and room price", () => {
+    const result = normalizePublicPricingCatalog(adminCatalog);
+    expect(result).toMatchObject({ annualBilledMonths: 10.2, annualSavingsMonths: 1.8, annualDiscountPercent: 15, spacePricing: { includedPerLocation: 1, monthlyGross: 2.9 } });
+    expect(normalizePublicPricingCatalog(result)).toEqual(result);
+    expect(normalizePublicPricingCatalog(apiCatalog).spacePricing).toBeNull();
+  });
+  it("rejects impossible annual months and a room price without its included count", () => {
+    for (const raw of [{ ...adminCatalog, annualBilledMonths: 0 }, { ...adminCatalog, annualBilledMonths: 13 }, { ...adminCatalog, includedSpacesPerLocation: undefined }]) expect(() => normalizePublicPricingCatalog(raw)).toThrow();
+  });
+  it("shows the discount and a rooms step, summary row and charges row for plans with rooms", () => {
+    const page = renderPricing(normalizePublicPricingCatalog(adminCatalog));
+    expect(page.querySelector(".pricing-savings")?.textContent).toBe("Pri letnem obračunu prihranite 15 %");
+    const legends = Array.from(page.querySelectorAll(".pricing-control legend")).map((legend) => legend.textContent);
+    expect(legends.slice(1, 4)).toEqual(["2. Uporabniki", "3. Prostori", "4. Dodatna SMS sporočila"]);
+    expect(page.querySelector(".pricing-controls")?.textContent?.replace(/\s+/g, " ")).toContain("1 prostor na lokacijo je vključen. Vsak dodatni prostor: 2,90 € / mesec.");
+    expect(page.querySelector(".pricing-breakdown")?.textContent).toContain("Dodatni prostori");
+    expect(page.querySelector(".pricing-cost-list")?.textContent?.replace(/\s+/g, " ")).toContain("Dodatni prostorOd 2. prostora na lokacijo dalje.2,90 € / mesec");
+  });
+  it("hides rooms for a plan without the rooms feature", () => {
+    const catalog = normalizePublicPricingCatalog({ ...adminCatalog, plans: adminCatalog.plans.map((plan) => ({ ...plan, featureKeys: plan.featureKeys.filter((key) => key !== "integrations") })) });
+    const page = renderPricing(catalog);
+    const legends = Array.from(page.querySelectorAll(".pricing-control legend")).map((legend) => legend.textContent);
+    expect(legends.slice(1, 3)).toEqual(["2. Uporabniki", "3. Dodatna SMS sporočila"]);
+    expect(page.querySelector(".pricing-breakdown")?.textContent).not.toContain("Dodatni prostori");
+  });
+});
+
 describe("current public API snapshot", () => {
   it.each(["sl", "en"] as const)("uses changed API prices across rendered and machine-readable content in %s", async (language) => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => apiCatalog }));

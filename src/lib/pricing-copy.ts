@@ -17,6 +17,7 @@ export const getPricingSummary = (
   const plans = catalog.plans.map((plan) =>
     `${language === "sl" ? plan.nameSl : plan.name} ${amount(plan.monthlyGross)}`,
   ).join(", ");
+  const percent = (value: number) => new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-IE", { maximumFractionDigits: 1 }).format(value);
   const userPrices = catalog.additionalUserRules.map((rule) => language === "sl"
     ? `${rule.fromUser}–${rule.toUser ?? "∞"}: ${amount(rule.monthlyGrossPerUser)} / uporabnik / mesec`
     : `${rule.fromUser}–${rule.toUser ?? "∞"}: ${amount(rule.monthlyGrossPerUser)} / user / month`).join("; ");
@@ -27,7 +28,7 @@ export const getPricingSummary = (
       getPricingTaxNote(language),
       `Število uporabnikov v osnovni ceni: ${catalog.includedUsers}.`,
       `Cene dodatnih uporabnikov: ${userPrices}.`,
-      `Pri letnem plačilu plačate ${catalog.annualBilledMonths} mesecev za 12 mesecev uporabe.`,
+      `Pri letnem plačilu prihranite ${percent(catalog.annualDiscountPercent)} %.`,
       "Brezplačni preizkus traja 14 dni brez kreditne kartice.",
     ].join(" ");
   }
@@ -37,7 +38,7 @@ export const getPricingSummary = (
     getPricingTaxNote(language),
     `Users included in the base price: ${catalog.includedUsers}.`,
     `Additional-user prices: ${userPrices}.`,
-    `Annual billing charges ${catalog.annualBilledMonths} months for 12 months of use.`,
+    `Annual billing saves ${percent(catalog.annualDiscountPercent)}%.`,
     "The free trial lasts 14 days with no credit card.",
   ].join(" ");
 };

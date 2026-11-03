@@ -32,6 +32,8 @@ export type PublicPricingAddOn = {
   monthlyGross: number;
   availablePlans: PublicPricingPlanKey[];
 };
+/** Rooms ("prostori") beyond the included ones are billed per room each month. */
+export type PublicSpacePricing = { includedPerLocation: number; monthlyGross: number };
 export type PublicPricingCatalog = {
   catalogVersion: number;
   currency: string;
@@ -39,10 +41,13 @@ export type PublicPricingCatalog = {
   includedUsers: number;
   annualBilledMonths: number;
   annualSavingsMonths: number;
+  annualDiscountPercent: number;
   plans: PublicPricingPlan[];
   features: PublicPricingFeature[];
   additionalUserRules: PublicAdditionalUserRule[];
   addOns: PublicPricingAddOn[];
+  /** Null when the app does not publish room pricing; the website then shows none. */
+  spacePricing: PublicSpacePricing | null;
   smsPerMessageGross: number;
 };
 
@@ -59,6 +64,10 @@ const money = (value: unknown, field: string): number => {
 const integer = (value: unknown, field: string, min = 0): number => {
   const number = money(value, field);
   return Number.isSafeInteger(number) && number >= min ? number : fail(field);
+};
+const months = (value: unknown, field: string): number => {
+  const amount = money(value, field);
+  return amount > 0 && amount <= 12 ? amount : fail(field);
 };
 const text = (value: unknown, fallback = ""): string => typeof value === "string" ? value.trim() || fallback : fallback;
 const array = (value: unknown, field: string): unknown[] => Array.isArray(value) ? value : fail(field);
@@ -120,13 +129,25 @@ export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCata
       availablePlans: array(addOn.availablePlans ?? addOn.includedPlans ?? addOn.eligiblePlans ?? [], "addOn.availablePlans").filter(isPlanKey),
     };
   });
+  // The admin derives annual billing from a percentage discount, so months may be fractional (12 × 0.85 = 10.2).
+  const annualBilledMonths = months(raw.annualBilledMonths, "annualBilledMonths");
+  const annualSavingsMonths = money(raw.annualSavingsMonths, "annualSavingsMonths");
+  const annualDiscountPercent = raw.annualDiscountPercent == null
+    ? Math.round((1 - annualBilledMonths / 12) * 1000) / 10
+    : money(raw.annualDiscountPercent, "annualDiscountPercent");
+  // Snapshots and prerendered pages re-normalize an already normalized catalog.
+  const savedSpaces = raw.spacePricing == null ? undefined : record(raw.spacePricing, "spacePricing");
+  const spaceMonthlyGross = savedSpaces ? savedSpaces.monthlyGross : raw.additionalSpaceMonthlyGross;
+  const spacePricing: PublicSpacePricing | null = spaceMonthlyGross == null ? null : {
+    includedPerLocation: integer(savedSpaces ? savedSpaces.includedPerLocation : raw.includedSpacesPerLocation, "includedSpacesPerLocation"),
+    monthlyGross: money(spaceMonthlyGross, "additionalSpaceMonthlyGross"),
+  };
   return {
     // Preserve app amounts exactly. The owner-confirmed November B2B tax basis
     // supersedes the legacy API flag, including cached builds and live refreshes.
     catalogVersion: integer(raw.catalogVersion, "catalogVersion", 1), currency, vatIncluded: PRICING_TAX.included,
-    includedUsers, annualBilledMonths: integer(raw.annualBilledMonths, "annualBilledMonths", 1),
-    annualSavingsMonths: integer(raw.annualSavingsMonths, "annualSavingsMonths"),
-    plans, features, additionalUserRules, addOns,
+    includedUsers, annualBilledMonths, annualSavingsMonths, annualDiscountPercent,
+    plans, features, additionalUserRules, addOns, spacePricing,
     // Preserve SMS unit precision. Currency rounding belongs on totals, not units.
     smsPerMessageGross: money(raw.smsPerMessageGross, "smsPerMessageGross"),
   };

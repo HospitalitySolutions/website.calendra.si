@@ -36,6 +36,11 @@ describe("November VAT transition", () => {
     expect(quote).toMatchObject({ plan: 289, users: 59, addOns: 99, sms: { net: 5, vat: 1.1, gross: 6.1 }, total: { net: 447, vat: 98.34, gross: 545.34 }, monthlyEquivalent: 45.45 });
     expect(calculatePricingQuote({ ...selection, annual: true, annualPlan: 280.25, monthlyUsers: 0, monthlyAddOns: 0 }).total).toEqual({ net: 280.25, vat: 61.66, gross: 341.91 });
   });
+  it("charges additional rooms monthly, and by the fractional annual months on annual billing", () => {
+    const rooms = { monthlyPlan: 26.9, annualPlan: 274.38, annualBilledMonths: 10.2, monthlyUsers: 0, monthlySpaces: 5.8, monthlyAddOns: 0, smsCount: 0, smsUnit: .05 };
+    expect(calculatePricingQuote({ ...rooms, annual: false })).toMatchObject({ spaces: 5.8, total: { net: 32.7, vat: 7.19, gross: 39.89 } });
+    expect(calculatePricingQuote({ ...rooms, annual: true })).toMatchObject({ spaces: 59.16, total: { net: 333.54, vat: 73.38, gross: 406.92 } });
+  });
   it("retains SMS unit precision until the line total and handles cent rounding", () => {
     const quote = calculatePricingQuote({ ...selection, annual: false, monthlyPlan: 0, monthlyUsers: 0, monthlyAddOns: 0, smsCount: 100, smsUnit: .0485 });
     expect(quote.total).toEqual({ net: 4.85, vat: 1.07, gross: 5.92 });
