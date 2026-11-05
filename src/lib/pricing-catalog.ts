@@ -20,6 +20,8 @@ export type PublicPricingFeature = {
   descriptionSl: string;
   minimumPlan: PublicPricingPlanKey;
   includedPlans: PublicPricingPlanKey[];
+  /** Monthly price in the "Po meri" package; null when it cannot be picked there. */
+  customMonthlyGross: number | null;
 };
 export type PublicAdditionalUserRule = { fromUser: number; toUser: number | null; monthlyGrossPerUser: number };
 export type PublicPricingAddOn = {
@@ -32,6 +34,8 @@ export type PublicPricingAddOn = {
   monthlyGross: number;
   availablePlans: PublicPricingPlanKey[];
 };
+/** The "Po meri" package: the Basic plan plus individually priced features. */
+export type PublicCustomPackage = { enabled: boolean; name: string; nameSl: string };
 /** Rooms ("prostori") beyond the included ones are billed per room each month. */
 export type PublicSpacePricing = { includedPerLocation: number; monthlyGross: number };
 export type PublicPricingCatalog = {
@@ -48,6 +52,8 @@ export type PublicPricingCatalog = {
   addOns: PublicPricingAddOn[];
   /** Null when the app does not publish room pricing; the website then shows none. */
   spacePricing: PublicSpacePricing | null;
+  /** Null when the app does not publish the custom package. */
+  customPackage: PublicCustomPackage | null;
   smsPerMessageGross: number;
 };
 
@@ -104,6 +110,7 @@ export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCata
       description: text(feature.description), descriptionSl: text(feature.descriptionSl, text(feature.description)),
       minimumPlan: feature.minimumPlan,
       includedPlans: array(feature.includedPlans, "feature.includedPlans").filter(isPlanKey),
+      customMonthlyGross: feature.customMonthlyGross == null ? null : money(feature.customMonthlyGross, `${key}.customMonthlyGross`),
     };
   });
   const additionalUserRules: PublicAdditionalUserRule[] = array(raw.additionalUserRules, "additionalUserRules").map((item) => {
@@ -142,12 +149,17 @@ export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCata
     includedPerLocation: integer(savedSpaces ? savedSpaces.includedPerLocation : raw.includedSpacesPerLocation, "includedSpacesPerLocation"),
     monthlyGross: money(spaceMonthlyGross, "additionalSpaceMonthlyGross"),
   };
+  const rawCustom = raw.customPackage == null ? undefined : record(raw.customPackage, "customPackage");
+  const customPackage: PublicCustomPackage | null = rawCustom ? {
+    enabled: rawCustom.enabled === true,
+    name: text(rawCustom.name, "Custom"), nameSl: text(rawCustom.nameSl, text(rawCustom.name, "Po meri")),
+  } : null;
   return {
     // Preserve app amounts exactly. The owner-confirmed November B2B tax basis
     // supersedes the legacy API flag, including cached builds and live refreshes.
     catalogVersion: integer(raw.catalogVersion, "catalogVersion", 1), currency, vatIncluded: PRICING_TAX.included,
     includedUsers, annualBilledMonths, annualSavingsMonths, annualDiscountPercent,
-    plans, features, additionalUserRules, addOns, spacePricing,
+    plans, features, additionalUserRules, addOns, spacePricing, customPackage,
     // Preserve SMS unit precision. Currency rounding belongs on totals, not units.
     smsPerMessageGross: money(raw.smsPerMessageGross, "smsPerMessageGross"),
   };

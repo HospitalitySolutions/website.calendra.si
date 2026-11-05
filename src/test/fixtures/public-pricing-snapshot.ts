@@ -10,6 +10,7 @@ const fallbackFeatures: PublicPricingFeature[] = [
     descriptionSl: "Sprejemajte rezervacije brez mesečne omejitve.",
     minimumPlan: "basic",
     includedPlans: ["basic", "pro", "business"],
+    customMonthlyGross: null,
   },
   {
     key: "staff",
@@ -19,6 +20,7 @@ const fallbackFeatures: PublicPricingFeature[] = [
     descriptionSl: "Upravljajte urnike in razpoložljivost osebja.",
     minimumPlan: "basic",
     includedPlans: ["basic", "pro", "business"],
+    customMonthlyGross: null,
   },
   {
     key: "group",
@@ -28,6 +30,7 @@ const fallbackFeatures: PublicPricingFeature[] = [
     descriptionSl: "Tečaji, delavnice in deljene kapacitete.",
     minimumPlan: "pro",
     includedPlans: ["pro", "business"],
+    customMonthlyGross: null,
   },
   {
     key: "resources",
@@ -37,6 +40,7 @@ const fallbackFeatures: PublicPricingFeature[] = [
     descriptionSl: "Razporejajte prostore, opremo in druge vire.",
     minimumPlan: "pro",
     includedPlans: ["pro", "business"],
+    customMonthlyGross: null,
   },
   {
     key: "payments",
@@ -46,6 +50,7 @@ const fallbackFeatures: PublicPricingFeature[] = [
     descriptionSl: "Prejemajte akontacije in predplačila ob rezervaciji.",
     minimumPlan: "pro",
     includedPlans: ["pro", "business"],
+    customMonthlyGross: null,
   },
   {
     key: "reminders",
@@ -55,6 +60,7 @@ const fallbackFeatures: PublicPricingFeature[] = [
     descriptionSl: "Z avtomatskimi opomniki zmanjšajte število neprihodov.",
     minimumPlan: "pro",
     includedPlans: ["pro", "business"],
+    customMonthlyGross: null,
   },
   {
     key: "ai",
@@ -64,6 +70,7 @@ const fallbackFeatures: PublicPricingFeature[] = [
     descriptionSl: "Glasovne rezervacije in pametna pomoč pri urniku.",
     minimumPlan: "pro",
     includedPlans: ["pro", "business"],
+    customMonthlyGross: null,
   },
   {
     key: "integrations",
@@ -73,6 +80,7 @@ const fallbackFeatures: PublicPricingFeature[] = [
     descriptionSl: "Povežite koledarje, sestanke, plačila in avtomatizacije.",
     minimumPlan: "pro",
     includedPlans: ["pro", "business"],
+    customMonthlyGross: null,
   },
   {
     key: "reporting",
@@ -82,6 +90,7 @@ const fallbackFeatures: PublicPricingFeature[] = [
     descriptionSl: "Analitika prihodkov, izkoriščenosti in rezervacij.",
     minimumPlan: "business",
     includedPlans: ["business"],
+    customMonthlyGross: null,
   },
   {
     key: "multilocation",
@@ -91,6 +100,7 @@ const fallbackFeatures: PublicPricingFeature[] = [
     descriptionSl: "Upravljajte več poslovalnic iz enega računa.",
     minimumPlan: "business",
     includedPlans: ["business"],
+    customMonthlyGross: null,
   },
 ];
 
@@ -103,6 +113,7 @@ export const FALLBACK_PUBLIC_PRICING: PublicPricingCatalog = {
   annualSavingsMonths: 2,
   annualDiscountPercent: 16.7,
   spacePricing: null,
+  customPackage: null,
   plans: [
     {
       key: "basic",

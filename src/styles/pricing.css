@@ -248,3 +248,22 @@
   .pricing-sticky-summary .pricing-button { font-size: .8rem; padding: 10px 12px; width: 100%; min-height: 42px; }
   .pricing-sticky-total strong { font-size: 1.4rem; }
 }
+
+/* "Po meri" (custom) package */
+.pricing-plan-grid-custom { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.pricing-plan-custom { border-style: dashed; }
+.pricing-plan-from { margin-right: 6px; font-size: .95rem; color: hsl(var(--muted-foreground)); }
+.pricing-custom-features li { align-items: baseline; }
+.pricing-custom-features li > span:first-of-type { flex: 1; }
+.pricing-custom-features svg { opacity: .45; }
+.pricing-custom-price { color: hsl(var(--muted-foreground)); font-size: .85rem; white-space: nowrap; }
+.pricing-custom-more { color: hsl(var(--muted-foreground)); padding-left: 28px; }
+.pricing-package-selector-custom { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.pricing-feature-group-title { margin: 18px 0 10px; font-size: .74rem; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: hsl(var(--muted-foreground)); }
+.pricing-breakdown dt small { display: block; margin-top: 4px; font-size: .78rem; color: hsl(var(--muted-foreground)); }
+.pricing-upgrade-hint { margin: 4px 0 18px; padding: 12px 14px; border-radius: 10px; background: #fff7e6; border: 1px solid #f5d48a; color: #6b4e00; font-size: .82rem; line-height: 1.55; }
+.pricing-upgrade-hint p { margin: 2px 0 6px; }
+.pricing-upgrade-hint button { display: inline-flex; align-items: center; gap: 6px; font-weight: 650; color: hsl(var(--primary)); }
+@media (max-width: 1100px) { .pricing-plan-grid-custom { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 800px) { .pricing-plan-grid-custom { grid-template-columns: 1fr; } }
+@media (max-width: 540px) { .pricing-package-selector-custom { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

@@ -22,17 +22,18 @@ export const priceWithVat = (amount: number) => {
 
 export const calculatePricingQuote = (input: {
   annual: boolean; monthlyPlan: number; annualPlan: number; annualBilledMonths: number;
-  monthlyUsers: number; monthlySpaces?: number; monthlyAddOns: number; smsCount: number; smsUnit: number;
+  monthlyUsers: number; monthlySpaces?: number; monthlyFeatures?: number; monthlyAddOns: number; smsCount: number; smsUnit: number;
 }) => {
   const factor = input.annual ? input.annualBilledMonths : 1;
   const plan = roundPrice(input.annual ? input.annualPlan : input.monthlyPlan);
   const users = roundPrice(input.monthlyUsers * factor);
   const spaces = roundPrice((input.monthlySpaces ?? 0) * factor);
+  const features = roundPrice((input.monthlyFeatures ?? 0) * factor);
   const addOns = roundPrice(input.monthlyAddOns * factor);
   const sms = priceWithVat(input.smsCount * input.smsUnit);
   // Annual subscriptions do not prebill twelve months of SMS usage.
-  const total = priceWithVat(plan + users + spaces + addOns + (input.annual ? 0 : sms.net));
-  return { plan, users, spaces, addOns, sms, total, monthlyEquivalent: input.annual ? roundPrice(total.gross / 12) : total.gross };
+  const total = priceWithVat(plan + features + users + spaces + addOns + (input.annual ? 0 : sms.net));
+  return { plan, features, users, spaces, addOns, sms, total, monthlyEquivalent: input.annual ? roundPrice(total.gross / 12) : total.gross };
 };
 
 export const pricingTaxLabels = (language: "sl" | "en") => language === "sl" ? {

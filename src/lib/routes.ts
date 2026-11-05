@@ -55,6 +55,8 @@ export type PricingSignupSummary = {
   businessPremises: boolean;
   selectedAddOnKeys?: string[];
   selectedAddOnCodes?: string[];
+  /** Pricing feature keys picked for the "Po meri" package. */
+  selectedFeatureKeys?: string[];
   monthlyTotal: number;
   oneTimeTotal: number;
   firstInvoiceEstimate: number;
@@ -84,6 +86,8 @@ export const buildPackageSignupRoute = (packageType: string, summary?: PricingSi
       .map((key) => key.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""))
       .filter(Boolean));
     for (const key of addOnKeys) params.append("addon", key);
+    // The app re-validates "Po meri" features against its own catalog and prices.
+    for (const key of new Set(summary.selectedFeatureKeys ?? [])) params.append("feature", key);
 
     // Preserve the existing estimate payload; the app must calculate payable
     // prices from its own catalog, not treat these client totals as authority.

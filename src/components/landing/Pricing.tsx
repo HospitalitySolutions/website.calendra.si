@@ -28,7 +28,7 @@ import {
 } from "@/lib/public-pricing";
 
 type CellValue = boolean | string;
-type PlanKey = "basic" | "professional" | "premium" | "enterprise";
+type PlanKey = "basic" | "professional" | "premium" | "custom" | "enterprise";
 type BillingPeriod = "monthly" | "annual";
 
 type Tier = {
@@ -213,6 +213,15 @@ const translations: Record<SiteLanguage, TranslationSet> = {
         cta: "Izberi Premium",
       },
       {
+        key: "custom",
+        name: "Po meri",
+        price: "",
+        priceSuffix: "/ mesec",
+        description: "Osnovni paket + samo funkcije, ki jih potrebujete.",
+        features: [],
+        cta: "Sestavi svoj paket",
+      },
+      {
         key: "enterprise",
         name: "Enterprise",
         price: "Po meri",
@@ -346,6 +355,15 @@ const translations: Record<SiteLanguage, TranslationSet> = {
         cta: "Choose Premium",
       },
       {
+        key: "custom",
+        name: "Custom",
+        price: "",
+        priceSuffix: "/ month",
+        description: "The Basic plan plus only the features you need.",
+        features: [],
+        cta: "Build your plan",
+      },
+      {
         key: "enterprise",
         name: "Enterprise",
         price: "Custom",
@@ -421,6 +439,7 @@ const API_PLAN_BY_TIER: Partial<Record<PlanKey, PublicPricingPlanKey>> = {
   professional: "pro",
   premium: "business",
 };
+const TIER_BY_API_PLAN: Record<PublicPricingPlanKey, PlanKey> = { basic: "basic", pro: "professional", business: "premium" };
 
 const isUserCoveredByRule = (userNumber: number, rule: PublicAdditionalUserRule) =>
   userNumber >= rule.fromUser && (rule.toUser == null || userNumber <= rule.toUser);
@@ -455,6 +474,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const [additionalSpaces, setAdditionalSpaces] = useState(0);
   const [additionalSms, setAdditionalSms] = useState(0);
   const [selectedAddOnKeys, setSelectedAddOnKeys] = useState<string[]>([]);
+  const [selectedCustomFeatureKeys, setSelectedCustomFeatureKeys] = useState<string[]>([]);
   const [contactCompany, setContactCompany] = useState("");
   const [contactName, setContactName] = useState("");
   const [contactEmail, setContactEmail] = useState("");
@@ -502,15 +522,37 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const annualBilledMonths = pricingCatalog.annualBilledMonths || 10;
   const annualDiscountLabel = new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-IE", { maximumFractionDigits: 1 }).format(pricingCatalog.annualDiscountPercent);
 
+  const featureName = (feature: PublicPricingFeature) =>
+    language === "sl" ? feature.nameSl || feature.name : feature.name;
+  // "Po meri" is offered only when the app publishes it with at least one priced feature.
+  const customFeatures = useMemo(
+    () => pricingCatalog.customPackage?.enabled ? pricingCatalog.features.filter((feature) => feature.customMonthlyGross != null) : [],
+    [pricingCatalog],
+  );
+
   const content = useMemo<TranslationSet>(() => {
     const featureLabel = (feature: PublicPricingFeature) =>
       language === "sl" ? feature.nameSl || feature.name : feature.name;
     const featureByKey = new Map(pricingCatalog.features.map((feature) => [feature.key, feature]));
-    const tiers = baseContent.tiers.map((tier): Tier => {
+    const basicPlan = pricingCatalog.plans.find((plan) => plan.key === "basic");
+    const tiers = baseContent.tiers.flatMap((tier): Tier[] => {
+      if (tier.key === "custom") {
+        if (!customFeatures.length || !basicPlan || !pricingCatalog.customPackage) return [];
+        // The custom package always starts at the Basic plan price.
+        const basePrice = billingPeriod === "annual" ? Math.round((basicPlan.annualGross / 12) * 100) / 100 : basicPlan.monthlyGross;
+        const customPackage = pricingCatalog.customPackage;
+        return [{
+          ...tier,
+          name: language === "sl" ? customPackage.nameSl || customPackage.name : customPackage.name,
+          price: formatter.format(basePrice),
+          baseMonthly: basePrice,
+          features: customFeatures.map(featureLabel),
+        }];
+      }
       const apiPlanKey = API_PLAN_BY_TIER[tier.key];
-      if (!apiPlanKey) return tier;
+      if (!apiPlanKey) return [tier];
       const plan = pricingCatalog.plans.find((candidate) => candidate.key === apiPlanKey);
-      if (!plan) return tier;
+      if (!plan) return [tier];
       const features = plan.featureKeys
         .map((key) => featureByKey.get(key))
         .filter((feature): feature is PublicPricingFeature => Boolean(feature))
@@ -518,7 +560,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       const displayedMonthlyPrice = billingPeriod === "annual"
         ? Math.round((plan.annualGross / 12) * 100) / 100
         : plan.monthlyGross;
-      return {
+      return [{
         ...tier,
         name: language === "sl" ? plan.nameSl || plan.name : plan.name,
         price: formatter.format(displayedMonthlyPrice),
@@ -526,7 +568,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
         features: features.length > 0 ? features : tier.features,
         popular: plan.popular,
         accent: plan.popular,
-      };
+      }];
     });
 
     const comparisonRows = pricingCatalog.features.length > 0
@@ -536,7 +578,9 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             feature.includedPlans.includes("basic"),
             feature.includedPlans.includes("pro"),
             feature.includedPlans.includes("business"),
-            true,
+            ...(customFeatures.length > 0
+              ? [feature.includedPlans.includes("basic") || (feature.customMonthlyGross != null && `+${formatter.format(feature.customMonthlyGross)}`)]
+              : []),
           ] satisfies CellValue[],
         }))
       : baseContent.comparisonRows;
@@ -563,7 +607,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
         ? `Vsako dodatno SMS sporočilo: ${formatter.format(pricingCatalog.smsPerMessageGross)}`
         : `Each additional SMS message: ${formatter.format(pricingCatalog.smsPerMessageGross)}`,
     };
-  }, [baseContent, billingPeriod, formatter, language, pricingCatalog]);
+  }, [baseContent, billingPeriod, customFeatures, formatter, language, pricingCatalog]);
 
   const includedUsers = pricingCatalog.includedUsers || 1;
 
@@ -582,6 +626,14 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const packageTiers = useMemo(() => {
     const standardTiers = content.tiers.filter((tier) => tier.key !== "enterprise");
     return standardTiers.map((tier, index) => {
+      if (tier.key === "custom") {
+        return {
+          ...tier,
+          inheritedLabel: language === "sl" ? "Vse iz Osnovnega paketa +" : "Everything in the Basic plan +",
+          popular: false,
+          accent: false,
+        };
+      }
       const isMiddlePackage = index === 1;
       if (index === 0) {
         return {
@@ -611,7 +663,14 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     });
   }, [content, language]);
 
-  const selectedApiPlanKey = API_PLAN_BY_TIER[selectedTier.key];
+  const isCustom = selectedTier.key === "custom";
+  // The custom package is billed on top of the Basic plan.
+  const selectedApiPlanKey = isCustom ? "basic" : API_PLAN_BY_TIER[selectedTier.key];
+  const selectedCustomFeatures = useMemo(
+    () => isCustom ? customFeatures.filter((feature) => selectedCustomFeatureKeys.includes(feature.key)) : [],
+    [customFeatures, isCustom, selectedCustomFeatureKeys],
+  );
+  const customFeaturesMonthly = selectedCustomFeatures.reduce((total, feature) => total + (feature.customMonthlyGross ?? 0), 0);
   const availableAddOns = useMemo(
     () => pricingCatalog.addOns.filter(
       (addOn) => !HIDDEN_PRICING_ADD_ON_CODES.has(addOn.code),
@@ -639,11 +698,15 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   }, [visibleAddOns]);
 
   useEffect(() => {
+    setSelectedCustomFeatureKeys((current) => current.filter((key) => customFeatures.some((feature) => feature.key === key)));
+  }, [customFeatures]);
+
+  useEffect(() => {
     if (!standalone || typeof window === "undefined") return;
 
     const params = new URLSearchParams(window.location.search);
     const plan = params.get("plan");
-    if (plan === "basic" || plan === "professional" || plan === "premium" || plan === "enterprise") {
+    if (plan === "basic" || plan === "professional" || plan === "premium" || plan === "custom" || plan === "enterprise") {
       setSelectedTierKey(plan);
     }
     const billing = params.get("billing");
@@ -681,19 +744,37 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const taxLabels = pricingTaxLabels(language);
   const selectedPlan = pricingCatalog.plans.find((plan) => plan.key === selectedApiPlanKey);
   const spacePricing = pricingCatalog.spacePricing;
-  const spacesAvailable = Boolean(spacePricing && selectedPlan?.featureKeys.includes(SPACES_FEATURE_KEY));
+  const spacesAvailable = Boolean(spacePricing && (isCustom
+    ? selectedCustomFeatures.some((feature) => feature.key === SPACES_FEATURE_KEY)
+    : selectedPlan?.featureKeys.includes(SPACES_FEATURE_KEY)));
   const chargedSpaces = spacesAvailable ? additionalSpaces : 0;
   const quote = calculatePricingQuote({
     annual: billingPeriod === "annual", monthlyPlan: selectedPlan?.monthlyGross ?? 0,
     annualPlan: selectedPlan?.annualGross ?? 0, annualBilledMonths,
     monthlyUsers: additionalUsersPrice,
     monthlySpaces: chargedSpaces * (spacePricing?.monthlyGross ?? 0),
+    monthlyFeatures: customFeaturesMonthly,
     monthlyAddOns: selectedAddOns.reduce((total, addOn) => total + addOn.monthlyGross, 0),
     smsCount: additionalSms, smsUnit: pricingCatalog.smsPerMessageGross,
   });
   const monthlyTotal = roundPrice(quote.monthlyEquivalent + (billingPeriod === "annual" ? quote.sms.gross : 0));
   const oneTimeTotal = 0;
   const firstInvoiceEstimate = quote.total.gross;
+  // Point to a fixed plan when it already covers every picked feature for less.
+  const cheaperPlan = (() => {
+    if (!isCustom || !selectedPlan || selectedCustomFeatures.length === 0) return null;
+    const customMonthly = selectedPlan.monthlyGross + customFeaturesMonthly;
+    const plan = pricingCatalog.plans
+      .filter((candidate) => candidate.key !== "basic" && candidate.monthlyGross < customMonthly
+        && selectedCustomFeatures.every((feature) => candidate.featureKeys.includes(feature.key)))
+      .sort((a, b) => a.monthlyGross - b.monthlyGross)[0];
+    if (!plan) return null;
+    const covered = new Set([...selectedPlan.featureKeys, ...selectedCustomFeatures.map((feature) => feature.key)]);
+    return {
+      tierKey: TIER_BY_API_PLAN[plan.key], name: language === "sl" ? plan.nameSl || plan.name : plan.name,
+      price: plan.monthlyGross, extra: plan.featureKeys.filter((key) => !covered.has(key)).length,
+    };
+  })();
   const totalLabel = billingPeriod === "annual" ? taxLabels.annualTotal : taxLabels.monthlyTotal;
 
   const addOnLabel = (addOn: PublicPricingAddOn) =>
@@ -720,6 +801,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       businessPremises: selectedAddOns.some((addOn) => addOn.code === "BUSINESS_PREMISES"),
       selectedAddOnKeys: selectedAddOns.map((addOn) => addOn.key),
       selectedAddOnCodes: selectedAddOns.map((addOn) => addOn.code),
+      selectedFeatureKeys: selectedCustomFeatures.map((feature) => feature.key),
       monthlyTotal,
       oneTimeTotal,
       firstInvoiceEstimate,
@@ -734,6 +816,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       chargedSpaces,
       additionalSms,
       selectedAddOns,
+      selectedCustomFeatures,
       monthlyTotal,
       oneTimeTotal,
       firstInvoiceEstimate,
@@ -809,6 +892,13 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     unavailable: "Ni vključeno", perMonth: "mesec", perMessage: "sporočilo",
     user: "Dodatni uporabnik", fromSecond: "Od 2. uporabnika dalje.",
     space: "Dodatni prostor", spaces: "Dodatni prostori",
+    customFrom: "od", basePackage: "Osnovni paket", selectedFeatures: "Izbrane funkcije", featuresStep: "Izberite funkcije",
+    featuresHint: (price: string) => `Osnovni paket (${price} / mesec) je vedno vključen. Dodajte samo funkcije, ki jih potrebujete.`,
+    featureGroup: (plan: string) => `Funkcije iz paketa ${plan}`,
+    customMore: (count: number) => `… in še ${count} ${count === 1 ? "funkcija" : count === 2 ? "funkciji" : count <= 4 ? "funkcije" : "funkcij"} po izbiri`,
+    cheaperTitle: (plan: string) => `Paket ${plan} je ugodnejši`,
+    cheaperBody: (price: string, extra: number) => `Za ${price} / mesec vključuje vse izbrane funkcije${extra > 0 ? ` in še ${extra} več` : ""}.`,
+    cheaperCta: (plan: string) => `Izberi ${plan}`,
     optional: "Dodatno po izbiri ali porabi", byPrice: "Po ceniku",
     custom: "Ponudba po meri", team: "Rešitev za vašo ekipo.",
     teamDescription: "Za večje ekipe, več lokacij ali posebne zahteve pripravimo ponudbo po meri.",
@@ -829,6 +919,13 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     unavailable: "Not included", perMonth: "month", perMessage: "message",
     user: "Additional user", fromSecond: "From the second user.",
     space: "Additional room", spaces: "Additional rooms",
+    customFrom: "from", basePackage: "Base plan", selectedFeatures: "Selected features", featuresStep: "Choose features",
+    featuresHint: (price: string) => `The Basic plan (${price} / month) is always included. Add only the features you need.`,
+    featureGroup: (plan: string) => `${plan} plan features`,
+    customMore: (count: number) => `… and ${count} more to choose from`,
+    cheaperTitle: (plan: string) => `The ${plan} plan costs less`,
+    cheaperBody: (price: string, extra: number) => `For ${price} / month it includes every selected feature${extra > 0 ? ` and ${extra} more` : ""}.`,
+    cheaperCta: (plan: string) => `Choose ${plan}`,
     optional: "Optional or usage-based costs", byPrice: "As listed",
     custom: "A tailored offer", team: "A solution for your team.",
     teamDescription: "For larger teams, multiple locations or special requirements, we prepare a tailored offer.",
@@ -855,8 +952,17 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     : "";
   const spaceFromLabel = sl ? `Od ${includedSpaces + 1}. prostora na lokacijo dalje.` : `From room ${includedSpaces + 1} per location.`;
   // Step numbers follow the steps shown for the selected plan.
-  const calculatorSteps = [content.usersLabel, ...(spacesAvailable ? [content.spacesLabel] : []), content.smsLabel, ...(visibleAddOns.length > 0 ? [content.optionsLabel] : [])];
+  const calculatorSteps = [...(isCustom ? [ui.featuresStep] : []), content.usersLabel, ...(spacesAvailable ? [content.spacesLabel] : []), content.smsLabel, ...(visibleAddOns.length > 0 ? [content.optionsLabel] : [])];
   const stepLabel = (label: string) => `${calculatorSteps.indexOf(label) + 2}. ${label}`;
+  const customFeatureGroups = (["pro", "business"] as const).map((planKey) => {
+    const plan = pricingCatalog.plans.find((item) => item.key === planKey);
+    return {
+      planKey, title: ui.featureGroup(plan ? (sl ? plan.nameSl || plan.name : plan.name) : planKey),
+      features: customFeatures.filter((feature) => feature.minimumPlan === planKey),
+    };
+  }).filter((group) => group.features.length > 0);
+  const toggleCustomFeature = (key: string, enabled: boolean) => setSelectedCustomFeatureKeys((current) =>
+    enabled ? [...current.filter((item) => item !== key), key] : current.filter((item) => item !== key));
   const story = getCustomerStory("institut-avisensa")!;
   const storyContent = story.content[language];
   const relatedPages = getRelatedPages("pricing", language, 8);
@@ -903,8 +1009,24 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           <p className="pricing-tax-note">{getPricingTaxNote(language)}</p>
         </header>
 
-        <div className="pricing-plan-grid">
+        <div className={`pricing-plan-grid${packageTiers.length > 3 ? " pricing-plan-grid-custom" : ""}`}>
           {packageTiers.map((tier) => {
+            if (tier.key === "custom") {
+              const shown = customFeatures.slice(0, 5);
+              return (
+                <article key={tier.key} className="pricing-plan pricing-plan-custom" data-plan={tier.key}>
+                  <div className="pricing-plan-heading"><TierHeadingTag>{tier.name}</TierHeadingTag></div>
+                  <p className="pricing-plan-price"><span className="pricing-plan-from">{ui.customFrom}</span><strong>{tier.price}</strong><span>{tier.priceSuffix}</span></p>
+                  <p className="pricing-plan-description">{tier.description}</p>
+                  <p className="pricing-inherited">{tier.inheritedLabel}</p>
+                  <ul className="pricing-plan-features pricing-custom-features">
+                    {shown.map((feature) => <li key={feature.key}><Plus aria-hidden="true" /><span>{featureName(feature)}</span><span className="pricing-custom-price">+{formatter.format(feature.customMonthlyGross ?? 0)}</span></li>)}
+                    {customFeatures.length > shown.length && <li className="pricing-custom-more">{ui.customMore(customFeatures.length - shown.length)}</li>}
+                  </ul>
+                  <Button variant="outline" size="lg" className="pricing-button" onClick={() => handleTierSelect(tier.key)}>{tier.cta}</Button>
+                </article>
+              );
+            }
             const plan = pricingCatalog.plans.find((item) => item.key === API_PLAN_BY_TIER[tier.key]);
             return (
               <article key={tier.key} className={`pricing-plan${tier.popular ? " pricing-plan-popular" : ""}`} data-plan={tier.key}>
@@ -983,11 +1105,26 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 <fieldset className="pricing-control">
                   <legend>{content.packageSelectorTitle}</legend>
                   <p>{billingPeriod === "annual" ? ui.annualBilling : ui.monthlyBilling}</p>
-                  <div className="pricing-package-selector" role="group" aria-label={ui.package}>
+                  <div className={`pricing-package-selector${packageTiers.length > 3 ? " pricing-package-selector-custom" : ""}`} role="group" aria-label={ui.package}>
                     {packageTiers.map((tier) => <button key={tier.key} type="button" aria-pressed={selectedTier.key === tier.key} onClick={() => handleTierSelect(tier.key)}>{tier.name}</button>)}
                   </div>
                 </fieldset>
                 {selectedTier.key === "enterprise" ? <p className="pricing-enterprise-note">{ui.enterprise}</p> : <>
+                  {isCustom && <fieldset className="pricing-control">
+                    <legend>{stepLabel(ui.featuresStep)}</legend>
+                    <div className="pricing-control-header"><p>{ui.featuresHint(formatter.format(selectedPlan?.monthlyGross ?? 0))}</p></div>
+                    {customFeatureGroups.map((group) => (
+                      <div key={group.planKey} className="pricing-feature-group">
+                        <p className="pricing-feature-group-title">{group.title}</p>
+                        <div className="pricing-addons">{group.features.map((feature) => (
+                          <label key={feature.key} className="pricing-addon">
+                            <Checkbox checked={selectedCustomFeatureKeys.includes(feature.key)} onCheckedChange={(checked) => toggleCustomFeature(feature.key, checked === true)} />
+                            <span><span className="pricing-addon-heading"><strong>{featureName(feature)}</strong><span>+{formatter.format(feature.customMonthlyGross ?? 0)} / {ui.perMonth}</span></span></span>
+                          </label>
+                        ))}</div>
+                      </div>
+                    ))}
+                  </fieldset>}
                   <fieldset className="pricing-control">
                     <legend>{stepLabel(content.usersLabel)}</legend>
                     <div className="pricing-control-header">
@@ -1033,12 +1170,18 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 <p className="pricing-summary-period">{billingPeriod === "annual" ? ui.annualBilling : ui.monthlyBilling}</p>
                 {selectedTier.key === "enterprise" ? <><p>{ui.enterprise}</p><Button variant="hero" className="pricing-button" onClick={() => scrollToElement(contactRef.current)}>{content.enterprisePanelCta}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Button></> : <>
                   <dl className="pricing-breakdown">
-                    <div><dt>{ui.package}</dt><dd>{formatter.format(quote.plan)}</dd></div>
+                    <div><dt>{isCustom ? ui.basePackage : ui.package}</dt><dd>{formatter.format(quote.plan)}</dd></div>
+                    {isCustom && <div><dt>{ui.selectedFeatures} ({selectedCustomFeatures.length}){selectedCustomFeatures.length > 0 && <small>{selectedCustomFeatures.map(featureName).join(", ")}</small>}</dt><dd data-pricing-features>{formatter.format(quote.features)}</dd></div>}
                     <div><dt>{ui.users}</dt><dd>{formatter.format(quote.users)}</dd></div>
                     {spacesAvailable && <div><dt>{ui.spaces}</dt><dd>{formatter.format(quote.spaces)}</dd></div>}
                     {billingPeriod === "monthly" && <div><dt>{ui.sms}</dt><dd>{formatter.format(quote.sms.net)}</dd></div>}
                     <div><dt>{ui.modules}</dt><dd>{formatter.format(quote.addOns)}</dd></div>
                   </dl>
+                  {cheaperPlan && <div className="pricing-upgrade-hint" role="note">
+                    <strong>{ui.cheaperTitle(cheaperPlan.name)}</strong>
+                    <p>{ui.cheaperBody(formatter.format(cheaperPlan.price), cheaperPlan.extra)}</p>
+                    <button type="button" onClick={() => setSelectedTierKey(cheaperPlan.tierKey)}>{ui.cheaperCta(cheaperPlan.name)}<ArrowRight aria-hidden="true" className="h-4 w-4" /></button>
+                  </div>}
                   <div aria-live="polite" aria-atomic="true">
                     <dl className="pricing-vat-breakdown">
                       <div><dt>{taxLabels.subtotal}</dt><dd data-pricing-net>{formatter.format(quote.total.net)}</dd></div>
@@ -1096,7 +1239,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       {standalone && showStickySummary && selectedTier.key !== "enterprise" && (
         <aside data-sales-sticky="true" className="pricing-sticky-summary" aria-label={content.summaryTitle}>
           <div className="container mx-auto">
-            <div className="pricing-sticky-selection"><span className="marketing-eyebrow">{content.selectedPackageLabel}</span><strong>{selectedTier.name}</strong><p>{userCountLabel} · {[chargedSpaces > 0 ? `${chargedSpaces} ${content.spacesCountLabel}` : null, additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null, ...selectedAddOns.map(addOnLabel)].filter(Boolean).join(" · ") || content.noExtras}</p></div>
+            <div className="pricing-sticky-selection"><span className="marketing-eyebrow">{content.selectedPackageLabel}</span><strong>{selectedTier.name}</strong><p>{userCountLabel} · {[selectedCustomFeatures.length > 0 ? `${ui.selectedFeatures}: ${selectedCustomFeatures.length}` : null, chargedSpaces > 0 ? `${chargedSpaces} ${content.spacesCountLabel}` : null, additionalSms > 0 ? `${additionalSms} ${content.smsCountLabel}` : null, ...selectedAddOns.map(addOnLabel)].filter(Boolean).join(" · ") || content.noExtras}</p></div>
             <div className="pricing-sticky-taxes" aria-live="polite" aria-atomic="true">
               <div><span>{taxLabels.net}</span><strong>{formatter.format(quote.total.net)}</strong></div>
               <div><span>{taxLabels.vat}</span><strong>{formatter.format(quote.total.vat)}</strong></div>
