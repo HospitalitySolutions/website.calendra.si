@@ -79,12 +79,12 @@ const assertRouteCoverage = () => {
 const summary: Record<SiteLanguage, string> = {
   sl: [
     `Calendra je slovenska spletna platforma (SaaS) za storitvena podjetja. Združuje spletno naročanje strank, koledar terminov, upravljanje strank, SMS in e-poštne opomnike, izdajo računov, plačila, analitiko ter materialno poslovanje na enem mestu.`,
-    `Namenjena je frizerskim in kozmetičnim salonom, wellness in zdravstvenim izvajalcem, fitnes in skupinskim programom, svetovalcem, izobraževalcem ter drugim storitvenim podjetjem in samostojnim podjetnikom v Sloveniji.`,
+    `Namenjena je frizerskim in kozmetičnim salonom, brivnicam, tattoo in piercing studiem, masažnim salonom, wellness in zdravstvenim izvajalcem, fitnes in skupinskim programom, svetovalcem, izobraževalcem ter drugim storitvenim podjetjem in samostojnim podjetnikom v Sloveniji.`,
     `Ponudnik je ${LEGAL.entityName}, ${LEGAL_FULL_ADDRESS}. Kontakt: ${LEGAL.generalEmail}, ${LEGAL.supportPhone}. Aplikacija je na voljo v slovenščini in angleščini.`,
   ].join("\n\n"),
   en: [
     `Calendra is a Slovenian SaaS platform for service businesses. It combines online appointment booking, an appointment calendar, client management, SMS and email reminders, invoicing, payments, analytics and inventory management in one place.`,
-    `It serves hair and beauty salons, wellness and health providers, fitness and group programmes, consultants, educators and other service businesses and sole traders in Slovenia.`,
+    `It serves hair and beauty salons, barbershops, tattoo and piercing studios, massage businesses, wellness and health providers, fitness and group programmes, consultants, educators and other service businesses and sole traders in Slovenia.`,
     `The provider is ${LEGAL.entityName}, ${LEGAL_FULL_ADDRESS}. Contact: ${LEGAL.generalEmail}, ${LEGAL.supportPhone}. The product is available in Slovenian and English.`,
   ].join("\n\n"),
 };
