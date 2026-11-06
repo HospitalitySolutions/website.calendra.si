@@ -40,14 +40,12 @@ const expertise = {
     "Zmanjševanje pozabljenih terminov s SMS in e-poštnimi opomniki",
     "Izdaja računov, plačila in davčno potrjevanje računov v Sloveniji",
     "GDPR in obdelava podatkov strank v storitvenih podjetjih",
-    "IT podpora, spletne strani in avtomatizacije za mala podjetja",
   ],
   en: [
     "Online appointment booking and preventing double bookings",
     "Reducing missed appointments with SMS and email reminders",
     "Invoicing, payments and fiscal verification of invoices in Slovenia",
     "GDPR and client data processing in service businesses",
-    "IT support, websites and automation for small businesses",
   ],
 } as const;
 

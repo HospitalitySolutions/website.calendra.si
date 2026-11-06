@@ -96,7 +96,7 @@
 .pricing-cost-list small { display: block; margin-top: 4px; color: hsl(var(--muted-foreground)); }
 .pricing-cost-list dd { text-align: right; color: hsl(var(--muted-foreground)); }
 .pricing-cost-list strong { color: hsl(var(--foreground)); font-weight: 600; white-space: nowrap; }
-.pricing-calculator-band, .pricing-it-band { background: var(--pricing-surface); padding-block: 72px; }
+.pricing-calculator-band { background: var(--pricing-surface); padding-block: 72px; }
 .pricing-calculator-band, .pricing-contact { scroll-margin-top: 100px; }
 .pricing-calculator-band h2 { margin-top: 12px; }
 .pricing-calculator-layout { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(300px, 1fr); gap: 26px; align-items: start; margin-top: 32px; }
@@ -177,8 +177,6 @@
 .pricing-faq-minus, .pricing-faq details[open] .pricing-faq-plus { display: none; }
 .pricing-faq details[open] .pricing-faq-minus { display: block; }
 .pricing-faq details > p { padding: 0 54px 24px 0; color: hsl(var(--muted-foreground)); line-height: 1.75; font-size: .95rem; }
-.pricing-it-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 64px; align-items: center; }
-.pricing-it-band .pricing-info-card ul { margin-top: 22px; }
 .pricing-sticky-summary { position: fixed; inset: auto 0 0; z-index: 35; border-top: 1px solid hsl(var(--border)); background: #fffffffa; box-shadow: 0 -5px 25px #18385808; padding-block: 15px; padding-bottom: max(15px, env(safe-area-inset-bottom)); }
 .pricing-sticky-summary > .container { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 36px; }
 .pricing-sticky-selection > strong { display: block; font-size: 1.1rem; margin-top: 2px; }
@@ -196,7 +194,7 @@
   .pricing-calculator-layout { grid-template-columns: minmax(0, 1.5fr) minmax(270px, 1fr); gap: 20px; }
   .pricing-controls, .pricing-summary-card { padding: 24px; }
   .pricing-control-header { align-items: start; flex-wrap: wrap; }
-  .pricing-contact, .pricing-it-layout { gap: 36px; }
+  .pricing-contact { gap: 36px; }
   .pricing-plan-heading { min-height: 55px; align-content: start; }
 }
 @media (max-width: 800px) {
@@ -205,7 +203,7 @@
   .pricing-plan { padding: 30px; }
   .pricing-plan-heading { min-height: 0; }
   .pricing-plan-price strong { font-size: 2.5rem; }
-  .pricing-enterprise-banner, .pricing-calculator-layout, .pricing-contact, .pricing-it-layout { grid-template-columns: 1fr; }
+  .pricing-enterprise-banner, .pricing-calculator-layout, .pricing-contact { grid-template-columns: 1fr; }
   .pricing-enterprise-banner > div:last-child { grid-column: auto; justify-self: stretch; }
   .pricing-enterprise-banner > div:last-child > button { width: 100%; }
   .pricing-summary-card { position: static; }
@@ -214,7 +212,7 @@
   .pricing-cost-list > div { flex-direction: column; gap: 6px; }
   .pricing-section { padding-block: 52px; }
   .pricing-comparison { padding-bottom: 10px; }
-  .pricing-calculator-band, .pricing-it-band { padding-block: 52px; }
+  .pricing-calculator-band { padding-block: 52px; }
   .pricing-sticky-summary > .container { gap: 16px; grid-template-columns: minmax(0, 1fr) auto; }
   .pricing-sticky-selection { display: none; }
   .pricing-sticky-total { padding: 0; border: 0; }

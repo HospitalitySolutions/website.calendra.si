@@ -44,11 +44,11 @@ try {
     assert.equal(await page.locator('.pricing-comparison tbody tr').count(), catalog.features.length);
     const layout = await page.evaluate(() => ({
       overflow: document.documentElement.scrollWidth - innerWidth,
-      bands: [...document.querySelectorAll('.pricing-calculator-band, .pricing-it-band')].map(el => ({ left: el.getBoundingClientRect().left, width: el.getBoundingClientRect().width })),
+      bands: [...document.querySelectorAll('.pricing-calculator-band')].map(el => ({ left: el.getBoundingClientRect().left, width: el.getBoundingClientRect().width })),
       footer: getComputedStyle(document.querySelector('.site-footer-editorial')).backgroundColor,
     }));
     assert.ok(layout.overflow <= 1, `Horizontal overflow at ${width}: ${layout.overflow}`);
-    assert.equal(layout.bands.length, 2);
+    assert.equal(layout.bands.length, 1);
     for (const band of layout.bands) assert.ok(Math.abs(band.left) < 1 && Math.abs(band.width - width) < 1, `Band is not full width at ${width}`);
     assert.equal(layout.footer, 'rgb(255, 255, 255)');
     const faq = page.locator('.pricing-faq details').nth(1);

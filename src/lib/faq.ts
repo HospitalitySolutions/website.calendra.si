@@ -1,7 +1,6 @@
 import { calendraConnectCopy } from "@/lib/calendra-connect";
 import { FEATURE_ROUTE_KEYS, getFeatureContent } from "@/lib/feature-pages";
 import { ALL_INDUSTRY_ROUTE_KEYS, getIndustryContent } from "@/lib/industry-pages";
-import { itServicesCopy, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import type { CanonicalRouteKey } from "@/lib/localized-routes";
 import type { SiteLanguage } from "@/lib/site-language";
 
@@ -14,7 +13,7 @@ type LocalizedFaq = Record<SiteLanguage, FaqItem[]>;
 
 /**
  * FAQ content that is rendered inline by a single page. Content owned by a
- * shared module (industries, IT services, Calendra Connect) is pulled from that
+ * shared module (features, industries, Calendra Connect) is pulled from that
  * module below instead of being duplicated here.
  */
 const inlineFaqs: Partial<Record<CanonicalRouteKey, LocalizedFaq>> = {
@@ -66,20 +65,6 @@ const inlineFaqs: Partial<Record<CanonicalRouteKey, LocalizedFaq>> = {
       { question: "Does the booking appear immediately in the calendar?", answer: "Yes. After successful confirmation, the appointment is added directly to the Calendra calendar." },
     ],
   },
-  itServices: {
-    sl: [
-      { question: "Ali delate samo z uporabniki Calendre?", answer: "Ne. IT storitve so samostojna ponudba za mala podjetja in niso vezane na uporabo aplikacije Calendra." },
-      { question: "Ali je možna pomoč na daljavo?", answer: "Da. Velik del podpore, nastavitev in diagnostike izvedemo oddaljeno. Obiske na lokaciji dogovorimo glede na kraj in obseg dela." },
-      { question: "Kako določite ceno?", answer: "Po kratkem uvodnem pogovoru predlagamo projektno ceno, urno sodelovanje ali mesečni obseg podpore. IT storitve niso vključene v naročnino Calendra." },
-      { question: "Ali lahko prevzamete obstoječo spletno stran ali IT-okolje?", answer: "Da, po začetnem tehničnem pregledu, s katerim ugotovimo stanje, odprta tveganja in realen obseg prevzema." },
-    ],
-    en: [
-      { question: "Do you work only with Calendra customers?", answer: "No. IT services are a standalone offer for small businesses and do not require use of the Calendra application." },
-      { question: "Can support be remote?", answer: "Yes. A large share of support, configuration and diagnosis can be completed remotely. On-site work is agreed based on location and scope." },
-      { question: "How is pricing determined?", answer: "After a short discussion, we propose a project price, hourly work or a monthly support scope. IT services are not included in a Calendra subscription." },
-      { question: "Can you take over an existing website or IT environment?", answer: "Yes, following an initial technical review of its condition, open risks and the realistic takeover scope." },
-    ],
-  },
 };
 
 const buildRegistry = (): Partial<Record<CanonicalRouteKey, LocalizedFaq>> => {
@@ -101,13 +86,6 @@ const buildRegistry = (): Partial<Record<CanonicalRouteKey, LocalizedFaq>> => {
     registry[routeKey] = {
       sl: getIndustryContent(routeKey, "sl").faq,
       en: getIndustryContent(routeKey, "en").faq,
-    };
-  }
-
-  for (const routeKey of IT_SERVICE_ROUTE_KEYS) {
-    registry[routeKey] = {
-      sl: itServicesCopy.sl[routeKey].faq,
-      en: itServicesCopy.en[routeKey].faq,
     };
   }
 

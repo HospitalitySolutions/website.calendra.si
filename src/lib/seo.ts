@@ -18,7 +18,6 @@ import {
   OFFICIAL_PROFILE_URLS,
   WIKIDATA_ENTITY_ID,
 } from "@/lib/external-profiles";
-import { getItServiceContent, isItServiceRouteKey, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import { FALLBACK_PUBLIC_PRICING, getInitialPricingCatalog } from "@/lib/public-pricing";
 import {
   type BlogArticleMeta,
@@ -177,37 +176,9 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     sl: { title: "Calendra Connect | Aplikacija za rezervacijo terminov", description: "Calendra Connect je brezplačna mobilna aplikacija za rezervacijo, prestavljanje in odpoved terminov, obvestila, plačila, ugodnosti in vstopnice.", ogImage: `${SITE_URL}/connect/og-calendra-connect.png` },
     en: { title: "Calendra Connect | Appointment booking app", description: "Calendra Connect is a free mobile app for booking, rescheduling and cancelling appointments, notifications, payments, benefits and tickets.", ogImage: `${SITE_URL}/connect/og-calendra-connect.png` },
   },
-  itServices: {
-    sl: { title: "IT storitve za mala podjetja | Calendra", description: "IT-podpora, izdelava in vzdrževanje spletnih strani, poslovna e-pošta, varnostne kopije, osnovna IT-varnost ter avtomatizacije za mala podjetja." },
-    en: { title: "IT services for small businesses | Calendra", description: "IT support, website design and maintenance, business email, backups, essential security and business automation for small companies." },
-  },
-  itSupport: {
-    sl: { title: "IT-podpora za mala podjetja | Calendra", description: "Oddaljena in dogovorjena IT-podpora za mala podjetja: naprave, uporabniki, programi, dostopi, ponudniki in vsakodnevno odpravljanje težav." },
-    en: { title: "Small-business IT support | Calendra", description: "Remote and agreed on-site IT support for devices, users, software, access, suppliers and everyday troubleshooting." },
-  },
-  websiteDesign: {
-    sl: { title: "Izdelava in prenova spletnih strani | Calendra", description: "Načrtovanje, izdelava in prenova hitrih, mobilnih in merljivih spletnih strani z osnovno SEO-pripravo, analitiko in integracijami." },
-    en: { title: "Website design and redesign | Calendra", description: "Planning, development and redesign of fast, responsive and measurable websites with technical SEO foundations, analytics and integrations." },
-  },
-  websiteMaintenance: {
-    sl: { title: "Vzdrževanje spletnih strani | Calendra", description: "Posodobitve, varnostne kopije, spremljanje delovanja, odpravljanje napak, optimizacija hitrosti in dogovorjene vsebinske spremembe." },
-    en: { title: "Website maintenance | Calendra", description: "Updates, backups, uptime monitoring, troubleshooting, performance improvements and agreed content changes." },
-  },
-  businessEmail: {
-    sl: { title: "Poslovna e-pošta za mala podjetja | Calendra", description: "Nastavitev poslovne e-pošte na lastni domeni, Microsoft 365 ali Google Workspace, migracija predalov, DNS, MFA in skupni koledarji." },
-    en: { title: "Business email for small companies | Calendra", description: "Business email on your own domain, Microsoft 365 or Google Workspace setup, mailbox migration, DNS, MFA and shared calendars." },
-  },
-  backupsSecurity: {
-    sl: { title: "Varnostne kopije in osnovna IT-varnost | Calendra", description: "Ureditev varnostnih kopij, preverjanje obnovitve, večfaktorska prijava, dostopi, posodobitve in osnovni varnostni ukrepi za mala podjetja." },
-    en: { title: "Backups and essential IT security | Calendra", description: "Backup setup and restore checks, multi-factor authentication, access reviews, updates and essential security for small businesses." },
-  },
-  automation: {
-    sl: { title: "Avtomatizacije in povezovanje poslovnih sistemov | Calendra", description: "Povezovanje obrazcev, e-pošte, koledarjev, CRM-jev, računovodstva in drugih poslovnih sistemov prek API-jev in avtomatizacij." },
-    en: { title: "Business automation and system integration | Calendra", description: "Connect forms, email, calendars, CRM, accounting and other business systems through APIs and automation workflows." },
-  },
   contact: {
-    sl: { title: "Kontakt | Calendra in IT storitve", description: "Stopite v stik glede aplikacije Calendra, paketov, funkcionalnosti in podpore ali pošljite ločeno povpraševanje za IT storitve." },
-    en: { title: "Contact | Calendra and IT services", description: "Contact us about the Calendra application, plans, features and support, or send a separate enquiry for IT services." },
+    sl: { title: "Kontakt | Calendra", description: "Stopite v stik z nami glede aplikacije Calendra, paketov, funkcionalnosti, predstavitve, preizkusnega računa ali podpore." },
+    en: { title: "Contact | Calendra", description: "Contact us about the Calendra application, plans, features, a product demo, a trial account or support." },
   },
   support: {
     sl: { title: "Podpora | Calendra pomoč uporabnikom", description: "Podpora za uporabnike Calendra: dostop do aplikacije, kontakt, e-pošta, telefon, delovni čas in pričakovani prvi odziv ekipe za podporo." },
@@ -381,48 +352,6 @@ const mobileApplicationSchema = (language: SiteLanguage) => ({
   publisher: { "@id": `${SITE_URL}/#organization` },
 });
 
-const itServicesOverviewSchema = (language: SiteLanguage) => ({
-  "@type": "Service",
-  "@id": `${absoluteUrl(canonicalRoutes.itServices[language])}#service`,
-  name: language === "sl" ? "IT storitve za mala podjetja" : "IT services for small businesses",
-  serviceType: language === "sl" ? "IT storitve in digitalna podpora" : "IT services and digital support",
-  description: pageSeo.itServices[language].description,
-  url: absoluteUrl(canonicalRoutes.itServices[language]),
-  areaServed: { "@type": "Country", name: "Slovenia" },
-  provider: { "@id": `${SITE_URL}/#organization` },
-  hasOfferCatalog: {
-    "@type": "OfferCatalog",
-    name: language === "sl" ? "IT storitve" : "IT services",
-    itemListElement: IT_SERVICE_ROUTE_KEYS.map((routeKey) => {
-      const service = getItServiceContent(routeKey, language);
-      return {
-        "@type": "Offer",
-        url: absoluteUrl(canonicalRoutes[routeKey][language]),
-        itemOffered: {
-          "@type": "Service",
-          name: service.title,
-          description: service.shortDescription,
-          provider: { "@id": `${SITE_URL}/#organization` },
-        },
-      };
-    }),
-  },
-});
-
-const itServiceSchema = (routeKey: Parameters<typeof getItServiceContent>[0], language: SiteLanguage) => {
-  const service = getItServiceContent(routeKey, language);
-  return {
-    "@type": "Service",
-    "@id": `${absoluteUrl(canonicalRoutes[routeKey][language])}#service`,
-    name: service.title,
-    serviceType: service.title,
-    description: service.intro,
-    url: absoluteUrl(canonicalRoutes[routeKey][language]),
-    areaServed: { "@type": "Country", name: "Slovenia" },
-    provider: { "@id": `${SITE_URL}/#organization` },
-  };
-};
-
 const industryServiceSchema = (routeKey: IndustryRouteKey, language: SiteLanguage) => {
   const industry = getIndustryContent(routeKey, language);
   return {
@@ -458,8 +387,8 @@ export const AUTHOR = {
   slug: "david-mirc",
   jobTitle: { sl: "Ustanovitelj in razvijalec Calendre", en: "Founder and developer of Calendra" },
   bio: {
-    sl: "David Mirc je ustanovitelj Calendre in vodi razvoj platforme za naročanje strank, upravljanje terminov ter izdajo računov za slovenska storitvena podjetja. Poleg tega izvaja IT storitve za mala podjetja.",
-    en: "David Mirc is the founder of Calendra and leads development of its booking, appointment management and invoicing platform for Slovenian service businesses. He also delivers IT services for small businesses.",
+    sl: "David Mirc je ustanovitelj Calendre in vodi razvoj platforme za naročanje strank, upravljanje terminov ter izdajo računov za slovenska storitvena podjetja.",
+    en: "David Mirc is the founder of Calendra and leads development of its booking, appointment management and invoicing platform for Slovenian service businesses.",
   },
 } as const;
 
@@ -475,8 +404,8 @@ export const personSchema = (language: SiteLanguage) => ({
   sameAs: AUTHOR_PROFILE_URLS.length > 0 ? AUTHOR_PROFILE_URLS : undefined,
   knowsAbout:
     language === "sl"
-      ? ["Spletno naročanje terminov", "Upravljanje storitvenih podjetij", "Izdaja računov in davčno potrjevanje", "IT podpora za mala podjetja"]
-      : ["Online appointment booking", "Service business management", "Invoicing and fiscal verification", "Small business IT support"],
+      ? ["Spletno naročanje terminov", "Upravljanje storitvenih podjetij", "Izdaja računov in davčno potrjevanje"]
+      : ["Online appointment booking", "Service business management", "Invoicing and fiscal verification"],
 });
 
 /** Shared with `softwareSchema` on the pricing route so both nodes quote the same range. */
@@ -563,18 +492,11 @@ const webPageSchema = (routeKey: CanonicalRouteKey, language: SiteLanguage, cano
 });
 
 /**
- * Intermediate breadcrumb hops. Only IT service detail pages sit under a real
- * hub page today; features and industries are linked from the navigation rather
- * than from an index page, so they stay one level below home.
+ * Intermediate breadcrumb hops. Features and industries are linked from the
+ * navigation rather than from an index page, so they stay one level below home.
  */
 export const breadcrumbParentByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey>> = {
   businesses: "customers",
-  itSupport: "itServices",
-  websiteDesign: "itServices",
-  websiteMaintenance: "itServices",
-  businessEmail: "itServices",
-  backupsSecurity: "itServices",
-  automation: "itServices",
   dpa: "legal",
   subprocessors: "legal",
   cookies: "legal",
@@ -969,11 +891,7 @@ export const getSeoForPathname = (pathname: string) => {
             }]
           : routeKey === "connect"
           ? [mobileApplicationSchema(language)]
-          : routeKey === "itServices"
-            ? [itServicesOverviewSchema(language)]
-            : isItServiceRouteKey(routeKey)
-              ? [itServiceSchema(routeKey, language)]
-              : isIndustryRouteKey(routeKey)
+          : isIndustryRouteKey(routeKey)
                 ? [softwareSchema(language), industryServiceSchema(routeKey, language)]
                 : routeKey === "pricing"
                   ? [softwareSchema(language, pricingAggregateOffer(language)), pricingProductSchema(language)]

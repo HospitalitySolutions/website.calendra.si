@@ -9,8 +9,6 @@ import PublicCompanyProfilePageSsr from "./pages/PublicCompanyProfilePage.tsx";
 import FeatureDetailPageSsr from "./pages/FeatureDetailPage.tsx";
 import IndustryDetailPageSsr from "./pages/IndustryDetailPage.tsx";
 import CalendraConnectPageSsr from "./pages/CalendraConnectPage.tsx";
-import ItServicesPageSsr from "./pages/ItServicesPage.tsx";
-import ItServiceDetailPageSsr from "./pages/ItServiceDetailPage.tsx";
 import ContactPageSsr from "./pages/ContactPage.tsx";
 import NotFoundSsr from "./pages/NotFound.tsx";
 import SupportSsr from "./pages/Support.tsx";
@@ -53,12 +51,6 @@ const IndustryDetailPage = import.meta.env.SSR
 const CalendraConnectPage = import.meta.env.SSR
   ? CalendraConnectPageSsr
   : lazy(() => import("./pages/CalendraConnectPage.tsx"));
-const ItServicesPage = import.meta.env.SSR
-  ? ItServicesPageSsr
-  : lazy(() => import("./pages/ItServicesPage.tsx"));
-const ItServiceDetailPage = import.meta.env.SSR
-  ? ItServiceDetailPageSsr
-  : lazy(() => import("./pages/ItServiceDetailPage.tsx"));
 const ContactPage = import.meta.env.SSR
   ? ContactPageSsr
   : lazy(() => import("./pages/ContactPage.tsx"));
@@ -243,20 +235,6 @@ const AppRoutes = () => (
       <Route path="/mobile-app" element={<Navigate to="/en/calendra-connect" replace />} />
       <Route path="/en/mobile-app" element={<Navigate to="/en/calendra-connect" replace />} />
 
-      <Route path="/it-storitve" element={<ItServicesPage />} />
-      <Route path="/en/it-services" element={<ItServicesPage />} />
-      <Route path="/it-podpora-malim-podjetjem" element={<ItServiceDetailPage />} />
-      <Route path="/en/small-business-it-support" element={<ItServiceDetailPage />} />
-      <Route path="/izdelava-spletnih-strani" element={<ItServiceDetailPage />} />
-      <Route path="/en/website-design-and-redesign" element={<ItServiceDetailPage />} />
-      <Route path="/vzdrzevanje-spletnih-strani" element={<ItServiceDetailPage />} />
-      <Route path="/en/website-maintenance" element={<ItServiceDetailPage />} />
-      <Route path="/poslovna-e-posta" element={<ItServiceDetailPage />} />
-      <Route path="/en/business-email" element={<ItServiceDetailPage />} />
-      <Route path="/varnostne-kopije-in-it-varnost" element={<ItServiceDetailPage />} />
-      <Route path="/en/backups-and-it-security" element={<ItServiceDetailPage />} />
-      <Route path="/avtomatizacije-in-integracije" element={<ItServiceDetailPage />} />
-      <Route path="/en/business-automation-and-integrations" element={<ItServiceDetailPage />} />
       <Route path="/kontakt" element={<ContactPage />} />
       <Route path="/en/contact" element={<ContactPage />} />
 

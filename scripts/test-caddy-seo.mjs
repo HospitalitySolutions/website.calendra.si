@@ -18,6 +18,24 @@ const directory = await fs.mkdtemp(path.join(tempRoot, "calendra-website-routing
 const fixtures = path.join(directory, "site");
 let checks = 0;
 
+// Mirrors src/lib/retired-routes.ts; the vitest suite checks the two stay in sync.
+const retiredItServicePaths = [
+  "/it-storitve",
+  "/en/it-services",
+  "/it-podpora-malim-podjetjem",
+  "/en/small-business-it-support",
+  "/izdelava-spletnih-strani",
+  "/en/website-design-and-redesign",
+  "/vzdrzevanje-spletnih-strani",
+  "/en/website-maintenance",
+  "/poslovna-e-posta",
+  "/en/business-email",
+  "/varnostne-kopije-in-it-varnost",
+  "/en/backups-and-it-security",
+  "/avtomatizacije-in-integracije",
+  "/en/business-automation-and-integrations",
+];
+
 try {
   const files = {
     "index.html": "home",
@@ -35,6 +53,9 @@ try {
     "fonts/test.woff2": "font fixture",
     "hero/test.webp": "image fixture",
     "robots.txt": "User-agent: *",
+    // Stale copies of retired pages: the 410 rule must win over file_server.
+    "it-storitve/index.html": "retired IT services page",
+    "en/website-maintenance/index.html": "retired IT services page",
   };
   for (const [name, content] of Object.entries(files)) {
     const target = path.join(fixtures, name);
@@ -116,6 +137,11 @@ try {
         ["/robots.txt", "public, max-age=3600"],
       ]) assert.equal((await expect(pathname, 200)).headers.get("cache-control"), cache);
       await expect("/not-a-real-page", 404);
+      for (const pathname of retiredItServicePaths) {
+        await expect(pathname, 410);
+        await expect(`${pathname}/`, 410);
+      }
+      await expect("/it-storitve/other", 404);
       for (const [pathname, body] of [["/predstavitev/upravljanje/test-token", "Slovenian private demo shell"], ["/en/demo/manage/test-token", "English private demo shell"]]) {
         const response = await expect(pathname, 200);
         assert.equal(response.body, body);
@@ -130,7 +156,7 @@ try {
       if (container) docker(["stop", container]);
     }
   }
-  console.log(`Passed ${checks} HTTP cases: redirects, marketplace gates, public pages, unknown paths and cache/security headers.`);
+  console.log(`Passed ${checks} HTTP cases: redirects, marketplace gates, public pages, retired IT pages (410), unknown paths and cache/security headers.`);
 } finally {
   assert.equal(path.dirname(await fs.realpath(directory)), tempRoot, "Only remove this test's temporary directory");
   assert.ok(path.basename(directory).startsWith("calendra-website-routing-"));

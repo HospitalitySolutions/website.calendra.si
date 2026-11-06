@@ -117,6 +117,22 @@
     redir /ai-transparency /en/ai-transparency 308
     redir /account-deletion /en/account-deletion 308
 
+    # Calendra no longer offers IT services. Answer the retired SL and EN URLs
+    # with 410 Gone (not a redirect to the homepage, which search engines treat
+    # as a soft 404) so they drop out of the index. Keep this list in sync with
+    # src/lib/retired-routes.ts; it runs before the file handlers so a stale
+    # prerendered copy can never be served.
+    @retiredItServices {
+      path /it-storitve /it-storitve/ /en/it-services /en/it-services/
+      path /it-podpora-malim-podjetjem /it-podpora-malim-podjetjem/ /en/small-business-it-support /en/small-business-it-support/
+      path /izdelava-spletnih-strani /izdelava-spletnih-strani/ /en/website-design-and-redesign /en/website-design-and-redesign/
+      path /vzdrzevanje-spletnih-strani /vzdrzevanje-spletnih-strani/ /en/website-maintenance /en/website-maintenance/
+      path /poslovna-e-posta /poslovna-e-posta/ /en/business-email /en/business-email/
+      path /varnostne-kopije-in-it-varnost /varnostne-kopije-in-it-varnost/ /en/backups-and-it-security /en/backups-and-it-security/
+      path /avtomatizacije-in-integracije /avtomatizacije-in-integracije/ /en/business-automation-and-integrations /en/business-automation-and-integrations/
+    }
+    respond @retiredItServices 410
+
     # Keep the consumer marketplace private until launch. Build-time code uses
     # the same switch to remove navigation and sitemap entries. Direct booking
     # URLs under /narocanje/* remain public and are intentionally not matched.

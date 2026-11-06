@@ -1,7 +1,6 @@
 import { getArticlesForLanguage, getBlogArticlePath } from "@/lib/blog";
 import { getFaqForRoute } from "@/lib/faq";
 import { ALL_INDUSTRY_ROUTE_KEYS, getIndustryContent } from "@/lib/industry-pages";
-import { getItServiceContent, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import { LEGAL, LEGAL_FULL_ADDRESS } from "@/lib/legal";
 import { canonicalRoutes, type CanonicalRouteKey } from "@/lib/localized-routes";
 import { getPricingSummary } from "@/lib/pricing-copy";
@@ -35,10 +34,6 @@ const routeGroups: RouteGroup[] = [
   {
     heading: { sl: "Mobilna aplikacija za stranke", en: "Customer mobile app" },
     routeKeys: ["connect"],
-  },
-  {
-    heading: { sl: "IT storitve za mala podjetja", en: "IT services for small businesses" },
-    routeKeys: ["itServices", ...IT_SERVICE_ROUTE_KEYS],
   },
   {
     heading: { sl: "Nasveti in vodniki", en: "Guides and advice" },
@@ -202,20 +197,6 @@ const industrySection = (language: SiteLanguage) =>
     ].join("\n");
   }).join("\n\n");
 
-const itServiceSection = (language: SiteLanguage) =>
-  IT_SERVICE_ROUTE_KEYS.map((routeKey) => {
-    const service = getItServiceContent(routeKey, language);
-    return [
-      `### ${service.title}`,
-      "",
-      `URL: ${absoluteUrl(canonicalRoutes[routeKey][language])}`,
-      "",
-      service.intro,
-      "",
-      ...service.deliverables.map((item) => `- ${item}`),
-    ].join("\n");
-  }).join("\n\n");
-
 const faqSection = (language: SiteLanguage) => {
   const blocks: string[] = [];
 
@@ -257,10 +238,6 @@ export const buildLlmsFullTxt = () => {
       language === "sl" ? "## Rešitve po dejavnostih" : "## Solutions by industry",
       "",
       industrySection(language),
-      "",
-      language === "sl" ? "## IT storitve" : "## IT services",
-      "",
-      itServiceSection(language),
       "",
       language === "sl" ? "## Pogosta vprašanja" : "## Frequently asked questions",
       "",
