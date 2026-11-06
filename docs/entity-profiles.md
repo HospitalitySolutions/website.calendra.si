@@ -46,9 +46,10 @@ Logo: `https://calendra.si/calendra-logo.png` (512x512, PNG).
 ## Where to list, in priority order
 
 Work down this list. After each profile goes live, add its public URL to
-`VITE_ENTITY_PROFILE_URLS` in the deployment `.env` and rebuild, so the URL is
+`LISTED_ENTITY_PROFILE_URLS` in `src/lib/external-profiles.ts` (or to
+`VITE_ENTITY_PROFILE_URLS` in the deployment `.env`) and rebuild, so the URL is
 emitted as a `sameAs` entry and the link between the profile and this site is
-declared from both ends.
+declared from both ends. G2, Capterra and GetApp are already listed there.
 
 | Priority | Profile | Why it matters | Notes |
 | --- | --- | --- | --- |
@@ -56,8 +57,8 @@ declared from both ends.
 | 2 | Wikidata | The identifier most knowledge graphs and AI assistants reconcile against | Needs independent sources to survive notability review; attempt after press or directory coverage exists. Set `VITE_WIKIDATA_ENTITY_ID` once the item exists |
 | 3 | bizi.si | Primary Slovenian business register directory | Verify the entry matches the legal entity name exactly |
 | 4 | PIRS | Slovenian business directory | Same NAP, Slovenian description |
-| 5 | Capterra | Software review site cited heavily in buyer research and AI answers | Requires a vendor account and product listing |
-| 6 | G2 | Same as Capterra, with a different audience | Listings gain weight only with real reviews; ask existing customers |
+| 5 | Capterra / GetApp | Software review sites cited heavily in buyer research and AI answers | Live: https://www.capterra.com/p/10283419/Calendra/ and https://www.getapp.com/all-software/a/calendra/ |
+| 6 | G2 | Same as Capterra, with a different audience | Live: https://www.g2.com/products/calendra/reviews. Listings gain weight only with real reviews; ask existing customers |
 | 7 | Crunchbase | Company entity record used widely as a machine-readable source | Free profile is enough |
 | 8 | Product Hunt | Launch visibility plus a durable product page | One-off launch, permanent listing |
 | 9 | LinkedIn company page | Already live; keep the website URL and description aligned | |
@@ -69,7 +70,7 @@ declared from both ends.
    So are "Cesta Toneta Tomšiča 78a" and "Cesta Toneta Tomsica 78a".
 2. **Always link back to `https://calendra.si`**, without a trailing path or
    tracking parameters.
-3. **Add the profile URL to `VITE_ENTITY_PROFILE_URLS` after it goes live.** A
+3. **Add the profile URL to `LISTED_ENTITY_PROFILE_URLS` (or `VITE_ENTITY_PROFILE_URLS`) after it goes live.** A
    `sameAs` pointing at a profile that does not link back is a weaker signal
    than a reciprocal pair.
 4. **Do not buy directory listings in bulk.** Low-quality link directories are

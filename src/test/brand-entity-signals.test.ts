@@ -27,6 +27,17 @@ describe("brand entity signals", () => {
     expect(sameAs).toContain("https://www.g2.com/products/calendra/reviews");
     expect(sameAs).toContain("https://www.capterra.com/p/000000/Calendra/");
     expect(sameAs).not.toContain("not-a-url");
+    // A listing also supplied at build time is declared once.
+    expect(sameAs.filter((url) => url === "https://www.g2.com/products/calendra/reviews")).toHaveLength(1);
+  });
+
+  it("declares the live G2, Capterra and GetApp listings without any build variable", async () => {
+    const { organization } = await loadGraph("/", { VITE_ENTITY_PROFILE_URLS: "" });
+    expect(organization?.sameAs).toEqual(expect.arrayContaining([
+      "https://www.g2.com/products/calendra/reviews",
+      "https://www.capterra.com/p/10283419/Calendra/",
+      "https://www.getapp.com/all-software/a/calendra/",
+    ]));
   });
 
   it.each(["sl", "en"] as const)("uses one brand phrase in the Organization description and homepage title (%s)", async (language) => {
