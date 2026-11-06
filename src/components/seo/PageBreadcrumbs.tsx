@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 
 type PageBreadcrumbsProps = {
   routeKey: CanonicalRouteKey;
-  /** Intermediate hop between Home and the current page, e.g. IT services. */
+  /** Intermediate hop between Home and the current page, e.g. Legal. */
   parentRouteKey?: CanonicalRouteKey;
   className?: string;
 };

@@ -3,7 +3,6 @@ import { getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage } from "@/lib/site-language";
 import { getRoutePath, type CanonicalRouteKey } from "@/lib/localized-routes";
 import { getIndustryContent, INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
-import { getItServiceContent, IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import {
   FACEBOOK_PROFILE_URL,
   INSTAGRAM_PROFILE_URL,
@@ -183,17 +182,6 @@ const Footer = () => {
               {([...INDUSTRY_ROUTE_KEYS, "psychologyCounselling"] as const).map((routeKey) => (
                 <a key={routeKey} href={getRoutePath(routeKey, language)} className="transition-colors hover:text-foreground">
                   {getIndustryContent(routeKey, language).navLabel}
-                </a>
-              ))}
-            </div>
-          </nav>
-          <nav aria-label={language === "sl" ? "IT storitve" : "IT services"}>
-            <p className="text-sm font-semibold text-foreground">{language === "sl" ? "IT storitve" : "IT services"}</p>
-            <div className="mt-3 flex flex-col gap-2 text-sm text-muted-foreground">
-              <a href={getRoutePath("itServices", language)} className="font-medium text-foreground transition hover:text-primary">{language === "sl" ? "Pregled IT storitev" : "IT services overview"}</a>
-              {IT_SERVICE_ROUTE_KEYS.map((routeKey) => (
-                <a key={routeKey} href={getRoutePath(routeKey, language)} className="transition-colors hover:text-foreground">
-                  {getItServiceContent(routeKey, language).navLabel}
                 </a>
               ))}
             </div>

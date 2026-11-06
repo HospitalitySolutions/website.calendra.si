@@ -1,6 +1,5 @@
 import { FEATURE_ROUTE_KEYS } from "@/lib/feature-pages";
 import { ALL_INDUSTRY_ROUTE_KEYS } from "@/lib/industry-pages";
-import { IT_SERVICE_ROUTE_KEYS } from "@/lib/it-services";
 import { canonicalRoutes, type CanonicalRouteKey } from "@/lib/localized-routes";
 import { pageSeo } from "@/lib/seo";
 import type { SiteLanguage } from "@/lib/site-language";
@@ -46,13 +45,6 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
     otherServices: "Za druge storitvene dejavnosti",
     connect: "Calendra Connect",
     zoom: "Zoom integracija",
-    itServices: "IT storitve",
-    itSupport: "IT-podpora za mala podjetja",
-    websiteDesign: "Izdelava spletnih strani",
-    websiteMaintenance: "Vzdrževanje spletnih strani",
-    businessEmail: "Poslovna e-pošta",
-    backupsSecurity: "Varnostne kopije in IT-varnost",
-    automation: "Avtomatizacije in integracije",
     contact: "Kontakt",
     support: "Podpora",
     security: "Varnost",
@@ -94,13 +86,6 @@ const linkLabels: Record<SiteLanguage, Partial<Record<CanonicalRouteKey, string>
     otherServices: "For other service businesses",
     connect: "Calendra Connect",
     zoom: "Zoom integration",
-    itServices: "IT services",
-    itSupport: "Small business IT support",
-    websiteDesign: "Website design",
-    websiteMaintenance: "Website maintenance",
-    businessEmail: "Business email",
-    backupsSecurity: "Backups and IT security",
-    automation: "Automation and integrations",
     contact: "Contact",
     support: "Support",
     security: "Security",
@@ -160,15 +145,7 @@ const relatedByRouteKey: Partial<Record<CanonicalRouteKey, CanonicalRouteKey[]>>
 
   blog: ["customerStories", "booking", "reminders", "invoicing", "pricing", "author"],
   customerStories: ["beautyHair", "psychologyCounselling", "healthWellbeing", "booking", "clientManagement", "reminders", "pricing"],
-  author: ["blog", "itServices", "booking", "contact"],
-
-  itServices: [...IT_SERVICE_ROUTE_KEYS],
-  itSupport: ["backupsSecurity", "businessEmail", "automation", "itServices"],
-  websiteDesign: ["websiteMaintenance", "automation", "businessEmail", "itServices"],
-  websiteMaintenance: ["websiteDesign", "backupsSecurity", "itSupport", "itServices"],
-  businessEmail: ["itSupport", "backupsSecurity", "automation", "itServices"],
-  backupsSecurity: ["itSupport", "websiteMaintenance", "businessEmail", "itServices"],
-  automation: ["integrations", "itSupport", "websiteDesign", "itServices"],
+  author: ["blog", "booking", "pricing", "contact"],
 };
 
 export type RelatedPageLink = {

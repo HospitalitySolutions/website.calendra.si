@@ -6,8 +6,8 @@ import Navbar from "@/components/landing/Navbar";
 import Testimonials from "@/components/landing/Testimonials";
 import { getFeatureContent } from "@/lib/feature-pages";
 import { getIndustryContent } from "@/lib/industry-pages";
-import { IT_SERVICE_CANONICAL_KEYS } from "@/lib/it-services";
 import { getRoutePath } from "@/lib/localized-routes";
+import { RETIRED_IT_SERVICE_PATHS } from "@/lib/retired-routes";
 import { SiteLanguageProvider, type SiteLanguage } from "@/lib/site-language";
 
 const renderMarketingComponent = (component: ComponentType, language: SiteLanguage) => {
@@ -76,8 +76,8 @@ describe("Release 3 commercial visibility", () => {
     for (const routeKey of ["beautySalons", "hairSalons", "spaSauna", "fitnessPersonalTraining", "groupBookings", "booking", "pricing"] as const) {
       expect(links).toContain(getRoutePath(routeKey, language));
     }
-    for (const routeKey of IT_SERVICE_CANONICAL_KEYS) {
-      expect(links).not.toContain(getRoutePath(routeKey, language));
+    for (const retiredPath of RETIRED_IT_SERVICE_PATHS) {
+      expect(links).not.toContain(retiredPath);
     }
   });
 
