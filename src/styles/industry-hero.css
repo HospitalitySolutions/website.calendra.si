@@ -1,0 +1,16 @@
+/* Layered product screenshots in the shared industry hero (fitness, beauty,
+   hair, tattoo and the other industry pages). Typography, buttons and the hero
+   grid come from group-bookings.css. */
+.industry-hero-product { position: relative; min-width: 0; padding: 18px 36px 136px 0; }
+.industry-hero-calendar { position: relative; }
+.industry-hero-booking { position: absolute; width: 46%; right: 0; top: 32%; }
+.industry-hero-client { position: absolute; width: 28%; bottom: 0; left: 24%; }
+.industry-hero-product figure { overflow: hidden; }
+@media (max-width: 1023px) {
+  .industry-hero-product { width: 100%; max-width: 680px; margin-inline: auto; }
+}
+@media (max-width: 639px) {
+  .industry-hero-product { padding: 0 0 190px; }
+  .industry-hero-booking { top: auto; bottom: 20px; width: 52%; }
+  .industry-hero-client { left: 4%; width: 34%; }
+}

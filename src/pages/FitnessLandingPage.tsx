@@ -1,17 +1,13 @@
 import { useRef } from "react";
-import { ArrowRight, BarChart3, CalendarDays, Check, ChevronDown, CircleX, Clock3, CreditCard, Database, Globe, Ticket, UserRound, UsersRound } from "lucide-react";
+import { ArrowRight, BarChart3, ChevronDown, CircleX, Clock3, Database, Globe, Ticket, UserRound, UsersRound } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
 import StickySalesCtaBar from "@/components/landing/StickySalesCtaBar";
-import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
-import { Button } from "@/components/ui/button";
-import { TrialSignupLink } from "@/components/TrialSignupLink";
+import IndustryHero, { IndustryHeroActions, IndustryTrialNotes } from "@/components/marketing/IndustryHero";
 import { getIndustryContent } from "@/lib/industry-pages";
 import { getRoutePath } from "@/lib/localized-routes";
 import { MARKETING_IMAGES, type MarketingImage } from "@/lib/marketing-images";
-import { trackMarketingEvent } from "@/lib/marketing-events";
-import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
-import "@/styles/group-bookings.css";
+import { useSiteLanguage } from "@/lib/site-language";
 import "@/styles/fitness-landing.css";
 
 const content = {
@@ -135,29 +131,6 @@ const ProductImage = ({ image, alt, eager = false, sizes = "(min-width: 1024px) 
     loading={eager ? "eager" : "lazy"} decoding="async" className="h-auto w-full" />
 );
 
-const FitnessActions = ({ language }: { language: SiteLanguage }) => {
-  const copy = content[language];
-  return (
-    <div className="group-bookings-actions flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-      <Button variant="hero" size="lg" asChild>
-        <TrialSignupLink onClick={() => trackMarketingEvent("trial_cta_click", { placement: "industry_page", language })}>
-          {copy.trial}<ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </TrialSignupLink>
-      </Button>
-      <Button variant="outline" size="lg" asChild>
-        <a href={getRoutePath("demo", language)} onClick={() => trackMarketingEvent("demo_booking_cta_clicked", { placement: "industry_page", language })}>{copy.demo}</a>
-      </Button>
-    </div>
-  );
-};
-
-const TrialNotes = ({ language }: { language: SiteLanguage }) => (
-  <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-xs text-muted-foreground">
-    <span className="inline-flex items-center gap-2"><CalendarDays className="h-4 w-4 text-primary" aria-hidden="true" />{content[language].trialNote}</span>
-    <span className="inline-flex items-center gap-2"><CreditCard className="h-4 w-4 text-primary" aria-hidden="true" />{content[language].cardNote}</span>
-  </div>
-);
-
 const FitnessLandingPage = () => {
   const { language } = useSiteLanguage();
   const copy = content[language];
@@ -170,39 +143,23 @@ const FitnessLandingPage = () => {
     <div className="marketing-page marketing-redesign group-bookings-page fitness-page min-h-screen bg-background">
       <Navbar />
       <main>
-        <section id="fitness-hero" className="group-bookings-hero" aria-labelledby="fitness-title">
-          <div className="container">
-            <PageBreadcrumbs routeKey="fitnessPersonalTraining" />
-            <div className="group-bookings-hero-layout">
-              <div className="group-bookings-hero-copy">
-                <span className="marketing-eyebrow">{copy.eyebrow}</span>
-                <h1 id="fitness-title" className="font-display text-3xl font-bold tracking-tight">
-                  {copy.title.map((line, index) => <span key={line} className={index === 2 ? "text-primary" : undefined}>{index > 0 ? " " : ""}{line}</span>)}
-                </h1>
-                <p className="group-bookings-intro">{copy.intro}</p>
-                <ul className="group-bookings-points">
-                  {copy.points.map((point) => <li key={point}><span><Check aria-hidden="true" /></span>{point}</li>)}
-                </ul>
-                <div ref={heroCtaRef} className="mt-8"><FitnessActions language={language} /></div>
-                <TrialNotes language={language} />
-              </div>
-              <div className="fitness-product" aria-label={copy.screenshotNote}>
-                <figure className="fitness-calendar rounded-2xl border border-border bg-white p-3 shadow-xl">
-                  <figcaption className="mb-3 flex items-center gap-2 text-xs font-semibold text-muted-foreground"><CalendarDays className="h-4 w-4 text-primary" aria-hidden="true" />{copy.calendarCaption}</figcaption>
-                  <ProductImage image={MARKETING_IMAGES.calendar} alt={copy.calendarAlt} eager sizes="(min-width: 1024px) 620px, 92vw" />
-                </figure>
-                <figure className="fitness-booking rounded-2xl border border-border bg-white p-3 shadow-lg">
-                  <figcaption className="mb-3 text-xs font-semibold">{copy.bookingCaption}</figcaption>
-                  <ProductImage image={MARKETING_IMAGES.bookingTime} alt={copy.bookingAlt} eager sizes="(min-width: 1024px) 240px, 44vw" />
-                </figure>
-                <figure className="fitness-membership rounded-2xl border border-border bg-white p-3 shadow-lg">
-                  <figcaption className="mb-3 text-xs font-semibold">{copy.membershipCaption}</figcaption>
-                  <ProductImage image={MARKETING_IMAGES.membership} alt={copy.membershipAlt} eager sizes="(min-width: 1024px) 160px, 38vw" />
-                </figure>
-              </div>
-            </div>
-          </div>
-        </section>
+        <IndustryHero
+          id="fitness-hero"
+          titleId="fitness-title"
+          routeKey="fitnessPersonalTraining"
+          language={language}
+          eyebrow={copy.eyebrow}
+          titleLines={copy.title}
+          intro={copy.intro}
+          points={copy.points}
+          screenshotNote={copy.screenshotNote}
+          ctaRef={heroCtaRef}
+          cards={[
+            { image: MARKETING_IMAGES.calendar, alt: copy.calendarAlt, caption: copy.calendarCaption },
+            { image: MARKETING_IMAGES.bookingTime, alt: copy.bookingAlt, caption: copy.bookingCaption },
+            { image: MARKETING_IMAGES.membership, alt: copy.membershipAlt, caption: copy.membershipCaption },
+          ]}
+        />
 
         <section id="fitness-activities" className="group-bookings-use-cases" aria-labelledby="fitness-activities-title">
           <div className="container">
@@ -296,7 +253,7 @@ const FitnessLandingPage = () => {
           <div className="container">
             <div className="fitness-final rounded-2xl border border-border p-6 md:p-8">
               <div><span className="marketing-eyebrow">{copy.finalEyebrow}</span><h2 id="fitness-cta-title" className="mt-3 font-display text-3xl font-bold tracking-tight">{copy.finalTitle}</h2><p className="mt-3 max-w-3xl text-base leading-7 text-muted-foreground">{copy.finalIntro}</p></div>
-              <div><FitnessActions language={language} /><TrialNotes language={language} /></div>
+              <div><IndustryHeroActions language={language} /><IndustryTrialNotes language={language} /></div>
             </div>
           </div>
         </section>

@@ -16,6 +16,7 @@ import {
   Globe,
   Menu,
   Package,
+  PenTool,
   Receipt,
   Scissors,
   Sparkles,
@@ -202,9 +203,9 @@ const Navbar = () => {
         icon: Scissors,
       },
       {
-        title: language === "sl" ? "Brivnice" : "Barbershops",
-        href: getRoutePath("hairSalons", language),
-        icon: Scissors,
+        title: language === "sl" ? "Tattoo in piercing studii" : "Tattoo & piercing studios",
+        href: getRoutePath("tattooPiercing", language),
+        icon: PenTool,
       },
       {
         title: "Wellness",

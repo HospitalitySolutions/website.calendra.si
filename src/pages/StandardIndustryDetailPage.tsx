@@ -1,12 +1,13 @@
 import Footer from "@/components/landing/Footer";
 import Navbar from "@/components/landing/Navbar";
-import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
+import IndustryHero, { type IndustryHeroCard } from "@/components/marketing/IndustryHero";
 import RelatedPages from "@/components/seo/RelatedPages";
 import ResponsiveScreenshot from "@/components/marketing/ResponsiveScreenshot";
 import { PsychologyHero, PsychologyUseCases, PsychologyBenefits } from "@/components/marketing/PsychologySections";
 import { Button } from "@/components/ui/button";
 import {
   getIndustryContent,
+  getIndustryHeroTitle,
   INDUSTRY_ROUTE_KEYS,
   isIndustryRouteKey,
   type IndustryRouteKey,
@@ -23,7 +24,6 @@ import {
   ArrowRight,
   BellRing,
   CalendarCheck2,
-  Check,
   CheckCircle2,
   Clock3,
   FileText,
@@ -92,18 +92,51 @@ const IndustryDetailPage = () => {
     ?? legacyChildren[routeKey]
     ?? INDUSTRY_ROUTE_KEYS.filter((key) => key !== routeKey);
   const primaryLabel = language === "sl" ? "Preizkusite brezplačno" : "Try it free";
-  const featuresLabel = language === "sl" ? "Oglejte si funkcionalnosti" : "Explore features";
   const pricingLabel = language === "sl" ? "Oglejte si cenik" : "View pricing";
   const otherSolutionsLabel = language === "sl" ? "Druge rešitve Calendra" : "Other Calendra solutions";
   const groupCentric = ["fitnessGroups", "fitnessPersonalTraining", "yogaPilates", "educationCoaching"].includes(routeKey);
-  const heroImage = groupCentric ? MARKETING_IMAGES.bookingTime : MARKETING_IMAGES.calendar;
-  const heroImageAlt = groupCentric
-    ? language === "sl"
-      ? "Spletna prijava na skupinsko vadbo v Calendri z izbiro datuma, ure in prikazom prostih mest"
-      : "Online group-class booking in Calendra with date, time and remaining-place selection"
-    : language === "sl"
-      ? "Tedenski koledar terminov v aplikaciji Calendra z individualnimi in skupinskimi storitvami"
-      : "Weekly Calendra appointment calendar with individual and group services";
+  const sl = language === "sl";
+  const heroCard = {
+    calendar: {
+      image: MARKETING_IMAGES.calendar,
+      caption: sl ? "Vaš urnik" : "Your schedule",
+      alt: sl ? "Tedenski koledar terminov v aplikaciji Calendra z individualnimi in skupinskimi storitvami" : "Weekly Calendra appointment calendar with individual and group services",
+    },
+    bookingService: {
+      image: MARKETING_IMAGES.bookingService,
+      caption: sl ? "Naročanje za stranke" : "Client booking",
+      alt: sl ? "Spletno naročanje v Calendri z izbiro storitve in trajanja" : "Online booking in Calendra with service and duration selection",
+    },
+    bookingTime: {
+      image: MARKETING_IMAGES.bookingTime,
+      caption: sl ? "Naročanje za stranke" : "Client booking",
+      alt: sl ? "Spletna prijava na skupinsko vadbo v Calendri z izbiro datuma, ure in prikazom prostih mest" : "Online group-class booking in Calendra with date, time and remaining-place selection",
+    },
+    bookingReview: {
+      image: MARKETING_IMAGES.bookingReview,
+      caption: sl ? "Povzetek in plačilo" : "Summary and payment",
+      alt: sl ? "Zadnji korak spletnega naročanja v Calendri s povzetkom rezervacije in načinom plačila" : "Final online booking step in Calendra with booking summary and payment method",
+    },
+    membership: {
+      image: MARKETING_IMAGES.membership,
+      caption: sl ? "Članstva in obiski" : "Memberships and visits",
+      alt: sl ? "Pregled članstva in obiskov na profilu stranke v Calendri" : "Calendra client membership and visit overview",
+    },
+    clientProfile: {
+      image: MARKETING_IMAGES.clientProfile,
+      caption: routeKey === "beautySalons"
+        ? (sl ? "Termini stranke" : "Client appointments")
+        : routeKey === "tattooPiercing"
+          ? (sl ? "Zgodovina stranke" : "Client history")
+          : (sl ? "Profil stranke" : "Client profile"),
+      alt: sl ? "Profil stranke v Calendri s prihodnjimi termini" : "Calendra client profile with upcoming appointments",
+    },
+  } satisfies Record<string, IndustryHeroCard>;
+  const heroCards: [IndustryHeroCard, IndustryHeroCard, IndustryHeroCard] = groupCentric
+    ? [heroCard.calendar, heroCard.bookingTime, heroCard.membership]
+    : routeKey === "tattooPiercing"
+      ? [heroCard.calendar, heroCard.bookingReview, heroCard.clientProfile]
+      : [heroCard.calendar, heroCard.bookingService, heroCard.clientProfile];
   const customerProof = routeKey === "beautyHair" || routeKey === "beautySalons"
     ? {
         quote: language === "sl"
@@ -129,66 +162,25 @@ const IndustryDetailPage = () => {
       : null;
 
   return (
-    <div className={isPsychologyPage ? "marketing-page marketing-redesign psychology-page group-bookings-page min-h-screen bg-background" : "marketing-page marketing-redesign min-h-screen bg-background"}>
+    <div className={`marketing-page marketing-redesign group-bookings-page min-h-screen bg-background${isPsychologyPage ? " psychology-page" : " industry-page"}`}>
       <Navbar />
       <main>
         {isPsychologyPage ? (
           <PsychologyHero page={page} language={language} ctaRef={heroCtaRef} />
         ) : (
-        <section className="overflow-hidden border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.07] py-14 md:py-20 lg:py-24">
-          <div className="container mx-auto grid max-w-7xl gap-12 px-4 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:px-8">
-            <div>
-              <PageBreadcrumbs routeKey={routeKey} />
-              <span className="marketing-eyebrow">{page.eyebrow}</span>
-              <h1 className="mt-4 max-w-4xl font-display text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                {page.title}
-              </h1>
-              <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl">{page.intro}</p>
-              <ul className="mt-7 grid gap-3">
-                {page.heroPoints.map((point) => (
-                  <li key={point} className="flex items-start gap-3 text-sm font-semibold leading-6 text-foreground sm:text-base">
-                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/[0.1] text-primary">
-                      <Check className="h-3.5 w-3.5" aria-hidden="true" />
-                    </span>
-                    {point}
-                  </li>
-                ))}
-              </ul>
-              <div ref={heroCtaRef} className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <Button variant="hero" size="lg" className="rounded-xl" asChild>
-                  <TrialSignupLink>{primaryLabel}<ArrowRight className="h-4 w-4" /></TrialSignupLink>
-                </Button>
-                <Button variant="outline" size="lg" className="rounded-xl" asChild>
-                  <a href="#funkcionalnosti-panoge">{featuresLabel}</a>
-                </Button>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div className="absolute -left-10 -top-10 h-44 w-44 rounded-full bg-primary/10 blur-3xl" aria-hidden="true" />
-              <div className="absolute -bottom-12 -right-8 h-48 w-48 rounded-full bg-accent/10 blur-3xl" aria-hidden="true" />
-              <div className="relative overflow-hidden rounded-[2rem] border border-border/70 bg-background p-3 shadow-2xl shadow-primary/10 md:p-4">
-                <div className="flex items-center gap-2 border-b border-border/60 px-2 pb-3">
-                  <span className="h-2.5 w-2.5 rounded-full bg-border" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-border" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-border" />
-                  <span className="ml-2 rounded-full bg-primary/[0.08] px-3 py-1 text-xs font-semibold text-primary">Calendra</span>
-                </div>
-                <img
-                  src={heroImage.src}
-                  srcSet={heroImage.srcSet}
-                  sizes="(min-width: 1024px) 52vw, 100vw"
-                  alt={heroImageAlt}
-                  width={heroImage.width}
-                  height={heroImage.height}
-                  loading="eager"
-                  decoding="async"
-                  className="mt-3 h-auto w-full rounded-2xl object-left-top"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
+        <IndustryHero
+          id="industry-hero"
+          titleId="industry-title"
+          routeKey={routeKey}
+          language={language}
+          eyebrow={page.eyebrow}
+          titleLines={getIndustryHeroTitle(page, language)}
+          intro={page.intro}
+          points={page.heroPoints}
+          cards={heroCards}
+          screenshotNote={sl ? "Primeri uporabniškega vmesnika Calendra." : "Examples of the Calendra interface."}
+          ctaRef={heroCtaRef}
+        />
         )}
 
         {isPsychologyPage ? (

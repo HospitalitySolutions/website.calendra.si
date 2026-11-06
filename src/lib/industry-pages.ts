@@ -62,6 +62,8 @@ export type IndustryContent = {
   title: string;
   intro: string;
   heroPoints: string[];
+  /** Optional hero heading lines; the last line is highlighted. Defaults to splitting `title`. */
+  heroTitle?: readonly [string, string];
   problemsEyebrow: string;
   problemsTitle: string;
   problemsIntro: string;
@@ -486,10 +488,11 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
     sl: {
       navLabel: "Frizerski saloni",
       cardCta: "Calendra za frizerske salone",
-      eyebrow: "Calendra za frizerske salone",
+      eyebrow: "Profesionalne rešitve za frizerske salone",
+      heroTitle: ["Program za", "frizerske salone in brivnice"],
       title: "Program za naročanje strank za frizerske salone",
       intro: "Calendra poveže spletno naročanje, urnike frizerjev, različna trajanja storitev, delovna mesta, opomnike, plačila in račune. Tako je manj telefonskega usklajevanja in več časa za stranke v salonu.",
-      heroPoints: ["Urnik po frizerjih, storitvah in delovnih mestih", "Spletno naročanje za striženje, barvanje, feniranje in druge storitve", "Opomniki, paketi, boni, plačila in računi na profilu stranke"],
+      heroPoints: ["Urnik po frizerjih, storitvah in delovnih mestih", "Spletno naročanje za striženje, barvanje, feniranje in druge storitve", "Opomniki, paketi, boni, plačila in računi na profilu stranke", "Manj telefonskega usklajevanja, več časa za stranke"],
       problemsEyebrow: "Manj administracije",
       problemsTitle: "Manj usklajevanja, boljši pregled nad termini",
       problemsIntro: "Calendra poveže naročanje, razpoložljivost in podatke o strankah v en delovni tok.",
@@ -579,10 +582,11 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
     en: {
       navLabel: "Hair salons",
       cardCta: "Calendra for hair salons",
-      eyebrow: "Calendra for hair salons",
+      eyebrow: "Professional tools for hair salons and barbershops",
+      heroTitle: ["Booking software for", "hair salons and barbershops"],
       title: "Booking software for hair salons and barbershops",
       intro: "Calendra connects online booking, stylist schedules, flexible service durations, workstations, reminders, payments and invoices. That means less phone coordination and more time for clients in the salon.",
-      heroPoints: ["Schedules by stylist, service and workstation", "Online booking for cuts, colour, styling and other salon services", "Reminders, packages, vouchers, payments and invoices on the client profile"],
+      heroPoints: ["Schedules by stylist, service and workstation", "Online booking for cuts, colour, styling and other salon services", "Reminders, packages, vouchers, payments and invoices on the client profile", "Less phone coordination, more time for your clients"],
       problemsEyebrow: "Less administration",
       problemsTitle: "Less coordination and a clearer appointment workflow",
       problemsIntro: "Calendra connects booking, availability and client information in one workflow.",
@@ -674,10 +678,11 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
     sl: {
       navLabel: "Kozmetični saloni",
       cardCta: "Calendra za kozmetične salone",
-      eyebrow: "Calendra za kozmetične salone",
+      eyebrow: "Profesionalne rešitve za kozmetične salone",
+      heroTitle: ["Program za", "kozmetične in lepotne salone"],
       title: "Program za naročanje za kozmetične in lepotne salone",
       intro: "Calendra pomaga kozmetičnim salonom organizirati tretmaje, zaposlene, kabine, opomnike, pakete, plačila in račune. Stranke se lahko naročijo prek spleta, ekipa pa ohrani jasen pregled nad dnevom.",
-      heroPoints: ["Različna trajanja tretmajev in izvajalci", "Kabine, naprave in drugi omejeni viri v istem urniku", "Spletno naročanje, opomniki, paketi in plačila"],
+      heroPoints: ["Različna trajanja tretmajev in izvajalci", "Kabine, naprave in drugi omejeni viri v istem urniku", "Spletno naročanje, opomniki, paketi in plačila", "Profil stranke z zgodovino tretmajev in opombami"],
       problemsEyebrow: "Manj administracije",
       problemsTitle: "Manj usklajevanja, boljši pregled nad termini",
       problemsIntro: "Calendra poveže naročanje, razpoložljivost in podatke o strankah v en delovni tok.",
@@ -767,10 +772,11 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
     en: {
       navLabel: "Beauty salons",
       cardCta: "Calendra for beauty salons",
-      eyebrow: "Calendra for beauty salons",
+      eyebrow: "Professional tools for beauty salons",
+      heroTitle: ["Booking software for", "beauty and cosmetic salons"],
       title: "Booking software for beauty and cosmetic salons",
       intro: "Calendra helps beauty salons organise treatments, employees, treatment rooms, reminders, packages, payments and invoices. Clients can book online while the team keeps a clear view of the day.",
-      heroPoints: ["Flexible treatment durations and eligible providers", "Treatment rooms, devices and other limited resources in one schedule", "Online booking, reminders, packages and payments"],
+      heroPoints: ["Flexible treatment durations and eligible providers", "Treatment rooms, devices and other limited resources in one schedule", "Online booking, reminders, packages and payments", "Client profiles with treatment history and notes"],
       problemsEyebrow: "Less administration",
       problemsTitle: "Less coordination and a clearer appointment workflow",
       problemsIntro: "Calendra connects booking, availability and client information in one workflow.",
@@ -1238,10 +1244,11 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
     sl: {
       navLabel: "Tetoviranje & piercing",
       cardCta: "Calendra za tattoo & piercing studie",
-      eyebrow: "Calendra za tattoo in piercing studie",
+      eyebrow: "Profesionalne rešitve za tattoo in piercing studie",
+      heroTitle: ["Program za", "tattoo in piercing studie"],
       title: "Program za naročanje za tattoo in piercing studie",
       intro: "Calendra uredi termine umetnikov, posvete, različna trajanja storitev, opomnike, predplačila in podatke strank. Ekipa lahko vodi individualna naročila brez nepreglednega usklajevanja po sporočilih.",
-      heroPoints: ["Koledar po umetnikih in vrstah storitev", "Ločeni termini za posvet, izvedbo ali kontrolo", "Opomniki, predplačila, opombe in zgodovina stranke"],
+      heroPoints: ["Koledar po umetnikih in vrstah storitev", "Ločeni termini za posvet, izvedbo ali kontrolo", "Opomniki, predplačila, opombe in zgodovina stranke", "Manj usklajevanja po sporočilih, več časa za ustvarjanje"],
       problemsEyebrow: "Manj administracije",
       problemsTitle: "Manj usklajevanja, boljši pregled nad termini",
       problemsIntro: "Calendra poveže naročanje, razpoložljivost in podatke o strankah v en delovni tok.",
@@ -1305,12 +1312,12 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       faqTitle: "Calendra za tetoviranje in piercing",
       faq: [
         {
-          question: "Ali se lahko stranke naročijo same prek spleta?",
-          answer: "Da. Uporabite lahko javno povezavo ali rezervacijski vtičnik. Sami določite, katere storitve, izvajalci in termini so na voljo."
+          question: "Kateri program za naročanje je primeren za tattoo ali piercing studio?",
+          answer: "Calendra je slovenski program za spletno naročanje in upravljanje terminov, ki ga lahko uporabljajo tattoo in piercing studii ter samostojni umetniki. Stranke se naročijo prek spleta, studio pa v enem koledarju vodi termine po umetnikih, ločene posvete, storitve različnih trajanj, opomnike, predplačila in zgodovino strank. Aplikacija deluje v slovenščini in angleščini, preizkus je 14 dni brezplačen in brez kreditne kartice."
         },
         {
-          question: "Ali lahko storitve trajajo različno dolgo?",
-          answer: "Da. Vsaka storitev ima lahko svoje trajanje, ceno, izvajalce in pravila razpoložljivosti."
+          question: "Ali se lahko stranke naročijo same prek spleta?",
+          answer: "Da. Uporabite lahko javno povezavo ali rezervacijski vtičnik. Sami določite, katere storitve, izvajalci in termini so na voljo."
         },
         {
           question: "Ali lahko Calendro uporablja več zaposlenih?",
@@ -1331,10 +1338,11 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
     en: {
       navLabel: "Tattooing & piercing",
       cardCta: "Calendra for tattoo & piercing",
-      eyebrow: "Calendra for tattoo and piercing studios",
+      eyebrow: "Professional tools for tattoo and piercing studios",
+      heroTitle: ["Booking software for", "tattoo and piercing studios"],
       title: "Booking software for tattoo and piercing studios",
       intro: "Calendra organises artist schedules, consultations, flexible service durations, reminders, prepayments and client information. Your team can manage individual bookings without scattered message threads.",
-      heroPoints: ["Calendar by artist and service type", "Separate appointments for consultation, procedure or follow-up", "Reminders, prepayments, notes and client history"],
+      heroPoints: ["Calendar by artist and service type", "Separate appointments for consultation, procedure or follow-up", "Reminders, prepayments, notes and client history", "Fewer message threads, more time for your craft"],
       problemsEyebrow: "Less administration",
       problemsTitle: "Less coordination and a clearer appointment workflow",
       problemsIntro: "Calendra connects booking, availability and client information in one workflow.",
@@ -1398,12 +1406,12 @@ const businessTypeContent: Record<BusinessTypeIndustryRouteKey, Record<SiteLangu
       faqTitle: "Calendra for tattooing & piercing",
       faq: [
         {
-          question: "Can clients book themselves online?",
-          answer: "Yes. Use a public booking link or website widget and decide which services, providers and times are available."
+          question: "What booking software works for a tattoo or piercing studio?",
+          answer: "Calendra is Slovenian online booking and appointment software that tattoo studios, piercing studios and independent artists can use. Clients book online, while the studio manages appointments by artist, separate consultations, services with different durations, reminders, prepayments and client history in one calendar. It works in Slovenian and English, and the 14-day trial is free with no credit card required."
         },
         {
-          question: "Can services have different durations?",
-          answer: "Yes. Every service can have its own duration, price, eligible providers and availability rules."
+          question: "Can clients book themselves online?",
+          answer: "Yes. Use a public booking link or website widget and decide which services, providers and times are available."
         },
         {
           question: "Can several employees use Calendra?",
@@ -2746,6 +2754,21 @@ const content: Record<IndustryRouteKey, Record<SiteLanguage, IndustryContent>> =
 };
 
 export const getIndustryContent = (routeKey: IndustryRouteKey, language: SiteLanguage) => content[routeKey][language];
+
+/**
+ * Hero heading lines for the shared industry hero. Pages without an explicit
+ * `heroTitle` keep their full `title` and highlight the audience after the
+ * last "za" / "for", e.g. "Program za naročanje za | masažne salone in terapevte".
+ */
+export const getIndustryHeroTitle = (page: IndustryContent, language: SiteLanguage): readonly string[] => {
+  if (page.heroTitle) return page.heroTitle;
+  const separator = language === "sl" ? " za " : " for ";
+  const index = page.title.lastIndexOf(separator);
+  if (index <= 0) return [page.title];
+  // Keep "za" / "for" with the preceding word so it never wraps onto a line alone.
+  const lead = page.title.slice(0, index + separator.length - 1).replace(/ (\S+)$/, "\u00a0$1");
+  return [lead, page.title.slice(index + separator.length)];
+};
 
 export const isIndustryRouteKey = (routeKey: CanonicalRouteKey | undefined): routeKey is IndustryRouteKey =>
   Boolean(routeKey && ALL_INDUSTRY_ROUTE_KEYS.includes(routeKey as IndustryRouteKey));
