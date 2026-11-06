@@ -27,8 +27,11 @@ const BUDGETS = {
    * Sum of all optional route/preview stylesheets, not a per-page download.
    * Fitness redesign adds 0.6 KB gzip of isolated responsive layout CSS;
    * reserve 1 KB for that new page without raising either initial-load budget.
+   * The redesigned demo invitation with the e-novice form (about 2.5 KB gzip) now
+   * loads on demand instead of with every page, which lowered initial CSS and JS;
+   * 13 KB covers it plus the 0.1 KB the Po meri pricing change already used.
    */
-  onDemandCss: 10,
+  onDemandCss: 13,
   /** Largest single lazily loaded route chunk, as an early warning for a runaway page. */
   largestRouteChunk: 50,
 };
