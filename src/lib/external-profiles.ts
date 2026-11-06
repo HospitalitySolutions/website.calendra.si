@@ -19,8 +19,7 @@ const isPublicHttpUrl = (value: string | undefined): value is string => {
 /**
  * A social profile URL set at build time (Docker build argument) wins over the
  * committed default, so a corrected profile needs no code change. Empty or
- * invalid values fall back to the default; profiles without a default are
- * omitted until their variable is set.
+ * invalid values fall back to the default.
  */
 function buildTimeProfileUrl(value: string | undefined, fallback: string): string;
 function buildTimeProfileUrl(value: string | undefined): string | undefined;
@@ -31,17 +30,20 @@ function buildTimeProfileUrl(value: string | undefined, fallback?: string) {
 
 export const FACEBOOK_PROFILE_URL = buildTimeProfileUrl(
   import.meta.env.VITE_FACEBOOK_URL,
-  "https://www.facebook.com/profile.php?id=61590713483596",
+  "https://www.facebook.com/calendraapp",
 );
 export const INSTAGRAM_PROFILE_URL = buildTimeProfileUrl(
   import.meta.env.VITE_INSTAGRAM_URL,
-  "https://www.instagram.com/calendra_si/",
+  "https://www.instagram.com/calendra.si",
 );
 export const LINKEDIN_PROFILE_URL = buildTimeProfileUrl(
   import.meta.env.VITE_LINKEDIN_URL,
-  "https://www.linkedin.com/company/135116409/",
+  "https://www.linkedin.com/company/calendrabook",
 );
-export const TIKTOK_PROFILE_URL = buildTimeProfileUrl(import.meta.env.VITE_TIKTOK_URL);
+export const TIKTOK_PROFILE_URL = buildTimeProfileUrl(
+  import.meta.env.VITE_TIKTOK_URL,
+  "https://www.tiktok.com/@calendra.si",
+);
 
 /**
  * Additional entity profiles supplied at build time as a comma or newline

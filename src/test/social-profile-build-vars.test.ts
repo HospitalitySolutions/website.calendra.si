@@ -45,7 +45,7 @@ describe("social profile build variables", () => {
     ]));
   });
 
-  it("keeps the committed defaults and omits TikTok when the variables are empty or invalid", async () => {
+  it("keeps the committed official profiles when the variables are empty or invalid", async () => {
     const { profiles: defaults } = await loadProfiles({
       VITE_FACEBOOK_URL: "",
       VITE_INSTAGRAM_URL: "",
@@ -62,12 +62,21 @@ describe("social profile build variables", () => {
     expect(profiles.FACEBOOK_PROFILE_URL).toBe(defaults.FACEBOOK_PROFILE_URL);
     expect(profiles.INSTAGRAM_PROFILE_URL).toBe(defaults.INSTAGRAM_PROFILE_URL);
     expect(profiles.LINKEDIN_PROFILE_URL).toBe(defaults.LINKEDIN_PROFILE_URL);
-    for (const url of [profiles.FACEBOOK_PROFILE_URL, profiles.INSTAGRAM_PROFILE_URL, profiles.LINKEDIN_PROFILE_URL]) {
-      expect(url).toMatch(/^https:\/\//);
+    expect(profiles.TIKTOK_PROFILE_URL).toBe(defaults.TIKTOK_PROFILE_URL);
+    expect([
+      profiles.FACEBOOK_PROFILE_URL,
+      profiles.INSTAGRAM_PROFILE_URL,
+      profiles.LINKEDIN_PROFILE_URL,
+      profiles.TIKTOK_PROFILE_URL,
+    ]).toEqual([
+      "https://www.facebook.com/calendraapp",
+      "https://www.instagram.com/calendra.si",
+      "https://www.linkedin.com/company/calendrabook",
+      "https://www.tiktok.com/@calendra.si",
+    ]);
+    for (const url of [profiles.FACEBOOK_PROFILE_URL, profiles.INSTAGRAM_PROFILE_URL, profiles.LINKEDIN_PROFILE_URL, profiles.TIKTOK_PROFILE_URL]) {
       expect(sameAs).toContain(url);
     }
-    expect(profiles.TIKTOK_PROFILE_URL).toBeUndefined();
-    expect(sameAs.some((url) => url.includes("tiktok"))).toBe(false);
     expect(sameAs.some((url) => !/^https?:\/\//.test(url))).toBe(false);
   });
 
