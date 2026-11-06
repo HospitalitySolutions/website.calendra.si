@@ -62,7 +62,7 @@ Completed tenant registration remains a separate application change: `sign_up` i
 
 The website flag `VITE_DEMO_PROMPT_ENABLED` defaults to `true` in Vite and Docker. To disable the invitation, set it to `false` in the deployment `.env` and rebuild the website. The Dockerfile, compose arguments and `.env.example` all expose the flag. Disabling it stops invitation timers and profile requests; the existing demo page remains available.
 
-The e-novice opt-in inside the invitation uses `VITE_NEWSLETTER_SIGNUP_ENABLED`, which defaults to `false` in Vite and Docker. Set it to `true` in the same deployment `.env` and rebuild only after the app serves `POST /api/register/newsletter` with `APP_NEWSLETTER_SIGNUP_ENABLED=true` and `APP_NEWSLETTER_MAILERLITE_GROUP_ID` set (see the app repo's `docs/website-newsletter-signup.md`). Setting it back to `false` and rebuilding removes the form.
+The e-novice opt-in inside the invitation uses `VITE_NEWSLETTER_SIGNUP_ENABLED`, which is `true` in the Dockerfile and compose build (plain Vite builds and tests default to off). It needs the app to serve `POST /api/register/newsletter` with `APP_NEWSLETTER_SIGNUP_ENABLED=true` and `APP_NEWSLETTER_MAILERLITE_GROUP_ID` set (see the app repo's `docs/website-newsletter-signup.md`), so deploy the website after that app release. Setting it to `false` in the deployment `.env` and rebuilding removes the form.
 
 This change is for the website repository. Production deployment is a separate operation: pull the published main commit in the website checkout, then rebuild/recreate the website service through the existing deployment process. No production container or application database was changed during this implementation.
 
