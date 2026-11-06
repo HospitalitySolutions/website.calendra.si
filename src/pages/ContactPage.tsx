@@ -17,7 +17,7 @@ import {
   Send,
   ShieldCheck,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const copy = {
   sl: {
@@ -99,6 +99,10 @@ const ContactPage = () => {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [topic, setTopic] = useState("");
+  // The form is prerendered. Until React hydrates, a submit would fall back to a
+  // native GET and put the visitor's details in the URL, so keep it disabled.
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
 
   const handleCalendraSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -134,7 +138,7 @@ const ContactPage = () => {
                 <p className="mt-3 leading-7 text-muted-foreground">{page.common.formIntro}</p>
               </div>
 
-              <form className="mt-8 grid gap-5 md:grid-cols-2" onSubmit={handleCalendraSubmit}>
+              <form method="post" className="mt-8 grid gap-5 md:grid-cols-2" onSubmit={handleCalendraSubmit}>
                 <CommonFields page={page.common} name={name} company={company} email={email} phone={phone} setName={setName} setCompany={setCompany} setEmail={setEmail} setPhone={setPhone} />
                 <div className="md:col-span-2">
                   <label htmlFor="calendra-contact-topic" className="mb-2 block text-sm font-semibold text-foreground">{page.calendra.topic}</label>
@@ -143,7 +147,7 @@ const ContactPage = () => {
                     {page.calendra.topics.map((option) => <option key={option} value={option}>{option}</option>)}
                   </select>
                 </div>
-                <MessageAndSubmit page={page.common} message={message} setMessage={setMessage} placeholder={page.calendra.messagePlaceholder} submit={page.calendra.submit} disabled={inquiry.disabled} />
+                <MessageAndSubmit page={page.common} message={message} setMessage={setMessage} placeholder={page.calendra.messagePlaceholder} submit={page.calendra.submit} disabled={inquiry.disabled || !hydrated} />
               </form>
               <p role={inquiry.status === "error" ? "alert" : "status"} className="mt-4 text-sm">{inquiry.message}</p>
             </section>

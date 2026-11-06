@@ -86,7 +86,8 @@ try {
       dateRows: new Set([...document.querySelectorAll('.demo-date')].map(el => Math.round(el.getBoundingClientRect().top))).size,
     }));
     assert.deepEqual(style, { overflow: false, headingWeight: '400', dateWeight: '400', timeWeight: '400', footerColor: 'rgb(255, 255, 255)', dateRows: 1 });
-    await expect(page.locator('footer nav')).toHaveCount(6);
+    // Product, features, industries, contact & support, legal (IT services retired).
+    await expect(page.locator('footer nav')).toHaveCount(5);
     await page.evaluate(() => scrollTo(0, 0));
     await page.screenshot({ path: `${output}/${language}-${width}.png`, fullPage: true });
     later.release();
