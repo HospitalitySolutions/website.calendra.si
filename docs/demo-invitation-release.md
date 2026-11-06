@@ -62,6 +62,8 @@ Completed tenant registration remains a separate application change: `sign_up` i
 
 The website flag `VITE_DEMO_PROMPT_ENABLED` defaults to `true` in Vite and Docker. To disable the invitation, set it to `false` in the deployment `.env` and rebuild the website. The Dockerfile, compose arguments and `.env.example` all expose the flag. Disabling it stops invitation timers and profile requests; the existing demo page remains available.
 
+The e-novice opt-in inside the invitation uses `VITE_NEWSLETTER_SIGNUP_ENABLED`, which defaults to `false` in Vite and Docker. Set it to `true` in the same deployment `.env` and rebuild only after the app serves `POST /api/register/newsletter` with `APP_NEWSLETTER_SIGNUP_ENABLED=true` and `APP_NEWSLETTER_MAILERLITE_GROUP_ID` set (see the app repo's `docs/website-newsletter-signup.md`). Setting it back to `false` and rebuilding removes the form.
+
 This change is for the website repository. Production deployment is a separate operation: pull the published main commit in the website checkout, then rebuild/recreate the website service through the existing deployment process. No production container or application database was changed during this implementation.
 
 After deployment, verify genuine, consented activity in GA4 Realtime/DebugView and the configured Umami instance; confirm the deployed SHA and the public profile again. Check email/video delivery in an authorized staging booking or the next genuine booking. The key-event table currently reports no stream data for these success events; that is not proof of a broken trigger or a completed production conversion. Assess results only after enough real traffic accumulates. No recurring monitoring job was created.
