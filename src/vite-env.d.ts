@@ -3,7 +3,10 @@
 interface ImportMetaEnv {
   readonly VITE_SITE_URL?: string;
   readonly VITE_APP_BASE_URL?: string;
+  readonly VITE_FACEBOOK_URL?: string;
+  readonly VITE_INSTAGRAM_URL?: string;
   readonly VITE_LINKEDIN_URL?: string;
+  readonly VITE_TIKTOK_URL?: string;
   readonly VITE_YOUTUBE_URL?: string;
   readonly VITE_GOOGLE_PLAY_URL?: string;
   readonly VITE_APP_STORE_URL?: string;
