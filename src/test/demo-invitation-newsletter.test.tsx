@@ -1,7 +1,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { NewsletterForm } from "@/components/marketing/DemoInvitation";
+import { NewsletterForm } from "@/components/marketing/DemoInvitationCard";
 import { GOOGLE_ANALYTICS_CONSENT_KEY } from "@/lib/google-analytics";
 import { isNewsletterSignupEnabled, isValidNewsletterEmail, subscribeToNewsletter } from "@/lib/newsletter";
 
