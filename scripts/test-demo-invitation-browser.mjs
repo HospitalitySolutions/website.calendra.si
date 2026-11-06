@@ -162,6 +162,9 @@ try {
   {
     const { page, context } = await setup({ path: '/cenik' });
     const field = page.locator('form input').first();
+    // The form is prerendered. Typing before React hydrates it would happen
+    // before the invitation listens for input, so wait for hydration first.
+    await expect.poll(() => field.evaluate(element => Object.keys(element).some(key => key.startsWith('__reactProps')))).toBe(true);
     await field.fill('In-progress inquiry');
     await page.clock.runFor(20_000);
     await expect(prompt(page)).toHaveCount(0);
