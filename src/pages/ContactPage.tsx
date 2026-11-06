@@ -99,8 +99,9 @@ const ContactPage = () => {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [topic, setTopic] = useState("");
-  // The form is prerendered. Until React hydrates, a submit would fall back to a
-  // native GET and put the visitor's details in the URL, so keep it disabled.
+  // The form is prerendered. Until React hydrates, typed text would be reset by
+  // the first render and a submit would bypass the handler, so keep the fields
+  // disabled until then.
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
@@ -138,7 +139,8 @@ const ContactPage = () => {
                 <p className="mt-3 leading-7 text-muted-foreground">{page.common.formIntro}</p>
               </div>
 
-              <form method="post" className="mt-8 grid gap-5 md:grid-cols-2" onSubmit={handleCalendraSubmit}>
+              <form method="post" className="mt-8" onSubmit={handleCalendraSubmit}>
+                <fieldset disabled={!hydrated} className="grid min-w-0 gap-5 md:grid-cols-2">
                 <CommonFields page={page.common} name={name} company={company} email={email} phone={phone} setName={setName} setCompany={setCompany} setEmail={setEmail} setPhone={setPhone} />
                 <div className="md:col-span-2">
                   <label htmlFor="calendra-contact-topic" className="mb-2 block text-sm font-semibold text-foreground">{page.calendra.topic}</label>
@@ -147,7 +149,8 @@ const ContactPage = () => {
                     {page.calendra.topics.map((option) => <option key={option} value={option}>{option}</option>)}
                   </select>
                 </div>
-                <MessageAndSubmit page={page.common} message={message} setMessage={setMessage} placeholder={page.calendra.messagePlaceholder} submit={page.calendra.submit} disabled={inquiry.disabled || !hydrated} />
+                <MessageAndSubmit page={page.common} message={message} setMessage={setMessage} placeholder={page.calendra.messagePlaceholder} submit={page.calendra.submit} disabled={inquiry.disabled} />
+                </fieldset>
               </form>
               <p role={inquiry.status === "error" ? "alert" : "status"} className="mt-4 text-sm">{inquiry.message}</p>
             </section>
