@@ -46,23 +46,31 @@ export const TIKTOK_PROFILE_URL = buildTimeProfileUrl(
 );
 
 /**
- * Additional entity profiles supplied at build time as a comma or newline
- * separated list: Wikidata, Crunchbase, Product Hunt, G2, Capterra, Slovenian
- * business directories.
+ * Review sites and directories where Calendra is listed. Each URL becomes a
+ * `sameAs` entry, which is how a search engine or an assistant confirms that the
+ * profile on another site and this website describe the same organization.
  *
- * These live in one environment variable rather than one variable per
- * directory, because listing on a new directory then needs no change to this
- * repository, the Dockerfile or the compose file. Each URL becomes a `sameAs`
- * entry, which is how a search engine or an assistant confirms that the profile
- * on another site and this website describe the same organization.
+ * Live listings are committed here. Further listings (Wikidata, Crunchbase,
+ * Product Hunt, Slovenian business directories) can be added at build time as
+ * a comma or newline separated `VITE_ENTITY_PROFILE_URLS`, which needs no
+ * change to this repository; those are added to this list, not used instead.
  */
+export const LISTED_ENTITY_PROFILE_URLS = [
+  "https://www.g2.com/products/calendra/reviews",
+  "https://www.capterra.com/p/10283419/Calendra/",
+  "https://www.getapp.com/all-software/a/calendra/",
+] as const;
+
 const parseProfileList = (value: string | undefined) =>
   (value ?? "")
     .split(/[\n,]/)
     .map((entry) => entry.trim())
     .filter(isPublicHttpUrl);
 
-export const ENTITY_PROFILE_URLS = parseProfileList(import.meta.env.VITE_ENTITY_PROFILE_URLS);
+export const ENTITY_PROFILE_URLS = Array.from(new Set([
+  ...LISTED_ENTITY_PROFILE_URLS,
+  ...parseProfileList(import.meta.env.VITE_ENTITY_PROFILE_URLS),
+]));
 
 /**
  * Official profiles that can be safely declared as the same organization.
