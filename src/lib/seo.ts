@@ -53,12 +53,12 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     en: { title: "Calendra | Booking, appointments, invoicing and reminders", description: "Calendra helps service businesses manage online booking, appointment calendars, invoices, reminders, payments, analytics and client data in one platform." },
   },
   pricing: {
-    sl: { title: "Cenik programa za naročanje strank | Calendra", description: "Primerjajte pakete Calendra, vključene funkcionalnosti, dodatne uporabnike, SMS porabo in module. Začnite s 14-dnevnim brezplačnim preizkusom." },
-    en: { title: "Appointment booking software pricing | Calendra", description: "Compare Calendra plans, included features, additional users, SMS usage and optional modules. Start with a 14-day free trial." },
+    sl: { title: "Cenik programa za naročanje strank – paketi | Calendra", description: "Primerjajte pakete Osnovno, Profesionalno in Premium: cena, vključeni uporabniki, SMS in moduli. Preizkusite 14 dni brezplačno, brez kreditne kartice." },
+    en: { title: "Appointment booking software pricing and plans | Calendra", description: "Compare the Basic, Professional and Premium plans: price, included users, SMS and modules. Try Calendra free for 14 days, no credit card needed." },
   },
   booking: {
-    sl: { title: "Spletno naročanje strank in terminov | Calendra", description: "Omogočite spletno naročanje 24 ur na dan z izbiro storitve, zaposlenega in prostega termina, plačili, potrditvami ter SMS in e-poštnimi opomniki." },
-    en: { title: "Online customer and appointment booking | Calendra", description: "Offer online booking 24 hours a day with service, employee and time-slot selection, payments, confirmations plus SMS and email reminders." },
+    sl: { title: "Program za spletno naročanje strank 24/7 | Calendra", description: "Stranke se naročijo same 24 ur na dan: izberejo storitev, zaposlenega in prost termin ter dobijo potrditev in SMS opomnik. 14 dni brezplačno, brez kartice." },
+    en: { title: "Online booking software for service businesses | Calendra", description: "Clients book 24/7: they pick a service, staff member and free slot, then get a confirmation and SMS reminder. Free for 14 days, no credit card needed." },
   },
   customers: {
     sl: { title: "Rezervirajte termin pri ponudnikih | Calendra", description: "Poiščite ponudnika, izberite lokacijo in rezervirajte termin prek Calendre. S Calendra Connect lahko spremljate termine, pakete, članstva in bone na enem mestu." },
@@ -81,8 +81,8 @@ export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> =
     en: { title: "Appointment calendar for service businesses | Calendra", description: "Manage employees, working hours, absences, rooms and recurring appointments in one clear calendar without duplicate work." },
   },
   invoicing: {
-    sl: { title: "Program za račune, termine in plačila | Calendra", description: "Povežite izvedene termine, račune, načine plačila in finančni pregled v enem delovnem toku za storitveno podjetje." },
-    en: { title: "Appointments, invoicing and payments software | Calendra", description: "Connect completed appointments, invoices, payment methods and revenue tracking in one workflow for your service business." },
+    sl: { title: "Računi in plačila za opravljene termine | Calendra", description: "Iz opravljenega termina izdajte račun, zabeležite plačilo in spremljajte prihodke v istem programu, kjer vodite naročanje strank. 14 dni brezplačno." },
+    en: { title: "Invoices and payments for appointments | Calendra", description: "Turn completed appointments into invoices, record payments and track revenue in the same tool you use for client booking. Free for 14 days." },
   },
   clientManagement: {
     sl: { title: "Upravljanje strank in evidenca terminov | Calendra", description: "Ohranite kontaktne podatke, zgodovino terminov, opombe, dokumente in polja po meri v urejenem profilu stranke." },
