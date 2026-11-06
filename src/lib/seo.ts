@@ -49,8 +49,8 @@ export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-calendra.png`;
 
 export const pageSeo: Record<CanonicalRouteKey, Record<SiteLanguage, PageSeo>> = {
   home: {
-    sl: { title: "Calendra | Program za naročanje strank, termine in račune", description: "Calendra je slovenska platforma za storitvena podjetja: spletno naročanje, koledar terminov, računi, opomniki, plačila, analitika in upravljanje strank." },
-    en: { title: "Calendra | Booking, appointments, invoicing and reminders", description: "Calendra helps service businesses manage online booking, appointment calendars, invoices, reminders, payments, analytics and client data in one platform." },
+    sl: { title: "Calendra – program za naročanje strank, termine in račune", description: "Calendra je slovenska platforma za storitvena podjetja: spletno naročanje, koledar terminov, računi, opomniki, plačila, analitika in upravljanje strank." },
+    en: { title: "Calendra – appointment booking software, invoices, reminders", description: "Calendra helps service businesses manage online booking, appointment calendars, invoices, reminders, payments, analytics and client data in one platform." },
   },
   pricing: {
     sl: { title: "Cenik programa za naročanje strank – paketi | Calendra", description: "Primerjajte pakete Osnovno, Profesionalno in Premium: cena, vključeni uporabniki, SMS in moduli. Preizkusite 14 dni brezplačno, brez kreditne kartice." },
@@ -256,10 +256,26 @@ export const ENTRY_PLAN_MONTHLY_PRICE = formatPrice(
   [...FALLBACK_PUBLIC_PRICING.plans].sort((a, b) => a.monthlyGross - b.monthlyGross)[0].monthlyGross,
 );
 
-const organizationSchema = {
+/**
+ * One phrase for the brand entity, repeated in the Organization description and
+ * the homepage title so search engines connect "Calendra" with what it is.
+ */
+export const BRAND_PHRASE = {
+  sl: "Calendra – program za naročanje strank",
+  en: "Calendra – appointment booking software",
+} as const;
+
+/** Other names people use for the company and website (not the Calendra Connect app). */
+export const BRAND_ALTERNATE_NAMES = ["Calendra.si"] as const;
+
+const organizationSchema = (language: SiteLanguage) => ({
   "@type": "Organization",
   "@id": `${SITE_URL}/#organization`,
   name: "Calendra",
+  alternateName: [...BRAND_ALTERNATE_NAMES],
+  description: language === "sl"
+    ? `${BRAND_PHRASE.sl}: slovenska platforma za storitvena podjetja s spletnim naročanjem, koledarjem terminov, računi, opomniki in plačili.`
+    : `${BRAND_PHRASE.en}: a Slovenian platform for service businesses with online booking, an appointment calendar, invoices, reminders and payments.`,
   legalName: LEGAL.entityName,
   url: SITE_URL,
   email: LEGAL.generalEmail,
@@ -281,12 +297,13 @@ const organizationSchema = {
       }
     : undefined,
   sameAs: OFFICIAL_PROFILE_URLS,
-};
+});
 
 const websiteSchema = (language: SiteLanguage) => ({
   "@type": "WebSite",
   "@id": `${SITE_URL}/#website`,
   name: "Calendra",
+  alternateName: [...BRAND_ALTERNATE_NAMES],
   url: SITE_URL,
   inLanguage: language === "sl" ? "sl-SI" : "en",
   publisher: { "@id": `${SITE_URL}/#organization` },
@@ -628,7 +645,7 @@ const getArticleSeo = (pathname: string) => {
     structuredData: {
       "@context": "https://schema.org",
       "@graph": [
-        organizationSchema,
+        organizationSchema(article.language),
         websiteSchema(article.language),
         {
           "@type": "WebPage",
@@ -735,7 +752,7 @@ const getProfileSeo = (pathname: string, language: SiteLanguage) => {
     canonicalUrl: absoluteUrl(canonicalPath),
     alternateUrls: { sl: absoluteUrl(slPath), en: absoluteUrl(enPath), xDefault: absoluteUrl(slPath) },
     noindex,
-    structuredData: { "@context": "https://schema.org", "@graph": [organizationSchema, websiteSchema(language), localBusinessSchema, breadcrumbs] },
+    structuredData: { "@context": "https://schema.org", "@graph": [organizationSchema(language), websiteSchema(language), localBusinessSchema, breadcrumbs] },
   };
 };
 
@@ -788,7 +805,7 @@ const getCustomerStorySeo = (pathname: string, language: SiteLanguage) => {
     structuredData: {
       "@context": "https://schema.org",
       "@graph": [
-        organizationSchema,
+        organizationSchema(language),
         websiteSchema(language),
         customerOrganization,
         {
@@ -878,7 +895,7 @@ export const getSeoForPathname = (pathname: string) => {
     structuredData: {
       "@context": "https://schema.org",
       "@graph": [
-        organizationSchema,
+        organizationSchema(language),
         websiteSchema(language),
         webPageSchema(routeKey, language, canonicalPath),
         ...(routeKey === "blog"
