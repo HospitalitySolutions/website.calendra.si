@@ -36,7 +36,7 @@ const events = new Set([
   "trial_cta_click", "pricing_package_selected", "contact_path_selected", "generate_lead",
   "demo_booking_cta_clicked", "demo_booking_page_viewed", "demo_booking_slot_selected",
   "demo_booking_form_started", "demo_booking_confirmed", "demo_booking_cancelled", "demo_booking_rescheduled",
-  "demo_prompt_impression", "demo_prompt_dismissed",
+  "demo_prompt_impression", "demo_prompt_dismissed", "newsletter_signup_completed",
   "web_vitals",
 ]);
 

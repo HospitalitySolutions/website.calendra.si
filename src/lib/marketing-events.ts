@@ -9,6 +9,7 @@ export type MarketingEventName =
   | "demo_booking_cta_clicked"
   | "demo_prompt_impression"
   | "demo_prompt_dismissed"
+  | "newsletter_signup_completed"
   | "demo_booking_page_viewed"
   | "demo_booking_slot_selected"
   | "demo_booking_form_started"
