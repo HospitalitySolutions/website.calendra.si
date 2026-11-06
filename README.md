@@ -170,10 +170,13 @@ Search Console verification and sitemap submission require access to the Google 
 
 ### Official profiles in structured data
 
-The verified Google Business profile is included automatically. Add the final official social and app-store URLs as Docker build environment variables so `Organization.sameAs` contains only real public profiles:
+The verified Google Business profile is included automatically. Add the final official social and app-store URLs as Docker build environment variables so `Organization.sameAs` contains only real public profiles. Facebook, Instagram, LinkedIn and TikTok override the official profile URLs committed in `src/lib/external-profiles.ts` (Facebook, Instagram and LinkedIn also feed the footer icons), so set them only when a profile URL changes:
 
 ```bash
+VITE_FACEBOOK_URL=https://www.facebook.com/... \
+VITE_INSTAGRAM_URL=https://www.instagram.com/... \
 VITE_LINKEDIN_URL=https://www.linkedin.com/company/... \
+VITE_TIKTOK_URL=https://www.tiktok.com/@... \
 VITE_YOUTUBE_URL=https://www.youtube.com/@... \
 VITE_GOOGLE_PLAY_URL=https://play.google.com/store/apps/details?id=... \
 VITE_APP_STORE_URL=https://apps.apple.com/app/id... \

@@ -5,10 +5,6 @@ import { LEGAL_POLICY } from "@/lib/legal-policy";
 export const GOOGLE_BUSINESS_PROFILE_URL =
   "https://www.google.com/maps/search/?api=1&query=Calendra&query_place_id=ChIJm6_tDR93b0cRZhhgh_KBCd0";
 
-export const FACEBOOK_PROFILE_URL = "https://www.facebook.com/profile.php?id=61590713483596";
-export const INSTAGRAM_PROFILE_URL = "https://www.instagram.com/calendra_si/";
-export const LINKEDIN_PROFILE_URL = "https://www.linkedin.com/company/135116409/";
-
 const isPublicHttpUrl = (value: string | undefined): value is string => {
   if (!value) return false;
 
@@ -19,6 +15,35 @@ const isPublicHttpUrl = (value: string | undefined): value is string => {
     return false;
   }
 };
+
+/**
+ * A social profile URL set at build time (Docker build argument) wins over the
+ * committed default, so a corrected profile needs no code change. Empty or
+ * invalid values fall back to the default.
+ */
+function buildTimeProfileUrl(value: string | undefined, fallback: string): string;
+function buildTimeProfileUrl(value: string | undefined): string | undefined;
+function buildTimeProfileUrl(value: string | undefined, fallback?: string) {
+  const trimmed = value?.trim();
+  return isPublicHttpUrl(trimmed) ? trimmed : fallback;
+}
+
+export const FACEBOOK_PROFILE_URL = buildTimeProfileUrl(
+  import.meta.env.VITE_FACEBOOK_URL,
+  "https://www.facebook.com/calendraapp",
+);
+export const INSTAGRAM_PROFILE_URL = buildTimeProfileUrl(
+  import.meta.env.VITE_INSTAGRAM_URL,
+  "https://www.instagram.com/calendra.si",
+);
+export const LINKEDIN_PROFILE_URL = buildTimeProfileUrl(
+  import.meta.env.VITE_LINKEDIN_URL,
+  "https://www.linkedin.com/company/calendrabook",
+);
+export const TIKTOK_PROFILE_URL = buildTimeProfileUrl(
+  import.meta.env.VITE_TIKTOK_URL,
+  "https://www.tiktok.com/@calendra.si",
+);
 
 /**
  * Additional entity profiles supplied at build time as a comma or newline
@@ -48,6 +73,7 @@ export const OFFICIAL_PROFILE_URLS = Array.from(new Set([
   FACEBOOK_PROFILE_URL,
   INSTAGRAM_PROFILE_URL,
   LINKEDIN_PROFILE_URL,
+  TIKTOK_PROFILE_URL,
   import.meta.env.VITE_YOUTUBE_URL,
   GOOGLE_BUSINESS_PROFILE_URL,
   import.meta.env.VITE_GOOGLE_PLAY_URL,
