@@ -6,6 +6,7 @@ import { demoInvitationSession } from "@/lib/demo-invitation";
 import { getRoutePath } from "@/lib/localized-routes";
 import { trackMarketingEvent } from "@/lib/marketing-events";
 import { isNewsletterSignupEnabled, isValidNewsletterEmail, subscribeToNewsletter } from "@/lib/newsletter";
+import { SITE_URL } from "@/lib/site";
 import { hasBlockingInterface, type Language } from "./demo-invitation-dom";
 import "./demo-invitation.css";
 
@@ -26,9 +27,9 @@ const copy = {
       lead: "Nasveti za več rezervacij in novosti v Calendri. Največ 2× na mesec.", mobileLead: "Nasveti in novosti, največ 2× na mesec.",
       toggle: "Ali prejemajte e-novice", label: "E-poštni naslov", placeholder: "vas@email.si",
       submit: "Prijava", mobileSubmit: "Prijava na e-novice", submitting: "Prijavljam …",
-      consent: "S prijavo soglašate s prejemanjem e-novic in obvestil o novostih Calendre. Prijavo potrdite v e-pošti, odjava je mogoča kadar koli.",
+      consent: "S prijavo soglašate s prejemanjem e-novic in obvestil o novostih Calendre. Odjava je mogoča kadar koli.",
       privacy: "Politika zasebnosti", invalid: "Vnesite veljaven e-poštni naslov.",
-      successTitle: "Skoraj končano!", successText: "Poslali smo vam e-pošto. Kliknite povezavo v njej, da potrdite prijavo.",
+      successTitle: "Prijava uspela!", successText: "Hvala, odslej boste prejemali e-novice Calendre.",
       errorTitle: "Prijava trenutno ni uspela.", errorText: "Poskusite znova čez nekaj trenutkov.",
     },
   },
@@ -46,9 +47,9 @@ const copy = {
       lead: "Tips for more bookings and what's new in Calendra. At most twice a month.", mobileLead: "Tips and news, at most twice a month.",
       toggle: "Or get the newsletter", label: "Email address", placeholder: "you@example.com",
       submit: "Subscribe", mobileSubmit: "Subscribe to the newsletter", submitting: "Subscribing …",
-      consent: "By subscribing you agree to receive Calendra's newsletter and product updates. Confirm in the email we send you; unsubscribe at any time.",
+      consent: "By subscribing you agree to receive Calendra's newsletter and product updates. You can unsubscribe at any time.",
       privacy: "Privacy policy", invalid: "Enter a valid email address.",
-      successTitle: "Almost done!", successText: "We've sent you an email. Click the link in it to confirm your subscription.",
+      successTitle: "You're subscribed!", successText: "Thanks, you'll now receive the Calendra newsletter.",
       errorTitle: "We couldn't subscribe you right now.", errorText: "Please try again in a moment.",
     },
   },
@@ -83,6 +84,10 @@ export function NewsletterForm({ language, compact, focusOnMount = false }: { la
 
   useEffect(() => { if (focusOnMount) inputRef.current?.focus(); }, [focusOnMount]);
 
+  const privacyPath = getRoutePath("privacy", language);
+  // Sent with the sign-up and stored by the app as the record of what the visitor agreed to.
+  const consentText = `${c.consent} ${c.privacy} (${SITE_URL}${privacyPath})`;
+
   const submit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (state === "submitting") return;
@@ -93,7 +98,7 @@ export function NewsletterForm({ language, compact, focusOnMount = false }: { la
     }
     setState("submitting");
     try {
-      await subscribeToNewsletter({ email, locale: language, website });
+      await subscribeToNewsletter({ email, locale: language, consentText, website });
       setState("success");
       trackMarketingEvent("newsletter_signup_completed", { placement: compact ? "demo_banner_mobile" : "demo_popup_desktop", language });
     } catch (error) {
@@ -143,7 +148,7 @@ export function NewsletterForm({ language, compact, focusOnMount = false }: { la
         </div>
       )}
       <p id={consentId} className="demo-invitation-consent">
-        {c.consent} <Link to={getRoutePath("privacy", language)} target="_blank" rel="noopener">{c.privacy}</Link>
+        {c.consent} <Link to={privacyPath} target="_blank" rel="noopener">{c.privacy}</Link>
       </p>
     </form>
   );
