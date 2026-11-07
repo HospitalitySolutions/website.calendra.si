@@ -6,6 +6,8 @@ export const isNewsletterSignupEnabled = () => import.meta.env.VITE_NEWSLETTER_S
 export type NewsletterSignup = {
   email: string;
   locale: "sl" | "en";
+  /** The consent wording shown next to the form; the app stores it as the record of consent. */
+  consentText: string;
   /** Honeypot value; real visitors never see or fill it. */
   website?: string;
 };
@@ -15,9 +17,9 @@ export type NewsletterError = "newsletter_invalid" | "newsletter_unavailable";
 export const isValidNewsletterEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim()) && value.trim().length <= 254;
 
 /**
- * Sends the opt-in to the app's validated, rate-limited endpoint, which adds the address to the MailerLite
- * group server-side (the API key never reaches the browser). MailerLite then sends the double opt-in email.
- * Never retries a POST.
+ * Sends the sign-up to the app's validated, rate-limited endpoint. The app records the consent and subscribes
+ * the address in MailerLite straight away (single opt-in; the API key never reaches the browser), so there is
+ * no confirmation email. Never retries a POST.
  */
 export async function subscribeToNewsletter(signup: NewsletterSignup): Promise<void> {
   const csrf = await fetch(`${APP_BASE_URL}/api/auth/csrf`, { credentials: "include", cache: "no-store" }).catch(() => null);
@@ -30,7 +32,9 @@ export async function subscribeToNewsletter(signup: NewsletterSignup): Promise<v
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json", "X-XSRF-TOKEN": token.token },
-    body: JSON.stringify({ email: signup.email.trim(), locale: signup.locale, consent: true, website: signup.website || undefined }),
+    body: JSON.stringify({
+      email: signup.email.trim(), locale: signup.locale, consent: true, consentText: signup.consentText, website: signup.website || undefined,
+    }),
   }).catch(() => null);
   if (response?.status === 400) throw new Error("newsletter_invalid" satisfies NewsletterError);
   const body: unknown = response?.ok ? await response.json().catch(() => null) : null;
