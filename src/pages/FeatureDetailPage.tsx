@@ -5,6 +5,7 @@ import { GroupBookingHero, GroupBookingUseCases } from "@/components/marketing/G
 import AnswerSummary from "@/components/seo/AnswerSummary";
 import PageBreadcrumbs from "@/components/seo/PageBreadcrumbs";
 import RelatedPages from "@/components/seo/RelatedPages";
+import FeatureHeroVisual from "@/components/marketing/FeatureHeroVisual";
 import { Button } from "@/components/ui/button";
 import { getFaqForRoute } from "@/lib/faq";
 import { getFeatureContent, isFeatureRouteKey } from "@/lib/feature-pages";
@@ -27,11 +28,6 @@ const FeatureDetailPage = () => {
   const page = getFeatureContent(routeKey, language);
   const isGroupBookingPage = routeKey === "groupBookings";
   const faq = getFaqForRoute(routeKey, language) ?? [];
-  const screenshotWidthClass = routeKey === "clientManagement"
-    ? "mx-auto max-w-2xl"
-    : routeKey === "invoicing"
-      ? "mx-auto max-w-4xl"
-      : "";
 
   return (
     <div className={`marketing-page marketing-redesign min-h-screen bg-background${isGroupBookingPage ? " group-bookings-page" : ""}`}>
@@ -40,11 +36,12 @@ const FeatureDetailPage = () => {
         {isGroupBookingPage ? (
           <GroupBookingHero page={page} language={language} ctaRef={heroCtaRef} />
         ) : (
-        <section className="border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.05] py-16 md:py-24">
-          <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+        <section className="overflow-hidden border-b border-border/60 bg-gradient-to-br from-background via-card to-primary/[0.05] py-16 md:py-24">
+          <div className={`site-shell-container grid items-start gap-11${page.screenshot ? " lg:grid-cols-2 lg:gap-14" : ""}`}>
+            <div className="min-w-0">
             <PageBreadcrumbs routeKey={routeKey} />
             <span className="marketing-eyebrow">{page.eyebrow}</span>
-            <h1 className="mt-4 max-w-4xl font-display text-4xl font-extrabold tracking-tight text-foreground md:text-6xl">
+            <h1 className={`mt-4 font-display text-[clamp(2.25rem,4.15vw,3.7rem)] font-[750] leading-[1.08] tracking-[-0.047em] text-foreground ${page.screenshot ? "max-w-[640px]" : "max-w-4xl"}`}>
               {page.title}
             </h1>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-muted-foreground md:text-xl">{page.intro}</p>
@@ -74,6 +71,8 @@ const FeatureDetailPage = () => {
                 </a>
               </Button>
             </div>
+            </div>
+            {page.screenshot ? <FeatureHeroVisual screenshot={page.screenshot} language={language} /> : null}
           </div>
         </section>
         )}
@@ -81,7 +80,7 @@ const FeatureDetailPage = () => {
         {isGroupBookingPage ? (
           <GroupBookingUseCases page={page} />
         ) : (
-        <section className="container mx-auto max-w-6xl px-4 py-16 lg:px-8 md:py-24">
+        <section className="site-shell-container py-16 md:py-24">
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.useCasesTitle}</h2>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-muted-foreground">{page.useCasesIntro}</p>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
@@ -96,7 +95,7 @@ const FeatureDetailPage = () => {
         )}
 
         <section className="bg-card py-16 md:py-24">
-          <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+          <div className="site-shell-container">
             <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.benefitsTitle}</h2>
             <div className="mt-10 grid gap-6 md:grid-cols-3">
               {page.benefits.map((benefit) => (
@@ -110,7 +109,7 @@ const FeatureDetailPage = () => {
           </div>
         </section>
 
-        <section className="container mx-auto max-w-6xl px-4 py-16 lg:px-8 md:py-24">
+        <section className="site-shell-container py-16 md:py-24">
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.comparisonTitle}</h2>
           <p className="mt-4 max-w-3xl text-lg leading-8 text-muted-foreground">{page.comparisonIntro}</p>
 
@@ -151,7 +150,7 @@ const FeatureDetailPage = () => {
         </section>
 
         <section className="bg-card py-16 md:py-24">
-          <div className="container mx-auto grid max-w-6xl gap-10 px-4 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
+          <div className="site-shell-container grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
             <div>
               <Link2 className="h-8 w-8 text-primary" aria-hidden="true" />
               <h2 className="mt-5 font-display text-3xl font-bold text-foreground">{page.processTitle}</h2>
@@ -169,29 +168,8 @@ const FeatureDetailPage = () => {
           </div>
         </section>
 
-        {page.screenshot ? (
-          <section className="container mx-auto max-w-6xl px-4 py-16 lg:px-8 md:py-24">
-            <figure className={`overflow-hidden rounded-3xl border border-border/60 bg-card shadow-soft ${screenshotWidthClass}`.trim()}>
-              <img
-                src={page.screenshot.src}
-                srcSet={page.screenshot.srcSet}
-                sizes={page.screenshot.sizes}
-                alt={page.screenshot.alt}
-                width={page.screenshot.width}
-                height={page.screenshot.height}
-                loading="lazy"
-                decoding="async"
-                className="block h-auto w-full"
-              />
-              <figcaption className="border-t border-border/60 px-5 py-4 text-sm text-muted-foreground">
-                {page.screenshot.caption}
-              </figcaption>
-            </figure>
-          </section>
-        ) : null}
-
         {page.details.length > 0 && <section className="bg-card py-16 md:py-24">
-          <div className="container mx-auto max-w-6xl px-4 lg:px-8">
+          <div className="site-shell-container">
             <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.detailsTitle}</h2>
             <div className="mt-10 grid gap-6 md:grid-cols-2">
               {page.details.map((detail) => (
@@ -204,7 +182,7 @@ const FeatureDetailPage = () => {
           </div>
         </section>}
 
-        <section className="container mx-auto max-w-6xl px-4 py-16 lg:px-8 md:py-24">
+        <section className="site-shell-container py-16 md:py-24">
           <h2 className="font-display text-3xl font-bold tracking-tight text-foreground sm:text-4xl">{page.faqTitle}</h2>
           <div className="mt-8 grid gap-3">
             {faq.map((item) => (
@@ -220,7 +198,7 @@ const FeatureDetailPage = () => {
 
         <RelatedPages routeKey={routeKey} />
 
-        <section className="container mx-auto max-w-6xl px-4 py-16 text-center lg:px-8 md:py-24">
+        <section className="site-shell-container py-16 text-center md:py-24">
           <h2 className="font-display text-3xl font-bold text-foreground">{page.finalTitle}</h2>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">{page.finalBody}</p>
           <Button variant="hero" size="lg" className="mt-7 rounded-xl" asChild>

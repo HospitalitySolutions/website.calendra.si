@@ -197,7 +197,7 @@ const CustomerNavbar = () => {
 
   return (
     <nav className="site-navbar-editorial sticky top-0 z-50 border-b border-border/40 bg-background/95 backdrop-blur-xl">
-      <div className="mx-auto flex h-[68px] max-w-[1380px] items-center gap-4 px-4 lg:px-6">
+      <div className="site-shell-container flex h-[68px] items-center gap-4">
         <a href={customerPath} className="flex shrink-0 items-center">
           <img src={WORDMARK.src} alt="Calendra" width={WORDMARK.width} height={WORDMARK.height} className="site-brand-wordmark h-8 w-auto md:h-9" />
         </a>

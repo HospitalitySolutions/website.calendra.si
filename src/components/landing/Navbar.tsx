@@ -316,7 +316,7 @@ const Navbar = () => {
       className="site-navbar-editorial sticky top-0 isolate border-b border-border/45 bg-white/90 backdrop-blur-xl supports-[backdrop-filter]:bg-white/84"
       style={{ zIndex: 1000 }}
     >
-      <div className="container mx-auto flex h-[68px] max-w-[1500px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="site-shell-container flex h-[68px] items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <a href={homePath} className="flex items-center">
             <img
