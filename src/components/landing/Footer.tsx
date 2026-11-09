@@ -142,7 +142,7 @@ const Footer = () => {
 
   return (
     <footer className="site-footer-editorial border-t py-14 md:py-20">
-      <div className="container mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-8">
+      <div className="site-shell-container">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.1fr_0.7fr_1fr_1.1fr_1fr_0.8fr_1.2fr]">
           <div>
             <a href={homePath} className="inline-flex items-center">

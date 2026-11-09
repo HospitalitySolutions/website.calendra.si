@@ -1734,6 +1734,11 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         "Izberete način oziroma načine plačila in zaključite račun.",
         "Kadar je potrebno, Calendra račun davčno potrdi, nato pa ostane povezan s terminom in stranko.",
       ],
+      screenshot: {
+        ...MARKETING_IMAGES.invoicing,
+        alt: "Odprt račun v Calendri z dvema postavkama, DDV, popustom in dvema načinoma plačila pred zaključkom računa",
+        caption: "Račun pripravite v Calendri, ob zaključku pa ga dodatek Davčna blagajna davčno potrdi.",
+      },
       detailsTitle: "Kako deluje davčna blagajna v Calendri",
       details: [
         {
@@ -1813,6 +1818,11 @@ const content: Record<FeatureRouteKey, Record<SiteLanguage, FeaturePageContent>>
         "Choose the payment method or methods and finalise the invoice.",
         "Where required, Calendra fiscally verifies the invoice and keeps it linked to the appointment and client.",
       ],
+      screenshot: {
+        ...MARKETING_IMAGES.invoicing,
+        alt: "Open invoice in Calendra with two line items, VAT, a discount and two payment methods before the invoice is finalised",
+        caption: "Prepare the invoice in Calendra; when you finalise it, the Fiscal Cash Register add-on confirms it with FURS.",
+      },
       detailsTitle: "How Calendra's fiscal cash register works",
       details: [
         { title: "Is the Fiscal cash register a separate program?", body: "No. It is an add-on inside Calendra and uses the same appointments, clients, services and billing data as the rest of the application." },
