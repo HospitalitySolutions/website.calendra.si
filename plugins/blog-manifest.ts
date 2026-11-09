@@ -34,6 +34,14 @@ export type BlogArticleMeta = {
   dateModified: string;
   heroImageAlt: string;
   draft: boolean;
+  /**
+   * Published in one language only, on purpose. Such an article has no
+   * counterpart, so it is exempt from the pairing check and gets no hreflang
+   * alternates instead of alternates that point at an invented translation.
+   */
+  singleLanguage: boolean;
+  /** Optional article-specific text for the standard trial CTA box. */
+  ctaBody?: string;
   readingMinutes: number;
   wordCount: number;
   headings: BlogHeading[];
@@ -145,6 +153,8 @@ const parseArticle = (filePath: string, language: Language): BlogArticleMeta => 
     dateModified: String(data.dateModified ?? data.datePublished),
     heroImageAlt: String(data.heroImageAlt),
     draft: data.draft === true,
+    singleLanguage: data.singleLanguage === true,
+    ...(typeof data.ctaBody === "string" && data.ctaBody.trim() !== "" ? { ctaBody: data.ctaBody.trim() } : {}),
     wordCount: words,
     readingMinutes: Math.max(1, Math.round(words / WORDS_PER_MINUTE)),
     headings: readHeadings(content),
@@ -153,7 +163,8 @@ const parseArticle = (filePath: string, language: Language): BlogArticleMeta => 
 
 /**
  * Fails the build on the content mistakes that are invisible in review but
- * expensive in search: an article published in one language only, a duplicate
+ * expensive in search: an article published in one language only without an
+ * explicit `singleLanguage: true`, a duplicate
  * slug, a description that will be truncated in results, or a hero image with
  * no alt text.
  */
@@ -192,15 +203,20 @@ const validate = (articles: BlogArticleMeta[]) => {
     }
   }
 
-  const byKey = new Map<string, Set<Language>>();
+  const byKey = new Map<string, BlogArticleMeta[]>();
   for (const article of articles) {
-    const languages = byKey.get(article.translationKey) ?? new Set<Language>();
-    languages.add(article.language);
-    byKey.set(article.translationKey, languages);
+    byKey.set(article.translationKey, [...(byKey.get(article.translationKey) ?? []), article]);
   }
 
-  for (const [key, languages] of byKey) {
-    const missing = LANGUAGES.filter((language) => !languages.has(language));
+  for (const [key, versions] of byKey) {
+    if (versions.some((article) => article.singleLanguage)) {
+      if (versions.length > 1) {
+        problems.push(`translationKey "${key}" is marked singleLanguage but has more than one language version`);
+      }
+      continue;
+    }
+
+    const missing = LANGUAGES.filter((language) => !versions.some((article) => article.language === language));
     if (missing.length > 0) {
       problems.push(`translationKey "${key}" is missing a ${missing.join(" and ")} version`);
     }

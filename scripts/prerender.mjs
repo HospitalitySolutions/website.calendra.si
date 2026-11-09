@@ -62,15 +62,22 @@ const buildSeoHead = (seo, defaultOgImage, routePath) => {
     <meta property="article:author" content="David Mirc" />`
     : '';
 
+  // A single-language blog article is indexable but has no translation, so it
+  // gets no hreflang links rather than an "en" alternate pointing at Slovenian.
+  const singleLanguageArticle = isArticle && !seo.alternateUrls && !seo.noindex;
+  const hreflangLinks = singleLanguageArticle
+    ? ''
+    : `    <link rel="alternate" hreflang="sl-SI" href="${escapeHtml(seo.alternateUrls?.sl ?? seo.canonicalUrl)}" />
+    <link rel="alternate" hreflang="en" href="${escapeHtml(seo.alternateUrls?.en ?? seo.canonicalUrl)}" />
+    <link rel="alternate" hreflang="x-default" href="${escapeHtml(seo.alternateUrls?.xDefault ?? seo.canonicalUrl)}" />`;
+
   return `<!-- CALENDRA_SEO_START -->
     <title>${escapeHtml(seo.title)}</title>
     <meta name="description" content="${escapeHtml(seo.description)}" />
     <meta name="author" content="${isArticle ? 'David Mirc' : 'Calendra'}" />
     <meta name="robots" content="${robots}" />${verificationMeta}
     <link rel="canonical" href="${escapeHtml(seo.canonicalUrl)}" />
-    <link rel="alternate" hreflang="sl-SI" href="${escapeHtml(seo.alternateUrls?.sl ?? seo.canonicalUrl)}" />
-    <link rel="alternate" hreflang="en" href="${escapeHtml(seo.alternateUrls?.en ?? seo.canonicalUrl)}" />
-    <link rel="alternate" hreflang="x-default" href="${escapeHtml(seo.alternateUrls?.xDefault ?? seo.canonicalUrl)}" />
+${hreflangLinks}
     <meta property="og:title" content="${escapeHtml(seo.ogTitle ?? seo.title)}" />
     <meta property="og:description" content="${escapeHtml(seo.ogDescription ?? seo.description)}" />
     <meta property="og:type" content="${ogType}" />
@@ -226,13 +233,17 @@ const buildSitemapXml = (entries) => {
   const urls = entries
     .map((entry) => {
       const lastModified = entry.lastModified ? `\n    <lastmod>${escapeXml(entry.lastModified)}</lastmod>` : '';
+      // Single-language blog articles are listed without hreflang alternates.
+      const alternates = entry.alternateUrls
+        ? `
+    <xhtml:link rel="alternate" hreflang="sl-SI" href="${escapeXml(entry.alternateUrls.sl)}" />
+    <xhtml:link rel="alternate" hreflang="en" href="${escapeXml(entry.alternateUrls.en)}" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(entry.alternateUrls.xDefault)}" />`
+        : '';
       return `  <url>
     <loc>${escapeXml(entry.location)}</loc>${lastModified}
     <changefreq>${escapeXml(entry.changeFrequency)}</changefreq>
-    <priority>${Number(entry.priority).toFixed(1)}</priority>
-    <xhtml:link rel="alternate" hreflang="sl-SI" href="${escapeXml(entry.alternateUrls.sl)}" />
-    <xhtml:link rel="alternate" hreflang="en" href="${escapeXml(entry.alternateUrls.en)}" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(entry.alternateUrls.xDefault)}" />
+    <priority>${Number(entry.priority).toFixed(1)}</priority>${alternates}
   </url>`;
     })
     .join('\n');

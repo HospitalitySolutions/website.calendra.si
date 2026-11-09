@@ -147,7 +147,7 @@ const BlogArticlePage = () => {
 
               <div className="mt-14 overflow-hidden rounded-[1.75rem] border border-primary/20 bg-gradient-to-br from-primary/[0.10] via-card to-accent/[0.08] p-7 md:p-9">
                 <h2 className="font-display text-2xl font-bold text-foreground">{text.ctaTitle}</h2>
-                <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">{text.ctaBody}</p>
+                <p className="mt-3 max-w-2xl leading-7 text-muted-foreground">{article.ctaBody ?? text.ctaBody}</p>
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                   <Button variant="hero" size="lg" className="rounded-xl" asChild>
                     <TrialSignupLink>
