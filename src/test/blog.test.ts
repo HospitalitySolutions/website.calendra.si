@@ -12,6 +12,8 @@ import { getLocalizedPathname } from "@/lib/localized-routes";
 import { getSeoForPathname } from "@/lib/seo";
 
 const languages = ["sl", "en"] as const;
+const pairedArticles = allBlogArticles.filter((article) => !article.singleLanguage);
+const singleLanguageArticles = allBlogArticles.filter((article) => article.singleLanguage);
 
 describe("blog article registry", () => {
   it("publishes at least one article per language", () => {
@@ -31,7 +33,7 @@ describe("blog article registry", () => {
   });
 
   it("pairs every article with its counterpart in the other language", () => {
-    for (const article of allBlogArticles) {
+    for (const article of pairedArticles) {
       const other = article.language === "sl" ? "en" : "sl";
       const alternates = getArticleAlternates(article);
       const counterpartPath = alternates[other];
@@ -71,6 +73,8 @@ describe("blog SEO", () => {
       expect(types).toContain("BreadcrumbList");
       expect(types).toContain("Person");
 
+      if (article.singleLanguage) continue;
+
       const counterpartLanguage = article.language === "sl" ? "en" : "sl";
       const counterpartPath = getArticleAlternates(article)[counterpartLanguage];
       const counterpartSeo = getSeoForPathname(counterpartPath);
@@ -79,13 +83,24 @@ describe("blog SEO", () => {
   });
 
   it("switches language on an article without falling back to the blog index", () => {
-    for (const article of allBlogArticles) {
+    for (const article of pairedArticles) {
       const path = getBlogArticlePath(article.slug, article.language);
       const other = article.language === "sl" ? "en" : "sl";
       const localized = getLocalizedPathname(path, other);
 
       expect(localized).not.toBe(BLOG_INDEX_PATH[other]);
       expect(getArticleFromPathname(localized)?.translationKey).toBe(article.translationKey);
+    }
+  });
+
+  it("leaves hreflang out for single-language articles instead of inventing a translation", () => {
+    for (const article of singleLanguageArticles) {
+      const path = getBlogArticlePath(article.slug, article.language);
+      const other = article.language === "sl" ? "en" : "sl";
+
+      expect(getSeoForPathname(path).alternateUrls, `${article.slug} has hreflang alternates`).toBeUndefined();
+      expect(allBlogArticles.some((item) => item.language === other && item.translationKey === article.translationKey)).toBe(false);
+      expect(getLocalizedPathname(path, other)).toBe(BLOG_INDEX_PATH[other]);
     }
   });
 

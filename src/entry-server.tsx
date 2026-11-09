@@ -60,7 +60,10 @@ export const getSitemapEntries = () =>
   routesToPrerender
     .map((pathname) => {
       const seo = getSeoForPathname(pathname);
-      if (seo.noindex || !seo.alternateUrls) return undefined;
+      if (seo.noindex) return undefined;
+      // Only a single-language blog article is indexable without hreflang alternates.
+      const isArticle = "articleSlug" in seo && Boolean(seo.articleSlug);
+      if (!seo.alternateUrls && !isArticle) return undefined;
 
       if ("routeKey" in seo && seo.routeKey) {
         const metadata = sitemapRouteMetadata[seo.routeKey];

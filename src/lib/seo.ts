@@ -635,11 +635,14 @@ const getArticleSeo = (pathname: string) => {
     ogDescription: article.description,
     ogImage,
     canonicalUrl,
-    alternateUrls: {
-      sl: absoluteUrl(alternates.sl),
-      en: absoluteUrl(alternates.en),
-      xDefault: absoluteUrl(alternates.sl),
-    },
+    // A single-language article has no translation to point hreflang at.
+    alternateUrls: article.singleLanguage
+      ? undefined
+      : {
+          sl: absoluteUrl(alternates.sl),
+          en: absoluteUrl(alternates.en),
+          xDefault: absoluteUrl(alternates.sl),
+        },
     noindex: false,
     articleDates: { published: article.datePublished, modified: article.dateModified },
     structuredData: {

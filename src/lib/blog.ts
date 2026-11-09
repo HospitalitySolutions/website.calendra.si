@@ -20,6 +20,8 @@ export type BlogArticleMeta = {
   dateModified: string;
   heroImageAlt: string;
   draft: boolean;
+  singleLanguage: boolean;
+  ctaBody?: string;
   readingMinutes: number;
   wordCount: number;
   headings: BlogHeading[];
@@ -79,8 +81,9 @@ export const isAuthorPathname = (pathname: string) => {
 
 /**
  * Both language versions of an article, used for hreflang and the language
- * switcher. An article without a counterpart cannot exist: the build-time
- * validation in `plugins/blog-manifest.ts` rejects unpaired content.
+ * switcher. Only an article marked `singleLanguage` may lack a counterpart (the
+ * build-time validation in `plugins/blog-manifest.ts` rejects any other unpaired
+ * content); its missing language falls back to that language's blog index.
  */
 export const getArticleAlternates = (article: BlogArticleMeta) => {
   const counterpart = getArticleByTranslationKey(
