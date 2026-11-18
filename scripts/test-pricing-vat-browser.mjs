@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { chromium, expect } from '@playwright/test';
 import { startDistServer } from './serve-dist.mjs';
+import { buildOfferSlotScript } from './offer-slot-script.mjs';
 
 const html = await readFile('dist/cenik/index.html', 'utf8');
 // The regular pass runs without an offer even while the app publishes one; the
@@ -109,14 +110,38 @@ try {
     validUntil: new Date(Date.now() + 30 * 864e5).toISOString(),
     plans: catalog.plans.map(plan => ({ key: plan.key, monthlyPrice: half(plan.monthlyGross), annualPrice: round(6 * half(plan.monthlyGross) + 6 * plan.monthlyGross) })),
   };
+  // A build made while the app publishes the offer prerenders an empty slot for the banner
+  // and the /cenik offer block plus the offer-slot script. The live catalog may not carry an
+  // offer yet, so those parts of the prerender are reproduced here when they are missing.
+  const dismissKey = (await readFile('src/lib/promotion-banner.ts', 'utf8')).match(/PROMOTION_BANNER_DISMISS_KEY = "([^"]+)"/)[1];
+  const slotScript = buildOfferSlotScript({ dismissKey, validUntil: promotion.validUntil });
+  const slotPages = new Set(['/', '/en', '/cenik', '/en/pricing']);
+  const withOfferSlots = (body, pathname) => {
+    let page = body.replace(/(<script[^>]*id="calendra-pricing-catalog"[^>]*>)([\s\S]*?)(<\/script>)/, (match, open, json, close) =>
+      `${body.includes('/assets/offer-slots-') ? '' : '<script src="/assets/offer-slots-test.js"></script>'}${open}${JSON.stringify({ ...JSON.parse(json), promotion }).replace(/</g, '\\u003c')}${close}`);
+    if (!page.includes('<div class="site-notice"')) page = page.replace('<div id="root">', '<div id="root"><div class="site-notice" aria-hidden="true"></div>');
+    if ((pathname === '/cenik' || pathname === '/en/pricing') && !page.includes('<div class="pricing-offer"')) {
+      page = page.replace('<div class="pricing-plan-grid', '<div class="pricing-offer" aria-hidden="true"></div><div class="pricing-plan-grid');
+    }
+    return page;
+  };
   const promoResults = [];
   for (const [language, width] of [['sl', 1440], ['sl', 390], ['en', 1440], ['en', 390]]) {
     const sl = language === 'sl';
     const context = await browser.newContext({ viewport: { width, height: 1000 }, locale: sl ? 'sl-SI' : 'en-IE', reducedMotion: 'reduce' });
-    await context.addInitScript(() => localStorage.setItem('calendra-google-analytics-consent', 'denied'));
+    await context.addInitScript(() => {
+      localStorage.setItem('calendra-google-analytics-consent', 'denied');
+      window.__cls = 0;
+      new PerformanceObserver(list => { for (const entry of list.getEntries()) if (!entry.hadRecentInput) window.__cls += entry.value; }).observe({ type: 'layout-shift', buffered: true });
+    });
     await context.route(/googletagmanager\.com|google-analytics\.com|analytics\.google\.com|\/stats\//, route => route.fulfill({ status: 200, body: '' }));
     await context.route(/\/api\//, route => route.fulfill({ status: 503, json: {} }));
     await context.route('**/api/register/public-pricing', route => route.fulfill({ json: { ...catalog, promotion } }));
+    await context.route('**/assets/offer-slots-test.js', route => route.fulfill({ contentType: 'text/javascript', body: slotScript.source }));
+    await context.route(url => url.origin === server.origin && slotPages.has(url.pathname), async route => {
+      const response = await route.fetch();
+      await route.fulfill({ response, body: withOfferSlots(await response.text(), new URL(route.request().url()).pathname) });
+    });
     const page = await context.newPage();
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
@@ -131,6 +156,28 @@ try {
     assert.equal(await banner.locator('a').getAttribute('href'), `${pricingPath}?code=${promotion.code}`);
     const offer = page.locator('#black-friday');
     await expect(offer).toBeVisible();
+    // The banner and the offer block take the prerendered slots' space: no layout shift.
+    await expect(page.locator('.site-notice:empty, .pricing-offer:empty')).toHaveCount(0);
+    const loadShift = await page.evaluate(() => window.__cls);
+    assert.ok(loadShift <= 0.05, `${language}/${width}: layout shift ${loadShift} with the offer`);
+    // Slot heights follow the banner's and offer block's line count; check them across widths.
+    for (const slotWidth of [320, 360, 390, 412, 480, 600, 700, 768, 820, 900, 1024, 1100, 1180, 1280, 1440, 1920]) {
+      await page.setViewportSize({ width: slotWidth, height: 1000 });
+      const heights = await page.evaluate(() => {
+        const measure = (element, className) => {
+          const slot = document.createElement('div');
+          slot.className = className;
+          element.after(slot);
+          const result = [element.getBoundingClientRect().height, slot.getBoundingClientRect().height];
+          slot.remove();
+          return result;
+        };
+        return { banner: measure(document.querySelector('.bf-banner'), 'site-notice'), offer: measure(document.querySelector('#black-friday'), 'pricing-offer') };
+      });
+      assert.ok(Math.abs(heights.banner[0] - heights.banner[1]) <= 0.5, `${language}@${slotWidth}: banner ${heights.banner[0]} px, slot ${heights.banner[1]} px`);
+      if (slotWidth > 800) assert.ok(Math.abs(heights.offer[0] - heights.offer[1]) <= 0.5, `${language}@${slotWidth}: offer block ${heights.offer[0]} px, slot ${heights.offer[1]} px`);
+    }
+    await page.setViewportSize({ width, height: 1000 });
     if (width > 800) {
       const [block, grid] = await Promise.all([offer.boundingBox(), page.locator('.pricing-plan-grid').boundingBox()]);
       assert.ok(Math.abs(block.x - grid.x) <= 1 && Math.abs(block.width - grid.width) <= 1, `${language}/${width}: offer block is not as wide as the cards`);
@@ -171,22 +218,24 @@ try {
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
     assert.ok(overflow <= 1, `${language}/${width}: horizontal overflow with the offer`);
 
-    // Closing the banner is remembered on the next page.
+    // Closing the banner is remembered on the next page, whose slot is hidden before the first paint.
     await banner.getByRole('button').click();
     await expect(banner).toHaveCount(0);
     await page.goto(server.origin + (sl ? '/' : '/en'), { waitUntil: 'networkidle' });
     await expect(page.locator('.home-promo-line')).toBeVisible();
     assert.doesNotMatch(await page.locator('#cenik').innerText(), /DDV|VAT/);
     await expect(page.locator('.bf-banner')).toHaveCount(0);
+    const closedShift = await page.evaluate(() => window.__cls);
+    assert.ok(closedShift <= 0.05, `${language}/${width}: layout shift ${closedShift} with the banner closed`);
     const trial = page.locator(`a[href*="${sl ? '/registriraj' : '/register'}"]`).first();
     await expect.poll(async () => new URL(await trial.getAttribute('href')).searchParams.get('code')).toBe(promotion.code);
     assert.deepEqual(errors, []);
-    promoResults.push({ language, width, overflow, passed: true });
+    promoResults.push({ language, width, overflow, loadShift, closedShift, passed: true });
     await context.close();
   }
 
   await writeFile(`${output}/results.json`, JSON.stringify({ regular: results, blackFriday: promoResults }, null, 2));
-  console.log(`PASS: ${results.length} SL/EN desktop/mobile VAT layouts, exact copy, net/VAT/gross totals, annual/SMS distinction, legacy API refresh, registration estimates, homepage and SEO; ${promoResults.length} Black Friday layouts (client-only offer, VAT-free cards, plan-only discount, trial code).${livePromotion ? ' The live catalog carries a promotion.' : ''}`);
+  console.log(`PASS: ${results.length} SL/EN desktop/mobile VAT layouts, exact copy, net/VAT/gross totals, annual/SMS distinction, legacy API refresh, registration estimates, homepage and SEO; ${promoResults.length} Black Friday layouts (prerendered slots without layout shift, client-only offer, VAT-free cards, plan-only discount, trial code).${livePromotion ? ' The live catalog carries a promotion.' : ''}`);
 } finally {
   await browser.close();
   await server.close();

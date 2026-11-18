@@ -620,3 +620,25 @@ All colors MUST be HSL.
     padding-inline: clamp(20px, 4vw, 48px);
   }
 }
+
+/* Black Friday banner above the page. While the build snapshot carries an offer the
+ * prerendered page holds an empty .site-notice slot (no wording) of the banner's height,
+ * so the banner fills it after hydration instead of pushing the page down. The heights
+ * are the banner's own line count per width and language; keep them in step with its copy
+ * (scripts/test-pricing-vat-browser.mjs compares them). */
+.site-notice { position: relative; z-index: 1001; display: flex; align-items: center; justify-content: center; min-height: 42px; padding: 11px 56px; background: #0b1220; color: #fff; font-size: 14px; line-height: 20px; text-align: center; }
+.bf-banner b { color: #fbbf24; }
+.bf-banner-code { padding: 1px 7px; border: 1px dashed #fbbf24; border-radius: 6px; color: #fde68a; }
+.bf-banner button { top: 50%; right: 12px; color: #cbd5e1; transform: translateY(-50%); }
+.bf-banner :focus-visible { outline: 2px solid #fbbf24; outline-offset: 3px; }
+@media (max-width: 927px) { .site-notice:where(:lang(en)) { min-height: 62px; } }
+@media (max-width: 847px) { .site-notice { min-height: 62px; } }
+@media (max-width: 640px) {
+  .site-notice { justify-content: flex-start; min-height: 58px; padding: 10px 48px 10px 16px; font-size: 13px; line-height: 19px; text-align: left; }
+  .bf-banner button { top: 4px; right: 4px; transform: none; }
+}
+@media (max-width: 451px) { .site-notice:where(:lang(en)) { min-height: 77px; } }
+@media (max-width: 415px) { .site-notice { min-height: 77px; } }
+@media (max-width: 327px) { .site-notice:where(:lang(en)) { min-height: 96px; } }
+/* Set before the first paint by the build's offer-slot script (scripts/offer-slot-script.mjs). */
+:is([data-notice-closed], [data-offer-ended]) .site-notice:empty, [data-offer-ended] .pricing-offer:empty { display: none; }

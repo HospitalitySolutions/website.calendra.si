@@ -86,7 +86,17 @@ export const firstMonthsEn = (count: number, paid = false) =>
   count === 1 ? (paid ? "first paid month" : "first month") : `first ${count}${paid ? " paid" : ""} months`;
 export const monthsEn = (count: number) => `${count} ${count === 1 ? "month" : "months"}`;
 
-/** The homepage pricing teaser line (the rest of the copy is in promotion-copy.ts). */
+/** The site-wide banner line (the /cenik copy is in promotion-copy.ts). */
+export const getPromotionBannerCopy = (promotion: PublicPricingPromotion, language: SiteLanguage) => {
+  const percent = formatPromotionPercent(promotion.percentOff, language);
+  const months = promotion.discountedMonths;
+  const date = formatPromotionDate(promotion.validUntil, language);
+  return language === "sl"
+    ? { label: "Black Friday", beforeCode: `−${percent} na paket ${firstMonthsSl(months)} s kodo`, afterCode: `Velja do ${date}.`, link: "Poglej cenik", close: "Zapri obvestilo" }
+    : { label: "Black Friday", beforeCode: `${percent} off your plan for the ${firstMonthsEn(months)} with code`, afterCode: `Valid until ${date}.`, link: "See pricing", close: "Close notice" };
+};
+
+/** The homepage pricing teaser line. */
 export const getPromotionTeaser = (promotion: PublicPricingPromotion, language: SiteLanguage) => {
   const percent = formatPromotionPercent(promotion.percentOff, language);
   return {

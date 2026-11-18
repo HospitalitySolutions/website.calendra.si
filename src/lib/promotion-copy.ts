@@ -13,10 +13,10 @@ import type { SiteLanguage } from "@/lib/site-language";
 import type { FaqItem } from "@/lib/faq";
 
 /**
- * Black Friday copy, SL and EN, for the banner and /cenik (both lazily loaded) and
- * llms.txt. The code, percentage, number of months, end date and every amount come
- * from the app's promotion object and price catalog. The homepage teaser line is in
- * promotion.ts so the homepage bundle does not carry this module.
+ * Black Friday copy, SL and EN, for /cenik (lazily loaded) and llms.txt. The code,
+ * percentage, number of months, end date and every amount come from the app's
+ * promotion object and price catalog. The banner and homepage lines are in
+ * promotion.ts so the bundle every page loads does not carry this module.
  */
 type Money = (amount: number) => string;
 
@@ -34,12 +34,6 @@ export const getPromotionCopy = (promotion: PublicPricingPromotion, language: Si
     return {
       label: "Black Friday",
       percent, cut, date, code,
-      banner: {
-        beforeCode: `${cut} na paket ${firstMonthsSl(months)} s kodo`,
-        afterCode: `Velja do ${date}.`,
-        link: "Poglej cenik",
-        close: "Zapri obvestilo",
-      },
       offer: {
         badge: formatPromotionPercent(percentOff, language).replace(/\s?%$/, ""),
         headline: `Black Friday: ${firstMonthsSl(months)} ${half ? "za pol cene" : `s ${percent} popusta`}`,
@@ -71,12 +65,6 @@ export const getPromotionCopy = (promotion: PublicPricingPromotion, language: Si
   return {
     label: "Black Friday",
     percent, cut, date, code,
-    banner: {
-      beforeCode: `${percent} off your plan for the ${firstMonthsEn(months)} with code`,
-      afterCode: `Valid until ${date}.`,
-      link: "See pricing",
-      close: "Close notice",
-    },
     offer: {
       badge: formatPromotionPercent(percentOff, language).replace(/%$/, ""),
       headline: half ? `Black Friday: your ${firstMonthsEn(months)} at half price` : `Black Friday: ${percent} off your ${firstMonthsEn(months)}`,

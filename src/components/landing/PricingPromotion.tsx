@@ -44,10 +44,10 @@ export const PromotionCodeChip = ({ promotion, copy }: { promotion: PublicPricin
   };
 
   return (
-    <div className={`pricing-promo-chip${copied ? " is-copied" : ""}`}>
-      <span className="pricing-promo-chip-code">{promotion.code}</span>
-      <button type="button" onClick={onCopy} aria-label={copy.offer.copyLabel}>
-        {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
+    <div className={`pricing-promo-chip flex items-center justify-between gap-2 rounded-xl bg-white${copied ? " is-copied" : ""}`}>
+      <span>{promotion.code}</span>
+      <button type="button" className="flex h-9 items-center gap-2 rounded-lg bg-primary px-3 text-sm font-semibold tracking-normal text-white" onClick={onCopy} aria-label={copy.offer.copyLabel}>
+        {copied ? <Check aria-hidden="true" className="h-4 w-4" /> : <Copy aria-hidden="true" className="h-4 w-4" />}
         <span aria-hidden="true">{copied ? copy.offer.copied : copy.offer.copy}</span>
       </button>
       <span className="sr-only" role="status">{copied ? copy.offer.copiedStatus : ""}</span>
@@ -55,17 +55,21 @@ export const PromotionCodeChip = ({ promotion, copy }: { promotion: PublicPricin
   );
 };
 
-/** The /cenik offer block between the page intro and the plan cards. */
+/**
+ * The /cenik offer block between the page intro and the plan cards. Pricing.tsx
+ * prerenders an empty `.pricing-offer` slot of the same height in its place while
+ * the build snapshot carries an offer.
+ */
 export const PromotionOffer = ({ promotion, copy }: { promotion: PublicPricingPromotion; copy: PromotionCopy }) => (
-  <section id="black-friday" className="pricing-promo-offer" aria-labelledby="black-friday-title">
+  <section id="black-friday" className="pricing-offer" aria-labelledby="black-friday-title">
     <p className="pricing-promo-badge" aria-hidden="true">−{copy.offer.badge}<span>%</span></p>
-    <div className="pricing-promo-copy">
-      <h2 id="black-friday-title">{copy.offer.headline}</h2>
+    <div>
+      <h2 id="black-friday-title" className="mb-2">{copy.offer.headline}</h2>
       <p>{copy.offer.terms}</p>
     </div>
     <div className="pricing-promo-side">
       <PromotionCodeChip promotion={promotion} copy={copy} />
-      <p className="pricing-promo-valid"><Clock3 aria-hidden="true" />{copy.offer.valid}</p>
+      <p className="mt-2 flex items-center gap-2 text-xs"><Clock3 aria-hidden="true" className="h-4 w-4 text-amber-400" />{copy.offer.valid}</p>
     </div>
   </section>
 );

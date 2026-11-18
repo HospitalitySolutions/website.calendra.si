@@ -17,7 +17,7 @@ import { getCustomerStory, getCustomerStoryPath } from "@/lib/customer-stories";
 import { ArrowRight, CalendarDays, Check, CreditCard, Link2, Minus, Plus, Quote, Receipt, Star, Users } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
-import { useActivePromotion } from "@/lib/use-active-promotion";
+import { useActivePromotion, usePromotionSlot } from "@/lib/use-active-promotion";
 import { getPromotionPlan, getPromotionPlanDiscount, isPromotionCode, normalizePromotionCode } from "@/lib/promotion";
 import { getPromotionCopy, getPromotionFaq } from "@/lib/promotion-copy";
 import { PromotionOffer } from "@/components/landing/PricingPromotion";
@@ -531,6 +531,8 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
 
   // Black Friday: null on the server and the first render, so none of it is prerendered.
   const promotion = useActivePromotion(pricingCatalog);
+  // Prerendered (and first-render) empty slot for the offer block while the build snapshot carries an offer.
+  const offerSlot = usePromotionSlot();
   const promotionCopy = useMemo(() => promotion ? getPromotionCopy(promotion, language) : null, [promotion, language]);
   const normalizedCode = normalizePromotionCode(codeInput);
   const codeApplied = isPromotionCode(codeInput, promotion);
@@ -1066,7 +1068,9 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           <p className="pricing-tax-note">{getPricingTaxNote(language)}</p>
         </header>
 
-        {standalone && promotion && promotionCopy && <PromotionOffer promotion={promotion} copy={promotionCopy} />}
+        {standalone && (promotion && promotionCopy
+          ? <PromotionOffer promotion={promotion} copy={promotionCopy} />
+          : offerSlot && <div className="pricing-offer" aria-hidden="true" />)}
 
         <div className={`pricing-plan-grid${packageTiers.length > 3 ? " pricing-plan-grid-custom" : ""}`}>
           {packageTiers.map((tier) => {
@@ -1101,7 +1105,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 {promoPrice != null && promotionCopy ? (
                   <p className="pricing-plan-price pricing-plan-price-promo">
                     <span className="sr-only">{promotionCopy.card.regularLabel}: </span>
-                    <s className="pricing-promo-old">{tier.price}</s>
+                    <s className="pricing-promo-old text-lg">{tier.price}</s>
                     <span className="sr-only">{promotionCopy.card.promoLabel}: </span>
                     <strong>{formatter.format(promoPrice)}</strong><span>{tier.priceSuffix}</span>
                   </p>
@@ -1109,11 +1113,11 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                   <p className="pricing-plan-price"><strong>{tier.price}</strong><span>{tier.priceSuffix}</span></p>
                 )}
                 {promoMonthly && plan && promotionCopy && (
-                  <p className="pricing-promo-then"><span className="pricing-promo-pill">{promotionCopy.cut}</span>{" "}{promotionCopy.card.then(formatter.format(plan.monthlyGross))}</p>
+                  <p className="pricing-promo-then mt-1 flex flex-wrap items-center gap-x-2 text-sm font-medium"><span className="pricing-promo-pill rounded-full bg-amber-400 px-2 py-0.5 text-xs font-extrabold text-foreground whitespace-nowrap">{promotionCopy.cut}</span>{" "}{promotionCopy.card.then(formatter.format(plan.monthlyGross))}</p>
                 )}
                 {billingPeriod === "annual" && plan && (promoAnnual && promotionPlan && promotionCopy ? <>
-                  <p className="pricing-annual-price">{ui.annualPackage}: <s className="pricing-promo-old-inline">{formatter.format(plan.annualGross)}</s> <strong>{formatter.format(promotionPlan.annualPrice)}</strong></p>
-                  <p className="pricing-promo-then">{promotionCopy.card.thenYear(formatter.format(plan.annualGross))}</p>
+                  <p className="pricing-annual-price">{ui.annualPackage}: <s>{formatter.format(plan.annualGross)}</s> <strong className="font-semibold text-foreground">{formatter.format(promotionPlan.annualPrice)}</strong></p>
+                  <p className="pricing-promo-then mt-1 text-sm font-medium">{promotionCopy.card.thenYear(formatter.format(plan.annualGross))}</p>
                 </> : <p className="pricing-annual-price">{ui.annualPackage}: {formatter.format(plan.annualGross)}</p>)}
                 <p className="pricing-plan-description">{tier.description}</p>
                 {tier.inheritedLabel && <p className="pricing-inherited">{tier.inheritedLabel}</p>}
@@ -1248,22 +1252,23 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 <span className="marketing-eyebrow">{ui.selected}</span><h3>{selectedTier.name}</h3>
                 <p className="pricing-summary-period">{billingPeriod === "annual" ? ui.annualBilling : ui.monthlyBilling}</p>
                 {selectedTier.key === "enterprise" ? <><p>{ui.enterprise}</p><Button variant="hero" className="pricing-button" onClick={() => scrollToElement(contactRef.current)}>{content.enterprisePanelCta}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Button></> : <>
-                  {promotion && promotionCopy && <div className="pricing-promo-code" data-state={codeApplied ? "applied" : codeRejected ? "rejected" : undefined}>
-                    <label htmlFor="pricing-promo-code">{promotionCopy.calculator.label}</label>
-                    <div className="pricing-promo-code-row">
+                  {promotion && promotionCopy && <div className="pricing-promo-code mb-2 mt-4 grid gap-2" data-state={codeApplied ? "applied" : codeRejected ? "rejected" : undefined}>
+                    <label htmlFor="pricing-promo-code" className="text-sm font-semibold">{promotionCopy.calculator.label}</label>
+                    <div className="flex gap-2">
                       <Input
                         id="pricing-promo-code" name="code" value={codeInput} maxLength={40}
+                        className="h-11 rounded-xl font-bold uppercase tracking-wide"
                         autoComplete="off" autoCapitalize="characters" spellCheck={false}
                         aria-invalid={codeRejected || undefined} aria-describedby="pricing-promo-code-status"
                         onChange={(event) => setCodeInput(event.target.value)}
                         onBlur={commitCode}
                         onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); commitCode(); } }}
                       />
-                      {normalizedCode && <button type="button" onClick={removeCode}>{promotionCopy.calculator.remove}</button>}
+                      {normalizedCode && <button type="button" className="rounded-xl border px-4 font-semibold" onClick={removeCode}>{promotionCopy.calculator.remove}</button>}
                     </div>
                     <div id="pricing-promo-code-status" aria-live="polite">
-                      {codeApplied && <p className="pricing-promo-code-ok"><Check aria-hidden="true" />{promotionCopy.calculator.applied}</p>}
-                      {codeRejected && <p className="pricing-promo-code-error">{promotionCopy.calculator.rejected}</p>}
+                      {codeApplied && <p className="pricing-promo-code-ok flex items-start gap-2 rounded-xl px-3 py-2 text-sm"><Check aria-hidden="true" className="h-4 w-4 shrink-0" />{promotionCopy.calculator.applied}</p>}
+                      {codeRejected && <p className="pricing-promo-code-error rounded-xl px-3 py-2 text-sm">{promotionCopy.calculator.rejected}</p>}
                     </div>
                   </div>}
                   <dl className="pricing-breakdown">
@@ -1286,7 +1291,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                       <div><dt>{taxLabels.vat}</dt><dd data-pricing-vat>{formatter.format(quote.total.vat)}</dd></div>
                     </dl>
                     <div className="pricing-total"><span>{totalLabel}</span><strong data-pricing-total>{formatter.format(quote.total.gross)}</strong></div>
-                    {quote.discount > 0 && promotionCopy && <p className="pricing-promo-total-note" data-pricing-regular-total>{billingPeriod === "annual"
+                    {quote.discount > 0 && promotionCopy && <p className="mb-4 text-sm text-muted-foreground" data-pricing-regular-total>{billingPeriod === "annual"
                       ? promotionCopy.calculator.thenAnnual(formatter.format(regularQuote.total.gross))
                       : promotionCopy.calculator.thenMonthly(formatter.format(regularQuote.total.gross))}</p>}
                     {billingPeriod === "annual" && <p className="pricing-annual-estimate">{taxLabels.monthlyEquivalent}: {formatter.format(quote.monthlyEquivalent)}<br />{taxLabels.annualUsage} <strong>{formatter.format(quote.sms.gross)}</strong></p>}
@@ -1333,7 +1338,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
             <div>
               {/* Offer questions come first while it runs; client-only, so never in the prerendered FAQ or llms-full.txt. */}
               {promotionFaq.map((item, index) => (
-                <details key={item.question} className="pricing-promo-faq" open={index === 0}><summary><h3><span className="pricing-promo-faq-tag" aria-hidden="true">{promotionCopy?.label}</span>{item.question}</h3><span className="pricing-faq-symbol" aria-hidden="true"><Plus className="pricing-faq-plus" /><Minus className="pricing-faq-minus" /></span></summary><p>{item.answer}</p></details>
+                <details key={item.question} className="pricing-promo-faq" open={index === 0}><summary><h3><span className="pricing-promo-pill mr-2 rounded-full bg-amber-400 px-2 py-0.5 text-xs font-extrabold text-foreground whitespace-nowrap" aria-hidden="true">{promotionCopy?.label}</span>{item.question}</h3><span className="pricing-faq-symbol" aria-hidden="true"><Plus className="pricing-faq-plus" /><Minus className="pricing-faq-minus" /></span></summary><p>{item.answer}</p></details>
               ))}
               {(getFaqForRoute("pricing", language) ?? []).map((item, index) => (
                 <details key={item.question} open={index === 0 && promotionFaq.length === 0}><summary><h3>{item.question}</h3><span className="pricing-faq-symbol" aria-hidden="true"><Plus className="pricing-faq-plus" /><Minus className="pricing-faq-minus" /></span></summary><p>{item.answer}</p></details>

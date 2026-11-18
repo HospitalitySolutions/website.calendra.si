@@ -12,7 +12,7 @@ const App = () => (
     <BrowserRouter>
       <SeoManager />
       <GoogleAnalytics />
-      {/* Client-only: renders nothing until after hydration, so the prerendered routes still match. */}
+      {/* Prerendered by entry-server at the same place (an empty slot during an offer), so hydration matches. */}
       <PromotionBanner />
       <AppRoutes />
       <CookieConsentBanner />

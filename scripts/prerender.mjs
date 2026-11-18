@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { buildOfferSlotScript } from './offer-slot-script.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
@@ -128,6 +129,7 @@ if (!serverEntryPath) {
 const {
   DEFAULT_OG_IMAGE,
   PRICING_CATALOG_SCRIPT_ID,
+  PROMOTION_BANNER_DISMISS_KEY,
   buildLlmsFullTxt,
   buildLlmsTxt,
   getSitemapEntries,
@@ -144,8 +146,21 @@ const pricingBlockPattern = /<!-- CALENDRA_PRICING_START -->[\s\S]*?<!-- CALENDR
 // The Vite build already obtained and validated this app-owned catalog.
 const pricingCatalog = getInitialPricingCatalog();
 
+// While the snapshot carries an offer the pages hold empty offer slots; this script hides
+// them before the first paint for a visitor who closed the banner or once the offer ended.
+let offerSlotScriptTag = '';
+if (pricingCatalog?.promotion) {
+  const { source, fileName } = buildOfferSlotScript({
+    dismissKey: PROMOTION_BANNER_DISMISS_KEY,
+    validUntil: pricingCatalog.promotion.validUntil,
+  });
+  await fs.writeFile(path.join(distDir, fileName), source);
+  offerSlotScriptTag = `
+    <script src="/${fileName}"></script>`;
+}
+
 const pricingBlock = pricingCatalog
-  ? `<!-- CALENDRA_PRICING_START -->
+  ? `<!-- CALENDRA_PRICING_START -->${offerSlotScriptTag}
     <script type="application/json" id="${PRICING_CATALOG_SCRIPT_ID}">${escapeJsonForHtml(pricingCatalog)}</script>
     <!-- CALENDRA_PRICING_END -->`
   : '<!-- CALENDRA_PRICING_START --><!-- CALENDRA_PRICING_END -->';

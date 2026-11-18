@@ -16,14 +16,16 @@ import { formatPromotionDate } from "@/lib/promotion";
 import {
   FALLBACK_PUBLIC_PRICING,
   fetchPublicPricingCatalog,
+  getInitialPricingCatalog,
   normalizePublicPricingCatalog,
   PUBLIC_PRICING_ENDPOINT,
   setPrerenderedPricingCatalog,
+  withoutEndedPromotion,
   type PublicPricingCatalog,
 } from "@/lib/public-pricing";
 import { buildPackageSignupRoute, buildTrialSignupRoute } from "@/lib/routes";
 import { SiteLanguageProvider, type SiteLanguage } from "@/lib/site-language";
-import { resetPromotionConfirmation, useActivePromotion } from "@/lib/use-active-promotion";
+import { confirmPromotionWithApp, resetPromotionConfirmation, useActivePromotion, usePromotionSlot } from "@/lib/use-active-promotion";
 import {
   BLACK_FRIDAY_VALID_UNTIL,
   blackFridayCatalog,
@@ -39,6 +41,7 @@ const events: Array<Record<string, unknown>> = [];
 const recordEvent = (event: Event) => events.push((event as CustomEvent<Record<string, unknown>>).detail);
 
 const loadCatalog = (catalog: PublicPricingCatalog) => setPrerenderedPricingCatalog(catalog);
+const SlotProbe = () => <span>{usePromotionSlot() ? "reserved" : "free"}</span>;
 const atPath = (path: string) => window.history.replaceState(null, "", path);
 
 beforeEach(() => {
@@ -243,8 +246,8 @@ describe("pricing page with the offer", () => {
     expect(offer.previousElementSibling?.matches(".pricing-intro")).toBe(true);
     expect(offer.nextElementSibling?.matches(".pricing-plan-grid")).toBe(true);
     expect(text(offer.querySelector("h2"))).toBe("Black Friday: prvih 6 mesecev za pol cene");
-    expect(text(offer.querySelector(".pricing-promo-copy p"))).toBe("Ob registraciji vnesite kodo BLACKFRIDAY50 in prvih 6 mesecev plačujete 50 % cene paketa. Za nove stranke, mesečni ali letni obračun. Dodatki po rednem ceniku, po 6 mesecih redna cena. Velja do 31. 12. 2026.");
-    expect(text(offer.querySelector(".pricing-promo-valid"))).toBe("Velja do 31. 12. 2026");
+    expect(text(offer.querySelector("h2 + p"))).toBe("Ob registraciji vnesite kodo BLACKFRIDAY50 in prvih 6 mesecev plačujete 50 % cene paketa. Za nove stranke, mesečni ali letni obračun. Dodatki po rednem ceniku, po 6 mesecih redna cena. Velja do 31. 12. 2026.");
+    expect(text(offer.querySelector(".pricing-promo-side > p"))).toBe("Velja do 31. 12. 2026");
   });
 
   it("copies the code from the chip and reports it", async () => {
@@ -297,7 +300,7 @@ describe("pricing page with the offer", () => {
     const { container } = renderPricing("", "en");
     await waitFor(() => expect(container.querySelector(".pricing-promo-old")).not.toBeNull());
     expect(text(container.querySelector("#black-friday h2"))).toBe("Black Friday: your first 6 months at half price");
-    expect(text(container.querySelector("#black-friday .pricing-promo-copy p"))).toBe("Enter code BLACKFRIDAY50 when you sign up and pay 50% of the plan price for the first 6 months. For new customers, monthly or yearly billing. Add-ons at regular prices; regular price after 6 months. Valid until 31 Dec 2026.");
+    expect(text(container.querySelector("#black-friday h2 + p"))).toBe("Enter code BLACKFRIDAY50 when you sign up and pay 50% of the plan price for the first 6 months. For new customers, monthly or yearly billing. Add-ons at regular prices; regular price after 6 months. Valid until 31 Dec 2026.");
     expect(text(card(container, "premium")?.querySelector(".pricing-plan-price strong"))).toBe("€19.95");
     expect(text(card(container, "premium")?.querySelector(".pricing-promo-then"))).toBe("−50% first 6 months, then €39.90");
   });
@@ -373,7 +376,7 @@ describe("pricing page with the offer", () => {
     const { container } = renderPricing();
     await waitFor(() => expect(container.querySelectorAll(".pricing-promo-faq")).toHaveLength(3));
     const details = Array.from(container.querySelectorAll<HTMLDetailsElement>(".pricing-faq details"));
-    expect(details.slice(0, 3).map((item) => text(item.querySelector(".pricing-promo-faq-tag")))).toEqual(["Black Friday", "Black Friday", "Black Friday"]);
+    expect(details.slice(0, 3).map((item) => text(item.querySelector(".pricing-promo-pill")))).toEqual(["Black Friday", "Black Friday", "Black Friday"]);
     expect(details.slice(0, 3).map((item) => item.querySelector("h3")?.lastChild?.textContent)).toEqual([
       "Kako uveljavim Black Friday popust?",
       "Ali popust velja tudi za letni obračun?",
@@ -402,7 +405,7 @@ describe("pricing page with the offer", () => {
       setup();
       const { container, unmount } = renderPricing("?plan=premium&code=BLACKFRIDAY50");
       await act(async () => { await Promise.resolve(); });
-      expect(container.querySelector("#black-friday, .pricing-promo-old, .pricing-promo-code, .pricing-promo-faq, [data-pricing-discount]")).toBeNull();
+      expect(container.querySelector("#black-friday, .pricing-offer, .pricing-promo-old, .pricing-promo-code, .pricing-promo-faq, [data-pricing-discount]")).toBeNull();
       expect(text(card(container, "premium")?.querySelector(".pricing-plan-price strong"))).toBe("39,90 €");
       expect(container.querySelector(".pricing-faq details")).toHaveProperty("open", true);
       expect(new URL(container.querySelector<HTMLAnchorElement>("[data-pricing-signup]")!.href).searchParams.has("code")).toBe(false);
@@ -412,47 +415,120 @@ describe("pricing page with the offer", () => {
   });
 });
 
-describe("client-only rendering", () => {
-  it("keeps the offer out of prerendered markup", () => {
+describe("prerendered offer slots", () => {
+  const prerender = (path = "/cenik") => renderToString(
+    <SiteLanguageProvider initialLanguage="sl"><StaticRouter location={path}>
+      <PromotionBanner /><Pricing standalone />
+    </StaticRouter></SiteLanguageProvider>,
+  );
+  // Prerenders the page as entry-server does, then hydrates it as App does.
+  const hydrate = async (path = "/cenik") => {
+    atPath(path);
+    const container = document.createElement("div");
+    container.innerHTML = prerender(path);
+    document.body.appendChild(container);
+    // Server rendering warns about third-party layout effects; only hydration messages count.
+    vi.mocked(console.error).mockClear();
+    const recoverable: unknown[] = [];
+    let root: ReturnType<typeof hydrateRoot> | undefined;
+    await act(async () => {
+      root = hydrateRoot(container, (
+        <SiteLanguageProvider initialLanguage="sl"><MemoryRouter initialEntries={[path]}>
+          <PromotionBanner /><Pricing standalone />
+        </MemoryRouter></SiteLanguageProvider>
+      ), { onRecoverableError: (error) => recoverable.push(error) });
+    });
+    const hydrationErrors = () => [
+      ...recoverable.map(String),
+      ...vi.mocked(console.error).mock.calls.map((call) => String(call[0])).filter((message) => /hydrat|did not match|server HTML/i.test(message)),
+    ];
+    const dispose = () => { act(() => root?.unmount()); container.remove(); };
+    return { container, hydrationErrors, dispose };
+  };
+
+  it("reserves empty slots, with no offer wording, while the prerendered snapshot carries an offer", () => {
     const html = renderToStaticMarkup(
       <SiteLanguageProvider initialLanguage="sl"><StaticRouter location="/cenik?code=BLACKFRIDAY50">
         <PromotionBanner /><Pricing standalone /><PricingOverview /><TrialSignupLink>Preizkusi</TrialSignupLink>
       </StaticRouter></SiteLanguageProvider>,
     );
-    expect(html).not.toMatch(/BLACKFRIDAY50|Black Friday|pricing-promo|home-promo|bf-banner/);
+    expect(html.startsWith('<div class="site-notice" aria-hidden="true"></div>')).toBe(true);
+    expect(html).toContain('</header><div class="pricing-offer" aria-hidden="true"></div><div class="pricing-plan-grid');
+    expect(html).not.toMatch(/BLACKFRIDAY|Black Friday|−50|50 %|pol cene|31\. 12\. 2026|pricing-promo|home-promo|bf-banner|7,95|19,95/);
   });
 
-  it("hydrates the prerendered page without a mismatch, then shows the offer", async () => {
-    atPath("/cenik");
-    const server = (
-      <SiteLanguageProvider initialLanguage="sl"><StaticRouter location="/cenik"><Pricing standalone /></StaticRouter></SiteLanguageProvider>
-    );
-    const container = document.createElement("div");
-    container.innerHTML = renderToString(server);
-    document.body.appendChild(container);
-    // Server rendering warns about third-party layout effects; only hydration messages count below.
-    vi.mocked(console.error).mockClear();
-    const recoverable: unknown[] = [];
-    let root: ReturnType<typeof hydrateRoot> | undefined;
+  it("renders no slots, exactly as before, without an offer in the snapshot", () => {
+    loadCatalog(novemberCatalog);
+    expect(prerender()).not.toMatch(/site-notice|pricing-offer/);
+    expect(renderToString(<SlotProbe />)).toBe("<span>free</span>");
+    loadCatalog(blackFridayCatalog);
+    expect(renderToString(<SlotProbe />)).toBe("<span>reserved</span>");
+  });
+
+  it("keeps an offer in the build snapshot only while it runs", () => {
+    expect(withoutEndedPromotion(blackFridayCatalog, DURING_BLACK_FRIDAY.getTime())).toBe(blackFridayCatalog);
+    expect(withoutEndedPromotion(blackFridayCatalog, AFTER_BLACK_FRIDAY)).toEqual(novemberCatalog);
+    expect(withoutEndedPromotion(novemberCatalog, AFTER_BLACK_FRIDAY)).toBe(novemberCatalog);
+  });
+
+  it("hydrates without a mismatch and fills the slots in place", async () => {
+    const { container, hydrationErrors, dispose } = await hydrate();
     try {
-      await act(async () => {
-        root = hydrateRoot(container, (
-          <SiteLanguageProvider initialLanguage="sl"><MemoryRouter initialEntries={["/cenik"]}>
-            <PromotionBanner /><Pricing standalone />
-          </MemoryRouter></SiteLanguageProvider>
-        ), { onRecoverableError: (error) => recoverable.push(error) });
-      });
       await waitFor(() => expect(container.querySelector("#black-friday")).not.toBeNull());
-      await waitFor(() => expect(container.querySelector(".bf-banner")).not.toBeNull());
-      expect(recoverable).toEqual([]);
-      const hydrationErrors = vi.mocked(console.error).mock.calls.map((call) => String(call[0])).filter((message) => /hydrat|did not match|server HTML/i.test(message));
-      expect(hydrationErrors).toEqual([]);
-      // The banner sits before the page, outside the prerendered route markup.
-      expect(container.firstElementChild?.matches(".bf-banner")).toBe(true);
+      expect(hydrationErrors()).toEqual([]);
+      // The banner takes the first slot, the offer block the one between the intro and the cards.
+      expect(container.firstElementChild?.matches(".site-notice.bf-banner")).toBe(true);
+      const offer = container.querySelector("#black-friday")!;
+      expect(offer.matches(".pricing-offer")).toBe(true);
+      expect(offer.previousElementSibling?.matches(".pricing-intro")).toBe(true);
+      expect(container.querySelectorAll(".site-notice:empty, .pricing-offer:empty")).toHaveLength(0);
     } finally {
-      act(() => root?.unmount());
-      container.remove();
+      dispose();
     }
+  });
+
+  it("closes the banner slot when the visitor closed the banner", async () => {
+    window.localStorage.setItem(PROMOTION_BANNER_DISMISS_KEY, String(DURING_BLACK_FRIDAY.getTime() + 60_000));
+    const { container, hydrationErrors, dispose } = await hydrate();
+    try {
+      await waitFor(() => expect(container.querySelector("#black-friday")).not.toBeNull());
+      expect(hydrationErrors()).toEqual([]);
+      expect(container.querySelector(".site-notice")).toBeNull();
+    } finally {
+      dispose();
+    }
+  });
+
+  it("closes both slots once the offer has ended", async () => {
+    vi.setSystemTime(AFTER_BLACK_FRIDAY);
+    const { container, hydrationErrors, dispose } = await hydrate();
+    try {
+      expect(hydrationErrors()).toEqual([]);
+      expect(container.querySelector(".site-notice, .pricing-offer")).toBeNull();
+    } finally {
+      dispose();
+    }
+  });
+
+  it("closes both slots when the app no longer publishes the offer", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => novemberCatalog }));
+    const { container, hydrationErrors, dispose } = await hydrate();
+    try {
+      await waitFor(() => expect(container.querySelector(".site-notice, .pricing-offer")).toBeNull());
+      expect(hydrationErrors()).toEqual([]);
+    } finally {
+      dispose();
+    }
+  });
+
+  it("switches the offer off on a withdrawal without touching the shared prices", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => novemberCatalog }));
+    const { result } = renderHook(() => useActivePromotion());
+    expect(result.current?.code).toBe("BLACKFRIDAY50");
+    await act(async () => { await confirmPromotionWithApp(); });
+    expect(result.current).toBeNull();
+    // Routes that hydrate later still read the catalog they were prerendered with.
+    expect(getInitialPricingCatalog().promotion?.code).toBe("BLACKFRIDAY50");
   });
 });
 

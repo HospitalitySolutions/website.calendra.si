@@ -1,6 +1,8 @@
 import { renderToString } from "react-dom/server";
 import { StaticRouter } from "react-router-dom/server";
 import AppRoutes from "./AppRoutes.tsx";
+import PromotionBanner from "@/components/marketing/PromotionBanner";
+import { PROMOTION_BANNER_DISMISS_KEY } from "@/lib/promotion-banner";
 import { allBlogArticles, blogArticlePathnames } from "@/lib/blog";
 import { canonicalPathnames, canonicalRoutes, getLanguageFromPathname, getSitemapLastModified, sitemapRouteMetadata } from "@/lib/localized-routes";
 import { SiteLanguageProvider } from "@/lib/site-language";
@@ -39,6 +41,7 @@ export const routesToPrerender = [
 export {
   DEFAULT_OG_IMAGE,
   PRICING_CATALOG_SCRIPT_ID,
+  PROMOTION_BANNER_DISMISS_KEY,
   PUBLIC_PRICING_ENDPOINT,
   buildLlmsFullTxt,
   buildLlmsTxt,
@@ -126,6 +129,8 @@ export const renderPage = (pathname: string) => {
   const appHtml = renderToString(
     <SiteLanguageProvider initialLanguage={language}>
       <StaticRouter location={pathname}>
+        {/* Same place as in App: an empty slot while the build snapshot carries an offer, otherwise nothing. */}
+        <PromotionBanner />
         <AppRoutes />
       </StaticRouter>
     </SiteLanguageProvider>,

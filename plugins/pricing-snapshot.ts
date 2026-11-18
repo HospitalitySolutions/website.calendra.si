@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { loadEnv, type Plugin, type ResolvedConfig } from "vite";
-import { normalizePublicPricingCatalog } from "../src/lib/pricing-catalog";
+import { normalizePublicPricingCatalog, withoutEndedPromotion } from "../src/lib/pricing-catalog";
 
 const FETCH_ATTEMPTS = 3;
 const FETCH_TIMEOUT_MS = 15_000;
@@ -51,7 +51,9 @@ export const pricingSnapshotPlugin = (): Plugin => {
         } catch { /* A standalone SSR build fetches its own verified snapshot. */ }
       }
       if (!catalog) {
-        catalog = normalizePublicPricingCatalog(await fetchAppPricing(endpoint));
+        // An offer that has already ended is left out: prerendered pages reserve space
+        // for the offer elements only while the snapshot carries one.
+        catalog = withoutEndedPromotion(normalizePublicPricingCatalog(await fetchAppPricing(endpoint)), Date.now());
         await fs.mkdir(path.dirname(cachePath), { recursive: true });
         await fs.writeFile(cachePath, JSON.stringify({ endpoint, fetchedAt: Date.now(), catalog }));
       }

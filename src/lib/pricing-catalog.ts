@@ -221,7 +221,14 @@ export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCata
   };
 };
 
-export const additionalUsersTotal = (users: number, included: number, rules: PublicAdditionalUserRule[]): number => {
+/** The build keeps an offer in its snapshot only while it is still running. */
+export const withoutEndedPromotion = (catalog: PublicPricingCatalog, now: number): PublicPricingCatalog => {
+  if (!catalog.promotion || Date.parse(catalog.promotion.validUntil) > now) return catalog;
+  const { promotion: _ended, ...rest } = catalog;
+  return rest;
+};
+
+export const additionalUsersTotal =(users: number, included: number, rules: PublicAdditionalUserRule[]): number => {
   let total = 0;
   for (let user = included + 1; user <= users; user++) {
     const rule = rules.find((item) => user >= item.fromUser && (item.toUser === null || user <= item.toUser));
