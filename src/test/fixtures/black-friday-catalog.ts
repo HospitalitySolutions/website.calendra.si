@@ -5,7 +5,7 @@ import { normalizePublicPricingCatalog, type PublicPricingCatalog } from "@/lib/
 /** The shape and amounts of the app's November 2026 catalog, as published to the website. */
 const NOVEMBER_PLANS = { basic: [15.9, 162.18], pro: [26.9, 274.38], business: [39.9, 406.98] } as const;
 
-export const BLACK_FRIDAY_VALID_UNTIL = "2026-12-31T22:59:59Z";
+export const BLACK_FRIDAY_VALID_UNTIL = "2026-11-30T22:59:59Z";
 
 /** What `GET /api/register/public-pricing` returns while the offer runs. */
 export const blackFridayPromotion = {
@@ -47,4 +47,4 @@ export const novemberCatalog: PublicPricingCatalog = normalizePublicPricingCatal
 export const blackFridayCatalog: PublicPricingCatalog = normalizePublicPricingCatalog({ ...regularCatalog, promotion: blackFridayPromotion });
 
 /** A moment while the offer runs; tests pin the clock so they do not depend on the real date. */
-export const DURING_BLACK_FRIDAY = new Date("2026-11-27T09:00:00Z");
+export const DURING_BLACK_FRIDAY = new Date("2026-11-20T09:00:00Z");

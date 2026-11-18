@@ -57,7 +57,7 @@ export const getPromotionEndDate = (validUntil: string) => {
   return { day: part("day"), month: part("month"), year: part("year") };
 };
 
-/** "31. 12. 2026" in Slovenian, "31 Dec 2026" in English. */
+/** "30. 11. 2026" in Slovenian, "30 Nov 2026" in English. */
 export const formatPromotionDate = (validUntil: string, language: SiteLanguage): string => {
   const { day, month, year } = getPromotionEndDate(validUntil);
   return language === "sl" ? `${day}. ${month}. ${year}` : `${day} ${EN_MONTHS[month - 1]} ${year}`;

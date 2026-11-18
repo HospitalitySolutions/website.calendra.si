@@ -94,8 +94,8 @@ describe("promotion in the app pricing catalog", () => {
     ["a discount above 100 %", { ...blackFridayPromotion, percentOff: 120 }],
     ["more than 12 discounted months", { ...blackFridayPromotion, discountedMonths: 13 }],
     ["fractional months", { ...blackFridayPromotion, discountedMonths: 6.5 }],
-    ["an unreadable end", { ...blackFridayPromotion, validUntil: "31. 12. 2026" }],
-    ["an end without a time", { ...blackFridayPromotion, validUntil: "2026-12-31" }],
+    ["an unreadable end", { ...blackFridayPromotion, validUntil: "30. 11. 2026" }],
+    ["an end without a time", { ...blackFridayPromotion, validUntil: "2026-11-30" }],
     ["no plans", { ...blackFridayPromotion, plans: [] }],
     ["an unknown plan", { ...blackFridayPromotion, plans: [...plans, { key: "gold", monthlyPrice: 1, annualPrice: 12 }] }],
     ["a duplicated plan", { ...blackFridayPromotion, plans: [...plans, plans[0]] }],
@@ -167,14 +167,14 @@ describe("site-wide banner", () => {
   it("shows the Slovenian line with a link to the price list and the code", async () => {
     renderBanner("/");
     const banner = await findBanner();
-    expect(text(banner)).toBe("Black Friday: −50 % na paket prvih 6 mesecev s kodo BLACKFRIDAY50. Velja do 31. 12. 2026. Poglej cenik →");
+    expect(text(banner)).toBe("Black Friday: −50 % na paket prvih 6 mesecev s kodo BLACKFRIDAY50. Velja do 30. 11. 2026. Poglej cenik →");
     expect(within(banner).getByRole("link")).toHaveAttribute("href", "/cenik?code=BLACKFRIDAY50");
   });
 
   it("shows the English line on English pages", async () => {
     renderBanner("/en/blog");
     const banner = await findBanner();
-    expect(text(banner)).toBe("Black Friday: 50% off your plan for the first 6 months with code BLACKFRIDAY50. Valid until 31 Dec 2026. See pricing →");
+    expect(text(banner)).toBe("Black Friday: 50% off your plan for the first 6 months with code BLACKFRIDAY50. Valid until 30 Nov 2026. See pricing →");
     expect(within(banner).getByRole("link")).toHaveAttribute("href", "/en/pricing?code=BLACKFRIDAY50");
     expect(within(banner).getByRole("button", { name: "Close notice" })).toBeInTheDocument();
   });
@@ -246,8 +246,8 @@ describe("pricing page with the offer", () => {
     expect(offer.previousElementSibling?.matches(".pricing-intro")).toBe(true);
     expect(offer.nextElementSibling?.matches(".pricing-plan-grid")).toBe(true);
     expect(text(offer.querySelector("h2"))).toBe("Black Friday: prvih 6 mesecev za pol cene");
-    expect(text(offer.querySelector("h2 + p"))).toBe("Ob registraciji vnesite kodo BLACKFRIDAY50 in prvih 6 mesecev plačujete 50 % cene paketa. Za nove stranke, mesečni ali letni obračun. Dodatki po rednem ceniku, po 6 mesecih redna cena. Velja do 31. 12. 2026.");
-    expect(text(offer.querySelector(".pricing-promo-side > p"))).toBe("Velja do 31. 12. 2026");
+    expect(text(offer.querySelector("h2 + p"))).toBe("Ob registraciji vnesite kodo BLACKFRIDAY50 in prvih 6 mesecev plačujete 50 % cene paketa. Za nove stranke, mesečni ali letni obračun. Dodatki po rednem ceniku, po 6 mesecih redna cena. Velja do 30. 11. 2026.");
+    expect(text(offer.querySelector(".pricing-promo-side > p"))).toBe("Velja do 30. 11. 2026");
   });
 
   it("copies the code from the chip and reports it", async () => {
@@ -300,7 +300,7 @@ describe("pricing page with the offer", () => {
     const { container } = renderPricing("", "en");
     await waitFor(() => expect(container.querySelector(".pricing-promo-old")).not.toBeNull());
     expect(text(container.querySelector("#black-friday h2"))).toBe("Black Friday: your first 6 months at half price");
-    expect(text(container.querySelector("#black-friday h2 + p"))).toBe("Enter code BLACKFRIDAY50 when you sign up and pay 50% of the plan price for the first 6 months. For new customers, monthly or yearly billing. Add-ons at regular prices; regular price after 6 months. Valid until 31 Dec 2026.");
+    expect(text(container.querySelector("#black-friday h2 + p"))).toBe("Enter code BLACKFRIDAY50 when you sign up and pay 50% of the plan price for the first 6 months. For new customers, monthly or yearly billing. Add-ons at regular prices; regular price after 6 months. Valid until 30 Nov 2026.");
     expect(text(card(container, "premium")?.querySelector(".pricing-plan-price strong"))).toBe("€19.95");
     expect(text(card(container, "premium")?.querySelector(".pricing-promo-then"))).toBe("−50% first 6 months, then €39.90");
   });
@@ -384,7 +384,7 @@ describe("pricing page with the offer", () => {
     ]);
     expect(details.map((item) => item.open)).toEqual(details.map((_, index) => index === 0));
     expect(details.slice(0, 3).map((item) => text(item.querySelector("p")))).toEqual([
-      "Ob registraciji ali do 31. 12. 2026 v Nastavitve → Naročnina vnesite kodo BLACKFRIDAY50. Najprej imate 14 dni brezplačnega preizkusa, popust pa velja za prvih 6 plačanih mesecev.",
+      "Ob registraciji ali do 30. 11. 2026 v Nastavitve → Naročnina vnesite kodo BLACKFRIDAY50. Najprej imate 14 dni brezplačnega preizkusa, popust pa velja za prvih 6 plačanih mesecev.",
       "Da. Plačate 6 mesecev za pol cene in 6 mesecev po polni ceni paketa. Letni popust 15 % se ne sešteva, a je cena s kodo nižja: Premium 359,10 € namesto 406,98 € na leto brez DDV.",
       "Za dodatne uporabnike, prostore, SMS sporočila in dodatne module, kot je davčna blagajna. Ponudba velja za nove stranke, enkrat na podjetje.",
     ]);
@@ -394,7 +394,7 @@ describe("pricing page with the offer", () => {
     const { container } = renderPricing("", "en");
     await waitFor(() => expect(container.querySelectorAll(".pricing-promo-faq")).toHaveLength(3));
     expect(Array.from(container.querySelectorAll(".pricing-promo-faq p")).map(text)).toEqual([
-      "Enter BLACKFRIDAY50 when you sign up, or by 31 Dec 2026 in Settings → Subscription. Your 14-day free trial comes first; the discount covers your first 6 paid months.",
+      "Enter BLACKFRIDAY50 when you sign up, or by 30 Nov 2026 in Settings → Subscription. Your 14-day free trial comes first; the discount covers your first 6 paid months.",
       "Yes: 6 months at half price and 6 at full price. The 15% yearly discount does not stack, but the code price is lower: Premium €359.10 instead of €406.98 a year excl. VAT.",
       "Extra users, rooms, SMS and add-on modules such as the fiscal cash register. New customers only, once per company.",
     ]);
@@ -603,8 +603,8 @@ describe("calculator arithmetic", () => {
 
 describe("llms.txt and llms-full.txt", () => {
   const during = DURING_BLACK_FRIDAY.getTime();
-  const sl = "- Ponudba Black Friday 2026: s kodo BLACKFRIDAY50 nove stranke do 31. 12. 2026 dobijo 50 % popusta na ceno paketa za prvih 6 plačanih mesecev (mesečni ali letni obračun; letni popust 15 % se ne sešteva; dodatki po rednem ceniku).";
-  const en = "- Black Friday 2026 offer: with code BLACKFRIDAY50, new customers who sign up by 31 Dec 2026 get 50% off the plan price for their first 6 paid months (monthly or yearly billing; does not stack with the 15% yearly discount; add-ons at regular prices).";
+  const sl = "- Ponudba Black Friday 2026: s kodo BLACKFRIDAY50 nove stranke do 30. 11. 2026 dobijo 50 % popusta na ceno paketa za prvih 6 plačanih mesecev (mesečni ali letni obračun; letni popust 15 % se ne sešteva; dodatki po rednem ceniku).";
+  const en = "- Black Friday 2026 offer: with code BLACKFRIDAY50, new customers who sign up by 30 Nov 2026 get 50% off the plan price for their first 6 paid months (monthly or yearly billing; does not stack with the 15% yearly discount; add-ons at regular prices).";
 
   it("states the offer under Key facts when the build snapshot's offer is still valid", () => {
     for (const output of [buildLlmsTxt(during), buildLlmsFullTxt(during)]) {
@@ -676,9 +676,9 @@ describe("analytics allowlist", () => {
 
 describe("offer dates", () => {
   it("names the last valid day in Ljubljana", () => {
-    expect(formatPromotionDate("2026-12-31T22:59:59Z", "sl")).toBe("31. 12. 2026");
-    expect(formatPromotionDate("2026-12-31T22:59:59Z", "en")).toBe("31 Dec 2026");
+    expect(formatPromotionDate("2026-11-30T22:59:59Z", "sl")).toBe("30. 11. 2026");
+    expect(formatPromotionDate("2026-11-30T22:59:59Z", "en")).toBe("30 Nov 2026");
     // An end at local midnight still names the previous day.
-    expect(formatPromotionDate("2026-12-31T23:00:00Z", "sl")).toBe("31. 12. 2026");
+    expect(formatPromotionDate("2026-11-30T23:00:00Z", "sl")).toBe("30. 11. 2026");
   });
 });
