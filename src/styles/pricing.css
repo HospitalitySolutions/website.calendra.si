@@ -289,8 +289,8 @@
 .pricing-promo-valid { display: inline-flex; align-items: center; gap: 7px; color: #e2e8f0; font-size: .8rem; }
 .pricing-promo-valid svg { width: 16px; height: 16px; color: var(--promo-amber); }
 .pricing-plan-price-promo { gap: 0 8px; }
-.pricing-promo-old { color: #64748b; font-size: 1.1rem; font-weight: 500; text-decoration-thickness: 1.5px; white-space: nowrap; }
-.pricing-promo-old-inline { color: #64748b; }
+.pricing-promo-old { color: #5b6b80; font-size: 1.1rem; font-weight: 500; text-decoration-thickness: 1.5px; white-space: nowrap; }
+.pricing-promo-old-inline { color: #5b6b80; }
 .pricing-annual-price strong { color: hsl(var(--foreground)); font-weight: 650; }
 .pricing-promo-then { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 6px 0 2px; color: #334155; font-size: .84rem; font-weight: 500; line-height: 1.4; }
 .pricing-promo-pill { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 999px; background: var(--promo-amber); color: var(--promo-ink); font-size: .75rem; font-weight: 800; white-space: nowrap; }
