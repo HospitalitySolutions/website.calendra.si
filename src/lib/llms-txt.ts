@@ -4,6 +4,9 @@ import { ALL_INDUSTRY_ROUTE_KEYS, getIndustryContent } from "@/lib/industry-page
 import { LEGAL, LEGAL_FULL_ADDRESS } from "@/lib/legal";
 import { canonicalRoutes, type CanonicalRouteKey } from "@/lib/localized-routes";
 import { getPricingSummary } from "@/lib/pricing-copy";
+import { getInitialPricingCatalog } from "@/lib/public-pricing";
+import { getActivePromotion } from "@/lib/promotion";
+import { getPromotionLlmsFact } from "@/lib/promotion-copy";
 import { absoluteUrl, AUTHOR, pageSeo } from "@/lib/seo";
 import { SITE_URL } from "@/lib/site";
 import type { SiteLanguage } from "@/lib/site-language";
@@ -84,26 +87,62 @@ const summary: Record<SiteLanguage, string> = {
   ].join("\n\n"),
 };
 
-const keyFacts = (language: SiteLanguage) => {
+/**
+ * The build snapshot's offer is stated while it is still valid at build time.
+ * llms.txt is static, so the line only disappears with the next build after the end.
+ */
+const promotionFacts = (language: SiteLanguage, now: number) => {
+  const catalog = getInitialPricingCatalog();
+  const promotion = getActivePromotion(catalog, now);
+  return promotion ? [getPromotionLlmsFact(promotion, catalog, language)] : [];
+};
+
+const keyFacts = (language: SiteLanguage, now: number) => {
   return language === "sl"
     ? [
         getPricingSummary("sl"),
+        ...promotionFacts("sl", now),
         `Jeziki: slovenščina in angleščina. Valuta: EUR. Trg: Slovenija.`,
         `Mobilna aplikacija za končne stranke: Calendra Connect (brezplačna, iOS in Android).`,
         `Varnostni ukrepi: ${SITE_URL}${canonicalRoutes.security.sl}. Pogoji obdelave osebnih podatkov: ${SITE_URL}${canonicalRoutes.dpa.sl}.`,
       ]
     : [
         getPricingSummary("en"),
+        ...promotionFacts("en", now),
         `Languages: Slovenian and English. Currency: EUR. Market: Slovenia.`,
         `Customer mobile app: Calendra Connect (free, iOS and Android).`,
         `Security measures: ${SITE_URL}${canonicalRoutes.security.en}. Personal data processing terms: ${SITE_URL}${canonicalRoutes.dpa.en}.`,
       ];
 };
 
+const mentionsWaitingLists = (text: string) => /čakaln|waiting[ -]?lists?|waitlists?/i.test(text);
+
+/**
+ * Waiting lists are a plan feature (Premium). Where llms.txt or llms-full.txt
+ * present them, say which plan includes them. The plan comes from the app's
+ * catalog, so the note follows the catalog if the feature moves.
+ */
+const waitingListNote = (language: SiteLanguage): string => {
+  const catalog = getInitialPricingCatalog();
+  const feature = catalog.features.find((item) => /waiting[ -]?list|waitlist/i.test(item.name) || /čakaln/i.test(item.nameSl));
+  const plan = feature && catalog.plans.find((item) => item.key === feature.minimumPlan);
+  if (!plan) return "";
+  return language === "sl"
+    ? `Čakalne vrste so vključene v paket ${plan.nameSl || plan.name}.`
+    : `Waiting lists are included in the ${plan.name} plan.`;
+};
+
+/** Appends the plan note to a text that presents waiting lists (checked in `mention`). */
+const withWaitingListPlan = (text: string, language: SiteLanguage, mention = text) => {
+  const note = waitingListNote(language);
+  return note && mentionsWaitingLists(mention) && !text.includes(note) ? `${text} ${note}` : text;
+};
+
 const routeLine = (routeKey: CanonicalRouteKey, language: SiteLanguage) => {
   const seo = pageSeo[routeKey][language];
   const label = seo.title.split("|")[0].trim();
-  return `- [${label}](${absoluteUrl(canonicalRoutes[routeKey][language])}): ${seo.description}`;
+  // The page's meta description is unchanged; the plan note is added in llms.txt only.
+  return `- [${label}](${absoluteUrl(canonicalRoutes[routeKey][language])}): ${withWaitingListPlan(seo.description, language)}`;
 };
 
 const articleLines = (language: SiteLanguage) => {
@@ -116,7 +155,7 @@ const articleLines = (language: SiteLanguage) => {
     "",
     ...articles.map(
       (article) =>
-        `- [${article.title}](${absoluteUrl(getBlogArticlePath(article.slug, language))}): ${article.description}`,
+        `- [${article.title}](${absoluteUrl(getBlogArticlePath(article.slug, language))}): ${withWaitingListPlan(article.description, language, `${article.title} ${article.description}`)}`,
     ),
   ];
 };
@@ -128,7 +167,7 @@ const articleLines = (language: SiteLanguage) => {
  * navigation. Generated from the same registries that build the sitemap so the
  * two can never disagree.
  */
-export const buildLlmsTxt = () => {
+export const buildLlmsTxt = (now = Date.now()) => {
   assertRouteCoverage();
 
   const sections: string[] = [
@@ -140,7 +179,7 @@ export const buildLlmsTxt = () => {
     "",
     "## Ključna dejstva",
     "",
-    ...keyFacts("sl").map((fact) => `- ${fact}`),
+    ...keyFacts("sl", now).map((fact) => `- ${fact}`),
     "",
     `Avtor vsebin: ${AUTHOR.name}, ${AUTHOR.jobTitle.sl}.`,
     "",
@@ -157,7 +196,7 @@ export const buildLlmsTxt = () => {
   sections.push(...articleLines("sl"));
 
   sections.push("", "---", "", "# Calendra (English)", "", summary.en, "", "## Key facts", "");
-  sections.push(...keyFacts("en").map((fact) => `- ${fact}`));
+  sections.push(...keyFacts("en", now).map((fact) => `- ${fact}`));
   sections.push("", "## English pages");
 
   for (const group of routeGroups) {
@@ -184,16 +223,17 @@ export const buildLlmsTxt = () => {
 const industrySection = (language: SiteLanguage) =>
   ALL_INDUSTRY_ROUTE_KEYS.map((routeKey) => {
     const industry = getIndustryContent(routeKey, language);
+    const features = industry.features.map((feature) => `- ${feature.title}: ${feature.description}`);
     return [
       `### ${industry.title}`,
       "",
       `URL: ${absoluteUrl(canonicalRoutes[routeKey][language])}`,
       "",
-      industry.intro,
+      withWaitingListPlan(industry.intro, language, [industry.intro, ...industry.audiences, ...features].join(" ")),
       "",
       `${language === "sl" ? "Za koga" : "Who it is for"}: ${industry.audiences.join("; ")}.`,
       "",
-      ...industry.features.map((feature) => `- ${feature.title}: ${feature.description}`),
+      ...features,
     ].join("\n");
   }).join("\n\n");
 
@@ -211,7 +251,7 @@ const faqSection = (language: SiteLanguage) => {
           "",
           `URL: ${absoluteUrl(canonicalRoutes[routeKey][language])}`,
           "",
-          ...faq.map((item) => `**${item.question}**\n${item.answer}`),
+          ...faq.map((item) => `**${item.question}**\n${withWaitingListPlan(item.answer, language, `${item.question} ${item.answer}`)}`),
         ].join("\n"),
       );
     }
@@ -224,7 +264,7 @@ const faqSection = (language: SiteLanguage) => {
  * A single flattened document is easier for a model to ingest in one fetch than
  * crawling 70 pages, and keeps answers grounded in our own wording.
  */
-export const buildLlmsFullTxt = () => {
+export const buildLlmsFullTxt = (now = Date.now()) => {
   const build = (language: SiteLanguage) =>
     [
       language === "sl" ? "# Calendra – celoten pregled" : "# Calendra – full overview",
@@ -233,7 +273,7 @@ export const buildLlmsFullTxt = () => {
       "",
       language === "sl" ? "## Ključna dejstva" : "## Key facts",
       "",
-      ...keyFacts(language).map((fact) => `- ${fact}`),
+      ...keyFacts(language, now).map((fact) => `- ${fact}`),
       "",
       language === "sl" ? "## Rešitve po dejavnostih" : "## Solutions by industry",
       "",
