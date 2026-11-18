@@ -19,11 +19,17 @@ export const isMarketingPath = (pathname: string): boolean => {
   return Boolean(getArticleFromPathname(pathname) || getCustomerStoryFromPathname(pathname));
 };
 
+const planKeys = ["basic", "pro", "professional", "premium", "business", "custom", "enterprise"] as const;
 const enumFields: Record<string, readonly string[]> = {
   language: ["sl", "en"],
-  placement: ["homepage", "homepage_hero", "homepage_final", "pricing_page", "navbar", "footer", "feature_page", "feature_page_sticky", "industry_page_sticky", "demo_popup_desktop", "demo_banner_mobile"],
+  placement: ["homepage", "homepage_hero", "homepage_final", "pricing_page", "pricing_page_sticky", "navbar", "footer", "feature_page", "feature_page_sticky", "industry_page", "industry_page_sticky", "demo_popup_desktop", "demo_banner_mobile"],
   entry_point: ["popup_desktop", "banner_mobile"],
-  package_key: ["basic", "pro", "premium", "business", "enterprise"],
+  // Pricing.tsx sends its tier keys (professional, premium, custom); other callers use the app keys.
+  package_key: planKeys,
+  plan: planKeys,
+  billing: ["monthly", "annual"],
+  step: ["pricing_calculator"],
+  reason: ["unknown_code"],
   currency: ["EUR"],
   lead_type: ["calendra", "it", "enterprise"],
   contact_type: ["calendra", "it"],
@@ -37,8 +43,17 @@ const events = new Set([
   "demo_booking_cta_clicked", "demo_booking_page_viewed", "demo_booking_slot_selected",
   "demo_booking_form_started", "demo_booking_confirmed", "demo_booking_cancelled", "demo_booking_rescheduled",
   "demo_prompt_impression", "demo_prompt_dismissed", "newsletter_signup_completed",
+  "promo_code_copied", "coupon_applied", "coupon_rejected",
   "web_vitals",
 ]);
+/**
+ * Promotion codes are upper-cased by the caller and must contain a letter, so an
+ * email address, phone number or other free text typed into the code field is
+ * dropped rather than sent.
+ */
+const patternFields: Record<string, RegExp> = {
+  coupon: /^(?=[A-Z0-9_-]*[A-Z])[A-Z0-9_-]{3,40}$/,
+};
 
 /** Strict values, not just key filtering: arbitrary labels can contain PII. */
 export const sanitizeAnalyticsEvent = (name: string, payload: Record<string, unknown>) => {
@@ -47,6 +62,9 @@ export const sanitizeAnalyticsEvent = (name: string, payload: Record<string, unk
   const data: Record<string, string | number> = {};
   for (const [key, values] of Object.entries(enumFields)) {
     if (typeof payload[key] === "string" && values.includes(payload[key] as string)) data[key] = payload[key] as string;
+  }
+  for (const [key, pattern] of Object.entries(patternFields)) {
+    if (typeof payload[key] === "string" && pattern.test(payload[key] as string)) data[key] = payload[key] as string;
   }
   for (const key of ["package_price", "value"]) {
     if (typeof payload[key] === "number" && Number.isFinite(payload[key]) && payload[key] >= 0) data[key] = payload[key];

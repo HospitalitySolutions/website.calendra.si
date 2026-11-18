@@ -17,7 +17,10 @@ export type MarketingEventName =
   | "demo_booking_cancelled"
   | "demo_booking_rescheduled"
   | "contact_path_selected"
-  | "generate_lead";
+  | "generate_lead"
+  | "promo_code_copied"
+  | "coupon_applied"
+  | "coupon_rejected";
 
 type MarketingEventPayload = Record<string, string | number | boolean | null | undefined>;
 
