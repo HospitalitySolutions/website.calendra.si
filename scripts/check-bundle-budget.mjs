@@ -30,8 +30,12 @@ const BUDGETS = {
    * The redesigned demo invitation with the e-novice form (about 2.5 KB gzip) now
    * loads on demand instead of with every page, which lowered initial CSS and JS;
    * 13 KB covers it plus the 0.1 KB the Po meri pricing change already used.
+   * Black Friday 2026 adds about 1.5 KB gzip: the site-wide banner (0.6 KB, its own
+   * chunk, fetched only while the app publishes an offer) and the offer block, card,
+   * calculator and FAQ styles on /cenik (0.9 KB). Splitting cannot lower this sum, and
+   * neither initial budget changes, so this one rises to 15 KB.
    */
-  onDemandCss: 13,
+  onDemandCss: 15,
   /** Largest single lazily loaded route chunk, as an early warning for a runaway page. */
   largestRouteChunk: 50,
 };

@@ -18,6 +18,8 @@ import {
   type PublicPricingCatalog,
 } from "@/lib/public-pricing";
 import { useEffect, useMemo, useState } from "react";
+import { useActivePromotion } from "@/lib/use-active-promotion";
+import { getPromotionTeaser } from "@/lib/promotion";
 import IntegrationMark from "./IntegrationMark";
 import {
   ArrowRight,
@@ -267,6 +269,9 @@ export const PricingOverview = () => {
   const { language } = useSiteLanguage();
   const section = copy[language].pricing;
   const [pricingCatalog, setPricingCatalog] = useState<PublicPricingCatalog>(getInitialPricingCatalog);
+  // Client-only Black Friday line; null on the server and on the first render.
+  const promotion = useActivePromotion(pricingCatalog);
+  const promotionTeaser = promotion ? getPromotionTeaser(promotion, language) : null;
 
   useEffect(() => {
     const controller = new AbortController();
@@ -311,6 +316,13 @@ export const PricingOverview = () => {
               <span className="home-price-amount">{basicMonthlyPrice}</span>
               <span className="home-price-period">{section.perMonth}</span>
             </p>
+            {promotion && promotionTeaser && (
+              <a className="home-promo-line" href={`${getRoutePath("pricing", language)}?code=${encodeURIComponent(promotion.code)}`}>
+                <span className="home-promo-tag">{promotionTeaser.label}</span><span className="sr-only">: </span>
+                <span>{promotionTeaser.text}</span>
+                <ArrowRight aria-hidden="true" />
+              </a>
+            )}
             <ul className="mt-6 grid gap-4">
               {section.items.map((item) => (
                 <li key={item} className="flex items-center gap-3 text-base font-medium text-foreground sm:text-lg">

@@ -303,3 +303,13 @@
 .home-preview-trigger.home-preview-origin-hidden {
   visibility: hidden;
 }
+
+/* Black Friday line under the starting price; client-only while the app publishes an offer. */
+.home-promo-line { display: inline-flex; align-items: center; gap: 10px; max-width: 100%; margin-top: 14px; padding: 8px 14px 8px 8px; border: 1px solid #f6d58a; border-radius: 999px; background: #fff7e0; color: hsl(var(--foreground)); font-size: .95rem; font-weight: 600; line-height: 1.35; }
+.home-promo-line:hover { border-color: #f2c14e; }
+.home-promo-line:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 3px; }
+.home-promo-tag { flex: none; display: inline-flex; align-items: center; height: 24px; padding: 0 9px; border-radius: 999px; background: #fbbf24; color: #0b1220; font-size: .78rem; font-weight: 800; white-space: nowrap; }
+.home-promo-line svg { flex: none; width: 18px; height: 18px; color: hsl(var(--primary)); }
+@media (max-width: 540px) {
+  .home-promo-line { align-items: flex-start; border-radius: 18px; font-size: .88rem; }
+}

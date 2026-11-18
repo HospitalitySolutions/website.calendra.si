@@ -17,6 +17,10 @@ import { getCustomerStory, getCustomerStoryPath } from "@/lib/customer-stories";
 import { ArrowRight, CalendarDays, Check, CreditCard, Link2, Minus, Plus, Quote, Receipt, Star, Users } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
+import { useActivePromotion } from "@/lib/use-active-promotion";
+import { getPromotionPlan, getPromotionPlanDiscount, isPromotionCode, normalizePromotionCode } from "@/lib/promotion";
+import { getPromotionCopy, getPromotionFaq } from "@/lib/promotion-copy";
+import { PromotionOffer } from "@/components/landing/PricingPromotion";
 import {
   fetchPublicPricingCatalog,
   getInitialPricingCatalog,
@@ -481,6 +485,9 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
   const [contactPhone, setContactPhone] = useState("");
   const [contactMessage, setContactMessage] = useState("");
   const [showStickySummary, setShowStickySummary] = useState(false);
+  // The promotion code field: what the visitor typed, and the value last confirmed (blur, Enter or ?code=).
+  const [codeInput, setCodeInput] = useState("");
+  const [committedCode, setCommittedCode] = useState("");
   const configuratorRef = useRef<HTMLDivElement | null>(null);
   const contactRef = useRef<HTMLDivElement | null>(null);
 
@@ -521,6 +528,21 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
 
   const annualBilledMonths = pricingCatalog.annualBilledMonths || 10;
   const annualDiscountLabel = new Intl.NumberFormat(language === "sl" ? "sl-SI" : "en-IE", { maximumFractionDigits: 1 }).format(pricingCatalog.annualDiscountPercent);
+
+  // Black Friday: null on the server and the first render, so none of it is prerendered.
+  const promotion = useActivePromotion(pricingCatalog);
+  const promotionCopy = useMemo(() => promotion ? getPromotionCopy(promotion, language) : null, [promotion, language]);
+  const normalizedCode = normalizePromotionCode(codeInput);
+  const codeApplied = isPromotionCode(codeInput, promotion);
+  const codeRejected = Boolean(promotion) && !codeApplied && normalizedCode !== "" && committedCode === normalizedCode;
+  const commitCode = () => {
+    setCodeInput(normalizedCode);
+    setCommittedCode(normalizedCode);
+  };
+  const removeCode = () => {
+    setCodeInput("");
+    setCommittedCode("");
+  };
 
   const featureName = (feature: PublicPricingFeature) =>
     language === "sl" ? feature.nameSl || feature.name : feature.name;
@@ -713,6 +735,12 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     if (billing === "annual" || billing === "monthly") {
       setBillingPeriod(billing);
     }
+    // Banner and campaign links carry ?code=; it is checked once the offer is known.
+    const code = normalizePromotionCode(params.get("code")).slice(0, 40);
+    if (code) {
+      setCodeInput(code);
+      setCommittedCode(code);
+    }
 
     const hash = window.location.hash;
     if (hash === "#pricing-configurator") {
@@ -748,7 +776,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     ? selectedCustomFeatures.some((feature) => feature.key === SPACES_FEATURE_KEY)
     : selectedPlan?.featureKeys.includes(SPACES_FEATURE_KEY)));
   const chargedSpaces = spacesAvailable ? additionalSpaces : 0;
-  const quote = calculatePricingQuote({
+  const quoteInput = {
     annual: billingPeriod === "annual", monthlyPlan: selectedPlan?.monthlyGross ?? 0,
     annualPlan: selectedPlan?.annualGross ?? 0, annualBilledMonths,
     monthlyUsers: additionalUsersPrice,
@@ -756,7 +784,15 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     monthlyFeatures: customFeaturesMonthly,
     monthlyAddOns: selectedAddOns.reduce((total, addOn) => total + addOn.monthlyGross, 0),
     smsCount: additionalSms, smsUnit: pricingCatalog.smsPerMessageGross,
-  });
+  };
+  // A valid code takes the promotion off the plan only ("Po meri" starts from the Basic plan).
+  // Monthly: one discounted month. Annual: regular yearly plan price minus the yearly price with the code.
+  const planDiscount = codeApplied && selectedPlan
+    ? getPromotionPlanDiscount(selectedPlan, getPromotionPlan(promotion, selectedPlan.key), billingPeriod === "annual")
+    : 0;
+  const quote = calculatePricingQuote({ ...quoteInput, planDiscount });
+  // What the same selection costs once the discounted months are over.
+  const regularQuote = calculatePricingQuote(quoteInput);
   const monthlyTotal = roundPrice(quote.monthlyEquivalent + (billingPeriod === "annual" ? quote.sms.gross : 0));
   const oneTimeTotal = 0;
   const firstInvoiceEstimate = quote.total.gross;
@@ -824,7 +860,21 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
     ],
   );
 
-  const signupRoute = `${buildPackageSignupRoute(selectedTier.key, signupSummary, language, registrationSearch)}&billing=${billingPeriod}`;
+  const appliedCode = codeApplied && promotion ? promotion.code : undefined;
+  const signupRoute = `${buildPackageSignupRoute(selectedTier.key, signupSummary, language, registrationSearch, appliedCode)}&billing=${billingPeriod}`;
+
+  // Report each code once when it is applied or turned down, with the selection at that moment.
+  const codeContext = useRef({ plan: selectedTier.key, billing: billingPeriod });
+  codeContext.current = { plan: selectedTier.key, billing: billingPeriod };
+  useEffect(() => {
+    if (!appliedCode) return;
+    trackMarketingEvent("coupon_applied", { coupon: appliedCode, ...codeContext.current, step: "pricing_calculator" });
+  }, [appliedCode]);
+  const rejectedCode = codeRejected ? normalizedCode : "";
+  useEffect(() => {
+    if (!rejectedCode) return;
+    trackMarketingEvent("coupon_rejected", { coupon: rejectedCode, reason: "unknown_code" });
+  }, [rejectedCode]);
 
   const handleTierSelect = (tierKey: PlanKey) => {
     const tier = content.tiers.find((item) => item.key === tierKey);
@@ -979,13 +1029,20 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
       <span><CreditCard aria-hidden="true" />{ui.noCard}</span>
     </div>
   );
-  const signupButton = (
+  const signupButton = (placement: "pricing_page" | "pricing_page_sticky") => (
     <Button variant="hero" size="lg" className="pricing-button" asChild>
-      <a href={signupRoute} data-pricing-signup>
+      <a
+        href={signupRoute}
+        data-pricing-signup
+        onClick={() => trackMarketingEvent("trial_cta_click", {
+          placement, plan: selectedTier.key, billing: billingPeriod, coupon: appliedCode,
+        })}
+      >
         {content.continueToRegister}<ArrowRight aria-hidden="true" className="h-4 w-4" />
       </a>
     </Button>
   );
+  const promotionFaq = promotion ? getPromotionFaq(promotion, pricingCatalog, language, formatter.format) : [];
 
   return (
     <section id={standalone ? undefined : "cenik"} className="pricing-content">
@@ -1009,6 +1066,8 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
           <p className="pricing-tax-note">{getPricingTaxNote(language)}</p>
         </header>
 
+        {standalone && promotion && promotionCopy && <PromotionOffer promotion={promotion} copy={promotionCopy} />}
+
         <div className={`pricing-plan-grid${packageTiers.length > 3 ? " pricing-plan-grid-custom" : ""}`}>
           {packageTiers.map((tier) => {
             if (tier.key === "custom") {
@@ -1028,14 +1087,34 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
               );
             }
             const plan = pricingCatalog.plans.find((item) => item.key === API_PLAN_BY_TIER[tier.key]);
+            const promotionPlan = getPromotionPlan(promotion, plan?.key);
+            // Show the offer on a card only where it really is lower than the regular price.
+            const promoMonthly = billingPeriod === "monthly" && plan && promotionPlan && promotionCopy && promotionPlan.monthlyPrice < plan.monthlyGross;
+            const promoAnnual = billingPeriod === "annual" && plan && promotionPlan && promotionCopy && promotionPlan.annualPrice < plan.annualGross;
+            const promoPrice = promoMonthly ? promotionPlan.monthlyPrice : promoAnnual ? roundPrice(promotionPlan.annualPrice / 12) : null;
             return (
               <article key={tier.key} className={`pricing-plan${tier.popular ? " pricing-plan-popular" : ""}`} data-plan={tier.key}>
                 <div className="pricing-plan-heading">
                   <TierHeadingTag>{tier.name}</TierHeadingTag>
                   {tier.popular && <span className="pricing-popular-badge"><Star aria-hidden="true" />{content.badge}</span>}
                 </div>
-                <p className="pricing-plan-price"><strong>{tier.price}</strong><span>{tier.priceSuffix}</span></p>
-                {billingPeriod === "annual" && plan && <p className="pricing-annual-price">{ui.annualPackage}: {formatter.format(plan.annualGross)}</p>}
+                {promoPrice != null && promotionCopy ? (
+                  <p className="pricing-plan-price pricing-plan-price-promo">
+                    <span className="sr-only">{promotionCopy.card.regularLabel}: </span>
+                    <s className="pricing-promo-old">{tier.price}</s>
+                    <span className="sr-only">{promotionCopy.card.promoLabel}: </span>
+                    <strong>{formatter.format(promoPrice)}</strong><span>{tier.priceSuffix}</span>
+                  </p>
+                ) : (
+                  <p className="pricing-plan-price"><strong>{tier.price}</strong><span>{tier.priceSuffix}</span></p>
+                )}
+                {promoMonthly && plan && promotionCopy && (
+                  <p className="pricing-promo-then"><span className="pricing-promo-pill">{promotionCopy.cut}</span>{" "}{promotionCopy.card.then(formatter.format(plan.monthlyGross))}</p>
+                )}
+                {billingPeriod === "annual" && plan && (promoAnnual && promotionPlan && promotionCopy ? <>
+                  <p className="pricing-annual-price">{ui.annualPackage}: <s className="pricing-promo-old-inline">{formatter.format(plan.annualGross)}</s> <strong>{formatter.format(promotionPlan.annualPrice)}</strong></p>
+                  <p className="pricing-promo-then">{promotionCopy.card.thenYear(formatter.format(plan.annualGross))}</p>
+                </> : <p className="pricing-annual-price">{ui.annualPackage}: {formatter.format(plan.annualGross)}</p>)}
                 <p className="pricing-plan-description">{tier.description}</p>
                 {tier.inheritedLabel && <p className="pricing-inherited">{tier.inheritedLabel}</p>}
                 <ul className="pricing-plan-features">
@@ -1169,8 +1248,27 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                 <span className="marketing-eyebrow">{ui.selected}</span><h3>{selectedTier.name}</h3>
                 <p className="pricing-summary-period">{billingPeriod === "annual" ? ui.annualBilling : ui.monthlyBilling}</p>
                 {selectedTier.key === "enterprise" ? <><p>{ui.enterprise}</p><Button variant="hero" className="pricing-button" onClick={() => scrollToElement(contactRef.current)}>{content.enterprisePanelCta}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Button></> : <>
+                  {promotion && promotionCopy && <div className="pricing-promo-code" data-state={codeApplied ? "applied" : codeRejected ? "rejected" : undefined}>
+                    <label htmlFor="pricing-promo-code">{promotionCopy.calculator.label}</label>
+                    <div className="pricing-promo-code-row">
+                      <Input
+                        id="pricing-promo-code" name="code" value={codeInput} maxLength={40}
+                        autoComplete="off" autoCapitalize="characters" spellCheck={false}
+                        aria-invalid={codeRejected || undefined} aria-describedby="pricing-promo-code-status"
+                        onChange={(event) => setCodeInput(event.target.value)}
+                        onBlur={commitCode}
+                        onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); commitCode(); } }}
+                      />
+                      {normalizedCode && <button type="button" onClick={removeCode}>{promotionCopy.calculator.remove}</button>}
+                    </div>
+                    <div id="pricing-promo-code-status" aria-live="polite">
+                      {codeApplied && <p className="pricing-promo-code-ok"><Check aria-hidden="true" />{promotionCopy.calculator.applied}</p>}
+                      {codeRejected && <p className="pricing-promo-code-error">{promotionCopy.calculator.rejected}</p>}
+                    </div>
+                  </div>}
                   <dl className="pricing-breakdown">
                     <div><dt>{isCustom ? ui.basePackage : ui.package}</dt><dd>{formatter.format(quote.plan)}</dd></div>
+                    {quote.discount > 0 && promotionCopy && <div className="pricing-promo-discount"><dt>{promotionCopy.calculator.discount}</dt><dd data-pricing-discount>−{formatter.format(quote.discount)}</dd></div>}
                     {isCustom && <div><dt>{ui.selectedFeatures} ({selectedCustomFeatures.length}){selectedCustomFeatures.length > 0 && <small>{selectedCustomFeatures.map(featureName).join(", ")}</small>}</dt><dd data-pricing-features>{formatter.format(quote.features)}</dd></div>}
                     <div><dt>{ui.users}</dt><dd>{formatter.format(quote.users)}</dd></div>
                     {spacesAvailable && <div><dt>{ui.spaces}</dt><dd>{formatter.format(quote.spaces)}</dd></div>}
@@ -1188,9 +1286,12 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
                       <div><dt>{taxLabels.vat}</dt><dd data-pricing-vat>{formatter.format(quote.total.vat)}</dd></div>
                     </dl>
                     <div className="pricing-total"><span>{totalLabel}</span><strong data-pricing-total>{formatter.format(quote.total.gross)}</strong></div>
+                    {quote.discount > 0 && promotionCopy && <p className="pricing-promo-total-note" data-pricing-regular-total>{billingPeriod === "annual"
+                      ? promotionCopy.calculator.thenAnnual(formatter.format(regularQuote.total.gross))
+                      : promotionCopy.calculator.thenMonthly(formatter.format(regularQuote.total.gross))}</p>}
                     {billingPeriod === "annual" && <p className="pricing-annual-estimate">{taxLabels.monthlyEquivalent}: {formatter.format(quote.monthlyEquivalent)}<br />{taxLabels.annualUsage} <strong>{formatter.format(quote.sms.gross)}</strong></p>}
                   </div>
-                  {signupButton}{trustLine}
+                  {signupButton("pricing_page")}{trustLine}
                 </>}
               </aside>
             </div>
@@ -1229,9 +1330,15 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
 
           <section className="pricing-faq pricing-section" aria-labelledby="pricing-faq-title">
             <h2 id="pricing-faq-title" className="pricing-section-title">{extra.faqTitle}</h2>
-            <div>{(getFaqForRoute("pricing", language) ?? []).map((item, index) => (
-              <details key={item.question} open={index === 0}><summary><h3>{item.question}</h3><span className="pricing-faq-symbol" aria-hidden="true"><Plus className="pricing-faq-plus" /><Minus className="pricing-faq-minus" /></span></summary><p>{item.answer}</p></details>
-            ))}</div>
+            <div>
+              {/* Offer questions come first while it runs; client-only, so never in the prerendered FAQ or llms-full.txt. */}
+              {promotionFaq.map((item, index) => (
+                <details key={item.question} className="pricing-promo-faq" open={index === 0}><summary><h3><span className="pricing-promo-faq-tag" aria-hidden="true">{promotionCopy?.label}</span>{item.question}</h3><span className="pricing-faq-symbol" aria-hidden="true"><Plus className="pricing-faq-plus" /><Minus className="pricing-faq-minus" /></span></summary><p>{item.answer}</p></details>
+              ))}
+              {(getFaqForRoute("pricing", language) ?? []).map((item, index) => (
+                <details key={item.question} open={index === 0 && promotionFaq.length === 0}><summary><h3>{item.question}</h3><span className="pricing-faq-symbol" aria-hidden="true"><Plus className="pricing-faq-plus" /><Minus className="pricing-faq-minus" /></span></summary><p>{item.answer}</p></details>
+              ))}
+            </div>
           </section>
         </div>
       </>}
@@ -1245,7 +1352,7 @@ const Pricing = ({ standalone = false }: { standalone?: boolean }) => {
               <div><span>{taxLabels.vat}</span><strong>{formatter.format(quote.total.vat)}</strong></div>
               <div className="pricing-sticky-total"><span>{totalLabel}</span><strong>{formatter.format(quote.total.gross)}</strong></div>
             </div>
-            {signupButton}
+            {signupButton("pricing_page_sticky")}
           </div>
         </aside>
       )}
