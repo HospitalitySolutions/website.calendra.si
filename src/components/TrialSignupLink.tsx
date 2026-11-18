@@ -1,5 +1,6 @@
 import { forwardRef, type AnchorHTMLAttributes } from "react";
 import { useRegistrationSearch } from "@/lib/use-registration-search";
+import { useActivePromotion } from "@/lib/use-active-promotion";
 import { buildTrialSignupRoute } from "@/lib/routes";
 import { useSiteLanguage } from "@/lib/site-language";
 
@@ -8,7 +9,9 @@ export const TrialSignupLink = forwardRef<HTMLAnchorElement, Omit<AnchorHTMLAttr
   (props, ref) => {
     const { language } = useSiteLanguage();
     const search = useRegistrationSearch();
-    return <a {...props} ref={ref} href={buildTrialSignupRoute(language, search)} />;
+    // Like attribution, an active offer code is added after hydration only.
+    const promotion = useActivePromotion();
+    return <a {...props} ref={ref} href={buildTrialSignupRoute(language, search, promotion?.code)} />;
   },
 );
 TrialSignupLink.displayName = "TrialSignupLink";

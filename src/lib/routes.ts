@@ -22,7 +22,7 @@ export const LOGIN_ROUTE = BUSINESS_LOGIN_ROUTE;
 export const REGISTER_ROUTE = `${SITE_URL}/registriraj`;
 const attributionKeys = ["via", "ref", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "fbclid"];
 
-function registrationTarget(language: SiteLanguage, search = "") {
+function registrationTarget(language: SiteLanguage, search = "", promotionCode?: string | null) {
   const target = new URL(language === "sl" ? "/registriraj" : "/register", SITE_URL);
   const incoming = new URLSearchParams(search);
   for (const key of attributionKeys) {
@@ -30,11 +30,14 @@ function registrationTarget(language: SiteLanguage, search = "") {
     if (value) target.searchParams.set(key, value);
   }
   target.searchParams.set("locale", language);
+  // Only an active app promotion is forwarded, never a code read from the visitor's URL.
+  if (promotionCode) target.searchParams.set("code", promotionCode);
   return target;
 }
 
-export function buildTrialSignupRoute(language: SiteLanguage = "sl", search = "") {
-  const target = registrationTarget(language, search);
+/** `promotionCode` is the app's active promotion code; callers pass it client-side only. */
+export function buildTrialSignupRoute(language: SiteLanguage = "sl", search = "", promotionCode?: string | null) {
+  const target = registrationTarget(language, search, promotionCode);
   target.searchParams.set("flow", "trial");
   return target.toString();
 }
@@ -70,7 +73,14 @@ export type PricingSignupSummary = {
 const clampRegistrationCount = (value: number, min: number, max: number, fallback: number) =>
   Number.isFinite(value) ? Math.min(max, Math.max(min, Math.trunc(value))) : fallback;
 
-export const buildPackageSignupRoute = (packageType: string, summary?: PricingSignupSummary, language: SiteLanguage = "sl", search = "") => {
+/** `promotionCode` is passed only when the visitor's code matches the app's active promotion. */
+export const buildPackageSignupRoute = (
+  packageType: string,
+  summary?: PricingSignupSummary,
+  language: SiteLanguage = "sl",
+  search = "",
+  promotionCode?: string | null,
+) => {
   const params = new URLSearchParams({
     flow: "register",
     package: packageType.toUpperCase(),
@@ -94,7 +104,7 @@ export const buildPackageSignupRoute = (packageType: string, summary?: PricingSi
     params.set("summary", JSON.stringify(summary));
   }
 
-  const target = registrationTarget(language, search);
+  const target = registrationTarget(language, search, promotionCode);
   params.forEach((value, key) => target.searchParams.append(key, value));
   return target.toString();
 };

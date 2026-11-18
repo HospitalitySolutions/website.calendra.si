@@ -38,6 +38,20 @@ export type PublicPricingAddOn = {
 export type PublicCustomPackage = { enabled: boolean; name: string; nameSl: string };
 /** Rooms ("prostori") beyond the included ones are billed per room each month. */
 export type PublicSpacePricing = { includedPerLocation: number; monthlyGross: number };
+/** Net plan prices with the promotion code: the discounted monthly price and the first-year price. */
+export type PublicPricingPromotionPlan = { key: PublicPricingPlanKey; monthlyPrice: number; annualPrice: number };
+/**
+ * A time-limited sign-up code published by the app (Black Friday 2026: BLACKFRIDAY50).
+ * The app sends it only while the offer runs; the website still checks `validUntil`.
+ */
+export type PublicPricingPromotion = {
+  code: string;
+  percentOff: number;
+  discountedMonths: number;
+  /** ISO 8601 instant; the offer ends at this moment. */
+  validUntil: string;
+  plans: PublicPricingPromotionPlan[];
+};
 export type PublicPricingCatalog = {
   catalogVersion: number;
   currency: string;
@@ -55,6 +69,8 @@ export type PublicPricingCatalog = {
   /** Null when the app does not publish the custom package. */
   customPackage: PublicCustomPackage | null;
   smsPerMessageGross: number;
+  /** Present only while the app publishes a well-formed promotion. Never rendered on the server. */
+  promotion?: PublicPricingPromotion;
 };
 
 /** Missing monetary fields are errors, never instructions to invent a website price. */
@@ -80,6 +96,43 @@ const array = (value: unknown, field: string): unknown[] => Array.isArray(value)
 const isPlanKey = (value: unknown): value is PublicPricingPlanKey => value === "basic" || value === "pro" || value === "business";
 const keys = ["basic", "pro", "business"] as const;
 const codes = { basic: "BASIC", pro: "PROFESSIONAL", business: "PREMIUM" } as const;
+const PROMOTION_CODE = /^[A-Z0-9][A-Z0-9_-]{2,39}$/;
+
+/**
+ * The promotion is optional: a malformed one is dropped, never repaired, so the
+ * regular catalog (and every page that shows it) keeps working without it.
+ */
+const normalizePromotion = (value: unknown, plans: PublicPricingPlan[]): PublicPricingPromotion | undefined => {
+  if (value == null) return undefined;
+  try {
+    const raw = record(value, "promotion");
+    const code = text(raw.code).toUpperCase();
+    if (!PROMOTION_CODE.test(code)) return fail("promotion.code");
+    const percentOff = money(raw.percentOff, "promotion.percentOff");
+    if (percentOff <= 0 || percentOff > 100) return fail("promotion.percentOff");
+    // The yearly price with a code covers one year, so the discount fits inside it.
+    const discountedMonths = integer(raw.discountedMonths, "promotion.discountedMonths", 1);
+    if (discountedMonths > 12) return fail("promotion.discountedMonths");
+    const validUntil = text(raw.validUntil);
+    if (!/^\d{4}-\d{2}-\d{2}T/.test(validUntil) || !Number.isFinite(Date.parse(validUntil))) return fail("promotion.validUntil");
+    const incoming = array(raw.plans, "promotion.plans").map((item) => record(item, "promotion.plan"));
+    if (!incoming.length || new Set(incoming.map((item) => item.key)).size !== incoming.length) return fail("promotion.plans");
+    const promotionPlans = keys.flatMap((key): PublicPricingPromotionPlan[] => {
+      const plan = incoming.find((item) => item.key === key);
+      if (!plan) return [];
+      const regular = plans.find((item) => item.key === key);
+      const monthlyPrice = money(plan.monthlyPrice, `promotion.${key}.monthlyPrice`);
+      const annualPrice = money(plan.annualPrice, `promotion.${key}.annualPrice`);
+      // A "discount" above the regular monthly price would be shown as a cut that is not one.
+      if (!regular || monthlyPrice > regular.monthlyGross) return fail(`promotion.${key}`);
+      return [{ key, monthlyPrice, annualPrice }];
+    });
+    if (promotionPlans.length !== incoming.length) return fail("promotion.plans: unknown plan key");
+    return { code, percentOff, discountedMonths, validUntil, plans: promotionPlans };
+  } catch {
+    return undefined;
+  }
+};
 
 export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCatalog => {
   const raw = record(input, "root");
@@ -154,6 +207,7 @@ export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCata
     enabled: rawCustom.enabled === true,
     name: text(rawCustom.name, "Custom"), nameSl: text(rawCustom.nameSl, text(rawCustom.name, "Po meri")),
   } : null;
+  const promotion = normalizePromotion(raw.promotion, plans);
   return {
     // Preserve app amounts exactly. The owner-confirmed November B2B tax basis
     // supersedes the legacy API flag, including cached builds and live refreshes.
@@ -162,6 +216,8 @@ export const normalizePublicPricingCatalog = (input: unknown): PublicPricingCata
     plans, features, additionalUserRules, addOns, spacePricing, customPackage,
     // Preserve SMS unit precision. Currency rounding belongs on totals, not units.
     smsPerMessageGross: money(raw.smsPerMessageGross, "smsPerMessageGross"),
+    // Omitted rather than null, so a catalog without an offer keeps its exact previous shape.
+    ...(promotion ? { promotion } : {}),
   };
 };
 
