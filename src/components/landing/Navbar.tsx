@@ -30,6 +30,7 @@ import { languageNames, getSiteCopy } from "@/lib/site-copy";
 import { useSiteLanguage, type SiteLanguage } from "@/lib/site-language";
 import CustomerNavbar from "./CustomerNavbar";
 import { CUSTOMER_MARKETPLACE_PUBLIC } from "@/lib/customer-marketplace";
+import { isCustomerNavigationPath } from "@/lib/customer-navigation";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -45,18 +46,7 @@ const Navbar = () => {
   // marketplace is disabled. CustomerNavbar contains directory/search links
   // that point at /za-stranke and /en/for-customers, which intentionally 404
   // in private-marketplace mode.
-  const customerMode = CUSTOMER_MARKETPLACE_PUBLIC && (
-    pathname === getRoutePath("customers", "sl")
-    || pathname === getRoutePath("customers", "en")
-    || pathname.startsWith(`${getRoutePath("customers", "sl")}/`)
-    || pathname.startsWith(`${getRoutePath("customers", "en")}/`)
-    || pathname === getRoutePath("connect", "sl")
-    || pathname === getRoutePath("connect", "en")
-    || pathname === getRoutePath("businesses", "sl")
-    || pathname === getRoutePath("businesses", "en")
-    || pathname.startsWith(`${getRoutePath("businesses", "sl")}/`)
-    || pathname.startsWith(`${getRoutePath("businesses", "en")}/`)
-  );
+  const customerMode = isCustomerNavigationPath(pathname);
 
   const homePath = getRoutePath("home", language);
   const bookingPath = getRoutePath("booking", language);

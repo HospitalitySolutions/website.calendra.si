@@ -1,0 +1,56 @@
+/* Site-wide Black Friday banner. Loaded with the banner, only while an offer runs. */
+.bf-banner {
+  --bf-ink: #0b1220;
+  --bf-amber: #fbbf24;
+  position: relative;
+  z-index: 1001;
+  background: var(--bf-ink);
+  color: #fff;
+  font-size: 14px;
+  line-height: 20px;
+}
+.bf-banner-inner { max-width: 1240px; margin: 0 auto; padding: 11px 56px; text-align: center; }
+.bf-banner-inner p { margin: 0; }
+.bf-banner-label { color: var(--bf-amber); font-weight: 700; }
+.bf-banner-code {
+  margin-left: 1px;
+  padding: 1px 7px;
+  border: 1px dashed rgb(251 191 36 / .75);
+  border-radius: 6px;
+  color: #fde68a;
+  font-weight: 700;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+.bf-banner a {
+  margin-left: 4px;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+.bf-banner a:hover { color: #fde68a; }
+.bf-banner :is(a, button):focus-visible { outline: 2px solid var(--bf-amber); outline-offset: 3px; }
+.bf-banner-close {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #cbd5e1;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+.bf-banner-close:hover { background: rgb(255 255 255 / .08); color: #fff; }
+.bf-banner-close svg { width: 18px; height: 18px; }
+@media (max-width: 640px) {
+  .bf-banner { font-size: 13px; line-height: 19px; }
+  .bf-banner-inner { padding: 10px 48px 10px 16px; text-align: left; }
+  .bf-banner-close { top: 4px; right: 4px; transform: none; }
+}
